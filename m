@@ -1,54 +1,55 @@
 Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D529199254
-	for <linux-bcachefs@vger.kernel.org>; Mon, 17 Feb 2025 07:54:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F438154423
+	for <linux-bcachefs@vger.kernel.org>; Mon, 17 Feb 2025 08:04:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739778867; cv=none; b=i7SRmTr7Mu9jOL2hdFwhPBOBLUVxZipzJJHNTD7Kj0nmQIRqWHS5f/vMK4IxtYxFXooGDlsflvMJK9sGpyZQIMnXadMHx0kD/nvIayg4TnaWHUW5lkLGsoEsv0NRQZI+pfNQ0vVX4h+kVLMWXtJw2PAhsdFtY0Ua+h1CoafoO5c=
+	t=1739779461; cv=none; b=Cw+dAcB+0AUcg7HDSMym2d/3WnzI9oSQijQyeVSci4LpYG6tlVZED/rXAG1rfqBtnlpXRH7Ahj18LeyCaThDDI+UE8wPsOKZ+qK4UE8WPWqw642Ow5RfXfzUWdHxd8pfvDnysrOb26INAcDGETuCegfoz4SqxouM4iAoxvFCZpg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739778867; c=relaxed/simple;
-	bh=VpS7E0zow1bHWLswfAlgxGqFRHxipEFnXxOBAJSXxWM=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=IVmLfXBIBPxl+I6Q/xBY1n6L/8xRhISDIL9KKbYXoeuUmmfG+CVZcuClX689MHGp37wjWaxCrEjlrlOLbvCgaQxm3S97zKMzr7b19norT/gE5x6uFXVazPf6gm+7zCujO2NjGOacy+fC5FnUYFzJMWqk55r1/1PENVL/dx+FhPs=
+	s=arc-20240116; t=1739779461; c=relaxed/simple;
+	bh=xahl78UwGHhfLTQW0XY26JONhI1YHBALJLvE8nXpfpc=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=QZpNHPTsFfNKqs+y0Dnfa71cYR5PXgzs617I2J0AN2G46KkjRpyx0pJSZd4hLuJ+OeIj8jrTMybjCOnKOeRu6/zQSNnS/dokr6V8JnpKJSDnH69LTz8hpwDC9eNRXLUsit0wBpvvbyvfswu66GzrHWmqDcB1DH7iU/X59EXWd54=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3d187cab068so67456745ab.2
-        for <linux-bcachefs@vger.kernel.org>; Sun, 16 Feb 2025 23:54:25 -0800 (PST)
+Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3ce3bbb2b9dso32625585ab.3
+        for <linux-bcachefs@vger.kernel.org>; Mon, 17 Feb 2025 00:04:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739778864; x=1740383664;
+        d=1e100.net; s=20230601; t=1739779458; x=1740384258;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=zRkQ5044cHcmzJGX/GojjhovU3zAw/ZzG6DWHjEL9+k=;
-        b=CSi1KQP+1l0l0H/CjIna71dSOYQ6lj4WqnaiXNZe/SFxVK5oQ2i6YfMrWEPPUl1u3a
-         E8v9vY17vRAf6BFXhnBS0j94kdSDmSxikCqaalYUZvakmDQO7U7t7x9ntkx1gmeurSXK
-         mPUtXkKjhObPn0T/d7R6pwgV4aDOhwTWYXW48ap1Po4pb5Kl7u6HY/iiN5Q2GGdqnGxj
-         8SJgBA9lCWCUtjmmDsU5jd7avQYvV8cYSFUdzrGogJQBtJRquTi1PNxZrF92O+CYxhkk
-         KZWBQuxZCYmYoDB3K/Aeq2NdG5liwgKklxsftRkIwK4rzdwvvIbJPaX+YiO+ocYM0IPn
-         0QBw==
-X-Forwarded-Encrypted: i=1; AJvYcCXL1MbVcLxy+OuIcNEfx+hufM66nCX8AyDv9m31u0uF+s/wDbjlpsLGpPu7TPzp2yVgpNph63WCtMc3AYG+Rg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzS66O3cxFcf392igD7PZ2czHmm2+8gLAMO/Z1e6jUcTpglxMr5
-	gy6X3YKfAvG5uwJzmM8V2f+SPG41RJFNs+RIJaUB1XSEXRu+Zgv2nBjCz2MUyS1WGDnwabYtmwq
-	tSqvf2iMViLwOsYC2aY+TlvrSubTB7BG3pAuty456C0Dm5YGGrqLXrpc=
-X-Google-Smtp-Source: AGHT+IE8YhYf4UQZQYQg+69x2TPbuyV0/Mn79ybIWBx+vM+i182L6ATxzWVDaMsLCa8TUkO6E7XMhDm9da4Hauhez1h8bnMCchJd
+        bh=di4ea1GIYo6ent4pubzUydugwLVXnPHfpCjmRi93/jQ=;
+        b=ekROjj7pW+kqWPrueb0mgDVIJuYnro3uRSzEi6J+bI+1zx6R/nGjAO2hPhfNCyHDQa
+         yNBxgpm6fZPsEfcS19s5H+IzuoFIBWLHScC7NprmBiWBV5GJIRKbXe+286DHOaK1LxZP
+         +G7NoTQb6Q4QD7fZRLZv/E/wZG33AS8adaoEacNCCvLiU+Dx5Xr+MCxKkhkaOfZyx40e
+         dORddCfACEtlY/Gldj8kPjrnNOR510HOA93rZkuvPrPdkPad3KtZuwwj4R0dBQNj8P4V
+         pmCVJOhS6qpELVGsdDWsVfQfln4FsK/I5psZNqCnVjVftSl+dwOyFDHqtIRlzfkWCJIW
+         FbpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVNGPXp33qz3ecatiH/bIrszrcv9VSTkTSdupMMzeDxwUVNLw2IyDHvZcOpivn7ypUYyxq1QE1+NR/26QEyLQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyGo95xS2nVE53VsqGaJaKinZ98OsonGUXuVU/mYqhO/6WAIjkF
+	XdRLH29S0CtUiSI1tSEEABDeY/IyCCT3Cbhw4alUpU/oluqoo3QB0Eg7y660u1XspxparoegPaT
+	GkRHruB2SXUwPdDorjKK6DxQwnxidqXN/Bxw16jG1acWcehQDGYcXchQ=
+X-Google-Smtp-Source: AGHT+IH+yPRxkMqKKbdVDSXWh/eywYMHR6OHi66+7ImypDzo8z5MiWq0C6e67IVQQ/1p6cfzDo627T8PoPk1Eza4pAzTIUb+xsDe
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:240b:b0:3d0:e52:7d33 with SMTP id
- e9e14a558f8ab-3d2809d114bmr84745515ab.22.1739778864559; Sun, 16 Feb 2025
- 23:54:24 -0800 (PST)
-Date: Sun, 16 Feb 2025 23:54:24 -0800
+X-Received: by 2002:a05:6e02:2686:b0:3d0:3fa2:ccfd with SMTP id
+ e9e14a558f8ab-3d280771e1amr78951725ab.5.1739779458493; Mon, 17 Feb 2025
+ 00:04:18 -0800 (PST)
+Date: Mon, 17 Feb 2025 00:04:18 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67b2eb30.050a0220.173698.0022.GAE@google.com>
-Subject: [syzbot] [mm?] [bcachefs?] kernel BUG in shmem_undo_range
-From: syzbot <syzbot+0f74a9bc5e47528935fe@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, hughd@google.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Message-ID: <67b2ed82.050a0220.173698.0024.GAE@google.com>
+Subject: [syzbot] [bcachefs?] BUG: unable to handle kernel paging request in __d_lookup_rcu
+From: syzbot <syzbot+a3f3ed84ec8cc241ff9e@syzkaller.appspotmail.com>
+To: brauner@kernel.org, jack@suse.cz, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
+	viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
@@ -57,91 +58,102 @@ syzbot found the following issue on:
 
 HEAD commit:    ad1b832bf1cf Merge tag 'devicetree-fixes-for-6.14-1' of gi..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13ffb9b0580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=150197df980000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=c776e555cfbdb82d
-dashboard link: https://syzkaller.appspot.com/bug?extid=0f74a9bc5e47528935fe
+dashboard link: https://syzkaller.appspot.com/bug?extid=a3f3ed84ec8cc241ff9e
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=146639a4580000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=113ed5a4580000
 
 Downloadable assets:
 disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-ad1b832b.raw.xz
 vmlinux: https://storage.googleapis.com/syzbot-assets/64103cb6fc45/vmlinux-ad1b832b.xz
 kernel image: https://storage.googleapis.com/syzbot-assets/9bc34ac014d0/bzImage-ad1b832b.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/179e2d12ea01/mount_0.gz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/9f5f306c6e6e/mount_1.gz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0f74a9bc5e47528935fe@syzkaller.appspotmail.com
+Reported-by: syzbot+a3f3ed84ec8cc241ff9e@syzkaller.appspotmail.com
 
- __vm_munmap+0x372/0x510 mm/vma.c:2951
- __do_sys_munmap mm/mmap.c:1084 [inline]
- __se_sys_munmap mm/mmap.c:1081 [inline]
- __x64_sys_munmap+0x60/0x70 mm/mmap.c:1081
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-------------[ cut here ]------------
-kernel BUG at mm/filemap.c:2138!
-Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 0 UID: 0 PID: 5647 Comm: syz.3.19 Not tainted 6.14.0-rc2-syzkaller-00303-gad1b832bf1cf #0
+BUG: unable to handle page fault for address: ffffffffffffffcf
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD e93c067 P4D e93c067 PUD e93e067 PMD 0 
+Oops: Oops: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 UID: 0 PID: 5322 Comm: udevd Not tainted 6.14.0-rc2-syzkaller-00303-gad1b832bf1cf #0
 Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:find_lock_entries+0xb8a/0xbb0 mm/filemap.c:2137
-Code: f4 c6 ff 4c 89 ff 48 c7 c6 40 d7 33 8c e8 9e 91 11 00 90 0f 0b e8 16 f4 c6 ff 4c 89 ff 48 c7 c6 20 d1 33 8c e8 87 91 11 00 90 <0f> 0b e8 ff f3 c6 ff 4c 89 ff 48 c7 c6 00 da 33 8c e8 70 91 11 00
-RSP: 0018:ffffc90002d2f100 EFLAGS: 00010246
-RAX: 9a94e420221a6800 RBX: ffffc90002d2f5c0 RCX: ffffc90002d2ed03
-RDX: 0000000000000001 RSI: ffffffff8c2ab6a0 RDI: ffffffff8c80ed00
-RBP: ffffc90002d2f250 R08: ffffffff903cdd77 R09: 1ffffffff2079bae
-R10: dffffc0000000000 R11: fffffbfff2079baf R12: 000000000000030e
-R13: 0000000000000001 R14: ffffea000135cec0 R15: ffffea000135cec0
-FS:  0000000000000000(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+RIP: 0010:__seqprop_spinlock_sequence include/linux/seqlock.h:227 [inline]
+RIP: 0010:__d_lookup_rcu+0x18d/0x490 fs/dcache.c:2264
+Code: 00 00 00 00 89 44 24 24 4c 89 6c 24 30 4c 89 7c 24 28 48 8d 7d c8 48 89 f8 48 c1 e8 03 42 0f b6 04 20 84 c0 0f 85 bb 01 00 00 <44> 8b 75 c8 48 8d 5d 10 48 89 d8 48 c1 e8 03 42 80 3c 20 00 74 08
+RSP: 0018:ffffc9000d13f768 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff888042a8cd88 RCX: ffff888000a10000
+RDX: 0000000000000000 RSI: ffff888042a8cd78 RDI: ffffffffffffffcf
+RBP: 0000000000000007 R08: ffffffff82419fdc R09: 1ffff92000076d24
+R10: dffffc0000000000 R11: fffff52000076d25 R12: dffffc0000000000
+R13: ffff88801d03fbe8 R14: 0000000000000000 R15: 0000000000000004
+FS:  00007fd7f3eb2280(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005604856a8600 CR3: 00000000534c6000 CR4: 0000000000352ef0
+CR2: ffffffffffffffcf CR3: 0000000012b1a000 CR4: 0000000000352ef0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
  <TASK>
- shmem_undo_range+0x2d4/0x1820 mm/shmem.c:1094
- shmem_truncate_range mm/shmem.c:1224 [inline]
- shmem_evict_inode+0x29b/0xa80 mm/shmem.c:1352
- evict+0x4e8/0x9a0 fs/inode.c:796
- __dentry_kill+0x20d/0x630 fs/dcache.c:643
- dput+0x19f/0x2b0 fs/dcache.c:885
- __fput+0x60b/0x9f0 fs/file_table.c:472
- task_work_run+0x24f/0x310 kernel/task_work.c:227
- exit_task_work include/linux/task_work.h:40 [inline]
- do_exit+0xa2a/0x28e0 kernel/exit.c:938
- do_group_exit+0x207/0x2c0 kernel/exit.c:1087
- get_signal+0x168c/0x1720 kernel/signal.c:3036
- arch_do_signal_or_restart+0x96/0x860 arch/x86/kernel/signal.c:337
- exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0xce/0x340 kernel/entry/common.c:218
- do_syscall_64+0x100/0x230 arch/x86/entry/common.c:89
+ lookup_fast+0xca/0x590 fs/namei.c:1727
+ walk_component fs/namei.c:2110 [inline]
+ link_path_walk+0x672/0xea0 fs/namei.c:2479
+ path_openat+0x266/0x3590 fs/namei.c:3985
+ do_filp_open+0x27f/0x4e0 fs/namei.c:4016
+ do_sys_openat2+0x13e/0x1d0 fs/open.c:1428
+ do_sys_open fs/open.c:1443 [inline]
+ __do_sys_openat fs/open.c:1459 [inline]
+ __se_sys_openat fs/open.c:1454 [inline]
+ __x64_sys_openat+0x247/0x2a0 fs/open.c:1454
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f6d6738b89f
-Code: Unable to access opcode bytes at 0x7f6d6738b875.
-RSP: 002b:00007f6d68182df0 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
-RAX: 0000000000772000 RBX: 0000000001000000 RCX: 00007f6d6738b89f
-RDX: 0000000001000000 RSI: 00007f6d5e000000 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000000 R09: 000000000000590c
-R10: 0000000000000002 R11: 0000000000000293 R12: 0000000000000003
-R13: 00007f6d68182ef0 R14: 00007f6d68182eb0 R15: 00007f6d5e000000
+RIP: 0033:0x7fd7f3f859a4
+Code: 24 20 48 8d 44 24 30 48 89 44 24 28 64 8b 04 25 18 00 00 00 85 c0 75 2c 44 89 e2 48 89 ee bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 76 60 48 8b 15 55 a4 0d 00 f7 d8 64 89 02 48 83
+RSP: 002b:00007ffd67ebfd80 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 0000000000000008 RCX: 00007fd7f3f859a4
+RDX: 0000000000080000 RSI: 00007ffd67ebfeb8 RDI: 00000000ffffff9c
+RBP: 00007ffd67ebfeb8 R08: 0000000000000008 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000080000
+R13: 0000562f3212db42 R14: 0000000000000001 R15: 0000562f32149160
  </TASK>
 Modules linked in:
+CR2: ffffffffffffffcf
 ---[ end trace 0000000000000000 ]---
-RIP: 0010:find_lock_entries+0xb8a/0xbb0 mm/filemap.c:2137
-Code: f4 c6 ff 4c 89 ff 48 c7 c6 40 d7 33 8c e8 9e 91 11 00 90 0f 0b e8 16 f4 c6 ff 4c 89 ff 48 c7 c6 20 d1 33 8c e8 87 91 11 00 90 <0f> 0b e8 ff f3 c6 ff 4c 89 ff 48 c7 c6 00 da 33 8c e8 70 91 11 00
-RSP: 0018:ffffc90002d2f100 EFLAGS: 00010246
-RAX: 9a94e420221a6800 RBX: ffffc90002d2f5c0 RCX: ffffc90002d2ed03
-RDX: 0000000000000001 RSI: ffffffff8c2ab6a0 RDI: ffffffff8c80ed00
-RBP: ffffc90002d2f250 R08: ffffffff903cdd77 R09: 1ffffffff2079bae
-R10: dffffc0000000000 R11: fffffbfff2079baf R12: 000000000000030e
-R13: 0000000000000001 R14: ffffea000135cec0 R15: ffffea000135cec0
-FS:  0000000000000000(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+RIP: 0010:__seqprop_spinlock_sequence include/linux/seqlock.h:227 [inline]
+RIP: 0010:__d_lookup_rcu+0x18d/0x490 fs/dcache.c:2264
+Code: 00 00 00 00 89 44 24 24 4c 89 6c 24 30 4c 89 7c 24 28 48 8d 7d c8 48 89 f8 48 c1 e8 03 42 0f b6 04 20 84 c0 0f 85 bb 01 00 00 <44> 8b 75 c8 48 8d 5d 10 48 89 d8 48 c1 e8 03 42 80 3c 20 00 74 08
+RSP: 0018:ffffc9000d13f768 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff888042a8cd88 RCX: ffff888000a10000
+RDX: 0000000000000000 RSI: ffff888042a8cd78 RDI: ffffffffffffffcf
+RBP: 0000000000000007 R08: ffffffff82419fdc R09: 1ffff92000076d24
+R10: dffffc0000000000 R11: fffff52000076d25 R12: dffffc0000000000
+R13: ffff88801d03fbe8 R14: 0000000000000000 R15: 0000000000000004
+FS:  00007fd7f3eb2280(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005604856a8600 CR3: 00000000534c6000 CR4: 0000000000352ef0
+CR2: ffffffffffffffcf CR3: 0000000012b1a000 CR4: 0000000000352ef0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	00 00                	add    %al,(%rax)
+   2:	00 00                	add    %al,(%rax)
+   4:	89 44 24 24          	mov    %eax,0x24(%rsp)
+   8:	4c 89 6c 24 30       	mov    %r13,0x30(%rsp)
+   d:	4c 89 7c 24 28       	mov    %r15,0x28(%rsp)
+  12:	48 8d 7d c8          	lea    -0x38(%rbp),%rdi
+  16:	48 89 f8             	mov    %rdi,%rax
+  19:	48 c1 e8 03          	shr    $0x3,%rax
+  1d:	42 0f b6 04 20       	movzbl (%rax,%r12,1),%eax
+  22:	84 c0                	test   %al,%al
+  24:	0f 85 bb 01 00 00    	jne    0x1e5
+* 2a:	44 8b 75 c8          	mov    -0x38(%rbp),%r14d <-- trapping instruction
+  2e:	48 8d 5d 10          	lea    0x10(%rbp),%rbx
+  32:	48 89 d8             	mov    %rbx,%rax
+  35:	48 c1 e8 03          	shr    $0x3,%rax
+  39:	42 80 3c 20 00       	cmpb   $0x0,(%rax,%r12,1)
+  3e:	74 08                	je     0x48
 
 
 ---
