@@ -1,159 +1,139 @@
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
+Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F438154423
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82E7C18DF60
 	for <linux-bcachefs@vger.kernel.org>; Mon, 17 Feb 2025 08:04:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739779461; cv=none; b=Cw+dAcB+0AUcg7HDSMym2d/3WnzI9oSQijQyeVSci4LpYG6tlVZED/rXAG1rfqBtnlpXRH7Ahj18LeyCaThDDI+UE8wPsOKZ+qK4UE8WPWqw642Ow5RfXfzUWdHxd8pfvDnysrOb26INAcDGETuCegfoz4SqxouM4iAoxvFCZpg=
+	t=1739779461; cv=none; b=WHEX4V4WegeaKOmCtQx9YjzR1UObfxrITuhRZ+CpQsrONGxFx8OchnZaut6PWTk9R0vBp+FJAxoc6iLii4hday3VaZMJSUiBwOkPEZMldk1zIw6n6MMF5qtd70MJ1v5OlkueOJzmAdbB8TuezRWMEr/yZFPo5YJ7UTFdfECIDIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1739779461; c=relaxed/simple;
-	bh=xahl78UwGHhfLTQW0XY26JONhI1YHBALJLvE8nXpfpc=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=QZpNHPTsFfNKqs+y0Dnfa71cYR5PXgzs617I2J0AN2G46KkjRpyx0pJSZd4hLuJ+OeIj8jrTMybjCOnKOeRu6/zQSNnS/dokr6V8JnpKJSDnH69LTz8hpwDC9eNRXLUsit0wBpvvbyvfswu66GzrHWmqDcB1DH7iU/X59EXWd54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
+	bh=v5qa6EXa3AkMnte+yhdeeG8IN5mrAAkic6DLZsC/w9c=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=JMZB8AzbvH8Xpeo8mjMjkRA3WFvFQr96O75mHfkPyRO4OiicRLqnAWk32EUo1/yVNiQWi0yNKiHsWnzir2i/aXNdBj3EcjUf6DXS5xgwQjnXwOvoK2iIpe06JDDBWSA300ErHPeSeE9UXJQkcWMX9NT4Xq5EMbYKyVmdJgGffIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3ce3bbb2b9dso32625585ab.3
+Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3d18a1a0f0eso82444295ab.1
         for <linux-bcachefs@vger.kernel.org>; Mon, 17 Feb 2025 00:04:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1739779458; x=1740384258;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=di4ea1GIYo6ent4pubzUydugwLVXnPHfpCjmRi93/jQ=;
-        b=ekROjj7pW+kqWPrueb0mgDVIJuYnro3uRSzEi6J+bI+1zx6R/nGjAO2hPhfNCyHDQa
-         yNBxgpm6fZPsEfcS19s5H+IzuoFIBWLHScC7NprmBiWBV5GJIRKbXe+286DHOaK1LxZP
-         +G7NoTQb6Q4QD7fZRLZv/E/wZG33AS8adaoEacNCCvLiU+Dx5Xr+MCxKkhkaOfZyx40e
-         dORddCfACEtlY/Gldj8kPjrnNOR510HOA93rZkuvPrPdkPad3KtZuwwj4R0dBQNj8P4V
-         pmCVJOhS6qpELVGsdDWsVfQfln4FsK/I5psZNqCnVjVftSl+dwOyFDHqtIRlzfkWCJIW
-         FbpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVNGPXp33qz3ecatiH/bIrszrcv9VSTkTSdupMMzeDxwUVNLw2IyDHvZcOpivn7ypUYyxq1QE1+NR/26QEyLQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyGo95xS2nVE53VsqGaJaKinZ98OsonGUXuVU/mYqhO/6WAIjkF
-	XdRLH29S0CtUiSI1tSEEABDeY/IyCCT3Cbhw4alUpU/oluqoo3QB0Eg7y660u1XspxparoegPaT
-	GkRHruB2SXUwPdDorjKK6DxQwnxidqXN/Bxw16jG1acWcehQDGYcXchQ=
-X-Google-Smtp-Source: AGHT+IH+yPRxkMqKKbdVDSXWh/eywYMHR6OHi66+7ImypDzo8z5MiWq0C6e67IVQQ/1p6cfzDo627T8PoPk1Eza4pAzTIUb+xsDe
+        bh=24t5/djZSZfcZjD8u1O2QysKNhx5mUob/NH/sHlKHu8=;
+        b=Z7AmQAYZnM1HubRkY+ysDjCt9Xa2R/YvCf1hA4AVz2K3WBgNYIwiyDbtkXaNINFuMl
+         5dUCpj0gFbtMg2o5VVYKl2rISNgnMB8Sf4rkFpMR9KhLAjRtGO/GA0tAV90ivtyENsYt
+         r4YwZukD2IqUt73MEuAByhRmnUR/qypvkimd+ocbTX9655BaTYJoiCYvdfqg0N2eGNXK
+         PNLhzYdLw6McAR+WwjiYPr0owpHGXqlNtTTfTYt93eqvze8DpLZltQ/7jXGni2kM8ynG
+         j7+onqkkaaJgWCc84pQOxt1IP23Nk6hyBaVIhY1ABNOYQ8WlRUlaZ/vLe7w1DtLiFfdL
+         X7RQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUB9Ip552LiJvN1UwgzXeUsmocnS0yrJSg0d5vB225Xov0skCOuiwKWyXtp4oBirYDbbjJRhXFyCeMpjdJifA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyfVs3OhxGcEg67WgaHbo2z0EhUOqfRFNAc3ZFoC0NfynZD/mdG
+	92CsHNXXJGnI0CVxKC0EjQwNgSYd6e7Vo9fGbaA2TLmMxrJdQxSiRymLvP17NF61tSyQ1Zf0JlU
+	qImfCaZNGWhhSLhR7MjtlSIvqy/7GrgzrGyKeC/XwiZypJI/ZdwzPz6M=
+X-Google-Smtp-Source: AGHT+IHJ25HfSVubo1Ec0fUPOkdV39ESq+Fv9jpazGfTkrT6K5LWsVUIAmNKR2Fp0dsfKJw50s/ne0yCx4MIJYt8sypcXCkRm2ng
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2686:b0:3d0:3fa2:ccfd with SMTP id
- e9e14a558f8ab-3d280771e1amr78951725ab.5.1739779458493; Mon, 17 Feb 2025
+X-Received: by 2002:a05:6e02:330f:b0:3d1:9f4d:131 with SMTP id
+ e9e14a558f8ab-3d28077166fmr77977085ab.1.1739779458676; Mon, 17 Feb 2025
  00:04:18 -0800 (PST)
 Date: Mon, 17 Feb 2025 00:04:18 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67b2ed82.050a0220.173698.0024.GAE@google.com>
-Subject: [syzbot] [bcachefs?] BUG: unable to handle kernel paging request in __d_lookup_rcu
-From: syzbot <syzbot+a3f3ed84ec8cc241ff9e@syzkaller.appspotmail.com>
-To: brauner@kernel.org, jack@suse.cz, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	viro@zeniv.linux.org.uk
+Message-ID: <67b2ed82.050a0220.173698.0025.GAE@google.com>
+Subject: [syzbot] [bcachefs?] WARNING: locking bug in start_creating
+From: syzbot <syzbot+d2f57500f15e9df86c90@syzkaller.appspotmail.com>
+To: dakr@kernel.org, gregkh@linuxfoundation.org, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	rafael@kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    ad1b832bf1cf Merge tag 'devicetree-fixes-for-6.14-1' of gi..
+HEAD commit:    224e74511041 Merge tag 'kbuild-fixes-v6.14-2' of git://git..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=150197df980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c776e555cfbdb82d
-dashboard link: https://syzkaller.appspot.com/bug?extid=a3f3ed84ec8cc241ff9e
+console output: https://syzkaller.appspot.com/x/log.txt?x=155b35a4580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e55cabe422b4fcaf
+dashboard link: https://syzkaller.appspot.com/bug?extid=d2f57500f15e9df86c90
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=113ed5a4580000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10a6a898580000
 
 Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-ad1b832b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/64103cb6fc45/vmlinux-ad1b832b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/9bc34ac014d0/bzImage-ad1b832b.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/9f5f306c6e6e/mount_1.gz
+disk image: https://storage.googleapis.com/syzbot-assets/6b4272577622/disk-224e7451.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ec492843be2b/vmlinux-224e7451.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/013e7903deef/bzImage-224e7451.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/9956c6b4c5e1/mount_0.gz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a3f3ed84ec8cc241ff9e@syzkaller.appspotmail.com
+Reported-by: syzbot+d2f57500f15e9df86c90@syzkaller.appspotmail.com
 
-BUG: unable to handle page fault for address: ffffffffffffffcf
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD e93c067 P4D e93c067 PUD e93e067 PMD 0 
-Oops: Oops: 0000 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 0 UID: 0 PID: 5322 Comm: udevd Not tainted 6.14.0-rc2-syzkaller-00303-gad1b832bf1cf #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:__seqprop_spinlock_sequence include/linux/seqlock.h:227 [inline]
-RIP: 0010:__d_lookup_rcu+0x18d/0x490 fs/dcache.c:2264
-Code: 00 00 00 00 89 44 24 24 4c 89 6c 24 30 4c 89 7c 24 28 48 8d 7d c8 48 89 f8 48 c1 e8 03 42 0f b6 04 20 84 c0 0f 85 bb 01 00 00 <44> 8b 75 c8 48 8d 5d 10 48 89 d8 48 c1 e8 03 42 80 3c 20 00 74 08
-RSP: 0018:ffffc9000d13f768 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffff888042a8cd88 RCX: ffff888000a10000
-RDX: 0000000000000000 RSI: ffff888042a8cd78 RDI: ffffffffffffffcf
-RBP: 0000000000000007 R08: ffffffff82419fdc R09: 1ffff92000076d24
-R10: dffffc0000000000 R11: fffff52000076d25 R12: dffffc0000000000
-R13: ffff88801d03fbe8 R14: 0000000000000000 R15: 0000000000000004
-FS:  00007fd7f3eb2280(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+------------[ cut here ]------------
+DEBUG_LOCKS_WARN_ON(1)
+WARNING: CPU: 0 PID: 5950 at kernel/locking/lockdep.c:234 hlock_class kernel/locking/lockdep.c:234 [inline]
+WARNING: CPU: 0 PID: 5950 at kernel/locking/lockdep.c:234 check_wait_context kernel/locking/lockdep.c:4852 [inline]
+WARNING: CPU: 0 PID: 5950 at kernel/locking/lockdep.c:234 __lock_acquire+0x564/0x2100 kernel/locking/lockdep.c:5178
+Modules linked in:
+CPU: 0 UID: 0 PID: 5950 Comm: syz-executor Not tainted 6.14.0-rc2-syzkaller-00390-g224e74511041 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 12/27/2024
+RIP: 0010:hlock_class kernel/locking/lockdep.c:234 [inline]
+RIP: 0010:check_wait_context kernel/locking/lockdep.c:4852 [inline]
+RIP: 0010:__lock_acquire+0x564/0x2100 kernel/locking/lockdep.c:5178
+Code: 00 00 83 3d 81 36 9f 0e 00 75 23 90 48 c7 c7 e0 a2 2a 8c 48 c7 c6 e0 a5 2a 8c e8 07 c2 e4 ff 48 ba 00 00 00 00 00 fc ff df 90 <0f> 0b 90 90 90 31 db 48 81 c3 c4 00 00 00 48 89 d8 48 c1 e8 03 0f
+RSP: 0018:ffffc90004216a90 EFLAGS: 00010046
+RAX: 6e3266fa0e7ed500 RBX: 0000000000000a0b RCX: ffff88807f24bc00
+RDX: dffffc0000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000040a0b R08: ffffffff81817d42 R09: 1ffffffff1d4294c
+R10: dffffc0000000000 R11: fffffbfff1d4294d R12: ffff88807f24c6d4
+R13: 0000000000000014 R14: 1ffff1100fe498f6 R15: ffff88807f24c7b0
+FS:  0000555560a1b500(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffcf CR3: 0000000012b1a000 CR4: 0000000000352ef0
+CR2: 0000555575ca0608 CR3: 0000000034c76000 CR4: 00000000003526f0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
  <TASK>
- lookup_fast+0xca/0x590 fs/namei.c:1727
- walk_component fs/namei.c:2110 [inline]
- link_path_walk+0x672/0xea0 fs/namei.c:2479
- path_openat+0x266/0x3590 fs/namei.c:3985
- do_filp_open+0x27f/0x4e0 fs/namei.c:4016
- do_sys_openat2+0x13e/0x1d0 fs/open.c:1428
- do_sys_open fs/open.c:1443 [inline]
- __do_sys_openat fs/open.c:1459 [inline]
- __se_sys_openat fs/open.c:1454 [inline]
- __x64_sys_openat+0x247/0x2a0 fs/open.c:1454
+ lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5851
+ down_write+0x99/0x220 kernel/locking/rwsem.c:1577
+ inode_lock include/linux/fs.h:877 [inline]
+ start_creating+0x130/0x310 fs/debugfs/inode.c:387
+ debugfs_create_dir+0x25/0x430 fs/debugfs/inode.c:586
+ ieee80211_debugfs_add_netdev net/mac80211/debugfs_netdev.c:1005 [inline]
+ ieee80211_debugfs_recreate_netdev+0x1b6/0x14d0 net/mac80211/debugfs_netdev.c:1035
+ ieee80211_if_add+0xef9/0x1780 net/mac80211/iface.c:2188
+ ieee80211_register_hw+0x3708/0x42e0 net/mac80211/main.c:1604
+ mac80211_hwsim_new_radio+0x2ae8/0x4a40 drivers/net/wireless/virtual/mac80211_hwsim.c:5558
+ hwsim_new_radio_nl+0xece/0x2290 drivers/net/wireless/virtual/mac80211_hwsim.c:6242
+ genl_family_rcv_msg_doit net/netlink/genetlink.c:1115 [inline]
+ genl_family_rcv_msg net/netlink/genetlink.c:1195 [inline]
+ genl_rcv_msg+0xb1f/0xec0 net/netlink/genetlink.c:1210
+ netlink_rcv_skb+0x206/0x480 net/netlink/af_netlink.c:2543
+ genl_rcv+0x28/0x40 net/netlink/genetlink.c:1219
+ netlink_unicast_kernel net/netlink/af_netlink.c:1322 [inline]
+ netlink_unicast+0x7f6/0x990 net/netlink/af_netlink.c:1348
+ netlink_sendmsg+0x8de/0xcb0 net/netlink/af_netlink.c:1892
+ sock_sendmsg_nosec net/socket.c:718 [inline]
+ __sock_sendmsg+0x221/0x270 net/socket.c:733
+ __sys_sendto+0x363/0x4c0 net/socket.c:2187
+ __do_sys_sendto net/socket.c:2194 [inline]
+ __se_sys_sendto net/socket.c:2190 [inline]
+ __x64_sys_sendto+0xde/0x100 net/socket.c:2190
  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
  do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fd7f3f859a4
-Code: 24 20 48 8d 44 24 30 48 89 44 24 28 64 8b 04 25 18 00 00 00 85 c0 75 2c 44 89 e2 48 89 ee bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 76 60 48 8b 15 55 a4 0d 00 f7 d8 64 89 02 48 83
-RSP: 002b:00007ffd67ebfd80 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 0000000000000008 RCX: 00007fd7f3f859a4
-RDX: 0000000000080000 RSI: 00007ffd67ebfeb8 RDI: 00000000ffffff9c
-RBP: 00007ffd67ebfeb8 R08: 0000000000000008 R09: 0000000000000001
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000080000
-R13: 0000562f3212db42 R14: 0000000000000001 R15: 0000562f32149160
+RIP: 0033:0x7f57e038ec7c
+Code: 2a 5f 02 00 44 8b 4c 24 2c 4c 8b 44 24 20 89 c5 44 8b 54 24 28 48 8b 54 24 18 b8 2c 00 00 00 48 8b 74 24 10 8b 7c 24 08 0f 05 <48> 3d 00 f0 ff ff 77 34 89 ef 48 89 44 24 08 e8 70 5f 02 00 48 8b
+RSP: 002b:00007ffd2d011db0 EFLAGS: 00000293 ORIG_RAX: 000000000000002c
+RAX: ffffffffffffffda RBX: 00007f57e10d4620 RCX: 00007f57e038ec7c
+RDX: 0000000000000024 RSI: 00007f57e10d4670 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 00007ffd2d011e04 R09: 000000000000000c
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000003
+R13: 0000000000000000 R14: 00007f57e10d4670 R15: 0000000000000000
  </TASK>
-Modules linked in:
-CR2: ffffffffffffffcf
----[ end trace 0000000000000000 ]---
-RIP: 0010:__seqprop_spinlock_sequence include/linux/seqlock.h:227 [inline]
-RIP: 0010:__d_lookup_rcu+0x18d/0x490 fs/dcache.c:2264
-Code: 00 00 00 00 89 44 24 24 4c 89 6c 24 30 4c 89 7c 24 28 48 8d 7d c8 48 89 f8 48 c1 e8 03 42 0f b6 04 20 84 c0 0f 85 bb 01 00 00 <44> 8b 75 c8 48 8d 5d 10 48 89 d8 48 c1 e8 03 42 80 3c 20 00 74 08
-RSP: 0018:ffffc9000d13f768 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffff888042a8cd88 RCX: ffff888000a10000
-RDX: 0000000000000000 RSI: ffff888042a8cd78 RDI: ffffffffffffffcf
-RBP: 0000000000000007 R08: ffffffff82419fdc R09: 1ffff92000076d24
-R10: dffffc0000000000 R11: fffff52000076d25 R12: dffffc0000000000
-R13: ffff88801d03fbe8 R14: 0000000000000000 R15: 0000000000000004
-FS:  00007fd7f3eb2280(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffcf CR3: 0000000012b1a000 CR4: 0000000000352ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	00 00                	add    %al,(%rax)
-   2:	00 00                	add    %al,(%rax)
-   4:	89 44 24 24          	mov    %eax,0x24(%rsp)
-   8:	4c 89 6c 24 30       	mov    %r13,0x30(%rsp)
-   d:	4c 89 7c 24 28       	mov    %r15,0x28(%rsp)
-  12:	48 8d 7d c8          	lea    -0x38(%rbp),%rdi
-  16:	48 89 f8             	mov    %rdi,%rax
-  19:	48 c1 e8 03          	shr    $0x3,%rax
-  1d:	42 0f b6 04 20       	movzbl (%rax,%r12,1),%eax
-  22:	84 c0                	test   %al,%al
-  24:	0f 85 bb 01 00 00    	jne    0x1e5
-* 2a:	44 8b 75 c8          	mov    -0x38(%rbp),%r14d <-- trapping instruction
-  2e:	48 8d 5d 10          	lea    0x10(%rbp),%rbx
-  32:	48 89 d8             	mov    %rbx,%rax
-  35:	48 c1 e8 03          	shr    $0x3,%rax
-  39:	42 80 3c 20 00       	cmpb   $0x0,(%rax,%r12,1)
-  3e:	74 08                	je     0x48
 
 
 ---
