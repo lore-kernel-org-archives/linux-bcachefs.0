@@ -1,287 +1,170 @@
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34E5079D2
-	for <linux-bcachefs@vger.kernel.org>; Mon, 17 Feb 2025 01:49:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 899B72AD02
+	for <linux-bcachefs@vger.kernel.org>; Mon, 17 Feb 2025 02:11:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739756977; cv=none; b=E2AmuG2Hz6cVpO6n4cO2sBo8HIOKe12q9lxykrGPlRP5VWbecmW54qgFSDNdP944l1/WCYJoBA3Ti0k2+qBTdaRYtD4qjHLZKEoF1nYm+TJlmvm18She5Y2HSd2LJV5Yj7C81QZ9Ty3YE6AiMYvDXCz12Y69TA6oiwHBW5qfUkQ=
+	t=1739758281; cv=none; b=O80ZY+qEauDK9fNQZATIbJJZF8rtWLih9fiWXo782Ve1fBcRxOu8JANvWCse40ww+t8c19VC41so3lOYM9WItJRDAkjrr8Bi2qXM+9BrlWhMpnNLDTgKm9wAHFNRSUP3RZbt0cFWzcRJzKrYKD+gYRM2e9a9E14r2HehY6em8wM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739756977; c=relaxed/simple;
-	bh=VkMSjzn+CcGolceBQvGBTCA1xMtn1F26gnd7JBo1zAc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=tFj5poSaaZ+iDaP3FnIXIngkf94h7JD1z1HShzQOZnquBYvXgoH+mW13D3l5AnrJq25sq2CUxWLlOjsTIWTn4EKIaOidO9m3FsChIARK6oEUy3nDomBh4hO/o6l7caPr79gu5lH0R9oXg0FFmHnkhzMhef4EhMt9/s4kXmYRXrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Yx5FH55jFz1xty0;
-	Mon, 17 Feb 2025 09:49:55 +0800 (CST)
-Received: from kwepemo500009.china.huawei.com (unknown [7.202.194.199])
-	by mail.maildlp.com (Postfix) with ESMTPS id 561181A0171;
-	Mon, 17 Feb 2025 09:49:25 +0800 (CST)
-Received: from [10.67.111.104] (10.67.111.104) by
- kwepemo500009.china.huawei.com (7.202.194.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 17 Feb 2025 09:49:24 +0800
-Message-ID: <7f4dd5a5-612f-4135-b259-a1f2b83b5122@huawei.com>
-Date: Mon, 17 Feb 2025 09:49:23 +0800
+	s=arc-20240116; t=1739758281; c=relaxed/simple;
+	bh=BQWhNkIkITDFgj+pqH98SJOgqDC0q9J2U4dt+CRbEKc=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=tbY+QGP6a2w9HMgYA1i7IXh6feETf+qHDAknGv/idnewRWIJhzbMXpSBjH2krgk6BmnUt+W0/PX3d7W3oWKZSA3JdwY9Y4+2/c8bZkk3VTXRkpvUMu48y2Ghxl/HtxkMtC4uqI9t1D0HvzPeoHkZn9UN6hz+qRSJ68EBfqWYFKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3d060cfe752so26176545ab.2
+        for <linux-bcachefs@vger.kernel.org>; Sun, 16 Feb 2025 18:11:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739758278; x=1740363078;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fn9l4Yj5NFQ4838XD4RT4ed3t6Y0RF0aDBN+uxZBAIk=;
+        b=LXOlXllJbbIhvrz5sNRJonbYdryqU8X7u+HgSdJPBuFIOoERfhc9YwdwQ6hasSiUom
+         aJ0i5+S8787A+a8Zh7+z24T8hmXzLbrIEE6LOA86IrrhpnUq+Q+QB3kKFc2W/OQxdZ2C
+         cDm2hJKu09et2HPKLNdw31+6HcGMy7uwcMpj0QfDbIYQ9wbJD7CqZmUPXMZsih8LkJ83
+         Bo+0GJLCv4VL6+TaNU+VyzOqchAvIMuGzcv+LfSHic+P0VmQ9QyzxN6l4V81pq0RyLtA
+         vQvG631jHHJYRMEQoP7iO9cMeu59wDXEFunp7SRQ4SgbnF5qIuxeLnjDaR4V+dT3PGYX
+         mdYA==
+X-Forwarded-Encrypted: i=1; AJvYcCX5WW8vYCkI910x4guC5UrKoCwkmLodcWZrHbxpnydsZxEoFiCqx+0ZljUX2YEWrNcr3Y9S6pcwyPiyRPTxlQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzEXnP3pyR0q5jp0rjW3KIcdZ/yq6YGZ0jUkiY/y0s9FrkoQCT2
+	vndZOtZQUwIGS/An54TEEZdbafx8MBvgf5sNaStbfbMJepIaGNRlUnwuFWqY47VfEYBcw40DHqL
+	A3CzGwflMFqQv4wbjpS5f+W9n6SmcYUA4Tfiwbneh9nSr2CIt6K06DTI=
+X-Google-Smtp-Source: AGHT+IHZ6EI9S2wtYp0GiaUFXrM3xQSW/nzb2cQVeB2B/sdih4KSnYuvS1pbnEZdhDj7A8Zil9QLmMTx4rALk6gKkTxgDYo2HQJ/
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 16/18] bcachefs: Kill dirent_occupied_size()
-To: Kent Overstreet <kent.overstreet@linux.dev>,
-	<linux-bcachefs@vger.kernel.org>
-References: <20250213184607.18237-1-kent.overstreet@linux.dev>
- <20250213184607.18237-17-kent.overstreet@linux.dev>
-Content-Language: en-US
-From: Hongbo Li <lihongbo22@huawei.com>
-In-Reply-To: <20250213184607.18237-17-kent.overstreet@linux.dev>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemo500009.china.huawei.com (7.202.194.199)
+X-Received: by 2002:a05:6e02:170b:b0:3d0:235b:4810 with SMTP id
+ e9e14a558f8ab-3d280764217mr52204345ab.2.1739758278649; Sun, 16 Feb 2025
+ 18:11:18 -0800 (PST)
+Date: Sun, 16 Feb 2025 18:11:18 -0800
+In-Reply-To: <679fb3a5.050a0220.163cdc.0030.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67b29ac6.050a0220.173698.001c.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs] general protection fault in bioset_exit (2)
+From: syzbot <syzbot+76f13f2acac84df26aae@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+syzbot has found a reproducer for the following issue on:
+
+HEAD commit:    224e74511041 Merge tag 'kbuild-fixes-v6.14-2' of git://git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=169b5bf8580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e55cabe422b4fcaf
+dashboard link: https://syzkaller.appspot.com/bug?extid=76f13f2acac84df26aae
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14e8b5a4580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1155a898580000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/6b4272577622/disk-224e7451.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ec492843be2b/vmlinux-224e7451.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/013e7903deef/bzImage-224e7451.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/6b2a19ba3037/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+76f13f2acac84df26aae@syzkaller.appspotmail.com
+
+bcachefs (loop4): shutting down
+bcachefs (loop4): shutdown complete
+BUG: unable to handle page fault for address: 0000000000003906
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 0 P4D 0 
+Oops: Oops: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 0 UID: 0 PID: 5943 Comm: syz-executor233 Not tainted 6.14.0-rc2-syzkaller-00390-g224e74511041 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 12/27/2024
+RIP: 0010:qlist_move_cache+0x6a/0x140 mm/kasan/quarantine.c:302
+Code: 00 00 00 00 48 8d 47 08 48 89 44 24 18 48 8d 47 10 48 89 44 24 10 48 8d 46 08 48 89 44 24 08 48 8d 46 10 48 89 04 24 4c 89 eb <4d> 8b 6d 00 48 89 df e8 7a 25 48 ff 48 c1 e8 06 48 83 e0 c0 48 8b
+RSP: 0000:ffffc900045bf7b0 EFLAGS: 00010006
+RAX: 00000000000002c0 RBX: 0000000000003906 RCX: ffffffff9a680288
+RDX: ffffffff9a680290 RSI: ffff888064500258 RDI: 0000000000000000
+RBP: ffffea0000000000 R08: ffffffff816eac3c R09: fffff520008b7edc
+R10: dffffc0000000000 R11: fffff520008b7edc R12: ffffffff9a680280
+R13: 0000000000003906 R14: ffffc900045bf808 R15: ffff88814cdb2500
+FS:  00007fe4bd5596c0(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000003906 CR3: 0000000076ddc000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ kasan_quarantine_remove_cache+0x10b/0x180 mm/kasan/quarantine.c:370
+ kmem_cache_destroy+0x6e/0x160 mm/slab_common.c:528
+ bio_put_slab block/bio.c:155 [inline]
+ bioset_exit+0x54e/0x650 block/bio.c:1662
+ bch2_fs_fs_io_direct_exit+0x19/0x30 fs/bcachefs/fs-io-direct.c:676
+ __bch2_fs_free fs/bcachefs/super.c:558 [inline]
+ bch2_fs_release+0x1a9/0x7b0 fs/bcachefs/super.c:624
+ kobject_cleanup lib/kobject.c:689 [inline]
+ kobject_release lib/kobject.c:720 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x22f/0x480 lib/kobject.c:737
+ bch2_fs_get_tree+0xdee/0x17a0 fs/bcachefs/fs.c:2299
+ vfs_get_tree+0x90/0x2b0 fs/super.c:1814
+ do_new_mount+0x2be/0xb40 fs/namespace.c:3560
+ do_mount fs/namespace.c:3900 [inline]
+ __do_sys_mount fs/namespace.c:4111 [inline]
+ __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4088
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fe4bddb482a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 7e 09 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fe4bd558fd8 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fe4bd558ff0 RCX: 00007fe4bddb482a
+RDX: 00004000000058c0 RSI: 0000400000005900 RDI: 00007fe4bd558ff0
+RBP: 0000400000005900 R08: 00007fe4bd559030 R09: 000000000000590c
+R10: 0000000000010000 R11: 0000000000000282 R12: 00004000000058c0
+R13: 00007fe4bd559030 R14: 0000000000000003 R15: 0000000000010000
+ </TASK>
+Modules linked in:
+CR2: 0000000000003906
+---[ end trace 0000000000000000 ]---
+RIP: 0010:qlist_move_cache+0x6a/0x140 mm/kasan/quarantine.c:302
+Code: 00 00 00 00 48 8d 47 08 48 89 44 24 18 48 8d 47 10 48 89 44 24 10 48 8d 46 08 48 89 44 24 08 48 8d 46 10 48 89 04 24 4c 89 eb <4d> 8b 6d 00 48 89 df e8 7a 25 48 ff 48 c1 e8 06 48 83 e0 c0 48 8b
+RSP: 0000:ffffc900045bf7b0 EFLAGS: 00010006
+RAX: 00000000000002c0 RBX: 0000000000003906 RCX: ffffffff9a680288
+RDX: ffffffff9a680290 RSI: ffff888064500258 RDI: 0000000000000000
+RBP: ffffea0000000000 R08: ffffffff816eac3c R09: fffff520008b7edc
+R10: dffffc0000000000 R11: fffff520008b7edc R12: ffffffff9a680280
+R13: 0000000000003906 R14: ffffc900045bf808 R15: ffff88814cdb2500
+FS:  00007fe4bd5596c0(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000003906 CR3: 0000000076ddc000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	00 00                	add    %al,(%rax)
+   2:	00 00                	add    %al,(%rax)
+   4:	48 8d 47 08          	lea    0x8(%rdi),%rax
+   8:	48 89 44 24 18       	mov    %rax,0x18(%rsp)
+   d:	48 8d 47 10          	lea    0x10(%rdi),%rax
+  11:	48 89 44 24 10       	mov    %rax,0x10(%rsp)
+  16:	48 8d 46 08          	lea    0x8(%rsi),%rax
+  1a:	48 89 44 24 08       	mov    %rax,0x8(%rsp)
+  1f:	48 8d 46 10          	lea    0x10(%rsi),%rax
+  23:	48 89 04 24          	mov    %rax,(%rsp)
+  27:	4c 89 eb             	mov    %r13,%rbx
+* 2a:	4d 8b 6d 00          	mov    0x0(%r13),%r13 <-- trapping instruction
+  2e:	48 89 df             	mov    %rbx,%rdi
+  31:	e8 7a 25 48 ff       	call   0xff4825b0
+  36:	48 c1 e8 06          	shr    $0x6,%rax
+  3a:	48 83 e0 c0          	and    $0xffffffffffffffc0,%rax
+  3e:	48                   	rex.W
+  3f:	8b                   	.byte 0x8b
 
 
-
-On 2025/2/14 2:46, Kent Overstreet wrote:
-> With the upcoming patches for casefolding, we really need to use the
-> size of the dirent key itself - which is cleaner, anyways.
-> 
-> The size of the dirent is no longer just a function of the length of the
-> name, it'll be different depending on whether the directory has
-> casefolding enabled - which means the accounting in rename() has to
-> change a bit.
-> 
-> Cc: Hongbo Li <lihongbo22@huawei.com>
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> ---
->   fs/bcachefs/dirent.c    | 15 +++++++++++++--
->   fs/bcachefs/dirent.h    | 11 +++--------
->   fs/bcachefs/fs-common.c | 42 ++++++++++++++++++++++-------------------
->   fs/bcachefs/fsck.c      |  5 +----
->   4 files changed, 40 insertions(+), 33 deletions(-)
-> 
-> diff --git a/fs/bcachefs/dirent.c b/fs/bcachefs/dirent.c
-> index 600eee936f13..27737aaa03a6 100644
-> --- a/fs/bcachefs/dirent.c
-> +++ b/fs/bcachefs/dirent.c
-> @@ -233,6 +233,7 @@ int bch2_dirent_create(struct btree_trans *trans, subvol_inum dir,
->   		       const struct bch_hash_info *hash_info,
->   		       u8 type, const struct qstr *name, u64 dst_inum,
->   		       u64 *dir_offset,
-> +		       u64 *i_size,
->   		       enum btree_iter_update_trigger_flags flags)
->   {
->   	struct bkey_i_dirent *dirent;
-> @@ -243,6 +244,8 @@ int bch2_dirent_create(struct btree_trans *trans, subvol_inum dir,
->   	if (ret)
->   		return ret;
->   
-> +	*i_size += bkey_bytes(&dirent->k);
-> +
->   	ret = bch2_hash_set(trans, bch2_dirent_hash_desc, hash_info,
->   			    dir, &dirent->k_i, flags);
->   	*dir_offset = dirent->k.p.offset;
-> @@ -275,8 +278,8 @@ int bch2_dirent_read_target(struct btree_trans *trans, subvol_inum dir,
->   }
->   
->   int bch2_dirent_rename(struct btree_trans *trans,
-> -		subvol_inum src_dir, struct bch_hash_info *src_hash,
-> -		subvol_inum dst_dir, struct bch_hash_info *dst_hash,
-> +		subvol_inum src_dir, struct bch_hash_info *src_hash, u64 *src_dir_i_size,
-> +		subvol_inum dst_dir, struct bch_hash_info *dst_hash, u64 *dst_dir_i_size,
->   		const struct qstr *src_name, subvol_inum *src_inum, u64 *src_offset,
->   		const struct qstr *dst_name, subvol_inum *dst_inum, u64 *dst_offset,
->   		enum bch_rename_mode mode)
-> @@ -406,6 +409,14 @@ int bch2_dirent_rename(struct btree_trans *trans,
->   	    new_src->v.d_type == DT_SUBVOL)
->   		new_src->v.d_parent_subvol = cpu_to_le32(src_dir.subvol);
->   
-> +	if (old_dst.k)
-> +		*dst_dir_i_size -= bkey_bytes(old_dst.k);
-> +	*src_dir_i_size -= bkey_bytes(old_src.k);
-> +
-> +	if (mode == BCH_RENAME_EXCHANGE)
-> +		*src_dir_i_size += bkey_bytes(&new_src->k);
-> +	*dst_dir_i_size += bkey_bytes(&new_dst->k);
-> +
-
-Ah, if I had dug into bkey_bytes, I might not have introduced 
-dirent_occupied_size. The logic seems equivalent and more reasonable.
-
-Reviewed-by: Hongbo Li <lihongbo22@huawei.com>
-
-Thanks,
-Hongbo
-
-
->   	ret = bch2_trans_update(trans, &dst_iter, &new_dst->k_i, 0);
->   	if (ret)
->   		goto out;
-> diff --git a/fs/bcachefs/dirent.h b/fs/bcachefs/dirent.h
-> index a633f83c1ac7..37f01c1a3f7f 100644
-> --- a/fs/bcachefs/dirent.h
-> +++ b/fs/bcachefs/dirent.h
-> @@ -31,11 +31,6 @@ static inline unsigned dirent_val_u64s(unsigned len)
->   			    sizeof(u64));
->   }
->   
-> -static inline unsigned int dirent_occupied_size(const struct qstr *name)
-> -{
-> -	return (BKEY_U64s + dirent_val_u64s(name->len)) * sizeof(u64);
-> -}
-> -
->   int bch2_dirent_read_target(struct btree_trans *, subvol_inum,
->   			    struct bkey_s_c_dirent, subvol_inum *);
->   
-> @@ -52,7 +47,7 @@ int bch2_dirent_create_snapshot(struct btree_trans *, u32, u64, u32,
->   			enum btree_iter_update_trigger_flags);
->   int bch2_dirent_create(struct btree_trans *, subvol_inum,
->   		       const struct bch_hash_info *, u8,
-> -		       const struct qstr *, u64, u64 *,
-> +		       const struct qstr *, u64, u64 *, u64 *,
->   		       enum btree_iter_update_trigger_flags);
->   
->   static inline unsigned vfs_d_type(unsigned type)
-> @@ -67,8 +62,8 @@ enum bch_rename_mode {
->   };
->   
->   int bch2_dirent_rename(struct btree_trans *,
-> -		       subvol_inum, struct bch_hash_info *,
-> -		       subvol_inum, struct bch_hash_info *,
-> +		       subvol_inum, struct bch_hash_info *, u64 *,
-> +		       subvol_inum, struct bch_hash_info *, u64 *,
->   		       const struct qstr *, subvol_inum *, u64 *,
->   		       const struct qstr *, subvol_inum *, u64 *,
->   		       enum bch_rename_mode);
-> diff --git a/fs/bcachefs/fs-common.c b/fs/bcachefs/fs-common.c
-> index d70d9f634cea..c8afd312e601 100644
-> --- a/fs/bcachefs/fs-common.c
-> +++ b/fs/bcachefs/fs-common.c
-> @@ -42,11 +42,14 @@ int bch2_create_trans(struct btree_trans *trans,
->   	if (ret)
->   		goto err;
->   
-> -	ret = bch2_inode_peek(trans, &dir_iter, dir_u, dir,
-> -			      BTREE_ITER_intent|BTREE_ITER_with_updates);
-> +	ret = bch2_inode_peek(trans, &dir_iter, dir_u, dir, BTREE_ITER_intent);
->   	if (ret)
->   		goto err;
->   
-> +	/* Inherit casefold state from parent. */
-> +	if (S_ISDIR(mode))
-> +		new_inode->bi_flags |= dir_u->bi_flags & BCH_INODE_casefolded;
-> +
->   	if (!(flags & BCH_CREATE_SNAPSHOT)) {
->   		/* Normal create path - allocate a new inode: */
->   		bch2_inode_init_late(new_inode, now, uid, gid, mode, rdev, dir_u);
-> @@ -152,7 +155,6 @@ int bch2_create_trans(struct btree_trans *trans,
->   		if (is_subdir_for_nlink(new_inode))
->   			dir_u->bi_nlink++;
->   		dir_u->bi_mtime = dir_u->bi_ctime = now;
-> -		dir_u->bi_size += dirent_occupied_size(name);
->   
->   		ret = bch2_inode_write(trans, &dir_iter, dir_u);
->   		if (ret)
-> @@ -163,7 +165,8 @@ int bch2_create_trans(struct btree_trans *trans,
->   					 name,
->   					 dir_target,
->   					 &dir_offset,
-> -					 STR_HASH_must_create|BTREE_ITER_with_updates);
-> +					 &dir_u->bi_size,
-> +					 STR_HASH_must_create);
->   		if (ret)
->   			goto err;
->   
-> @@ -221,13 +224,14 @@ int bch2_link_trans(struct btree_trans *trans,
->   	}
->   
->   	dir_u->bi_mtime = dir_u->bi_ctime = now;
-> -	dir_u->bi_size += dirent_occupied_size(name);
->   
->   	dir_hash = bch2_hash_info_init(c, dir_u);
->   
->   	ret = bch2_dirent_create(trans, dir, &dir_hash,
->   				 mode_to_type(inode_u->bi_mode),
-> -				 name, inum.inum, &dir_offset,
-> +				 name, inum.inum,
-> +				 &dir_offset,
-> +				 &dir_u->bi_size,
->   				 STR_HASH_must_create);
->   	if (ret)
->   		goto err;
-> @@ -266,8 +270,16 @@ int bch2_unlink_trans(struct btree_trans *trans,
->   
->   	dir_hash = bch2_hash_info_init(c, dir_u);
->   
-> -	ret = bch2_dirent_lookup_trans(trans, &dirent_iter, dir, &dir_hash,
-> -				       name, &inum, BTREE_ITER_intent);
-> +	struct bkey_s_c dirent_k =
-> +		bch2_hash_lookup(trans, &dirent_iter, bch2_dirent_hash_desc,
-> +				 &dir_hash, dir, name, BTREE_ITER_intent);
-> +	ret = bkey_err(dirent_k);
-> +	if (ret)
-> +		goto err;
-> +
-> +	ret = bch2_dirent_read_target(trans, dir, bkey_s_c_to_dirent(dirent_k), &inum);
-> +	if (ret > 0)
-> +		ret = -ENOENT;
->   	if (ret)
->   		goto err;
->   
-> @@ -324,7 +336,7 @@ int bch2_unlink_trans(struct btree_trans *trans,
->   
->   	dir_u->bi_mtime = dir_u->bi_ctime = inode_u->bi_ctime = now;
->   	dir_u->bi_nlink -= is_subdir_for_nlink(inode_u);
-> -	dir_u->bi_size	-= dirent_occupied_size(name);
-> +	dir_u->bi_size	-= bkey_bytes(dirent_k.k);
->   
->   	ret =   bch2_hash_delete_at(trans, bch2_dirent_hash_desc,
->   				    &dir_hash, &dirent_iter,
-> @@ -420,8 +432,8 @@ int bch2_rename_trans(struct btree_trans *trans,
->   	}
->   
->   	ret = bch2_dirent_rename(trans,
-> -				 src_dir, &src_hash,
-> -				 dst_dir, &dst_hash,
-> +				 src_dir, &src_hash, &src_dir_u->bi_size,
-> +				 dst_dir, &dst_hash, &dst_dir_u->bi_size,
->   				 src_name, &src_inum, &src_offset,
->   				 dst_name, &dst_inum, &dst_offset,
->   				 mode);
-> @@ -463,14 +475,6 @@ int bch2_rename_trans(struct btree_trans *trans,
->   		goto err;
->   	}
->   
-> -	if (mode == BCH_RENAME) {
-> -		src_dir_u->bi_size -= dirent_occupied_size(src_name);
-> -		dst_dir_u->bi_size += dirent_occupied_size(dst_name);
-> -	}
-> -
-> -	if (mode == BCH_RENAME_OVERWRITE)
-> -		src_dir_u->bi_size -= dirent_occupied_size(src_name);
-> -
->   	if (src_inode_u->bi_parent_subvol)
->   		src_inode_u->bi_parent_subvol = dst_dir.subvol;
->   
-> diff --git a/fs/bcachefs/fsck.c b/fs/bcachefs/fsck.c
-> index 53a421ff136d..24ad1a42d169 100644
-> --- a/fs/bcachefs/fsck.c
-> +++ b/fs/bcachefs/fsck.c
-> @@ -1132,10 +1132,7 @@ static int check_directory_size(struct btree_trans *trans,
->   		if (k.k->type != KEY_TYPE_dirent)
->   			continue;
->   
-> -		struct bkey_s_c_dirent dirent = bkey_s_c_to_dirent(k);
-> -		struct qstr name = bch2_dirent_get_name(dirent);
-> -
-> -		new_size += dirent_occupied_size(&name);
-> +		new_size += bkey_bytes(k.k);
->   	}
->   	bch2_trans_iter_exit(trans, &iter);
->   
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
