@@ -1,170 +1,139 @@
-Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BF601FDA7B
-	for <linux-bcachefs@vger.kernel.org>; Thu, 20 Feb 2025 18:21:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F2631E9B29
+	for <linux-bcachefs@vger.kernel.org>; Thu, 20 Feb 2025 20:37:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740075684; cv=none; b=Z1o6vC4bjN3njhifeYvw6Q1gl21LGRljAyCxV6GjEyOIX18ULTx+2eHSmTFYz6cDmd81abGmPTwecigDgkDN/68OOZwZ4X1DfKEju0HLpxJWRfadKSk2w5ZXvvDX4CRVV5L8aW634ygDMwBmEWKwTg6mglZHYSIcbI2xXQAMt3Q=
+	t=1740083856; cv=none; b=KoLvck8q8qkl/39zgTemFn7J7dkrCyfulIkiHgjAkUljk33bL8ay0O1xxiBkfutrhQ4Rnl4Cc1Xm9Iu7sY3NMIxJ4CWvRLW3MUcFjmwewR5NL0H9t2ERdcRC+54ovioLWfoyNCCsiqOZOHLLwN+E8YZhQW5gnKsD2aCECG5ALF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740075684; c=relaxed/simple;
-	bh=45y/imlWG8q2VcYF2DLQUplcU04j+EE270Hfxi8gPmQ=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=vCvkRYPSdvrLB0vnHysvbUjPtNZK6nUSXBBVjuKfKiouGYn7/FkA89hluKJyBHkR/2Mlb2YjavCLmD9rEH71Tr7y7Z9BYBor59h/Yeg6H0WhiyUsBauQoqoq42JinwEqnapJwivqB3MPw90ENHUNRVga2SDgPPLXL58f0SUIrMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3d289bf6c39so17746115ab.1
-        for <linux-bcachefs@vger.kernel.org>; Thu, 20 Feb 2025 10:21:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740075681; x=1740680481;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=e+vS9a0JAby6AAWXnoFQKgnxA4tCQW6gHUk2YdFJ7pM=;
-        b=VLi7a3KXdDV6maQe4YR6aFWP7nb21oM+v+/qeaDtpHm5aZ+aZ8x32o3lwgkj8iBiBJ
-         jcenAhhfs4+SdtnOtC1uUJKr7qdhBYJ+0q5/n5KRTrPDIlze/5CdkIALWoJX02NoqSAq
-         W0nZ4e8HLFgclBrcGdSkTLe88xiAj9HYsZVjoTHfviOiSwNrkxkfNq4p7KOLO1sLl90S
-         ICdxp91G7dQ8VIcPSH34PV1kZZBeyXKzyc4qMLlX6RvQFcywnmpadHV0/PyEUX3euynk
-         Da4Hq2vOYQgI1MstyvIoONQItpSiNOkmUMwADXiFY2Adh6vcr7JznaGbpPQHmFI2e4Re
-         6eCA==
-X-Forwarded-Encrypted: i=1; AJvYcCUXtq9XD4CddZWCEIsCARtf3ptINEPnW8/Ve+UTcc9XDN2gd+VO5grmpBITD5RNkQzBXuVOd8vXZIjvmYnGPw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxkqnr8BFcPTJNL7NxbI0tmTVBBqYXeVKnpjvCT81o+jhyawWMl
-	ysyXGQaEvWgDbK2Ed6X31rriue9ppZz7K/71O4vlABkOeK2YIsUTj5D9C8GvrXniG7/KghiW7gL
-	vXVr3oTxPEDAm6KAuQ3g+SrbnaTS4Iv0HY+QP9oNnGXyNsfrhLleo1q8=
-X-Google-Smtp-Source: AGHT+IE0AcxIwkwv79ImBfEVfZxcJL/5DX1ileuUoT8df+BEJZXct1UrKwMkCtsWztGNecDDJWnfOP1zg4WCCHSVzVeQo9dA6MKu
+	s=arc-20240116; t=1740083856; c=relaxed/simple;
+	bh=Ygn/vx52ahFkSSo0reHFNthwr17rLllQAybhgtsxHzk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aM2zv9epG5AzFTfAHgOwG2yAZ90lTdx35CLaKzmRUdGPALgnA5WNS5Cx7rxTTn2jfXOp10Pa0QAxnAu17Vp37hx3kjJKU7OaQildZXdD/O2PO6TV+Y/jcu9rc5X9ENZUTUdwD2l3pwY6xImMZVMEMfD/ZOy/ubyI9ZLoTp+Tfow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kK72U8kj; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kK72U8kj"
+Date: Thu, 20 Feb 2025 15:37:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1740083851;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NzQmdn3Jk+AmM1L7Qreqx98YTpwYbDt8ekO/n2uIRww=;
+	b=kK72U8kj9C8IF5jtTLPzMID9GwNF/c0+AljB1Z7H97Be8YjGyckYRiWbSRGfNM0cnsl2NV
+	1q7P5mhmvVacRWAfBFZ3d8NpWQ2HRUg7rhUqZJ46AUGUZP6OSXhvhmKRFj846U2c/wOa98
+	96ajPFvc+7iMnZEG7Utp95tF6ovrUi0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Alan Huang <mmpgouride@gmail.com>, linux-bcachefs@vger.kernel.org, 
+	syzbot+fe63f377148a6371a9db@syzkaller.appspotmail.com, linux-mm@kvack.org, Tejun Heo <tj@kernel.org>, 
+	Dennis Zhou <dennis@kernel.org>, Christoph Lameter <cl@linux.com>, 
+	Michal Hocko <mhocko@kernel.org>
+Subject: Re: [PATCH] bcachefs: Use alloc_percpu_gfp to avoid deadlock
+Message-ID: <fld5gkrscoialgpgfrsdig6grx4bbjeaevub4ii7mh234ejhi6@adwkhlzfpvwp>
+References: <20250212100625.55860-1-mmpgouride@gmail.com>
+ <issmt55cogzyglrmao7hmqdbhvu7n6eii625ydm4irktfkfnrp@wtdbg42tumpr>
+ <25FBAAE5-8BC6-41F3-9A6D-65911BA5A5D7@gmail.com>
+ <78d954b5-e33f-4bbc-855b-e91e96278bef@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3286:b0:3d1:5f67:f0e6 with SMTP id
- e9e14a558f8ab-3d2cac94fb3mr2029115ab.1.1740075681745; Thu, 20 Feb 2025
- 10:21:21 -0800 (PST)
-Date: Thu, 20 Feb 2025 10:21:21 -0800
-In-Reply-To: <6744873b.050a0220.1286eb.0000.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67b772a1.050a0220.14d86d.02f3.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] KASAN: global-out-of-bounds Read in rcu_pending_exit
-From: syzbot <syzbot+e733ab672a1b6724c27f@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <78d954b5-e33f-4bbc-855b-e91e96278bef@suse.cz>
+X-Migadu-Flow: FLOW_OUT
 
-syzbot has found a reproducer for the following issue on:
+On Thu, Feb 20, 2025 at 06:16:43PM +0100, Vlastimil Babka wrote:
+> On 2/20/25 11:57, Alan Huang wrote:
+> > Ping
+> > 
+> >> On Feb 12, 2025, at 22:27, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> >> 
+> >> Adding pcpu people to the CC
+> >> 
+> >> On Wed, Feb 12, 2025 at 06:06:25PM +0800, Alan Huang wrote:
+> >>> The cycle:
+> >>> 
+> >>> CPU0: CPU1:
+> >>> bc->lock pcpu_alloc_mutex
+> >>> pcpu_alloc_mutex bc->lock
+> >>> 
+> >>> Reported-by: syzbot+fe63f377148a6371a9db@syzkaller.appspotmail.com
+> >>> Tested-by: syzbot+fe63f377148a6371a9db@syzkaller.appspotmail.com
+> >>> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+> >> 
+> >> So pcpu_alloc_mutex -> fs_reclaim?
+> >> 
+> >> That's really awkward; seems like something that might invite more
+> >> issues. We can apply your fix if we need to, but I want to hear with the
+> >> percpu people have to say first.
+> >> 
+> >> ======================================================
+> >> WARNING: possible circular locking dependency detected
+> >> 6.14.0-rc2-syzkaller-00039-g09fbf3d50205 #0 Not tainted
+> >> ------------------------------------------------------
+> >> syz.0.21/5625 is trying to acquire lock:
+> >> ffffffff8ea19608 (pcpu_alloc_mutex){+.+.}-{4:4}, at: pcpu_alloc_noprof+0x293/0x1760 mm/percpu.c:1782
+> >> 
+> >> but task is already holding lock:
+> >> ffff888051401c68 (&bc->lock){+.+.}-{4:4}, at: bch2_btree_node_mem_alloc+0x559/0x16f0 fs/bcachefs/btree_cache.c:804
+> >> 
+> >> which lock already depends on the new lock.
+> >> 
+> >> 
+> >> the existing dependency chain (in reverse order) is:
+> >> 
+> >> -> #2 (&bc->lock){+.+.}-{4:4}:
+> >>       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5851
+> >>       __mutex_lock_common kernel/locking/mutex.c:585 [inline]
+> >>       __mutex_lock+0x19c/0x1010 kernel/locking/mutex.c:730
+> >>       bch2_btree_cache_scan+0x184/0xec0 fs/bcachefs/btree_cache.c:482
+> >>       do_shrink_slab+0x72d/0x1160 mm/shrinker.c:437
+> >>       shrink_slab+0x1093/0x14d0 mm/shrinker.c:664
+> >>       shrink_one+0x43b/0x850 mm/vmscan.c:4868
+> >>       shrink_many mm/vmscan.c:4929 [inline]
+> >>       lru_gen_shrink_node mm/vmscan.c:5007 [inline]
+> >>       shrink_node+0x37c5/0x3e50 mm/vmscan.c:5978
+> >>       kswapd_shrink_node mm/vmscan.c:6807 [inline]
+> >>       balance_pgdat mm/vmscan.c:6999 [inline]
+> >>       kswapd+0x20f3/0x3b10 mm/vmscan.c:7264
+> >>       kthread+0x7a9/0x920 kernel/kthread.c:464
+> >>       ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:148
+> >>       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+> >> 
+> >> -> #1 (fs_reclaim){+.+.}-{0:0}:
+> >>       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5851
+> >>       __fs_reclaim_acquire mm/page_alloc.c:3853 [inline]
+> >>       fs_reclaim_acquire+0x88/0x130 mm/page_alloc.c:3867
+> >>       might_alloc include/linux/sched/mm.h:318 [inline]
+> >>       slab_pre_alloc_hook mm/slub.c:4066 [inline]
+> >>       slab_alloc_node mm/slub.c:4144 [inline]
+> >>       __do_kmalloc_node mm/slub.c:4293 [inline]
+> >>       __kmalloc_noprof+0xae/0x4c0 mm/slub.c:4306
+> >>       kmalloc_noprof include/linux/slab.h:905 [inline]
+> >>       kzalloc_noprof include/linux/slab.h:1037 [inline]
+> >>       pcpu_mem_zalloc mm/percpu.c:510 [inline]
+> >>       pcpu_alloc_chunk mm/percpu.c:1430 [inline]
+> >>       pcpu_create_chunk+0x57/0xbc0 mm/percpu-vm.c:338
+> >>       pcpu_balance_populated mm/percpu.c:2063 [inline]
+> >>       pcpu_balance_workfn+0xc4d/0xd40 mm/percpu.c:2200
+> >>       process_one_work kernel/workqueue.c:3236 [inline]
+> >>       process_scheduled_works+0xa66/0x1840 kernel/workqueue.c:3317
+> >>       worker_thread+0x870/0xd30 kernel/workqueue.c:3398
+> >>       kthread+0x7a9/0x920 kernel/kthread.c:464
+> >>       ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:148
+> >>       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+> 
+> Seeing this as part of the chain (fs reclaim from a worker doing
+> pcpu_balance_workfn) makes me think Michal's patch could be a fix to this:
+> 
+> https://lore.kernel.org/all/20250206122633.167896-1-mhocko@kernel.org/
 
-HEAD commit:    87a132e73910 Merge tag 'mm-hotfixes-stable-2025-02-19-17-4..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=175775b0580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b7bde34acd8f53b1
-dashboard link: https://syzkaller.appspot.com/bug?extid=e733ab672a1b6724c27f
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16d8aba4580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11e1dae4580000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/4a88f50cb21d/disk-87a132e7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d970e0210e8a/vmlinux-87a132e7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/9b6329058ef7/bzImage-87a132e7.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/f06af6381842/mount_0.gz
-
-The issue was bisected to:
-
-commit d97de0d017cde0d442c3d144b4f969f43064cc0f
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Tue Aug 13 01:31:25 2024 +0000
-
-    bcachefs: Make bkey_fsck_err() a wrapper around fsck_err()
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13432ef8580000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10c32ef8580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17432ef8580000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e733ab672a1b6724c27f@syzkaller.appspotmail.com
-Fixes: d97de0d017cd ("bcachefs: Make bkey_fsck_err() a wrapper around fsck_err()")
-
-------------[ cut here ]------------
-==================================================================
-BUG: KASAN: global-out-of-bounds in string_nocheck lib/vsprintf.c:632 [inline]
-BUG: KASAN: global-out-of-bounds in string+0x229/0x2b0 lib/vsprintf.c:714
-Read of size 1 at addr ffffffff8c74c10a by task syz-executor504/5826
-
-CPU: 1 UID: 0 PID: 5826 Comm: syz-executor504 Not tainted 6.14.0-rc3-syzkaller-00079-g87a132e73910 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 12/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
- print_address_description mm/kasan/report.c:408 [inline]
- print_report+0x16e/0x5b0 mm/kasan/report.c:521
- kasan_report+0x143/0x180 mm/kasan/report.c:634
- string_nocheck lib/vsprintf.c:632 [inline]
- string+0x229/0x2b0 lib/vsprintf.c:714
- vsnprintf+0x8b4/0x1220 lib/vsprintf.c:2843
- vprintk_store+0x482/0x1240 kernel/printk/printk.c:2279
- vprintk_emit+0x271/0xa10 kernel/printk/printk.c:2408
- __warn_printk+0x263/0x360 kernel/panic.c:797
- look_up_lock_class+0xdb/0x170 kernel/locking/lockdep.c:938
- register_lock_class+0x102/0x980 kernel/locking/lockdep.c:1292
- __lock_acquire+0xf3/0x2100 kernel/locking/lockdep.c:5103
- lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5851
- __raw_spin_lock_irq include/linux/spinlock_api_smp.h:119 [inline]
- _raw_spin_lock_irq+0xd3/0x120 kernel/locking/spinlock.c:170
- spin_lock_irq include/linux/spinlock.h:376 [inline]
- rcu_pending_has_pending_or_armed fs/bcachefs/rcu_pending.c:592 [inline]
- rcu_pending_exit+0x13f/0x7a0 fs/bcachefs/rcu_pending.c:610
- bch2_fs_btree_key_cache_exit+0x8d1/0x9f0 fs/bcachefs/btree_key_cache.c:778
- __bch2_fs_free fs/bcachefs/super.c:569 [inline]
- bch2_fs_release+0x206/0x7b0 fs/bcachefs/super.c:624
- kobject_cleanup lib/kobject.c:689 [inline]
- kobject_release lib/kobject.c:720 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x231/0x480 lib/kobject.c:737
- deactivate_locked_super+0xc6/0x130 fs/super.c:473
- cleanup_mnt+0x41f/0x4b0 fs/namespace.c:1413
- task_work_run+0x251/0x310 kernel/task_work.c:227
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0x13f/0x340 kernel/entry/common.c:218
- do_syscall_64+0x100/0x230 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f7e807c2577
-Code: 07 00 48 83 c4 08 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b8 ff ff ff f7 d8 64 89 02 b8
-RSP: 002b:00007ffeee02cd28 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f7e807c2577
-RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffeee02cde0
-RBP: 00007ffeee02cde0 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000206 R12: 00007ffeee02de50
-R13: 000055557adeb6c0 R14: 431bde82d7b634db R15: 00007ffeee02de70
- </TASK>
-
-The buggy address belongs to the variable:
- .str+0xa/0x20
-
-The buggy address belongs to the physical page:
-page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xc74c
-flags: 0xfff00000002000(reserved|node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000002000 ffffea000031d308 ffffea000031d308 0000000000000000
-raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner info is not present (never set?)
-
-Memory state around the buggy address:
- ffffffff8c74c000: 00 05 f9 f9 02 f9 f9 f9 06 f9 f9 f9 00 00 00 00
- ffffffff8c74c080: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
->ffffffff8c74c100: 00 01 f9 f9 00 00 00 04 f9 f9 f9 f9 00 00 00 00
-                      ^
- ffffffff8c74c180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffffffff8c74c200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Thanks for the link - that does look like just the thing.
