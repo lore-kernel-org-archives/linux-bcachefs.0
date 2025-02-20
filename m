@@ -1,41 +1,40 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AC2E13AF2;
-	Thu, 20 Feb 2025 22:08:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 980F8267384
+	for <linux-bcachefs@vger.kernel.org>; Thu, 20 Feb 2025 23:22:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740089289; cv=none; b=j2ytycVsc522BAUivuHXUSxlLvOFNs73x4mFzwe4h4DVfxbVKOKEMeKueNcF9YP7NYgsaq7EFU7k6G4/N99h6D1Y1FRWASCKeqLfuIiqRBv/fjMAwG/HGazOzFl2VZ1Tt/QISknU6L2IIU4UXILT7dheYHGeQ3fy+yk1WcARkO0=
+	t=1740093772; cv=none; b=JwhXrBueCSqYjC0glZZ3y7dJ42X9u6o9NhThQ/Te1sSP/Q45qVzwMU1P8pSj1p8R9+Gir8gLmnovrCby7AuslLfXMz9N4HqCSY25aoauw2bY7ExPo80E5aO+SwuHVFte0UzbPYNIpd2KqBp5iQUxk3IfOg4rm9obSfOIhwU7tis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740089289; c=relaxed/simple;
-	bh=3lJEiucPJ0U5M6VLeZLarNcfk2tPxDojdYxu7wYfCbM=;
+	s=arc-20240116; t=1740093772; c=relaxed/simple;
+	bh=xi8CB6l1shR+36y3uN/AUAwYc8WHx9Lty7ZTQj2LUq4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uEAxmNN1QfN3DzFMCazZDaZfjm78IbS7eLS1Yj732TmLA3XzSIR3RW4JLkd87eaJVbwWvorQCRB0eH/s2SmJIc8m2Ch1fcZHc+XcvP5FdwqpLG9V/ZR1B5VAoJqKRMygyj+NGFiIN62H7uh4mDm3/NI2Cl/9QZJfa8kU2X+ZWeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j1/JVvdx; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=O/1XCNhANnROGZUqPwva6UpHFN9OLMyQKi+HqL4DZZ52cp2v9DblT3UgZbJ2tw4hbc+kTSREZ5Gq2qfXRCswS1VSZbcg65w0vbGIKgvt7Fe9NQlqYLtZOSzp+I3SxDTGD3wteD3qr1+i86Bl/9cJFXV/PoF7kgg+hkFjn/he6Jg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mivzqwHE; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j1/JVvdx"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9572FC4CED1;
-	Thu, 20 Feb 2025 22:08:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740089288;
-	bh=3lJEiucPJ0U5M6VLeZLarNcfk2tPxDojdYxu7wYfCbM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=j1/JVvdxxPnJxok9SV6Arj05GqLj+06+iw7UciSIOQMLwG/xKN3NOB+a2wL1pb6pQ
-	 6mTqZ98RcryITYtAcPJXli043TjfwscYhIox6lvsJXmq3MPSFg62QKuMdu2ms77RuJ
-	 Kf5akj9Bn7quorBz2L6cc03NoszNZ/2QePKG4zYs9G9sEou3H0Ic46xpFIiPMerV5k
-	 1Niw75TyNZQEYu8yTFt7fyr9KfU85lD0FXWKoFnB09ZxvHIJ2wsbMgzf81fsv/uN2J
-	 c6EVEvIz6I8IVLZWDS9uyya108OOyf1Nu3J7+9QVy6Qnuj7KGByjRtJw9cEOBEiEi9
-	 hLANkPjam+Qnw==
-Date: Thu, 20 Feb 2025 14:08:06 -0800
-From: Josh Poimboeuf <jpoimboe@kernel.org>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mivzqwHE"
+Date: Thu, 20 Feb 2025 18:22:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1740093768;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dGbJ3WI15/5w/qh1lbHhAgnppvZMXGv3YJoFVrrmDPU=;
+	b=mivzqwHE7A/0ofjPrldQovdUN2bPRLeU7aZWJ+6DChEQRmd4IMeHYPtMLeJqEZHX8tsmIw
+	zv7zqFDuVIyBV8xkXvpw3I03TC/Ky3uOGePhFoQIUYU2zaVfxLKMfIB5bSmUojZQ0Ou2L6
+	0DgyuznLU3PPfFvYJ7A4Bf5d70sGNyU=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
 To: Youling Tang <youling.tang@linux.dev>
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+Cc: Josh Poimboeuf <jpoimboe@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
 	k2ci <kernel-bot@kylinos.cn>, Youling Tang <tangyouling@kylinos.cn>
 Subject: Re: [PATCH] objtool: Add bch2_trans_unlocked_or_in_restart_error()
  to bcachefs noreturns
-Message-ID: <20250220220806.cv6rnqefseckzlzm@jpoimboe>
+Message-ID: <uhf4menbsgtgpyrsuwsipv56xgm6kbklsqgx5p3lfxfbkv43v4@7yjp4slw5dma>
 References: <20250218064230.219997-1-youling.tang@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
@@ -43,9 +42,10 @@ List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20250218064230.219997-1-youling.tang@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
 On Tue, Feb 18, 2025 at 02:42:30PM +0800, Youling Tang wrote:
 > From: Youling Tang <tangyouling@kylinos.cn>
@@ -61,9 +61,25 @@ On Tue, Feb 18, 2025 at 02:42:30PM +0800, Youling Tang wrote:
 > Reported-by: k2ci<kernel-bot@kylinos.cn>
 > Signed-off-by: Youling Tang <tangyouling@kylinos.cn>
 
-Acked-by: Josh Poimboeuf <jpoimboe@kernel.org>
+Reviewed-by: Kent Overstreet <kent.overstreet@linux.dev>
 
-Peter, can you take this one?
-
--- 
-Josh
+> ---
+>  tools/objtool/noreturns.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/objtool/noreturns.h b/tools/objtool/noreturns.h
+> index b2174894f9f7..6bb7edda3094 100644
+> --- a/tools/objtool/noreturns.h
+> +++ b/tools/objtool/noreturns.h
+> @@ -19,7 +19,7 @@ NORETURN(__x64_sys_exit_group)
+>  NORETURN(arch_cpu_idle_dead)
+>  NORETURN(bch2_trans_in_restart_error)
+>  NORETURN(bch2_trans_restart_error)
+> -NORETURN(bch2_trans_unlocked_error)
+> +NORETURN(bch2_trans_unlocked_or_in_restart_error)
+>  NORETURN(cpu_bringup_and_idle)
+>  NORETURN(cpu_startup_entry)
+>  NORETURN(do_exit)
+> -- 
+> 2.34.1
+> 
