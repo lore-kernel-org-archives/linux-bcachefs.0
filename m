@@ -1,417 +1,304 @@
-Received: from smtpbgau2.qq.com (smtpbgau2.qq.com [54.206.34.216])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C48311E5B78;
-	Fri, 21 Feb 2025 06:19:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.206.34.216
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 843F81FC105
+	for <linux-bcachefs@vger.kernel.org>; Fri, 21 Feb 2025 07:21:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740118775; cv=none; b=HA0pDyRj86/SRmOrBAV18wArnvtdRjBVX4Ux4G/1ZrrsRwL8fed9tAltoErOFVLnXArq+I+aiBm540igp2da9D0FPJgsWrDQomDV1dVRYroAEzxAIEU0P4glikzVoN+ZuVlxzjl4whlNfC7utaXrBcGK50MJKy+PYHErH4b2KTc=
+	t=1740122469; cv=none; b=sKYOWeu8K77fXf3AaHRByDeIy9GmNoJ+fQZ/QDJ0IDGphH6dEB1nz7H4N5biCa2T5wjdOyDK6NdvYMUTiWXHVYikNAu8swOUmKkJUqVKu3ILKCOvRr8FMMo2Ta5T5nlXG/Zb2FI9ZLucLIZy0z94bQjL3mT25ifPn5TizXVDx9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740118775; c=relaxed/simple;
-	bh=9L4DQ2nJwlPnST/BntgX/tdcyG7B1tCMejlGYQoNhXE=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=MS7sLeOyolJyWKhFomPLpMejkll4KBy18KBm+BJwxNiq+1hVYawRWqPXCHJwuuuQiuyiIizwSaWK/QcM/IySsrxO1WhFBlpiaZcqgraKWGq/Q8mzudzlGDF3774T5p2UMTt9zTuLml9PwZcKA0kcSNUr+8vdzvziJpF/BsAiVpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=m.fudan.edu.cn; spf=pass smtp.mailfrom=m.fudan.edu.cn; dkim=pass (1024-bit key) header.d=m.fudan.edu.cn header.i=@m.fudan.edu.cn header.b=TRGkV4il; arc=none smtp.client-ip=54.206.34.216
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=m.fudan.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=m.fudan.edu.cn
+	s=arc-20240116; t=1740122469; c=relaxed/simple;
+	bh=RyXVz9QronmMKhto+Su1ZQflzE9xicgI8lSDuNKGnro=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=K5QgV2QUEDlGpiCYjGkXpVPI7ISkPoAHuGpy0/iCA6KR8UthlJ1ZqhLPAUGVF0IDo8vIvyjofypOQ16vBceY3jpUjatf508mqjWyLPcBRbcd5Ghdu7muL+4Zl/+QLHiMhsWE6wBJnx8UEPJW6rhcL7iFzoi1Fhfr7UVszrBtCf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=13ISwTLh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MbEQV4vq; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=13ISwTLh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MbEQV4vq; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=m.fudan.edu.cn header.i=@m.fudan.edu.cn header.b="TRGkV4il"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=m.fudan.edu.cn;
-	s=sorc2401; t=1740118747;
-	bh=8O5CWu2pUIk59RfMimIWyLFxOn6ChVypQAOh3D0nSwg=;
-	h=Mime-Version:Subject:From:Date:Message-Id:To;
-	b=TRGkV4ilBbMdic/pWLO5374i0sFHyIG4aqmdKUk0x093J7V9Hxqf3mh+rVHP3BbmN
-	 HPjThkDS812DOFTvN4ciQCHG3W7mxXQoWG61j8TmSeAIIthPfpiwiID0aG7tE+Z43K
-	 /Wdm4kl/TZNV7PpaN6u7ETTIB5uo5n3G92ZPKzyE=
-X-QQ-mid: bizesmtpip3t1740118742ty86u0u
-X-QQ-Originating-IP: v5xM0Nwhwvvwqu1TY9QLbHw5KuIsA1ymjtDnskZR93s=
-Received: from smtpclient.apple ( [localhost])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Fri, 21 Feb 2025 14:19:00 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 6257787454314045098
-Content-Type: text/plain;
-	charset=utf-8
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="13ISwTLh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MbEQV4vq";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="13ISwTLh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MbEQV4vq"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3799F2118A;
+	Fri, 21 Feb 2025 07:21:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1740122465; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=DkakeWbsGukiMnW97oQAx8ayHild3NPAZ1YdIM1LqhI=;
+	b=13ISwTLhiHn1g6JSg3URuSubUvJVryUgahfKfZE0yduGwcttNn1ND2BHPvTogl5OH0RZux
+	pmNCQ2yMoG3OgEDnZWo7NeqREhlP+/DOoMNW6L5YivITv9L5WhJMKXTGUFuMr10mKDHRew
+	4ldtL6b+I5g0bm6dNXfCrnQAv6GHnEc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1740122465;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=DkakeWbsGukiMnW97oQAx8ayHild3NPAZ1YdIM1LqhI=;
+	b=MbEQV4vqaZlbp7pe95VfxXYVCp+EYDttZ2cCcwwGPz/3UGTkWhioe8BG0GSvRgz0TDKG7r
+	PiUT7nhuprGhdUDQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=13ISwTLh;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=MbEQV4vq
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1740122465; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=DkakeWbsGukiMnW97oQAx8ayHild3NPAZ1YdIM1LqhI=;
+	b=13ISwTLhiHn1g6JSg3URuSubUvJVryUgahfKfZE0yduGwcttNn1ND2BHPvTogl5OH0RZux
+	pmNCQ2yMoG3OgEDnZWo7NeqREhlP+/DOoMNW6L5YivITv9L5WhJMKXTGUFuMr10mKDHRew
+	4ldtL6b+I5g0bm6dNXfCrnQAv6GHnEc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1740122465;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=DkakeWbsGukiMnW97oQAx8ayHild3NPAZ1YdIM1LqhI=;
+	b=MbEQV4vqaZlbp7pe95VfxXYVCp+EYDttZ2cCcwwGPz/3UGTkWhioe8BG0GSvRgz0TDKG7r
+	PiUT7nhuprGhdUDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1838713888;
+	Fri, 21 Feb 2025 07:21:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id BJwVA2EpuGf0egAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 21 Feb 2025 07:21:05 +0000
+Message-ID: <dd7a2e57-103e-41f4-814b-3087156557ca@suse.cz>
+Date: Fri, 21 Feb 2025 08:21:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3818.100.11.1.3\))
-Subject: Re: UBSAN_ shift-out-of-bounds in bch2_trans_iter_init_outlined
-From: Kun Hu <huk23@m.fudan.edu.cn>
-In-Reply-To: <DB301B35-8966-4CB7-AE21-9A792CE4AC6C@m.fudan.edu.cn>
-Date: Fri, 21 Feb 2025 14:18:50 +0800
-Cc: syzkaller@googlegroups.com,
- linux-bcachefs@vger.kernel.org,
- "jjtan24@m.fudan.edu.cn" <jjtan24@m.fudan.edu.cn>,
- linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <3C4AC793-1EC9-4891-9280-8E35B954B681@m.fudan.edu.cn>
-References: <DB301B35-8966-4CB7-AE21-9A792CE4AC6C@m.fudan.edu.cn>
-To: kent.overstreet@linux.dev
-X-Mailer: Apple Mail (2.3818.100.11.1.3)
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpip:m.fudan.edu.cn:qybglogicsvrgz:qybglogicsvrgz8a-1
-X-QQ-XMAILINFO: OcC8+NPK8lgMPd0+T0YtrqgHT4QXi40hgL2zAFD6qODKxQraFIQWIeVc
-	nEpt/l4xNkuHMiuwTQQ5LLQnbGEusum1MNu0ODT0CJ8sFVQImr2imsw1NJz8bHAM11dInS9
-	MUR+sqhPdVPvfaPzud6A6w2QBUCKwyudmFUeD/3ls3kYuhw66Zcak2FxOt+nuI6lttNM1n7
-	U4u81bJxYAAuCgqwn/y4ZcbRRWERh4mGzdQ9uAxojLW0mmAh+eh8LA7nBzwQJ8LL8UTWen5
-	Ai3xtpIg6Fyk+9gjYxeyyikSTa3875nVG7naJrFjbSUTflawuRL4uzxDe8efgSuNv+awuCP
-	4RYoavOU/suD2bZvKx9Qv2q+7l/fMQu34rxlpB1V0Goq3VoGckk2b1dB/sFKy+3i6b6DzV/
-	aGEPs/bWQw5V3HwR+D6Cd4zugngQTh74j0Ljvb2ADZXVrX0h8HPSbyvtgyPbWSch7r8hacB
-	y2t+ql72U2/QLBh3g1yRqok8iVgjg4X2Eej4FkMNBHvtMWB0KRBB/W0cGoiCTw6B+6iQMOa
-	+VQqZE3XWC3aWgaJ5Bve9mZnnAlnThHF8CpDnJDavw+4C30PrMH500EBDZK8ZcexOCEu5I0
-	wCX2y2SbwaiUueTh3EE7t1JXQ5aL57qDK5nCrVC6P6R00NoSVDdmIAsIjxS+lL52McsFRlh
-	zqeZlBIBsYmr69djqPuxPAsR5rE0ZXa5U4DX0Uf1fDQ8lXzbzpbNV1MKn1xVwAuGtatNCV7
-	FnyZm3QLNvRMl2+ohPCeRNpuk/hHG9exvZSpUFM4YideiiXCbEIqD7zPpY4ZST2T1s9MeIq
-	1qcEnhsf7dGHwXfqFsSrvHG/i8LC6vDM/5KpnPnIP4NECY7YfVVPxwyS8MSi83n9MAjFRjw
-	ohgVht1+d6Uwa4/UPy9PmgZZ2Hj2zv0jnC69Pet0beeRboQO42+RasgquccZOTgmpv2mKeA
-	egh8Tym8e3tSgMriSO7bSi9mHBseCrkY32F8=
-X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
-X-QQ-RECHKSPAM: 0
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bcachefs: Use alloc_percpu_gfp to avoid deadlock
+To: Dennis Zhou <dennis@kernel.org>,
+ Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Alan Huang <mmpgouride@gmail.com>, linux-bcachefs@vger.kernel.org,
+ syzbot+fe63f377148a6371a9db@syzkaller.appspotmail.com, linux-mm@kvack.org,
+ Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+ Michal Hocko <mhocko@kernel.org>
+References: <20250212100625.55860-1-mmpgouride@gmail.com>
+ <issmt55cogzyglrmao7hmqdbhvu7n6eii625ydm4irktfkfnrp@wtdbg42tumpr>
+ <25FBAAE5-8BC6-41F3-9A6D-65911BA5A5D7@gmail.com>
+ <78d954b5-e33f-4bbc-855b-e91e96278bef@suse.cz>
+ <fld5gkrscoialgpgfrsdig6grx4bbjeaevub4ii7mh234ejhi6@adwkhlzfpvwp>
+ <Z7fpEy1fdkEtvIw2@snowbird>
+Content-Language: en-US
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <Z7fpEy1fdkEtvIw2@snowbird>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 3799F2118A
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_COUNT_TWO(0.00)[2];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,syzkaller.appspotmail.com,kvack.org,kernel.org,linux.com];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	TAGGED_RCPT(0.00)[fe63f377148a6371a9db];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
+On 2/21/25 03:46, Dennis Zhou wrote:
+> Hello,
+> 
+> On Thu, Feb 20, 2025 at 03:37:26PM -0500, Kent Overstreet wrote:
+>> On Thu, Feb 20, 2025 at 06:16:43PM +0100, Vlastimil Babka wrote:
+>> > On 2/20/25 11:57, Alan Huang wrote:
+>> > > Ping
+>> > > 
+>> > >> On Feb 12, 2025, at 22:27, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>> > >> 
+>> > >> Adding pcpu people to the CC
+>> > >> 
+>> > >> On Wed, Feb 12, 2025 at 06:06:25PM +0800, Alan Huang wrote:
+>> > >>> The cycle:
+>> > >>> 
+>> > >>> CPU0: CPU1:
+>> > >>> bc->lock pcpu_alloc_mutex
+>> > >>> pcpu_alloc_mutex bc->lock
+>> > >>> 
+>> > >>> Reported-by: syzbot+fe63f377148a6371a9db@syzkaller.appspotmail.com
+>> > >>> Tested-by: syzbot+fe63f377148a6371a9db@syzkaller.appspotmail.com
+>> > >>> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+>> > >> 
+>> > >> So pcpu_alloc_mutex -> fs_reclaim?
+>> > >> 
+>> > >> That's really awkward; seems like something that might invite more
+>> > >> issues. We can apply your fix if we need to, but I want to hear with the
+>> > >> percpu people have to say first.
+>> > >> 
+>> > >> ======================================================
+>> > >> WARNING: possible circular locking dependency detected
+>> > >> 6.14.0-rc2-syzkaller-00039-g09fbf3d50205 #0 Not tainted
+>> > >> ------------------------------------------------------
+>> > >> syz.0.21/5625 is trying to acquire lock:
+>> > >> ffffffff8ea19608 (pcpu_alloc_mutex){+.+.}-{4:4}, at: pcpu_alloc_noprof+0x293/0x1760 mm/percpu.c:1782
+>> > >> 
+>> > >> but task is already holding lock:
+>> > >> ffff888051401c68 (&bc->lock){+.+.}-{4:4}, at: bch2_btree_node_mem_alloc+0x559/0x16f0 fs/bcachefs/btree_cache.c:804
+>> > >> 
+>> > >> which lock already depends on the new lock.
+>> > >> 
+>> > >> 
+>> > >> the existing dependency chain (in reverse order) is:
+>> > >> 
+>> > >> -> #2 (&bc->lock){+.+.}-{4:4}:
+>> > >>       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5851
+>> > >>       __mutex_lock_common kernel/locking/mutex.c:585 [inline]
+>> > >>       __mutex_lock+0x19c/0x1010 kernel/locking/mutex.c:730
+>> > >>       bch2_btree_cache_scan+0x184/0xec0 fs/bcachefs/btree_cache.c:482
+>> > >>       do_shrink_slab+0x72d/0x1160 mm/shrinker.c:437
+>> > >>       shrink_slab+0x1093/0x14d0 mm/shrinker.c:664
+>> > >>       shrink_one+0x43b/0x850 mm/vmscan.c:4868
+>> > >>       shrink_many mm/vmscan.c:4929 [inline]
+>> > >>       lru_gen_shrink_node mm/vmscan.c:5007 [inline]
+>> > >>       shrink_node+0x37c5/0x3e50 mm/vmscan.c:5978
+>> > >>       kswapd_shrink_node mm/vmscan.c:6807 [inline]
+>> > >>       balance_pgdat mm/vmscan.c:6999 [inline]
+>> > >>       kswapd+0x20f3/0x3b10 mm/vmscan.c:7264
+>> > >>       kthread+0x7a9/0x920 kernel/kthread.c:464
+>> > >>       ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:148
+>> > >>       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+>> > >> 
+>> > >> -> #1 (fs_reclaim){+.+.}-{0:0}:
+>> > >>       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5851
+>> > >>       __fs_reclaim_acquire mm/page_alloc.c:3853 [inline]
+>> > >>       fs_reclaim_acquire+0x88/0x130 mm/page_alloc.c:3867
+>> > >>       might_alloc include/linux/sched/mm.h:318 [inline]
+>> > >>       slab_pre_alloc_hook mm/slub.c:4066 [inline]
+>> > >>       slab_alloc_node mm/slub.c:4144 [inline]
+>> > >>       __do_kmalloc_node mm/slub.c:4293 [inline]
+>> > >>       __kmalloc_noprof+0xae/0x4c0 mm/slub.c:4306
+>> > >>       kmalloc_noprof include/linux/slab.h:905 [inline]
+>> > >>       kzalloc_noprof include/linux/slab.h:1037 [inline]
+>> > >>       pcpu_mem_zalloc mm/percpu.c:510 [inline]
+>> > >>       pcpu_alloc_chunk mm/percpu.c:1430 [inline]
+>> > >>       pcpu_create_chunk+0x57/0xbc0 mm/percpu-vm.c:338
+>> > >>       pcpu_balance_populated mm/percpu.c:2063 [inline]
+>> > >>       pcpu_balance_workfn+0xc4d/0xd40 mm/percpu.c:2200
+>> > >>       process_one_work kernel/workqueue.c:3236 [inline]
+>> > >>       process_scheduled_works+0xa66/0x1840 kernel/workqueue.c:3317
+>> > >>       worker_thread+0x870/0xd30 kernel/workqueue.c:3398
+>> > >>       kthread+0x7a9/0x920 kernel/kthread.c:464
+>> > >>       ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:148
+>> > >>       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+>> > 
+>> > Seeing this as part of the chain (fs reclaim from a worker doing
+>> > pcpu_balance_workfn) makes me think Michal's patch could be a fix to this:
+>> > 
+>> > https://lore.kernel.org/all/20250206122633.167896-1-mhocko@kernel.org/
+>> 
+>> Thanks for the link - that does look like just the thing.
+> 
+> Sorry I missed the first email asking to weigh in.
+> 
+> Michal's problem is a little bit different than what's happening here.
 
+Yes, but it's related enough. He mentions commit 28307d938fb2 and there you
+find a similar kind of lockdep splat.
 
-> 2025=E5=B9=B42=E6=9C=8820=E6=97=A5 15:08=EF=BC=8CKun Hu =
-<huk23@m.fudan.edu.cn> =E5=86=99=E9=81=93=EF=BC=9A
->=20
-> Hi Kent,
->=20
-> When using our customized Syzkaller to fuzz the latest Linux kernel, =
-the following crash (76s)
-> was triggered.
->=20
-> HEAD commit: 6537cfb395f352782918d8ee7b7f10ba2cc3cbf2
-> git tree: upstream
-> Console output: =
-https://github.com/pghk13/Kernel-Bug/blob/main/0219_6.13rc7_todo/76-UBSAN_=
-%20shift-out-of-bounds%20in%20bch2_trans_iter_init_outlined/report%20on%20=
-6.14-r3.txt
-> Kernel config: =
-https://github.com/pghk13/Kernel-Bug/blob/main/0219_6.13rc7_todo/config.tx=
-t=20
-> C reproducer: =
-https://github.com/pghk13/Kernel-Bug/blob/main/0219_6.13rc7_todo/76-UBSAN_=
-%20shift-out-of-bounds%20in%20bch2_trans_iter_init_outlined/repro.c
-> Syzlang reproducer: =
-https://github.com/pghk13/Kernel-Bug/blob/main/0219_6.13rc7_todo/76-UBSAN_=
-%20shift-out-of-bounds%20in%20bch2_trans_iter_init_outlined/repro.syz.txt
->=20
-> We have reproduced this issue repeatedly in 6.14-rc3. =46rom the =
-syscall reproducer, the syscall syz_mount_image mounts a constructed =
-bcachefs image. When the file system attempted to parse these =
-parameters, it caused the btree_id_is_extents, btree_type_has_snapshots, =
-and btree_type_has_snapshot_field functions in btree_types.h to shift =
-out of bounds. It is speculated that the constructed mirror may have =
-caused the btree_id to exceed the u64 bit width, which in turn triggered =
-the shift out-of-bounds. Also, the report shows that the =
-bch2_time_to_timespec function in bcachefs.h also undergoes a shift =
-operation, but this does not seem to be the case when I look at the =
-source code. If you think this issue has little impact on your system, =
-please ignore it =E2=98=BA.
->=20
-> If you fix this issue, please add the following tag to the commit:
-> Reported-by: Kun Hu <huk23@m.fudan.edu.cn>, Jiaji Qin =
-<jjtan24@m.fudan.edu.cn>
->=20
-> 2025/02/19 18:35:12 reproducing crash 'UBSAN: shift-out-of-bounds in =
-bch2_trans_iter_init_outlined': final repro crashed as =
-(corrupted=3Dfalse):
->  u64s 6 type extent 1610612736:24:U32_MAX len 24 ver 0: durability: 1 =
-ptr: 0:34:8 gen 0
->  u64s 6 type extent 1610612736:24:U32_MAX len 24 ver 0: durability: 1 =
-ptr: 0:34:8 gen 0
-> ------------[ cut here ]------------
-> UBSAN: shift-out-of-bounds in fs/bcachefs/bcachefs.h:1193:41
-> shift exponent 128 is too large for 32-bit type 'unsigned int'
-> CPU: 2 UID: 0 PID: 877 Comm: syz.1.16 Not tainted 6.13.0-rc7 #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS =
-1.13.0-1ubuntu1.1 04/01/2014
-> Call Trace:
-> <TASK>
-> __dump_stack lib/dump_stack.c:94 [inline]
-> dump_stack_lvl+0x180/0x1b0 lib/dump_stack.c:120
-> ubsan_epilogue+0xa/0x40 lib/ubsan.c:231
-> __ubsan_handle_shift_out_of_bounds+0xf2/0x1e0 lib/ubsan.c:468
-> btree_id_cached fs/bcachefs/bcachefs.h:1193 [inline]
-> bch2_btree_iter_flags fs/bcachefs/btree_iter.h:472 [inline]
-> bch2_trans_iter_init_outlined.cold+0x55/0x78 =
-fs/bcachefs/btree_iter.c:2904
-> bch2_trans_iter_init fs/bcachefs/btree_iter.h:520 [inline]
-> bch2_btree_insert_trans+0x18c/0x290 fs/bcachefs/btree_update.c:647
-> drop_dev_and_update+0x3d4/0x580 fs/bcachefs/backpointers.c:456
-> check_bp_exists+0x1bd2/0x3140 fs/bcachefs/backpointers.c:603
-> check_extent_to_backpointers+0x8d4/0x11f0 =
-fs/bcachefs/backpointers.c:688
-> bch2_check_extents_to_backpointers_pass+0xa6f/0xf20 =
-fs/bcachefs/backpointers.c:884
-> bch2_check_extents_to_backpointers+0x352/0xac0 =
-fs/bcachefs/backpointers.c:937
-> bch2_run_recovery_pass+0x94/0x1a0 fs/bcachefs/recovery_passes.c:191
-> bch2_run_recovery_passes+0x4a4/0x760 fs/bcachefs/recovery_passes.c:244
-> bch2_fs_recovery+0x24d0/0x4f00 fs/bcachefs/recovery.c:861
-> bch2_fs_start+0x2f6/0x610 fs/bcachefs/super.c:1037
-> bch2_fs_get_tree+0x4b6/0x2020 fs/bcachefs/fs.c:2170
-> vfs_get_tree+0x93/0x340 fs/super.c:1814
-> do_new_mount fs/namespace.c:3511 [inline]
-> path_mount+0x1272/0x1ba0 fs/namespace.c:3838
-> do_mount+0xf8/0x110 fs/namespace.c:3851
-> __do_sys_mount fs/namespace.c:4061 [inline]
-> __se_sys_mount fs/namespace.c:4038 [inline]
-> __x64_sys_mount+0x193/0x230 fs/namespace.c:4038
-> do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-> do_syscall_64+0xc3/0x1d0 arch/x86/entry/common.c:83
-> entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> RIP: 0033:0x7f75b6feb51e
-> Code: ff ff ff 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 66 2e 0f 1f 84 =
-00 00 00 00 00 66 90 f3 0f 1e fa 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d =
-01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffceb0a77a8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-> RAX: ffffffffffffffda RBX: 0000000000005b13 RCX: 00007f75b6feb51e
-> RDX: 0000000020005b00 RSI: 0000000020005b40 RDI: 00007ffceb0a7800
-> RBP: 00007ffceb0a7840 R08: 00007ffceb0a7840 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000020005b00
-> R13: 0000000020005b40 R14: 00007ffceb0a7800 R15: 0000000020000080
-> </TASK>
-> ---[ end trace ]---
-> ------------[ cut here ]------------
-> UBSAN: shift-out-of-bounds in fs/bcachefs/btree_types.h:798:9
-> shift exponent 129 is too large for 64-bit type 'long long unsigned =
-int'
-> CPU: 2 UID: 0 PID: 877 Comm: syz.1.16 Not tainted 6.13.0-rc7 #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS =
-1.13.0-1ubuntu1.1 04/01/2014
-> Call Trace:
-> <TASK>
-> __dump_stack lib/dump_stack.c:94 [inline]
-> dump_stack_lvl+0x180/0x1b0 lib/dump_stack.c:120
-> ubsan_epilogue+0xa/0x40 lib/ubsan.c:231
-> __ubsan_handle_shift_out_of_bounds+0xf2/0x1e0 lib/ubsan.c:468
-> btree_node_type_is_extents fs/bcachefs/btree_types.h:798 [inline]
-> btree_id_is_extents fs/bcachefs/btree_types.h:803 [inline]
-> __bch2_btree_iter_flags fs/bcachefs/btree_iter.h:451 [inline]
-> bch2_btree_iter_flags fs/bcachefs/btree_iter.h:478 [inline]
-> bch2_trans_iter_init_outlined.cold+0x37/0x78 =
-fs/bcachefs/btree_iter.c:2904
-> bch2_trans_iter_init fs/bcachefs/btree_iter.h:520 [inline]
-> bch2_btree_insert_trans+0x18c/0x290 fs/bcachefs/btree_update.c:647
-> drop_dev_and_update+0x3d4/0x580 fs/bcachefs/backpointers.c:456
-> check_bp_exists+0x1bd2/0x3140 fs/bcachefs/backpointers.c:603
-> check_extent_to_backpointers+0x8d4/0x11f0 =
-fs/bcachefs/backpointers.c:688
-> bch2_check_extents_to_backpointers_pass+0xa6f/0xf20 =
-fs/bcachefs/backpointers.c:884
-> bch2_check_extents_to_backpointers+0x352/0xac0 =
-fs/bcachefs/backpointers.c:937
-> bch2_run_recovery_pass+0x94/0x1a0 fs/bcachefs/recovery_passes.c:191
-> bch2_run_recovery_passes+0x4a4/0x760 fs/bcachefs/recovery_passes.c:244
-> bch2_fs_recovery+0x24d0/0x4f00 fs/bcachefs/recovery.c:861
-> bch2_fs_start+0x2f6/0x610 fs/bcachefs/super.c:1037
-> bch2_fs_get_tree+0x4b6/0x2020 fs/bcachefs/fs.c:2170
-> vfs_get_tree+0x93/0x340 fs/super.c:1814
-> do_new_mount fs/namespace.c:3511 [inline]
-> path_mount+0x1272/0x1ba0 fs/namespace.c:3838
-> do_mount+0xf8/0x110 fs/namespace.c:3851
-> __do_sys_mount fs/namespace.c:4061 [inline]
-> __se_sys_mount fs/namespace.c:4038 [inline]
-> __x64_sys_mount+0x193/0x230 fs/namespace.c:4038
-> do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-> do_syscall_64+0xc3/0x1d0 arch/x86/entry/common.c:83
-> entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> RIP: 0033:0x7f75b6feb51e
-> Code: ff ff ff 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 66 2e 0f 1f 84 =
-00 00 00 00 00 66 90 f3 0f 1e fa 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d =
-01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffceb0a77a8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-> RAX: ffffffffffffffda RBX: 0000000000005b13 RCX: 00007f75b6feb51e
-> RDX: 0000000020005b00 RSI: 0000000020005b40 RDI: 00007ffceb0a7800
-> RBP: 00007ffceb0a7840 R08: 00007ffceb0a7840 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000020005b00
-> R13: 0000000020005b40 R14: 00007ffceb0a7800 R15: 0000000020000080
-> </TASK>
-> ---[ end trace ]---
-> ------------[ cut here ]------------
-> UBSAN: shift-out-of-bounds in fs/bcachefs/btree_types.h:825:9
-> shift exponent 128 is too large for 64-bit type 'long long unsigned =
-int'
-> CPU: 2 UID: 0 PID: 877 Comm: syz.1.16 Not tainted 6.13.0-rc7 #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS =
-1.13.0-1ubuntu1.1 04/01/2014
-> Call Trace:
-> <TASK>
-> __dump_stack lib/dump_stack.c:94 [inline]
-> dump_stack_lvl+0x180/0x1b0 lib/dump_stack.c:120
-> ubsan_epilogue+0xa/0x40 lib/ubsan.c:231
-> __ubsan_handle_shift_out_of_bounds+0xf2/0x1e0 lib/ubsan.c:468
-> btree_type_has_snapshot_field fs/bcachefs/btree_types.h:825 [inline]
-> __bch2_btree_iter_flags fs/bcachefs/btree_iter.h:455 [inline]
-> bch2_btree_iter_flags fs/bcachefs/btree_iter.h:478 [inline]
-> bch2_trans_iter_init_outlined.cold+0x19/0x78 =
-fs/bcachefs/btree_iter.c:2904
-> bch2_trans_iter_init fs/bcachefs/btree_iter.h:520 [inline]
-> bch2_btree_insert_trans+0x18c/0x290 fs/bcachefs/btree_update.c:647
-> drop_dev_and_update+0x3d4/0x580 fs/bcachefs/backpointers.c:456
-> check_bp_exists+0x1bd2/0x3140 fs/bcachefs/backpointers.c:603
-> check_extent_to_backpointers+0x8d4/0x11f0 =
-fs/bcachefs/backpointers.c:688
-> bch2_check_extents_to_backpointers_pass+0xa6f/0xf20 =
-fs/bcachefs/backpointers.c:884
-> bch2_check_extents_to_backpointers+0x352/0xac0 =
-fs/bcachefs/backpointers.c:937
-> bch2_run_recovery_pass+0x94/0x1a0 fs/bcachefs/recovery_passes.c:191
-> bch2_run_recovery_passes+0x4a4/0x760 fs/bcachefs/recovery_passes.c:244
-> bch2_fs_recovery+0x24d0/0x4f00 fs/bcachefs/recovery.c:861
-> bch2_fs_start+0x2f6/0x610 fs/bcachefs/super.c:1037
-> bch2_fs_get_tree+0x4b6/0x2020 fs/bcachefs/fs.c:2170
-> vfs_get_tree+0x93/0x340 fs/super.c:1814
-> do_new_mount fs/namespace.c:3511 [inline]
-> path_mount+0x1272/0x1ba0 fs/namespace.c:3838
-> do_mount+0xf8/0x110 fs/namespace.c:3851
-> __do_sys_mount fs/namespace.c:4061 [inline]
-> __se_sys_mount fs/namespace.c:4038 [inline]
-> __x64_sys_mount+0x193/0x230 fs/namespace.c:4038
-> do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-> do_syscall_64+0xc3/0x1d0 arch/x86/entry/common.c:83
-> entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> RIP: 0033:0x7f75b6feb51e
-> Code: ff ff ff 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 66 2e 0f 1f 84 =
-00 00 00 00 00 66 90 f3 0f 1e fa 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d =
-01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffceb0a77a8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-> RAX: ffffffffffffffda RBX: 0000000000005b13 RCX: 00007f75b6feb51e
-> RDX: 0000000020005b00 RSI: 0000000020005b40 RDI: 00007ffceb0a7800
-> RBP: 00007ffceb0a7840 R08: 00007ffceb0a7840 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000020005b00
-> R13: 0000000020005b40 R14: 00007ffceb0a7800 R15: 0000000020000080
-> </TASK>
-> ---[ end trace ]---
-> ------------[ cut here ]------------
-> UBSAN: shift-out-of-bounds in fs/bcachefs/btree_types.h:814:9
-> shift exponent 128 is too large for 64-bit type 'long long unsigned =
-int'
-> CPU: 2 UID: 0 PID: 877 Comm: syz.1.16 Not tainted 6.13.0-rc7 #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS =
-1.13.0-1ubuntu1.1 04/01/2014
-> Call Trace:
-> <TASK>
-> __dump_stack lib/dump_stack.c:94 [inline]
-> dump_stack_lvl+0x180/0x1b0 lib/dump_stack.c:120
-> ubsan_epilogue+0xa/0x40 lib/ubsan.c:231
-> __ubsan_handle_shift_out_of_bounds+0xf2/0x1e0 lib/ubsan.c:468
-> btree_type_has_snapshots fs/bcachefs/btree_types.h:814 [inline]
-> __bch2_btree_iter_flags fs/bcachefs/btree_iter.h:459 [inline]
-> bch2_btree_iter_flags fs/bcachefs/btree_iter.h:478 [inline]
-> bch2_trans_iter_init_outlined.cold+0x73/0x78 =
-fs/bcachefs/btree_iter.c:2904
-> bch2_trans_iter_init fs/bcachefs/btree_iter.h:520 [inline]
-> bch2_btree_insert_trans+0x18c/0x290 fs/bcachefs/btree_update.c:647
-> drop_dev_and_update+0x3d4/0x580 fs/bcachefs/backpointers.c:456
-> check_bp_exists+0x1bd2/0x3140 fs/bcachefs/backpointers.c:603
-> check_extent_to_backpointers+0x8d4/0x11f0 =
-fs/bcachefs/backpointers.c:688
-> bch2_check_extents_to_backpointers_pass+0xa6f/0xf20 =
-fs/bcachefs/backpointers.c:884
-> bch2_check_extents_to_backpointers+0x352/0xac0 =
-fs/bcachefs/backpointers.c:937
-> bch2_run_recovery_pass+0x94/0x1a0 fs/bcachefs/recovery_passes.c:191
-> bch2_run_recovery_passes+0x4a4/0x760 fs/bcachefs/recovery_passes.c:244
-> bch2_fs_recovery+0x24d0/0x4f00 fs/bcachefs/recovery.c:861
-> bch2_fs_start+0x2f6/0x610 fs/bcachefs/super.c:1037
-> bch2_fs_get_tree+0x4b6/0x2020 fs/bcachefs/fs.c:2170
-> vfs_get_tree+0x93/0x340 fs/super.c:1814
-> do_new_mount fs/namespace.c:3511 [inline]
-> path_mount+0x1272/0x1ba0 fs/namespace.c:3838
-> do_mount+0xf8/0x110 fs/namespace.c:3851
-> __do_sys_mount fs/namespace.c:4061 [inline]
-> __se_sys_mount fs/namespace.c:4038 [inline]
-> __x64_sys_mount+0x193/0x230 fs/namespace.c:4038
-> do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-> do_syscall_64+0xc3/0x1d0 arch/x86/entry/common.c:83
-> entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> RIP: 0033:0x7f75b6feb51e
-> Code: ff ff ff 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 66 2e 0f 1f 84 =
-00 00 00 00 00 66 90 f3 0f 1e fa 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d =
-01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffceb0a77a8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-> RAX: ffffffffffffffda RBX: 0000000000005b13 RCX: 00007f75b6feb51e
-> RDX: 0000000020005b00 RSI: 0000000020005b40 RDI: 00007ffceb0a7800
-> RBP: 00007ffceb0a7840 R08: 00007ffceb0a7840 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000020005b00
-> R13: 0000000020005b40 R14: 00007ffceb0a7800 R15: 0000000020000080
-> </TASK>
-> ---[ end trace ]---
-> bcachefs (loop1): duplicate versions of same extent, deleting smaller
->  u64s 6 type extent 1610612736:24:U32_MAX len 24 ver 0: durability: 1 =
-ptr: 0:34:8 gen 0
->  u64s 6 type extent 1610612736:24:U32_MAX len 24 ver 0: durability: 1 =
-ptr: 0:34:8 gen 0
-> ------------[ cut here ]------------
-> UBSAN: shift-out-of-bounds in fs/bcachefs/btree_types.h:814:9
-> shift exponent 128 is too large for 64-bit type 'long long unsigned =
-int'
-> CPU: 0 UID: 0 PID: 877 Comm: syz.1.16 Not tainted 6.13.0-rc7 #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS =
-1.13.0-1ubuntu1.1 04/01/2014
-> Call Trace:
-> <TASK>
-> __dump_stack lib/dump_stack.c:94 [inline]
-> dump_stack_lvl+0x180/0x1b0 lib/dump_stack.c:120
-> ubsan_epilogue+0xa/0x40 lib/ubsan.c:231
-> __ubsan_handle_shift_out_of_bounds+0xf2/0x1e0 lib/ubsan.c:468
-> btree_type_has_snapshots fs/bcachefs/btree_types.h:814 [inline]
-> bch2_trans_update_extent_overwrite.cold+0x1d/0x66 =
-fs/bcachefs/btree_update.c:254
-> bch2_trans_update_extent+0x65d/0x1000 fs/bcachefs/btree_update.c:318
-> bch2_trans_update+0x360/0x5b0 fs/bcachefs/btree_update.c:518
-> bch2_btree_insert_trans+0x223/0x290 fs/bcachefs/btree_update.c:650
-> drop_dev_and_update+0x3d4/0x580 fs/bcachefs/backpointers.c:456
-> check_bp_exists+0x1bd2/0x3140 fs/bcachefs/backpointers.c:603
-> check_extent_to_backpointers+0x8d4/0x11f0 =
-fs/bcachefs/backpointers.c:688
-> bch2_check_extents_to_backpointers_pass+0xa6f/0xf20 =
-fs/bcachefs/backpointers.c:884
-> bch2_check_extents_to_backpointers+0x352/0xac0 =
-fs/bcachefs/backpointers.c:937
-> bch2_run_recovery_pass+0x94/0x1a0 fs/bcachefs/recovery_passes.c:191
-> bch2_run_recovery_passes+0x4a4/0x760 fs/bcachefs/recovery_passes.c:244
-> bch2_fs_recovery+0x24d0/0x4f00 fs/bcachefs/recovery.c:861
-> bch2_fs_start+0x2f6/0x610 fs/bcachefs/super.c:1037
-> bch2_fs_get_tree+0x4b6/0x2020 fs/bcachefs/fs.c:2170
-> vfs_get_tree+0x93/0x340 fs/super.c:1814
-> do_new_mount fs/namespace.c:3511 [inline]
-> path_mount+0x1272/0x1ba0 fs/namespace.c:3838
-> do_mount+0xf8/0x110 fs/namespace.c:3851
-> __do_sys_mount fs/namespace.c:4061 [inline]
-> __se_sys_mount fs/namespace.c:4038 [inline]
-> __x64_sys_mount+0x193/0x230 fs/namespace.c:4038
-> do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-> do_syscall_64+0xc3/0x1d0 arch/x86/entry/common.c:83
-> entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> RIP: 0033:0x7f75b6feb51e
-> Code: ff ff ff 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 66 2e 0f 1f 84 =
-00 00 00 00 00 66 90 f3 0f 1e fa 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d =
-01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffceb0a77a8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-> RAX: ffffffffffffffda RBX: 0000000000005b13 RCX: 00007f75b6feb51e
-> RDX: 0000000020005b00 RSI: 0000000020005b40 RDI: 00007ffceb0a7800
-> RBP: 00007ffceb0a7840 R08: 00007ffceb0a7840 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000020005b00
-> R13: 0000000020005b40 R14: 00007ffceb0a7800 R15: 0000000020000080
-> </TASK>
->=20
-> ---------------
-> thanks,
-> Kun Hu
+> He's having an issue where a alloc_percpu_gfp(NOFS/NOIO) is considered
+> atomic and failing during probing. This is because we don't have enough
+> percpu memory backed to fulfill the "atomic" requests.
 
+That, and we don't allow NOFS/NOIO to take the pcpu_alloc_mutex to avoid
+deadlock with pcpu_balance_workfn taking it and then doing __GFP_FS reclaim.
 
-Sorry for this report.
+> Historically we've considered any allocation that's not GFP_KERNEL to be
+> atomic. Here it seems like the alloc_percpu() behind the bc->lock()
+> should have been an "atomic" allocation to prevent the lock cycle?
 
-We just noticed that the wrong kernel version is being used, it's still =
-6.13-rc7, so please ignore this report and let's retest on the latest =
-kernel.
+That's what the original mail/patch in this thread suggested:
+https://lore.kernel.org/all/20250212100625.55860-1-mmpgouride@gmail.com/
+Note it proposes GFP_NOWAIT, possibly GFP_NOFS would be enough, but then the
+current implementation could would make it "atomic" anyway.
 
-=E2=80=94=E2=80=94
-Best
-Kun=
+But then it could end up failing like the allocations that motivated
+Michal's patch? So with Michal's approach we can avoid having to weaken
+pcpu_alloc() callers like this. Yes it's counter-intuitive that we weaken a
+kworker context instead, which normally has no restrictions. But it's not
+weakened (NOIO) nearly as much as pcpu_alloc() users that are effectively
+atomic when they can't take pcpu_alloc mutex at all.
+
+> Thanks,
+> Dennis
+> 
+
