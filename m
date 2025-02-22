@@ -1,76 +1,68 @@
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F836C139
-	for <linux-bcachefs@vger.kernel.org>; Sat, 22 Feb 2025 01:01:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B7812A1CF
+	for <linux-bcachefs@vger.kernel.org>; Sat, 22 Feb 2025 01:24:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740186067; cv=none; b=h43DGm7IgRwKuwnXZK2EEg91CHebpniTQdR2qlpnwA16jlcweguGeCOfRIbbA1Pwnx10o67TlY2JnqZfP54c0CmM2d9Dhlg5JzPMJRUd6BK5+eQsT7/j5Ejxs+gS7pn/S2uV4Ze9PLNstImq5QQY0Pa3HihC/IVfbs3g8vlK+jk=
+	t=1740187496; cv=none; b=dg6uaaDwKG/52Zy5JID0AwBZ1HeQJEkloDQWBhqpysh3nocYD8pI4np5gK7CzmlGsuCxn3JCQ6wB7M/4b7gGAY5/AHNozRLyaFv8VpO4I7ySUFYiq4sr1kIzBysD4kWKZ9dNIrXWrExk1Qgqmy3cY0sizxANOofrUexcmJpiy3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740186067; c=relaxed/simple;
-	bh=fBCMcXRPLtFr7kTbuvv2zc6MOF5uzJoIw3tIBZVBRJA=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=nj4ZU6D9NYL55OjDVRdSeZc5rG6I023+dzyfWkFuEydkAWcTyFelMu2xHSavgCBLXd7ix5OdFGPm+Fyp+mO7+w8anSJp/Vf3hP1T/t/69Ab9H3Cwk1wnNLQ1wuCrfiRlErowfVcf24BQlUP5LMkTz3AZvgL3nMVd6YiTIcuRcp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3d2a379bbf0so45208175ab.1
-        for <linux-bcachefs@vger.kernel.org>; Fri, 21 Feb 2025 17:01:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740186065; x=1740790865;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=M/g4S0rtmAw1ot+JHLgqMoNm8oJhYI82knnP6GthPD8=;
-        b=j8evazhqATyOfuIBk/wbGiUBzs43J8OpIjP+oaHRHfOE5/eiAL6UMr8v+StaWIUVsT
-         ELb8OYSjzQGaXJDe64kDMq7yfLfozSlrfscYUWOnWizLfgQFPFjeaSAG7dyDHsOUvPkP
-         5FLEQsYOWm/1nBYUkBds0U98k1sIf348dTBrCjOS0MeclsI66ztMP7M73Zj2N94Ekv81
-         rlzanoah7/0I3BbIa6ZyOQSvBm0kpsauDE3tw1HFcnKvNFgtrXx23AYNHg4sCN/dazdf
-         +Pbh2kq/ssegcdBQH8SnfPzUdG7HzrkjdxXIU1nhoj+jlzVb/06URGQ4Dd6DonFDMMj/
-         woDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXQmF1Di7RsN2wyGlMIo8Ap3+brNgxtfUrG+Zy/CnnFDxEEq4BvWB0Nu2hV9OXVkkECXkhCsWuaAGwRYAWoug==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzpxT1+YCUGuBfrTK9ouTDjNhx5C1c7yBGytKtbE5F6RkLmR/DS
-	pGjRhOeicF3t0tnjSAOOPW6mjmguL+8nIajZ3MqdJUIUY/L5ZAJc8BihtWoEaLUs7ev+EuXVOjQ
-	hN4He38rHHbYF7CfrmX/JIJ9a7B/RI8/sML35+/ACuuxhLN/dyQkfGDE=
-X-Google-Smtp-Source: AGHT+IHgoyRHGT8n2U0f5nj6pPzqwrGKygIICQiEr2OtsSPaOB+ITbxhNydQsZDxgGQfDtmdo9Zxgj/pJ5wVYO0LRhPBmI7sHNy8
+	s=arc-20240116; t=1740187496; c=relaxed/simple;
+	bh=JosQEqK2+0NAunwvLGwNtdFtnuMkXzr7ClxLPLta8Ms=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TDKHg+bPBsMXeQ/bp62r2WgKUd/5TMpQIXkQYMPlM10AKOBhl/0l+yvLGGyQqLYHQuHqRi3xtExmqnCvu1rlPLcI4EYjSQ3NnER8lGc83WZxfvzSMEkF0mkAvhG/L/0n1vAAQkrSTt3JS9HRPS0tYPHO78tUm3XxKxBJMi1USfo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Z08ML0l4szJ1F5;
+	Sat, 22 Feb 2025 09:20:46 +0800 (CST)
+Received: from kwepemo500009.china.huawei.com (unknown [7.202.194.199])
+	by mail.maildlp.com (Postfix) with ESMTPS id C56C2140155;
+	Sat, 22 Feb 2025 09:24:44 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by kwepemo500009.china.huawei.com
+ (7.202.194.199) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Sat, 22 Feb
+ 2025 09:24:44 +0800
+From: Hongbo Li <lihongbo22@huawei.com>
+To: <kent.overstreet@linux.dev>
+CC: <linux-bcachefs@vger.kernel.org>, <lihongbo22@huawei.com>
+Subject: [PATCH] bcachefs: fix directory i_size checking for the last entry
+Date: Sat, 22 Feb 2025 09:24:12 +0800
+Message-ID: <20250222012412.460211-1-lihongbo22@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1fe6:b0:3d1:9cee:3d2f with SMTP id
- e9e14a558f8ab-3d2cb51e40amr59265405ab.18.1740186063888; Fri, 21 Feb 2025
- 17:01:03 -0800 (PST)
-Date: Fri, 21 Feb 2025 17:01:03 -0800
-In-Reply-To: <67b8a9a7.050a0220.14d86d.0578.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67b921cf.050a0220.14d86d.059a.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] KASAN: use-after-free Read in check_dirent
-From: syzbot <syzbot+87078ad27cd8af3263cc@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemo500009.china.huawei.com (7.202.194.199)
 
-syzbot has bisected this issue to:
+Checking the i_size of the last directory entry when fsck.
 
-commit cf3da2d627037a0848e25dbaeaedfadfe534c7c4
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Mon Dec 16 18:58:02 2024 +0000
+Fixes: b9ddb3e1a8aa ("bcachefs: Fix fsck directory i_size checking")
+Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
+---
+ fs/bcachefs/fsck.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-    bcachefs: Handle -BCH_ERR_need_mark_replicas in gc
+diff --git a/fs/bcachefs/fsck.c b/fs/bcachefs/fsck.c
+index 9bf316e7b845..a9480bb308b2 100644
+--- a/fs/bcachefs/fsck.c
++++ b/fs/bcachefs/fsck.c
+@@ -2470,7 +2470,8 @@ int bch2_check_dirents(struct bch_fs *c)
+ 				POS(BCACHEFS_ROOT_INO, 0),
+ 				BTREE_ITER_prefetch|BTREE_ITER_all_snapshots, k,
+ 			check_dirent(trans, &iter, k, &hash_info, &dir, &target, &s)) ?:
+-		check_subdir_count_notnested(trans, &dir));
++		check_subdir_count_notnested(trans, &dir) ?:
++		check_dir_i_size_notnested(trans, &dir));
+ 
+ 	snapshots_seen_exit(&s);
+ 	inode_walker_exit(&dir);
+-- 
+2.33.0
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10e887a4580000
-start commit:   27eddbf34490 Merge tag 'net-6.14-rc4' of git://git.kernel...
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=12e887a4580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14e887a4580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b03346163189483c
-dashboard link: https://syzkaller.appspot.com/bug?extid=87078ad27cd8af3263cc
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ce6ba4580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11300db0580000
-
-Reported-by: syzbot+87078ad27cd8af3263cc@syzkaller.appspotmail.com
-Fixes: cf3da2d62703 ("bcachefs: Handle -BCH_ERR_need_mark_replicas in gc")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
