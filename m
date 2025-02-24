@@ -1,76 +1,79 @@
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C034D1FC10C
-	for <linux-bcachefs@vger.kernel.org>; Sun, 23 Feb 2025 08:16:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 246521B21BF;
+	Mon, 24 Feb 2025 06:35:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740298564; cv=none; b=Xi2yrlJifIkBcGoGJWuZJmm1WQULO2CNHnF8X8SBaLhQaNJNSs26cnmxyKKKz/SOHMnV6lSs+S/4JWx4cVK8tbiH6xhg7QbK39itlkPmpeyt1IEPg1LrVeukwIgktGHA3pumclWIDQkUADguT2d29Zyd/9kSSIxtuo3Zj829+m0=
+	t=1740378907; cv=none; b=VQY356pE16lEUwFr9qXFTWZWrc7dCGBz34oSJKHgAzm3zycbhLeaXKo/3HYLmD1uwLHhnYEnmfVy078sNZmzb/k/1ExYgPtgW/KWL5lotoMqO0ElXSocRya8FhudDgNF+YkYZHcYvj6cg80C6FmhGwBEIp5BdnBeQX6Lc7CroAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740298564; c=relaxed/simple;
-	bh=9Vgyp4UC7Lkr9EKXhmowcS/TtlCW/7Og9GYbYG5MWVo=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=GH7ZsabPxZwJ7wDFQUfCH1oKae5D2VK6fU70Dqeaxs0uQcPgbk3Myd7f4qq8q4EOD1gykW+VhU7LGjuE9JFn2RLLacNk52j+9jcmgy6luh8rlXnN59JPAUMbbsDGLId1hmYVLk4RndkSGWJMujblJnzMDCkMPmZg65M2zQ1cmF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3d2b3a2f2d4so67751655ab.0
-        for <linux-bcachefs@vger.kernel.org>; Sun, 23 Feb 2025 00:16:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740298562; x=1740903362;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nQ+4otSDBeDUmexmVHW857ZJ5T8kJoJYo8BJC0cLT60=;
-        b=G+Bx944C1XK5J+9dt/rYWsvr8BAk0OtF5HHQJPpAiATM+qHk0S2ZVuv+XVzzxvC0EW
-         U8wZZjPMy0iS9vupudawwpPV3rFEGYbtifxKKEya/AH1fzLCJXFLeg3m2+iHRVP8J/pM
-         qoMUb80fq045YQFefcMGlWt6F1cnyDmM2Joay/neI+cz5iXCrKh/W+s++nuuDFt7dnnV
-         YINaPy8gRgPQilH7y+yr0gmXA2pI6T1r61m6Ks1LErf9qqgj04C46UE/6sH9YY4hs0mv
-         jp4yqjea9+z3aGXcKSqM6xgvM8eonic183cTNZWsxtvNfOZp9UaIOt7cEmTnPgRKRN7M
-         XkuQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV8di+kG54MvL3LhbVv/Cbfpz/YNZr8dCnHmFaUw9DWED16wJsL4HbZKlLnLdqAprZI5tckpOulL21/Gc1c3Q==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzMfYsPyylX/CWmLJ9SdWH45fqNy/VlMVB0CvlAoYaxGBgD+FzA
-	CxyBDfWwmTKaA9K+eyZQhzXPAFnhBJD5cdkosljfvzUI+79S2njDkUmYhzRYgUHhR0o5s0EIsjb
-	IqHwZFMvBp3eVb5wmyh5IEijwOzlfg//7LJnZ3NVVu1ivGds+jIAuj3Q=
-X-Google-Smtp-Source: AGHT+IG56GWEOjnEyuPlcE5AZ8PYXTkhW4aFR3TLLN8zrCAQ7vapNIVlQKuln6iV14gMIqD3lUcgnKyzGkcfLVlFKN4Mcr/+ISqI
+	s=arc-20240116; t=1740378907; c=relaxed/simple;
+	bh=2Tey6aVfTe7o6nfJgADzLeBkJOJSsPqxYx+SzO+wDT4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=B1bIjqtRpzu8jdHfNgKfKtdx4wNLbGcxMYo2OIpWycWURU45BEVc0TcT80//KSMth5c3fcRQYvJ1KXGiVHnQ8LOAhExZURd3ocV5UVYvXUw5JTlWzZl0PBelIlfxW0T/9OKiXRumQkaeMXanhN4AqxsHy5R9a0PbXsXEyDnFyXg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=eSxEe7vl; arc=none smtp.client-ip=115.124.30.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="eSxEe7vl"
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1740378895; h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
+	bh=eIBURKnXosIPXGshxYjASprz6Rzs5J0/YOJzkdNmzis=;
+	b=eSxEe7vlV8EzYn3o9Rp4qEa3yG8f3M0JK0M1V+6dysey6fh8MBRLOG+jAovWE+RXIgawNofQqHOd1f7+Y8vP8JC6ao/dG2nUGLHhBShE/ifE5Kgoj2rQ2+vYpc7wCzUnnKj7sMBLzu1zQc/M4ToIlKXqKzoD+J7sJef/QhZZJmA=
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0WQ3dpwL_1740378886 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Mon, 24 Feb 2025 14:34:54 +0800
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+	Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH -next] bcachefs: Remove the unused variable block_size
+Date: Mon, 24 Feb 2025 14:34:45 +0800
+Message-Id: <20250224063445.34991-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1706:b0:3d2:b6e0:79b4 with SMTP id
- e9e14a558f8ab-3d2cae6b5a4mr86784545ab.8.1740298561939; Sun, 23 Feb 2025
- 00:16:01 -0800 (PST)
-Date: Sun, 23 Feb 2025 00:16:01 -0800
-In-Reply-To: <67b44ef3.050a0220.173698.004c.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67bad941.050a0220.bbfd1.0011.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs] WARNING: locking bug in simple_recursive_removal
-From: syzbot <syzbot+727c886b67040701c448@syzkaller.appspotmail.com>
-To: dakr@kernel.org, gregkh@linuxfoundation.org, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	rafael@kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-syzbot has bisected this issue to:
+Variable block_size is not effectively used, so delete it.
 
-commit 14152654805256d760315ec24e414363bfa19a06
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Mon Nov 25 05:21:27 2024 +0000
+fs/bcachefs/super-io.c:369:6: warning: variable ‘block_size’ set but not used.
 
-    bcachefs: Bad btree roots are now autofix
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=19045
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ fs/bcachefs/super-io.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14dffae4580000
-start commit:   2408a807bfc3 Merge tag 'vfs-6.14-rc4.fixes' of git://git.k..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16dffae4580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12dffae4580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6cc40dfe827ffb85
-dashboard link: https://syzkaller.appspot.com/bug?extid=727c886b67040701c448
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17982498580000
+diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
+index 0edc8814eb7e..ab99a2fb9356 100644
+--- a/fs/bcachefs/super-io.c
++++ b/fs/bcachefs/super-io.c
+@@ -366,7 +366,6 @@ static int bch2_sb_validate(struct bch_sb_handle *disk_sb,
+ 	struct bch_sb *sb = disk_sb->sb;
+ 	struct bch_sb_field_members_v1 *mi;
+ 	enum bch_opt_id opt_id;
+-	u16 block_size;
+ 	int ret;
+ 
+ 	ret = bch2_sb_compatible(sb, out);
+@@ -385,8 +384,6 @@ static int bch2_sb_validate(struct bch_sb_handle *disk_sb,
+ 		return -BCH_ERR_invalid_sb_features;
+ 	}
+ 
+-	block_size = le16_to_cpu(sb->block_size);
+-
+ 	if (bch2_is_zero(sb->user_uuid.b, sizeof(sb->user_uuid))) {
+ 		prt_printf(out, "Bad user UUID (got zeroes)");
+ 		return -BCH_ERR_invalid_sb_uuid;
+-- 
+2.32.0.3.g01195cf9f
 
-Reported-by: syzbot+727c886b67040701c448@syzkaller.appspotmail.com
-Fixes: 141526548052 ("bcachefs: Bad btree roots are now autofix")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
