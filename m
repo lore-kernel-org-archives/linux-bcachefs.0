@@ -1,243 +1,209 @@
-Received: from smtpbgau2.qq.com (smtpbgau2.qq.com [54.206.34.216])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEED21BEF82;
-	Fri, 28 Feb 2025 05:37:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.206.34.216
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAA051DEFC5
+	for <linux-bcachefs@vger.kernel.org>; Fri, 28 Feb 2025 07:59:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740721070; cv=none; b=ImbLS0y2NU5mXFpZ1BiDENHh8h6Bk9TbYzaNpPK4WxiNGqg1DSK0HmuxmyzspxzwbUqi4osO3xZsT5uU16hpXJ19HEmrxBcBD7wi6mXIU3T/jCDSZDgA7R1Mjs+u4uIksK6EUafK/g5P6cZBUdOPY1KTVaN6oSUYs4vznB+ZGQg=
+	t=1740729573; cv=none; b=reTQVnez48awmw8UyLb25bTT+Pzj6jdsXJEkpS1gjAv/QGH/jULdMVOvYt7lfQRDQA/CZZxWRYoNldoEIg+WEOcODrNASCmIcDBJdXfMb50OhSknbsblKf8b/CECO0gFRtvf7irbquC5OeUbX/5EMyBEVIJeEHxPzmZ3oPfbuIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740721070; c=relaxed/simple;
-	bh=EA4My43wV+5AeO1WKhaa9PtLtgh+AvWkwFeiGVXixx8=;
-	h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:Cc:To; b=E/gUVT4C3O2htHg2V/Pg/fxP1+s81ZegO3IpmdRnlr4cRjAggRAhgJSvgxJKV/pm59+3JDlSTQat0/9IQ623nvrzJ+odZCB+d6NchjyM3FHbAEYXF3Wx/58QY7ILXwopxpEvAQHZCuRZFJYbqbJx1t+PONo/iNvo9LolhknhG5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=m.fudan.edu.cn; spf=pass smtp.mailfrom=m.fudan.edu.cn; dkim=pass (1024-bit key) header.d=m.fudan.edu.cn header.i=@m.fudan.edu.cn header.b=eUi9771N; arc=none smtp.client-ip=54.206.34.216
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=m.fudan.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=m.fudan.edu.cn
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=m.fudan.edu.cn header.i=@m.fudan.edu.cn header.b="eUi9771N"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=m.fudan.edu.cn;
-	s=sorc2401; t=1740721046;
-	bh=zej3l/VhWayOFDJihQNo4c7f+zl1RMZdXx+5GGEqHNM=;
-	h=From:Mime-Version:Subject:Message-Id:Date:To;
-	b=eUi9771NanvazT5ScOtRAESr0vtO3kyYsRnYCHRX4Uy8IsEAzdK8Ib34Msfy2Yqp4
-	 LiNJ4lJpPqqimu09pR/aZ8DknymnUVK3kyb8lzyJVquZP0W42/89tVafH6AF+cghv7
-	 t7HZaImjD4rUOW4OSyQsY2tuMFT4VeHrQuJQUnls=
-X-QQ-mid: bizesmtpsz15t1740721041tq2cp8
-X-QQ-Originating-IP: QLvO+yBLxLyi55liIgGjNbdRSHKp8uoEU1FYx7yq+k4=
-Received: from smtpclient.apple ( [202.120.235.76])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Fri, 28 Feb 2025 13:37:19 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 1641597565874851230
-From: Kun Hu <huk23@m.fudan.edu.cn>
-Content-Type: text/plain;
-	charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1740729573; c=relaxed/simple;
+	bh=63piQ8ItITadkwFWIcbDth9Z3jrcFZkDqN/LSgCU448=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=OcIGi+kdt5xg5lbJqWyAjYeU4jLOlTfzvTzdNIX8FfyIBUOK5ehW/14D1zLc6C/2RTGTroAivLUoMTGluE9jnYoSCGyjqxeLiRUfkkf2AtjrFlnfxY/5RuUOKr6gud5oH9+vRB4m1y6nDf/u0J1ylHL8Ipxrczi3MxHPVSyi7lk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-3ce8dadfb67so20799325ab.1
+        for <linux-bcachefs@vger.kernel.org>; Thu, 27 Feb 2025 23:59:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740729571; x=1741334371;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=znt0tIz2WSnTQBMcXdT5PxAi7Th8sr34BunIklu59O0=;
+        b=U6Tvo3lpfBT2wbtAZSEAZmryKISV4s5St3Jd9vZ27bvbr8HBjK+TIlHRxm+qNJZhCv
+         8xYug04e3IeIzYqLjDUepNx0Tktjm5OjWibIWUAWqKseAlgHJrkTcFjXd5gkq7c9ygKT
+         rbNvsTrEzpjYHR9AdUamFg9MfdJRtqySkJnZLzjou+HAzF2w5vJbtJ7YAj8di/JiF3za
+         2WDBy4h2Mhky82a5afO1jZFuQ9KJ0QqXfoAhCNSPaqHROZbWqoEhDKexVvSz66ScKaPR
+         KsNGjY6033QxPMCWEzVJTa77yHmtVW5qEK2iwKmg5i+Nq5uryYrbvWOcb+uRjHMwsosx
+         mvoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXRzisu6t+lE6xJwK3UvSvsr3fInXd9Q2zSJKjISpUmm+4ql8V5TwPqr4phwRBSPgEXLsVFErxpC4n2FuWb7Q==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzKn2U4yLFusSlDTuuntHApFd3rQDfVZS9RF8Pcdc5Hi+u4Z6vw
+	xn/7hkXnRwYle0g0WtT4ybSpf1pSDSeZguCeCf5Lh5hkDCWyOVNmGq6eVAQggzcxnUpMZWrLcGe
+	E5q2LInFAbp60h74kS6oYxCjn4bY9FX95W/VCpyZ+As+Orn5o+5BD8RE=
+X-Google-Smtp-Source: AGHT+IHBmE5QLfh5Lsm6B58SxhZO33IvQigSPu2IetXosJjOk9yLvoEe+gx89Ksc3ABGNP5NhUe3WT0E2BE+vH5CUKIdVyBbQFFw
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3818.100.11.1.3\))
-Subject: [Bug] missing bounds check for k->u64s=0 in validate_bset_keys:999
-Message-Id: <BB5BB1E2-2146-4F79-8EE9-0DCFA5F0D381@m.fudan.edu.cn>
-Date: Fri, 28 Feb 2025 13:37:08 +0800
-Cc: linux-bcachefs@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- syzkaller@googlegroups.com,
- "jjtan24@m.fudan.edu.cn" <jjtan24@m.fudan.edu.cn>,
- baishuoran@hrbeu.edu.cn
-To: Kent Overstreet <kent.overstreet@linux.dev>
-X-Mailer: Apple Mail (2.3818.100.11.1.3)
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpsz:m.fudan.edu.cn:qybglogicsvrgz:qybglogicsvrgz8a-1
-X-QQ-XMAILINFO: MPAlP4yRn0xg5GJlyD8fNxPdgXaOixYmVrbtBKEgcUxmzame/MrBix07
-	Ru5Kxs+RxFdGzeK3crmQtn5KZcP4PkP5uvAnqPAALSTUb6PKoHwpgSunQ0g1kq8XYEYNqVB
-	LKEIIU0xDJIYqqYsJHcauj7aSIfNx7EK36wtPGvycBros0fxSZ15X1pqgkDSONHl/TyWeYs
-	ylP5m2YyP2271skYtMoIMViunxMfvec5b9vU1tkjtsEe9tIT85mfCS4nP1SuUXNd+NkZVjl
-	IYhKO8YG564g36usgwTkSXFn+38gGTEMB3KYt/YmwwlvrL7mLh075xCo7x6Z00q42b1rU0L
-	PSYjVe2gRtv9CFXM1Y3rwfn2xbE5QUEIVKE3i30Fn+yoOk+oPA0A+prhzyQFXx6VAFNwn6A
-	7jlVf3axLwwQg21xiQeELKhjPLpuRF0eISF/KuJUdwiNn8ks33745CyDYGMfDmH1M2YcXOn
-	Wa/eaM1uo2Qr2V/lHsoZVELKpnH/KaXofvk7u3L5cVFvewP3Jqp/uFaO5zesgJIvBTtSW3Q
-	yniC7dHrcKJ5KcoglQaUAXkGIodmgH40XWNupgprEeX3BsCbnZeKDOusaoBoQ3jcrd1Cojt
-	e4YM8JFFEo3RSZ1zMzMBA3aoWAPO6gy9CJZspVMzup4GrS64Nk0+ZvztEuHPXODhadOO0es
-	HtQhRmVImR+Mb8ACJSAhZwXvFD+2KwMDOfdvhcIZ01NvxMTMFePrri4i3+fcUKj5rBb1Xiy
-	cSaECSbMOiAJHA6VuTJpuEqW7yRiwkLCwngFXts8eVUIp98ayqPyP46fEsgkX/17xaEYqyl
-	8dfodAtx2c8iTcJYAHCPYVoylxbdUv0Wb3z4AG8z+faKP0rqvd89RNJ692nQa1Ut6+e6ZWg
-	NdruVC1GF64faX0cNvn7+08r1IYi2zhKWfVBmpCfxsXYdeFgYlRojTcf+OOSwv49Ldv3+Us
-	ekltYtMLdrsRgxHy0dO6PINeUIlfWG55FmPc=
-X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
-X-QQ-RECHKSPAM: 0
+MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:214e:b0:3d3:e470:6d5 with SMTP id
+ e9e14a558f8ab-3d3e6e70825mr20950715ab.13.1740729570816; Thu, 27 Feb 2025
+ 23:59:30 -0800 (PST)
+Date: Thu, 27 Feb 2025 23:59:30 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67c16ce2.050a0220.1baf.000e.GAE@google.com>
+Subject: [syzbot] [bcachefs?] INFO: task hung in invalidate_inode_pages2_range (3)
+From: syzbot <syzbot+de1434c5355cc909b734@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Kent,
+Hello,
 
-When using our customized Syzkaller to fuzz the latest Linux kernel, the =
-following crash (82th)
-was triggered.
+syzbot found the following issue on:
 
-HEAD commit: d082ecbc71e9e0bf49883ee4afd435a77a5101b6
-git tree: upstream
-Output: =
-https://github.com/pghk13/Kernel-Bug/blob/main/0225_6.14rc2/82-KASAN_%20sl=
-ab-out-of-bounds%20Read%20in%20mapping_try_invalidate/output_on_6.14rc4
-Kernel config: =
-https://github.com/pghk13/Kernel-Bug/blob/main/0225_6.14rc2/config_6.14rc4=
-.txt
-C reproducer: =
-https://github.com/pghk13/Kernel-Bug/blob/main/0225_6.14rc2/82-KASAN_%20sl=
-ab-out-of-bounds%20Read%20in%20mapping_try_invalidate/repro.c
-Syzlang reproducer: =
-https://github.com/pghk13/Kernel-Bug/blob/main/0225_6.14rc2/82-KASAN_%20sl=
-ab-out-of-bounds%20Read%20in%20mapping_try_invalidate/repro.syz
+HEAD commit:    1e15510b71c9 Merge tag 'net-6.14-rc5' of git://git.kernel...
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=164eca97980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8de9cc84d5960254
+dashboard link: https://syzkaller.appspot.com/bug?extid=de1434c5355cc909b734
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11d297b8580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=119af064580000
 
-The file images in the repro are randomly constructed by syzkaller. =
-According to the report, this issue points to line 999 in the =
-validate_bset_keys function. Based on multiple reproductions of the =
-issue, the problem appears to occur when parsing corrupted btree nodes =
-(where k->u64s might be 0). The memmove_u64s_down operation attempts to =
-shift subsequent data forward, but the calculation of vstruct_end(i) =
-might be out of bounds when handling such invalid nodes. This could lead =
-to heap memory corruption, potentially causing subsequently allocated =
-memory to contain invalid pointers.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/ac4579f25f13/disk-1e15510b.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c342a1d6167e/vmlinux-1e15510b.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d985a65df547/bzImage-1e15510b.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/4860c171e0ab/mount_0.gz
 
-Our knowledge of the kernel is somewhat limited, and we'd appreciate it =
-if you could determine if there is such an issue. If this issue doesn't =
-have an impact, please ignore it =E2=98=BA.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+de1434c5355cc909b734@syzkaller.appspotmail.com
 
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Kun Hu <huk23@m.fudan.edu.cn>, Jiaji Qin =
-<jjtan24@m.fudan.edu.cn>, Shuoran Bai <baishuoran@hrbeu.edu.cn>
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-kernel BUG at arch/x86/mm/physaddr.c:28!
-Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 3 UID: 0 PID: 57 Comm: kworker/3:1H Not tainted 6.14.0-rc4 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS =
-1.13.0-1ubuntu1.1 04/01/2014
-Workqueue: bcachefs_btree_read_complete btree_node_read_work
-RIP: 0010:__phys_addr+0xdc/0x150
-Code: ff 48 d3 eb 48 89 de e8 22 76 4f 00 48 85 db 75 13 e8 d8 73 4f 00 =
-4c 89 e0 5b 5d 41 5c 41 5d e9 e5 c0 a5 ff e8 c5 73 4f 00 90 <0f> 0b e8 =
-bd 73 4f 00 48 c7 c0 10 a0 fa 8d 48 ba 00 00 00 00 00 fc
-RSP: 0018:ffffc9000071efe8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 000000000000000e RCX: ffffffff816a7fa2
-RDX: 000077800000000e RSI: ffff8880412ac900 RDI: 0000000000000002
-RBP: 000000008000000e R08: 0000000000000000 R09: fffffbfff2de6d9f
-R10: fffffbfff2de6d9e R11: 0000000000000001 R12: 000077800000000e
-R13: 0000000000000000 R14: ffffc9000071f048 R15: ffff888075c2a140
-FS:  0000000000000000(0000) GS:ffff88807ef00000(0000) =
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f955b82c15d CR3: 000000006f1e0000 CR4: 0000000000750ef0
-PKRU: 55555554
+INFO: task syz-executor337:5843 blocked for more than 143 seconds.
+      Not tainted 6.14.0-rc4-syzkaller-00169-g1e15510b71c9 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor337 state:D stack:11416 pid:5843  tgid:5842  ppid:5840   task_flags:0x400140 flags:0x00004006
 Call Trace:
  <TASK>
- qlist_free_all+0x68/0x130
- kasan_quarantine_reduce+0x168/0x1c0
- __kasan_slab_alloc+0x67/0x90
- __kmalloc_node_track_caller_noprof+0x1c5/0x5f0
- krealloc_noprof+0x2a7/0x390
- bch2_printbuf_make_room+0x1be/0x2e0
- bch2_prt_printf+0x18b/0x4d0
- __btree_err+0x16c/0x950
- validate_bset_keys+0xd79/0x18d0
- bch2_btree_node_read_done+0x2223/0x5340
- btree_node_read_work+0xa7e/0x1cc0
- process_scheduled_works+0x5c0/0x1aa0
- worker_thread+0x59f/0xcf0
- kthread+0x42a/0x880
- ret_from_fork+0x48/0x80
- ret_from_fork_asm+0x1a/0x30
+ context_switch kernel/sched/core.c:5378 [inline]
+ __schedule+0x18bc/0x4c40 kernel/sched/core.c:6765
+ __schedule_loop kernel/sched/core.c:6842 [inline]
+ schedule+0x14b/0x320 kernel/sched/core.c:6857
+ io_schedule+0x8d/0x110 kernel/sched/core.c:7690
+ folio_wait_bit_common+0x839/0xee0 mm/filemap.c:1318
+ folio_lock include/linux/pagemap.h:1163 [inline]
+ invalidate_inode_pages2_range+0x48f/0x960 mm/truncate.c:637
+ bch2_write_invalidate_inode_pages_range+0xce/0x120 fs/bcachefs/fs-io-pagecache.c:68
+ bch2_direct_write+0x2ebf/0x3190 fs/bcachefs/fs-io-direct.c:653
+ bch2_write_iter+0x19d/0x2cd0 fs/bcachefs/fs-io-buffered.c:1047
+ iter_file_splice_write+0xbfa/0x1510 fs/splice.c:743
+ do_splice_from fs/splice.c:941 [inline]
+ direct_splice_actor+0x11b/0x220 fs/splice.c:1164
+ splice_direct_to_actor+0x586/0xc80 fs/splice.c:1108
+ do_splice_direct_actor fs/splice.c:1207 [inline]
+ do_splice_direct+0x289/0x3e0 fs/splice.c:1233
+ do_sendfile+0x564/0x8a0 fs/read_write.c:1363
+ __do_sys_sendfile64 fs/read_write.c:1424 [inline]
+ __se_sys_sendfile64+0x17c/0x1e0 fs/read_write.c:1410
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f49c6338bd9
+RSP: 002b:00007f49c62ef218 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00007f49c63c66c8 RCX: 00007f49c6338bd9
+RDX: 0000000000000000 RSI: 0000000000000005 RDI: 0000000000000005
+RBP: 00007f49c63c66c0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000800000009 R11: 0000000000000246 R12: 00007f49c6392ae4
+R13: 0031656c69662f2e R14: 0000400000000240 R15: 0000400000000040
  </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:__phys_addr+0xdc/0x150
-Code: ff 48 d3 eb 48 89 de e8 22 76 4f 00 48 85 db 75 13 e8 d8 73 4f 00 =
-4c 89 e0 5b 5d 41 5c 41 5d e9 e5 c0 a5 ff e8 c5 73 4f 00 90 <0f> 0b e8 =
-bd 73 4f 00 48 c7 c0 10 a0 fa 8d 48 ba 00 00 00 00 00 fc
-RSP: 0018:ffffc9000071efe8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 000000000000000e RCX: ffffffff816a7fa2
-RDX: 000077800000000e RSI: ffff8880412ac900 RDI: 0000000000000002
-RBP: 000000008000000e R08: 0000000000000000 R09: fffffbfff2de6d9f
-R10: fffffbfff2de6d9e R11: 0000000000000001 R12: 000077800000000e
-R13: 0000000000000000 R14: ffffc9000071f048 R15: ffff888075c2a140
-FS:  0000000000000000(0000) GS:ffff88807ef00000(0000) =
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f955b82c15d CR3: 000000006f1e0000 CR4: 0000000000750ef0
-PKRU: 55555554
-2025/02/26 11:21:55 reproducing crash 'KASAN: slab-out-of-bounds Read in =
-mapping_try_invalidate': final repro crashed as (corrupted=3Dfalse):
-  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 =
-written 1032 min_key POS_MIN durability: 1 ptr: 0:27:0 gen 0 =20
-  node offset 0/1032 bset u64s 33578 bset byte offset 160: bad k->u64s 0 =
-(min 3 max 253), fixing
-------------[ cut here ]------------
-kernel BUG at arch/x86/mm/physaddr.c:28!
-Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 3 UID: 0 PID: 57 Comm: kworker/3:1H Not tainted 6.14.0-rc4 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS =
-1.13.0-1ubuntu1.1 04/01/2014
-Workqueue: bcachefs_btree_read_complete btree_node_read_work
-RIP: 0010:__phys_addr+0xdc/0x150
-Code: ff 48 d3 eb 48 89 de e8 22 76 4f 00 48 85 db 75 13 e8 d8 73 4f 00 =
-4c 89 e0 5b 5d 41 5c 41 5d e9 e5 c0 a5 ff e8 c5 73 4f 00 90 <0f> 0b e8 =
-bd 73 4f 00 48 c7 c0 10 a0 fa 8d 48 ba 00 00 00 00 00 fc
-RSP: 0018:ffffc9000071efe8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 000000000000000e RCX: ffffffff816a7fa2
-RDX: 000077800000000e RSI: ffff8880412ac900 RDI: 0000000000000002
-RBP: 000000008000000e R08: 0000000000000000 R09: fffffbfff2de6d9f
-R10: fffffbfff2de6d9e R11: 0000000000000001 R12: 000077800000000e
-R13: 0000000000000000 R14: ffffc9000071f048 R15: ffff888075c2a140
-FS:  0000000000000000(0000) GS:ffff88807ef00000(0000) =
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f955b82c15d CR3: 000000006f1e0000 CR4: 0000000000750ef0
-PKRU: 55555554
+INFO: task syz-executor337:5854 blocked for more than 143 seconds.
+      Not tainted 6.14.0-rc4-syzkaller-00169-g1e15510b71c9 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor337 state:D stack:19160 pid:5854  tgid:5842  ppid:5840   task_flags:0x440140 flags:0x00004006
 Call Trace:
  <TASK>
- qlist_free_all+0x68/0x130
- kasan_quarantine_reduce+0x168/0x1c0
- __kasan_slab_alloc+0x67/0x90
- __kmalloc_node_track_caller_noprof+0x1c5/0x5f0
- krealloc_noprof+0x2a7/0x390
- bch2_printbuf_make_room+0x1be/0x2e0
- bch2_prt_printf+0x18b/0x4d0
- __btree_err+0x16c/0x950
- validate_bset_keys+0xd79/0x18d0
- bch2_btree_node_read_done+0x2223/0x5340
- btree_node_read_work+0xa7e/0x1cc0
- process_scheduled_works+0x5c0/0x1aa0
- worker_thread+0x59f/0xcf0
- kthread+0x42a/0x880
- ret_from_fork+0x48/0x80
- ret_from_fork_asm+0x1a/0x30
+ context_switch kernel/sched/core.c:5378 [inline]
+ __schedule+0x18bc/0x4c40 kernel/sched/core.c:6765
+ __schedule_loop kernel/sched/core.c:6842 [inline]
+ schedule+0x14b/0x320 kernel/sched/core.c:6857
+ __bch2_two_state_lock+0x229/0x2c0 fs/bcachefs/two_state_shared_lock.c:7
+ bch2_two_state_lock fs/bcachefs/two_state_shared_lock.h:55 [inline]
+ bch2_readahead+0x9e1/0x1240 fs/bcachefs/fs-io-buffered.c:272
+ read_pages+0x179/0x570 mm/readahead.c:161
+ page_cache_ra_order+0xa36/0xca0 mm/readahead.c:516
+ filemap_get_pages+0x59a/0x1fb0 mm/filemap.c:2580
+ filemap_splice_read+0x68e/0xef0 mm/filemap.c:2971
+ do_splice_read fs/splice.c:985 [inline]
+ splice_direct_to_actor+0x4af/0xc80 fs/splice.c:1089
+ do_splice_direct_actor fs/splice.c:1207 [inline]
+ do_splice_direct+0x289/0x3e0 fs/splice.c:1233
+ do_sendfile+0x564/0x8a0 fs/read_write.c:1363
+ __do_sys_sendfile64 fs/read_write.c:1424 [inline]
+ __se_sys_sendfile64+0x17c/0x1e0 fs/read_write.c:1410
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f49c6338bd9
+RSP: 002b:00007f49c62ce218 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00007f49c63c66d8 RCX: 00007f49c6338bd9
+RDX: 0000000000000000 RSI: 0000000000000006 RDI: 0000000000000006
+RBP: 00007f49c63c66d0 R08: 0000000000000000 R09: 0000000000000000
+R10: 000000000e3aa6ea R11: 0000000000000246 R12: 00007f49c6392ae4
+R13: 0031656c69662f2e R14: 0000400000000240 R15: 0000400000000040
  </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:__phys_addr+0xdc/0x150
-Code: ff 48 d3 eb 48 89 de e8 22 76 4f 00 48 85 db 75 13 e8 d8 73 4f 00 =
-4c 89 e0 5b 5d 41 5c 41 5d e9 e5 c0 a5 ff e8 c5 73 4f 00 90 <0f> 0b e8 =
-bd 73 4f 00 48 c7 c0 10 a0 fa 8d 48 ba 00 00 00 00 00 fc
-RSP: 0018:ffffc9000071efe8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 000000000000000e RCX: ffffffff816a7fa2
-RDX: 000077800000000e RSI: ffff8880412ac900 RDI: 0000000000000002
-RBP: 000000008000000e R08: 0000000000000000 R09: fffffbfff2de6d9f
-R10: fffffbfff2de6d9e R11: 0000000000000001 R12: 000077800000000e
-R13: 0000000000000000 R14: ffffc9000071f048 R15: ffff888075c2a140
-FS:  0000000000000000(0000) GS:ffff88807ef00000(0000) =
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f955b82c15d CR3: 000000006f1e0000 CR4: 0000000000750ef0
-PKRU: 55555554
-(base) qjj@syzkaller109:~/go1.22.1_projects/go_projects/syzkaller$ exit
-exit
 
-Script done on 2025-02-26 18:17:09+08:00 [COMMAND_EXIT_CODE=3D"0"]
+Showing all locks held in the system:
+1 lock held by khungtaskd/30:
+ #0: ffffffff8eb38fa0 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:337 [inline]
+ #0: ffffffff8eb38fa0 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:849 [inline]
+ #0: ffffffff8eb38fa0 (rcu_read_lock){....}-{1:3}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6746
+2 locks held by getty/5583:
+ #0: ffff88803112f0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
+ #1: ffffc90002fde2f0 (&ldata->atomic_read_lock){+.+.}-{4:4}, at: n_tty_read+0x616/0x1770 drivers/tty/n_tty.c:2211
+1 lock held by syz-executor337/5843:
+ #0: ffff88807c384420 (sb_writers#9){.+.+}-{0:0}, at: direct_splice_actor+0x49/0x220 fs/splice.c:1163
+1 lock held by syz-executor337/5854:
+ #0: ffff888077d68a80 (mapping.invalidate_lock#3){.+.+}-{4:4}, at: filemap_invalidate_lock_shared include/linux/fs.h:932 [inline]
+ #0: ffff888077d68a80 (mapping.invalidate_lock#3){.+.+}-{4:4}, at: page_cache_ra_order+0x45d/0xca0 mm/readahead.c:492
 
----------------
-thanks,
-Kun Hu=
+=============================================
+
+NMI backtrace for cpu 0
+CPU: 0 UID: 0 PID: 30 Comm: khungtaskd Not tainted 6.14.0-rc4-syzkaller-00169-g1e15510b71c9 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+ nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:162 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:236 [inline]
+ watchdog+0x1058/0x10a0 kernel/hung_task.c:399
+ kthread+0x7a9/0x920 kernel/kthread.c:464
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:48 [inline]
+NMI backtrace for cpu 1 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:106 [inline]
+NMI backtrace for cpu 1 skipped: idling at acpi_safe_halt+0x21/0x30 drivers/acpi/processor_idle.c:111
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
