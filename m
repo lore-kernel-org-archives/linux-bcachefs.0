@@ -1,98 +1,129 @@
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05E9E276D3B;
-	Fri, 28 Feb 2025 08:47:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65E9323F38C
+	for <linux-bcachefs@vger.kernel.org>; Fri, 28 Feb 2025 21:01:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740732452; cv=none; b=QTQW6cGO+5LKCeQFJkHPHzJJrLg46eB81IlNavvwy76osjUr63HZ8lS7dK1GkjsIn54qFKcbB8FpsJCU+i19z9Cn7YxnjFkvQVcSk3fbaxM9mNlbDFVJoJ3VZq1QglpCpTOab1aVUiVebQ6wP3DGo44Rm7lvSlPpXhwpSJmLz08=
+	t=1740776503; cv=none; b=sgIUxYPVuhgsCrkUZ3fp6YWOSkdMFnDG/mKg/meEemjfKRubgavzjBG+Su2MklYSe93uZ5vRe+wfdTtWmzVzz94Z8FXJY0kDiuxOs1mBo2dWj5VFQxfDcfsTZONy3g+37AtqAYn5qxDcImqzU6dBj0jj+pLU5WsxZ/6Ro2pD0og=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740732452; c=relaxed/simple;
-	bh=x/XjMG1KPAhYaFtIq0lRdfHtd/pIIkg8+PbdlIeiXqk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Be/KcNBw4D1ZwFxDfHrf0gsUa4WKTGkXGAl/e5AbYGuTu/SuIeAMiYoGWY3egUKkJCYhqf4LfFbF7wX/Db0dKdbdw6sqro2wLoWJDnAOilAr2wDojecr5XIJ/b8mD67hcz9JtZeXN+6QE4mYJn9nIyi5ZSxxPHwDkW4wgVjVSQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aVilvjVA; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1740776503; c=relaxed/simple;
+	bh=EBYY53aM4Bq/qROOGLqBpbOmYoBYVG4eSNMmw0o1Cu0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=USiK50WJ6H6u1NDn2BvuMO3wOcM7zPJ8/xsX1K1r07IjMfsY+Ew3pNs/+cfxtq2j9MXmWKizyVWdW0ES4Z19QjNBTaGVX0fektOTDsOj49WejXfX5vKJLFH6HWWvzGqpyyvOtFhlevNzCsEa46cNjpXckmwRFEAQ2i6VxTAZESE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Qw73rYW9; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aVilvjVA"
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-390ec449556so585451f8f.1;
-        Fri, 28 Feb 2025 00:47:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740732449; x=1741337249; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+qdA6TomdOLRq8WKT3V+XJclLYlnQyLXMFg1MZiiUR4=;
-        b=aVilvjVAXmnLL7vFl+1uPuaZeJ38HntS9pdomYFjT5FFsdsJsBjreGEbJhs+DS66py
-         N5T7cErBRJFJF3KOChzHbQf8JGZ9oHnObmPZzqQ6GtBV/UzpcU1Y69sliuRYczvBMYQT
-         Q2aGTLrQNHSV41cK7k2JYFJaO2yjBPYy7stEtpHFigbcNHR8GFQxvTgBxekL6dot6/Xl
-         8IuY5uC2pUPpJ4TVRLc4p4qQivKlS0kfz1oh5jEwCNfUmlzqSJQu4ZPoyA8urshg3seI
-         KnDTHYm2UCmUgu3vgT5M/qy5Xn3lto1/OmGeOsA9pm9VHB6nbMKByGcbCBW6vCvrpDRD
-         1RYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740732449; x=1741337249;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+qdA6TomdOLRq8WKT3V+XJclLYlnQyLXMFg1MZiiUR4=;
-        b=rWr9Of9ajJcZ5xI3tRRqzeQci+sv3iUrLdqajFW0l01mugc/bX28sb0o6WeGvQf8a9
-         dHZ+qg8J0ZS5HvlD7ZZdEcxxmz7nkqmeLsq+i2ihaqwROkRtXae1jJOcbVW5j4SVEj/V
-         Asxxvlvl3iw+o0b/xIpAeRKEZZgScGQ2ZT+WTAkea6r3cVn9RKOeoimvtV7VeUqiAMPG
-         xhZxGiWQoRCKC+ydeBCB/fERJMswqv77X+po9tjDFaJXkXbBYE0ahooqJmMrC026abHe
-         XMVo3J5f14jPvFyJbj36RgeqNvttbzVW7OrJrD9UbWTr9OYMI7UJfME1M/ncU6TBC7pj
-         WS/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWh56NvygmKALK9wgYOSfT+u7ZGK+mV1Ynarv0oHuU39HXUyHfwZOa2/hmy1uRBf7pj8ov9rjT8l3QhlV+IRQ==@vger.kernel.org, AJvYcCXOh9ebYqSGJ2X6qstZlpCjaYS/RXcFQuzseC5khrp/o+P2gKmQFZqAxwNrVretyp0aMOy1/h+hTSTWm7zM@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz10IcxRiMvRqtMHapWToYFlkpsgbpvXPqYU6R4Mwzcux3Xrld8
-	oP/DZ9Qc1JzmSSqf3yMFpyGOQYNDQ1Sk88ZsgGFp17mjwaSMmiw3mrzLoOSNKp4=
-X-Gm-Gg: ASbGncvabj8a4TjUN3u5Vlf1ThuKiEB+tTGq7Ty3i4CWGXnyy+ptdSRnfMlHpPD5jqe
-	l8Jq+gpA9W3JU6r5N3VNV0ePQePSdJXrVBvPtS4NbpnER0DiDNinqRiHQqU0kCPoxlN60v76NIC
-	lq7LzqbhAb3pH/DPaMDQiI8H9AWv+LIXXkAB0fDWZTS0fBTLDlezCMRQ7g9y3czqGEp7yxWjdWw
-	pdakJqPomvCEgLbjrNCStmxXxyAWZrvIdqdzXemBZ8mGlmXHn4GZDC4JzUAQ0MWBzyS2HNICQR/
-	bg1iKyPpH2CY6W56aJzk8NrVYGQ=
-X-Google-Smtp-Source: AGHT+IGqVFOzWtyQnoy9GtArJtoTQSdY2Q2ngONFSicEoMRrYH7GNU0vlA0X7nizgj9PSVOWj2O5bA==
-X-Received: by 2002:a5d:47ad:0:b0:38f:3791:c1df with SMTP id ffacd0b85a97d-390ec7cdcd9mr2579490f8f.15.1740732449099;
-        Fri, 28 Feb 2025 00:47:29 -0800 (PST)
-Received: from localhost ([194.120.133.72])
-        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-390e47a7b88sm4518687f8f.40.2025.02.28.00.47.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Feb 2025 00:47:28 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>,
-	linux-bcachefs@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] bcachefs: Fix spelling mistake "nonexistant" -> "nonexistent"
-Date: Fri, 28 Feb 2025 08:46:54 +0000
-Message-ID: <20250228084654.677828-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.47.2
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Qw73rYW9"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1740776497;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=gTGCLvxVr+rO35mSwTRoMPma8uED/FKA1yroojFvUGk=;
+	b=Qw73rYW9M3lqsGyKbhLtvztNXi7VLsZ+zfKUHpInEZC0hfskU/+xLHXw4rbg6WroOMUZdh
+	plZ04KJd4bxPyUOSzg7BtgBZEYX4YhRPMOYyrf/26iaNPB8qjWXvA4E04Zz8K0CCFnPe3O
+	EBlyEh9CCSdYpRRMZczopTZf1uJmUOI=
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: linux-bcachefs@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Dave Hansen <dave.hansen@linux.intel.com>
+Subject: [PATCH] bcachefs: Don't set BCH_FEATURE_incompat_version_field unless requested
+Date: Fri, 28 Feb 2025 16:01:20 -0500
+Message-ID: <20250228210120.144386-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-There is a spelling mistake in a fsck_err message. Fix it.
+We shouldn't be setting incompatible bits or the incompatible version
+field unless explicitly request or allowed - otherwise we break mounting
+with old kernels or userspace.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Reported-by: Dave Hansen <dave.hansen@linux.intel.com>
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/alloc_background.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/bcachefs/super-io.c | 25 +++++++++++++++++--------
+ fs/bcachefs/super-io.h | 11 ++++-------
+ 2 files changed, 21 insertions(+), 15 deletions(-)
 
-diff --git a/fs/bcachefs/alloc_background.c b/fs/bcachefs/alloc_background.c
-index ecad4a78c3f7..6db3482c3e19 100644
---- a/fs/bcachefs/alloc_background.c
-+++ b/fs/bcachefs/alloc_background.c
-@@ -1407,7 +1407,7 @@ int bch2_check_discard_freespace_key(struct btree_trans *trans, struct btree_ite
+diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
+index 877edc9efb15..000c283f6504 100644
+--- a/fs/bcachefs/super-io.c
++++ b/fs/bcachefs/super-io.c
+@@ -69,14 +69,21 @@ enum bcachefs_metadata_version bch2_latest_compatible_version(enum bcachefs_meta
+ 	return v;
+ }
  
- 	if (!bch2_dev_bucket_exists(c, bucket)) {
- 		if (fsck_err(trans, need_discard_freespace_key_to_invalid_dev_bucket,
--			     "entry in %s btree for nonexistant dev:bucket %llu:%llu",
-+			     "entry in %s btree for nonexistent dev:bucket %llu:%llu",
- 			     bch2_btree_id_str(iter->btree_id), bucket.inode, bucket.offset))
- 			goto delete;
- 		ret = 1;
+-void bch2_set_version_incompat(struct bch_fs *c, enum bcachefs_metadata_version version)
++int bch2_set_version_incompat(struct bch_fs *c, enum bcachefs_metadata_version version)
+ {
+-	mutex_lock(&c->sb_lock);
+-	SET_BCH_SB_VERSION_INCOMPAT(c->disk_sb.sb,
+-		max(BCH_SB_VERSION_INCOMPAT(c->disk_sb.sb), version));
+-	c->disk_sb.sb->features[0] |= cpu_to_le64(BCH_FEATURE_incompat_version_field);
+-	bch2_write_super(c);
+-	mutex_unlock(&c->sb_lock);
++	int ret = (c->sb.features & BIT_ULL(BCH_FEATURE_incompat_version_field)) &&
++		version <= c->sb.version_incompat_allowed;
++
++	if (!ret) {
++		mutex_lock(&c->sb_lock);
++		SET_BCH_SB_VERSION_INCOMPAT(c->disk_sb.sb,
++			max(BCH_SB_VERSION_INCOMPAT(c->disk_sb.sb), version));
++		c->disk_sb.sb->features[0] |= cpu_to_le64(BCH_FEATURE_incompat_version_field);
++		bch2_write_super(c);
++		mutex_unlock(&c->sb_lock);
++	}
++
++	return ret;
+ }
+ 
+ const char * const bch2_sb_fields[] = {
+@@ -1210,9 +1217,11 @@ void bch2_sb_upgrade(struct bch_fs *c, unsigned new_version, bool incompat)
+ 	c->disk_sb.sb->version = cpu_to_le16(new_version);
+ 	c->disk_sb.sb->features[0] |= cpu_to_le64(BCH_SB_FEATURES_ALL);
+ 
+-	if (incompat)
++	if (incompat) {
+ 		SET_BCH_SB_VERSION_INCOMPAT_ALLOWED(c->disk_sb.sb,
+ 			max(BCH_SB_VERSION_INCOMPAT_ALLOWED(c->disk_sb.sb), new_version));
++		c->disk_sb.sb->features[0] |= cpu_to_le64(BCH_FEATURE_incompat_version_field);
++	}
+ }
+ 
+ static int bch2_sb_ext_validate(struct bch_sb *sb, struct bch_sb_field *f,
+diff --git a/fs/bcachefs/super-io.h b/fs/bcachefs/super-io.h
+index 6158b2cd5a1c..167dd98f893e 100644
+--- a/fs/bcachefs/super-io.h
++++ b/fs/bcachefs/super-io.h
+@@ -21,17 +21,14 @@ static inline bool bch2_version_compatible(u16 version)
+ void bch2_version_to_text(struct printbuf *, enum bcachefs_metadata_version);
+ enum bcachefs_metadata_version bch2_latest_compatible_version(enum bcachefs_metadata_version);
+ 
+-void bch2_set_version_incompat(struct bch_fs *, enum bcachefs_metadata_version);
++int bch2_set_version_incompat(struct bch_fs *, enum bcachefs_metadata_version);
+ 
+ static inline int bch2_request_incompat_feature(struct bch_fs *c,
+ 						enum bcachefs_metadata_version version)
+ {
+-	if (unlikely(version > c->sb.version_incompat)) {
+-		if (version > c->sb.version_incompat_allowed)
+-			return -BCH_ERR_may_not_use_incompat_feature;
+-		bch2_set_version_incompat(c, version);
+-	}
+-	return 0;
++	return likely(version <= c->sb.version_incompat)
++		? 0
++		: bch2_set_version_incompat(c, version);
+ }
+ 
+ static inline size_t bch2_sb_field_bytes(struct bch_sb_field *f)
 -- 
 2.47.2
 
