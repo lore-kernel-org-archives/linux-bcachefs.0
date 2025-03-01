@@ -1,129 +1,78 @@
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65E9323F38C
-	for <linux-bcachefs@vger.kernel.org>; Fri, 28 Feb 2025 21:01:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10124D2FB
+	for <linux-bcachefs@vger.kernel.org>; Sat,  1 Mar 2025 00:22:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740776503; cv=none; b=sgIUxYPVuhgsCrkUZ3fp6YWOSkdMFnDG/mKg/meEemjfKRubgavzjBG+Su2MklYSe93uZ5vRe+wfdTtWmzVzz94Z8FXJY0kDiuxOs1mBo2dWj5VFQxfDcfsTZONy3g+37AtqAYn5qxDcImqzU6dBj0jj+pLU5WsxZ/6Ro2pD0og=
+	t=1740788524; cv=none; b=Bd+N7JMq5kDUrSp3AeYQHF0Nmvw7D8SDg+WoAlHYLcZU8hgOwJAZ81w8WYQFdMUYHx0N45oH/rzOsJinTJYDiXIs8wnpEaECNzB5+L3YXLxaV8UKyZ5kszwGh8Y5QzdW7oloV0LyXvJHn4dTwPgJm3DzZfz8x1qVjBG3UaZXTGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740776503; c=relaxed/simple;
-	bh=EBYY53aM4Bq/qROOGLqBpbOmYoBYVG4eSNMmw0o1Cu0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=USiK50WJ6H6u1NDn2BvuMO3wOcM7zPJ8/xsX1K1r07IjMfsY+Ew3pNs/+cfxtq2j9MXmWKizyVWdW0ES4Z19QjNBTaGVX0fektOTDsOj49WejXfX5vKJLFH6HWWvzGqpyyvOtFhlevNzCsEa46cNjpXckmwRFEAQ2i6VxTAZESE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Qw73rYW9; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Qw73rYW9"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740776497;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=gTGCLvxVr+rO35mSwTRoMPma8uED/FKA1yroojFvUGk=;
-	b=Qw73rYW9M3lqsGyKbhLtvztNXi7VLsZ+zfKUHpInEZC0hfskU/+xLHXw4rbg6WroOMUZdh
-	plZ04KJd4bxPyUOSzg7BtgBZEYX4YhRPMOYyrf/26iaNPB8qjWXvA4E04Zz8K0CCFnPe3O
-	EBlyEh9CCSdYpRRMZczopTZf1uJmUOI=
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	Dave Hansen <dave.hansen@linux.intel.com>
-Subject: [PATCH] bcachefs: Don't set BCH_FEATURE_incompat_version_field unless requested
-Date: Fri, 28 Feb 2025 16:01:20 -0500
-Message-ID: <20250228210120.144386-1-kent.overstreet@linux.dev>
+	s=arc-20240116; t=1740788524; c=relaxed/simple;
+	bh=d23CwhsVnNOdGWq6rbWCMbTUmxYX49JZJarGho1lNME=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=k8GX8222cALbb5IcDBGpX5kOSQ6yWyoGfS2i/YnMLpc/AO9jk9xyJcabfEp8p7dJg2Grx4vJN3qSafJeu6bT7msLt8JOtSjvcCXqsXv95aA54KBqipsXZ/hk95FaDqHU4iZi8OrWRuT1aZEnI2c4THcmiN6ZmlRQ4xrxe6Xb5Ao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3d289bf6c39so34291335ab.1
+        for <linux-bcachefs@vger.kernel.org>; Fri, 28 Feb 2025 16:22:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740788522; x=1741393322;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SnjErBV+M0/5ybVsx6d7eAIoc/JglLB98P2e5faRA7E=;
+        b=GpsudNE12EJCru9f1j7fx7ovFVEqh+981UG8gIZVHd0W1U1vQl8FsBsv5RvfEgHf9D
+         b62PTjbXiIcB9V1iOG7tetpknzSHqdtW9pGsDQ9pRQZV1IMhxi/EO7YdFUZmE0t46AlS
+         aScheMNYfV8pl5rccW8r9xXsMuI5FMqAyI1IQv6dlk+99Ej15VbQGB0u43sKRlrXEbSZ
+         UHMhnv/KU5Egswu5TWWMkNTYC8ZCXxlGjq2GQKzqqwbo+v3PG4NVWEj9XBqTWug92hWG
+         jqoCDav5z1/Cs8GAYKKjAR0PvN6s/e3azqc5Nbda4piQxFvv+C4AMI4mKpPyStNM1Y7l
+         GV8A==
+X-Forwarded-Encrypted: i=1; AJvYcCWtn6DtNiwxBZFpiZqV5tifOE4YDg17pRaCCAp9ke2Ta8jUc2M7lgk6Kkdus4bHUpLk3AW++fBcaj1al2/PYA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwDJBJ7w48QbihZMXQQqo8Tv5dLIcHAj0YS0dVSBy6E+GEUPGwt
+	3RnxhRoqrMHtMJZGMw90VJaUjP9ZGoBNGhhfY307albleDbmVffQR80DRvYyCNhjTlDkOEZdQzb
+	+kwgp4ZDJ2qyNp8eG1n0GSvCCmrf6o7Q3xe9az4I6AgrgHLnQedxCdgI=
+X-Google-Smtp-Source: AGHT+IFK/+Voer3eS9nJJ3bYQfdwYAE5ugYuJdGLAyLLQCY/ACDcPRlCyhOrxJ0CnyTRZ+tpJBVu0AIj8ZAgaveZ2D5+L68bWSvD
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6e02:194b:b0:3d0:26a5:b2c with SMTP id
+ e9e14a558f8ab-3d3e6bc6b2emr43948505ab.8.1740788522212; Fri, 28 Feb 2025
+ 16:22:02 -0800 (PST)
+Date: Fri, 28 Feb 2025 16:22:02 -0800
+In-Reply-To: <67c16ce2.050a0220.1baf.000e.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67c2532a.050a0220.dc10f.0154.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] INFO: task hung in invalidate_inode_pages2_range
+ (3)
+From: syzbot <syzbot+de1434c5355cc909b734@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-We shouldn't be setting incompatible bits or the incompatible version
-field unless explicitly request or allowed - otherwise we break mounting
-with old kernels or userspace.
+syzbot has bisected this issue to:
 
-Reported-by: Dave Hansen <dave.hansen@linux.intel.com>
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
----
- fs/bcachefs/super-io.c | 25 +++++++++++++++++--------
- fs/bcachefs/super-io.h | 11 ++++-------
- 2 files changed, 21 insertions(+), 15 deletions(-)
+commit 1d16c605cc55ef26f0c65b362665a6c99080ccbc
+Author: Kent Overstreet <kent.overstreet@linux.dev>
+Date:   Thu Nov 9 19:22:46 2023 +0000
 
-diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
-index 877edc9efb15..000c283f6504 100644
---- a/fs/bcachefs/super-io.c
-+++ b/fs/bcachefs/super-io.c
-@@ -69,14 +69,21 @@ enum bcachefs_metadata_version bch2_latest_compatible_version(enum bcachefs_meta
- 	return v;
- }
- 
--void bch2_set_version_incompat(struct bch_fs *c, enum bcachefs_metadata_version version)
-+int bch2_set_version_incompat(struct bch_fs *c, enum bcachefs_metadata_version version)
- {
--	mutex_lock(&c->sb_lock);
--	SET_BCH_SB_VERSION_INCOMPAT(c->disk_sb.sb,
--		max(BCH_SB_VERSION_INCOMPAT(c->disk_sb.sb), version));
--	c->disk_sb.sb->features[0] |= cpu_to_le64(BCH_FEATURE_incompat_version_field);
--	bch2_write_super(c);
--	mutex_unlock(&c->sb_lock);
-+	int ret = (c->sb.features & BIT_ULL(BCH_FEATURE_incompat_version_field)) &&
-+		version <= c->sb.version_incompat_allowed;
-+
-+	if (!ret) {
-+		mutex_lock(&c->sb_lock);
-+		SET_BCH_SB_VERSION_INCOMPAT(c->disk_sb.sb,
-+			max(BCH_SB_VERSION_INCOMPAT(c->disk_sb.sb), version));
-+		c->disk_sb.sb->features[0] |= cpu_to_le64(BCH_FEATURE_incompat_version_field);
-+		bch2_write_super(c);
-+		mutex_unlock(&c->sb_lock);
-+	}
-+
-+	return ret;
- }
- 
- const char * const bch2_sb_fields[] = {
-@@ -1210,9 +1217,11 @@ void bch2_sb_upgrade(struct bch_fs *c, unsigned new_version, bool incompat)
- 	c->disk_sb.sb->version = cpu_to_le16(new_version);
- 	c->disk_sb.sb->features[0] |= cpu_to_le64(BCH_SB_FEATURES_ALL);
- 
--	if (incompat)
-+	if (incompat) {
- 		SET_BCH_SB_VERSION_INCOMPAT_ALLOWED(c->disk_sb.sb,
- 			max(BCH_SB_VERSION_INCOMPAT_ALLOWED(c->disk_sb.sb), new_version));
-+		c->disk_sb.sb->features[0] |= cpu_to_le64(BCH_FEATURE_incompat_version_field);
-+	}
- }
- 
- static int bch2_sb_ext_validate(struct bch_sb *sb, struct bch_sb_field *f,
-diff --git a/fs/bcachefs/super-io.h b/fs/bcachefs/super-io.h
-index 6158b2cd5a1c..167dd98f893e 100644
---- a/fs/bcachefs/super-io.h
-+++ b/fs/bcachefs/super-io.h
-@@ -21,17 +21,14 @@ static inline bool bch2_version_compatible(u16 version)
- void bch2_version_to_text(struct printbuf *, enum bcachefs_metadata_version);
- enum bcachefs_metadata_version bch2_latest_compatible_version(enum bcachefs_metadata_version);
- 
--void bch2_set_version_incompat(struct bch_fs *, enum bcachefs_metadata_version);
-+int bch2_set_version_incompat(struct bch_fs *, enum bcachefs_metadata_version);
- 
- static inline int bch2_request_incompat_feature(struct bch_fs *c,
- 						enum bcachefs_metadata_version version)
- {
--	if (unlikely(version > c->sb.version_incompat)) {
--		if (version > c->sb.version_incompat_allowed)
--			return -BCH_ERR_may_not_use_incompat_feature;
--		bch2_set_version_incompat(c, version);
--	}
--	return 0;
-+	return likely(version <= c->sb.version_incompat)
-+		? 0
-+		: bch2_set_version_incompat(c, version);
- }
- 
- static inline size_t bch2_sb_field_bytes(struct bch_sb_field *f)
--- 
-2.47.2
+    bcachefs: Disk space accounting rewrite
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=116557b8580000
+start commit:   1e15510b71c9 Merge tag 'net-6.14-rc5' of git://git.kernel...
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=136557b8580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=156557b8580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8de9cc84d5960254
+dashboard link: https://syzkaller.appspot.com/bug?extid=de1434c5355cc909b734
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11d297b8580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=119af064580000
+
+Reported-by: syzbot+de1434c5355cc909b734@syzkaller.appspotmail.com
+Fixes: 1d16c605cc55 ("bcachefs: Disk space accounting rewrite")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
