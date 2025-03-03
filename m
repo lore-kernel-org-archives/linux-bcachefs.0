@@ -1,240 +1,771 @@
-Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
+Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BC641E9B3D;
-	Mon,  3 Mar 2025 08:36:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54C652139D8
+	for <linux-bcachefs@vger.kernel.org>; Mon,  3 Mar 2025 14:51:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740991006; cv=none; b=IvQyLHrZCPJhH0BR6vxHbECtJVGRV8vDykd4ZAzGnkGLCu//O/Td9kaNj0usE654XYsJfmJBEiz2JMzUMx/2z94i9SAowmYIKH45G76pxE9dh6/cHWi4bGgQ5kSTwCZm1f4t0kCZMti9zK6IzjUzbq7wuU6TaI1PYsOGygUf2l4=
+	t=1741013501; cv=none; b=Ws5+kz8FRw2jmnIAcWxoGB9iED0PY9aIzOaLk2m0PpnQAnbq2Xst3XEW25uBQ417VfB6xsZA6sDvnjSMkGKhK2M2ezJkJvK8WoRQSVO9EmBtfYITxlgcuVEVxcM8LbMJVZPIR7Rv8iShZFhMSjJo/5+CJxJN9a32HBYhevZOxI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740991006; c=relaxed/simple;
-	bh=FhmhAZyEcpgTM+6P0ZltvrlSmw5z7rq6LGrVAQTgLUc=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=qBSG+2J94mnpl/11s0vrCIHuxXXeF99dZ10jpRwK3uCeL890wEQJQzLT9wZERW98XSQklPfIHyHDL9Bnfhw0jGLKeyFCm9Xi9ljbBN30u2ESQlbteC+rkfKoFmc56PWzTvUASd4SPLxBvKiZITqOLS2D0OdO3sS2PE/O+KtKdDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TnxJR2Pl; arc=none smtp.client-ip=209.85.160.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TnxJR2Pl"
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-2bcc0c6c149so3752391fac.1;
-        Mon, 03 Mar 2025 00:36:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740991004; x=1741595804; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=e+xmtTeQ6le8DHUZ2pKRu6fVSKJXYIHfU/7nENHpMVY=;
-        b=TnxJR2PljP3E1teHMQ7Q75ViCaaS1eNkU8sIG0L+DGJJlPt1NpvDamJhIdjCf1N4fO
-         P61gYam5QbzWZ1949NoaX7wWHWFAeuQT9TgTGRoWDwQXAz/yXB147Vrj6+XMyWKXXF+f
-         kuC6W4ofpzbN4Uhmk0oEcB0e2e6wGXOm8lP1Grin7sTpf226k9TPr9rVZ0zbVqgrFM36
-         q2t4xPPRFTBO818jqaI9b5//weKu/0NJKuul4vz6awRJ7cuMRVerRp2Irc1SwnWtUtKK
-         Jw8gqi1kZp9aG1Ums84ptXECj3LFyduRT+JXDGQfXcXuHuj9dbiyBERZ/8mSOkjCD6j8
-         mgpw==
+	s=arc-20240116; t=1741013501; c=relaxed/simple;
+	bh=kncXkqs/RyK5p/cwOFJ2VPlVOE/IidZ99Hy3aiwcTx8=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Jyq0C8EUb66gEHrErqZXbcKzSIhtqB3wJF7OmS07U/iExK3ZwJopu3jmjk8JPr1JtJdqUNEY+gXl0dJq5uZpIRO1zKQyZfGL7HwGchL2CUF0g8fpnGJFUdqjKDuLvv1dcB3nY8Dkzxwr7y+bJvmg7Km3/hh2IwAPxKZQc5CreK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3d289bf6c39so50512315ab.1
+        for <linux-bcachefs@vger.kernel.org>; Mon, 03 Mar 2025 06:51:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740991004; x=1741595804;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=e+xmtTeQ6le8DHUZ2pKRu6fVSKJXYIHfU/7nENHpMVY=;
-        b=G/5YlEzd0zrmH2cbRL73zrLDyInYUShDvU8PyhzOhz/06hNw3JffQoF1CIFR4CY1AG
-         TiiShAHzBAABrhjGA2CZ5KvgrSITlbrbvA/R/lWGHXuZsmNuyEzLGLnbIzBHceWpBhxZ
-         /LCDVieNQym6Cy1gSmXyHFBGdUsmWahILzssa/b+GFiBhUiFF89rc5drG4d3h+/cq4iv
-         nSQ5EaQQHx/KJ6k2Ad4gpSoud8QA1PVPuQoe9Jpj7bktWWZg6XKfs5N6ww6SvspA0/Rb
-         TAStKhTt0Pg1plS5vHrPlGiwiwmIoLYkXyK092B0GmXMHr7NiKD/iSELUedMITanD6VQ
-         kpiA==
-X-Forwarded-Encrypted: i=1; AJvYcCUvJPRQ1B3tg0GgUHMYabx7mRt8iq2Q+Ls2Knpyi5y4i62ShFghddRNzma7LIIuR9gcRbkL2+CP5iVDaxKJgg==@vger.kernel.org, AJvYcCXi4YYlmc051s2qjLB73L89tZVYhyxAnCAzVqfjs4BiQkSDQaQNzRsXo9nm15ceKZjdymsKYsGbN7EGFzIA@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx3kWqJz2AOWLFNNcJOljmtwYxcCmUZl3AwcgyDmJKpsofeWxoI
-	uGAcf/jzznq4DOX4L8tvSZcBseKrbOhJRse5LANvTJ1EuRl8lCf9HohW80F/WNxVJySFERQtdnt
-	nvI43QbgOlw2NAGuzBl0oPuO46fA=
-X-Gm-Gg: ASbGnctsSyQtvnsuk+QWoYjsxk2sVfxX6TEwdtoy5JS8yao79+3jhvYX2CRta5U3mhI
-	6+0GIzQITiDOQyWyHZt6h/DOJlNymQslg0Omo0JldMNWI9fCrtNr6fZ5hMyuXJ6ZjV14hEExJI3
-	796JzkXL7Mb473PZFdvGKTYPWGaw==
-X-Google-Smtp-Source: AGHT+IGLrgCF9bhojFbMj5hTYar1qpiA2lXfLvkY2WGahh5FA3P1m/fbqcXDx2ohWgJUoA3Ec8V+Xtqnvo6z7Fxs5hg=
-X-Received: by 2002:a05:6870:bb0c:b0:2c1:6948:d57c with SMTP id
- 586e51a60fabf-2c178647718mr7620263fac.28.1740991004091; Mon, 03 Mar 2025
- 00:36:44 -0800 (PST)
+        d=1e100.net; s=20230601; t=1741013496; x=1741618296;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1g7+EiyTZUNCEP/ZYvZ8l1P3mdWRP6tTPqFc1jNiYks=;
+        b=JAcK6JgRya7KHuVUAQM/8aYoUWXnzsuNDOknIxYUU8FN400/3NEH3kWaHj4wyrOKV0
+         h237E8op9QV+HYl/O7z6oavU06xVUAdcJOzS6/VpBi11jEHiZIRzhxXhgtFyWQhVeNW7
+         bTQqL0I0Lps946+fkMQb3hpdZTAvF3IQB2T0F3A4H9mjRakzOVLOBfh+WN0925YlTJCg
+         b/xhDATYfAJi3OybvqLrKed0AmqJxC1aELTo+YsMUCArQjdthSrozW4cnyNiLBoH9yG4
+         w9vY7ieo0gE9ULMaEhi9AC9nPOEh8XpFR3xV8IW02kJ3145v2g3qld16G2tdA0qFaiep
+         HWZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWHXJPZ35UcKFVt2icM032f0q09Khl86dUB/QdjvaMD7ayKzWD7L0C0uXhNXSzwpQrOpI40UH7pKA+6ONq3BA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YykbmNRnhoVgyKThsopB47Mt7x98NsiZnet9gJQ1iHyZn3Iz3FA
+	sV7MWkbMFUqSLXJFilcyt4kX9o3w9XFwX6scp3fPhqPmqmms2y0zDveG7ZE7ZCCry0pcRaxAAcD
+	vus2o5PcqDuUI35QENVn1tJKECAX4+YPe5nSd9UDwg1wUDBYIae1wM70=
+X-Google-Smtp-Source: AGHT+IHT7hUswIIDKHpwweDEsrbA7EKke1BwaVk+D8G2iKqxVa58xEiyJ27xpz756ei8fNOeuGlv8eSxiYASKW47smHlr6/O6jxa
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Strforexc yn <strforexc@gmail.com>
-Date: Mon, 3 Mar 2025 16:36:33 +0800
-X-Gm-Features: AQ5f1Jr83p_Oe7kHMbWs6y-C_nqTfDNRamOd2tKyQb6DOdSeUA0HLsBeoo3tq5c
-Message-ID: <CA+HokZrg9rP1Wf=SbfRTCxU07M9yD48TV0dyPQDcUM7eL9Br0g@mail.gmail.com>
-Subject: [BUG] KASAN: Use-After-Free in crc32c_le_base via bch2_checksum_update
- (Bcachefs) on 6.14.0-rc4
-To: Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Cc: syzkaller-bugs@googlegroups.com
+X-Received: by 2002:a92:d58a:0:b0:3d3:f15e:8e23 with SMTP id
+ e9e14a558f8ab-3d3f15e9d67mr84829265ab.10.1741013496377; Mon, 03 Mar 2025
+ 06:51:36 -0800 (PST)
+Date: Mon, 03 Mar 2025 06:51:36 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67c5c1f8.050a0220.55417.06f6.GAE@google.com>
+Subject: [syzbot] [bcachefs?] KASAN: slab-out-of-bounds Read in validate_bset_keys
+From: syzbot <syzbot+3cb3d9e8c3f197754825@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Dear Linux Kernel Developers,
-I=E2=80=99ve identified a KASAN-reported use-after-free in the Bcachefs
-filesystem on Linux 6.14.0-rc4 during recovery, potentially affecting
-filesystem integrity. Here are the details:
+Hello,
 
-Kernel commit: v6.14-rc4 (Commits on Feb 24, 2025)
-Kernel Config : https://github.com/Strforexc/LinuxKernelbug/blob/main/.conf=
-ig
-Kernel Log=EF=BC=9A https://github.com/Strforexc/LinuxKernelbug/blob/main/u=
-af_r_bch2_checksum_update/log0
-Reproduce.c: https://github.com/Strforexc/LinuxKernelbug/blob/main/uaf_r_bc=
-h2_checksum_update/repro.cprog
+syzbot found the following issue on:
 
-Bug Description=EF=BC=9A
-KASAN detects a use-after-free read of size 1 at address
-ffff88804d060000 in crc32c_le_base (lib/crc32.c:51), called via
-bch2_checksum_update (fs/bcachefs/checksum.c:85), during B-tree node
-reading in Bcachefs recovery.
+HEAD commit:    e056da87c780 Merge remote-tracking branch 'will/for-next/p..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=16fa9864580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d6b7e15dc5b5e776
+dashboard link: https://syzkaller.appspot.com/bug?extid=3cb3d9e8c3f197754825
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1614e8b7980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11fa9864580000
 
-The fault occurs in crc32c_le_base, accessing a buffer (data) freed
-earlier by btree_bounce_free in bch2_btree_node_read_done.
-Cause: bch2_btree_node_read_done frees a bounce buffer (kvfree) before
-its checksum is computed via bch2_checksum_update, leaving a stale
-pointer. The buffer is used after freeing, causing the use-after-free.
-Context: Syzkaller=E2=80=99s mount operation triggers Bcachefs recovery,
-likely with a crafted filesystem exposing this buffer lifetime issue.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/3d8b1b7cc4c0/disk-e056da87.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b84c04cff235/vmlinux-e056da87.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/2ae4d0525881/Image-e056da87.gz.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/54f57836a7d4/mount_0.gz
 
-Could Bcachefs maintainers investigate? Possible issues:
-1. Premature freeing of the bounce buffer in bch2_btree_node_read_done
-before checksum completion.
-2. Lack of pointer invalidation after kvfree.
-Suggested fixes:
-1. Defer btree_bounce_free until after all buffer operations (e.g.,
-move it after checksum and validation).
-2. Nullify pointers post-free to catch misuse.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3cb3d9e8c3f197754825@syzkaller.appspotmail.com
 
-Our knowledge of the kernel is somewhat limited, and we'd appreciate
-it if you could determine if there is such an issue. If this issue
-doesn't have an impact, please ignore it =E2=98=BA.
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2097 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+==================================================================
+BUG: KASAN: slab-out-of-bounds in __memcpy_u64s fs/bcachefs/util.h:434 [inline]
+BUG: KASAN: slab-out-of-bounds in __memmove_u64s_down fs/bcachefs/util.h:450 [inline]
+BUG: KASAN: slab-out-of-bounds in memmove_u64s_down fs/bcachefs/util.h:458 [inline]
+BUG: KASAN: slab-out-of-bounds in validate_bset_keys+0xa08/0x16e8 fs/bcachefs/btree_io.c:999
+Read of size 8 at addr ffff0000de6100a8 by task kworker/1:1H/57
 
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Zhizhuo Tang strforexctzzchange@foxmail.com, Jianzhou
-Zhao xnxc22xnxc22@qq.com, Haoran Liu <cherest_san@163.com>
-
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-BUG: KASAN: use-after-free in crc32c_le_base+0xdb/0xf0 lib/crc32.c:51
-Read of size 1 at addr ffff88804d060000 by task syz.4.204/13836
-
-CPU: 0 UID: 0 PID: 13836 Comm: syz.4.204 Not tainted 6.14.0-rc4 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/=
-2014
-Call Trace:
- <TASK>
+CPU: 1 UID: 0 PID: 57 Comm: kworker/1:1H Not tainted 6.14.0-rc4-syzkaller-ge056da87c780 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 12/27/2024
+Workqueue: bcachefs_btree_read_complete btree_node_read_work
+Call trace:
+ show_stack+0x2c/0x3c arch/arm64/kernel/stacktrace.c:466 (C)
  __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x116/0x1b0 lib/dump_stack.c:120
- print_address_description.constprop.0+0x2c/0x420 mm/kasan/report.c:408
- print_report+0xaa/0x270 mm/kasan/report.c:521
- kasan_report+0xbd/0x100 mm/kasan/report.c:634
- crc32c_le_base+0xdb/0xf0 lib/crc32.c:51
- crc32c_le_arch+0x183/0x1d0 arch/x86/lib/crc32-glue.c:69
- __crc32c_le include/linux/crc32.h:36 [inline]
- crc32c include/linux/crc32c.h:9 [inline]
- bch2_checksum_update+0x136/0x1a0 fs/bcachefs/checksum.c:85
- bch2_checksum+0x104/0x2c0 fs/bcachefs/checksum.c:226
- bch2_btree_node_read_done+0x28e7/0x4b90 fs/bcachefs/btree_io.c:1130
- btree_node_read_work+0x670/0x1060 fs/bcachefs/btree_io.c:1358
- bch2_btree_node_read+0x855/0xc50 fs/bcachefs/btree_io.c:1748
- __bch2_btree_root_read+0x288/0x410 fs/bcachefs/btree_io.c:1789
- bch2_btree_root_read+0x54/0xa0 fs/bcachefs/btree_io.c:1811
- read_btree_roots+0x2ba/0x760 fs/bcachefs/recovery.c:581
- bch2_fs_recovery+0x1822/0x2fa0 fs/bcachefs/recovery.c:928
- bch2_fs_start+0x33d/0x690 fs/bcachefs/super.c:1041
- bch2_fs_get_tree+0x105a/0x1470 fs/bcachefs/fs.c:2203
- vfs_get_tree+0x93/0x350 fs/super.c:1814
- do_new_mount+0x368/0x730 fs/namespace.c:3560
- path_mount+0x4a6/0x17f0 fs/namespace.c:3887
- do_mount fs/namespace.c:3900 [inline]
- __do_sys_mount fs/namespace.c:4111 [inline]
- __se_sys_mount fs/namespace.c:4088 [inline]
- __x64_sys_mount+0x288/0x310 fs/namespace.c:4088
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcb/0x260 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f4c581ba41e
-Code: 48 c7 c0 ff ff ff ff eb aa e8 5e 20 00 00 66 2e 0f 1f 84 00 00
-00 00 00 0f 1f 40 00 f3 0f 1e fa 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f4c59158da8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 0000000000005d94 RCX: 00007f4c581ba41e
-RDX: 0000400000000040 RSI: 0000400000005dc0 RDI: 00007f4c59158e00
-RBP: 00007f4c59158e40 R08: 00007f4c59158e40 R09: 0000000000014002
-R10: 0000000000014002 R11: 0000000000000246 R12: 0000400000000040
-R13: 0000400000005dc0 R14: 00007f4c59158e00 R15: 0000400000000080
- </TASK>
+ dump_stack_lvl+0xe4/0x150 lib/dump_stack.c:120
+ print_address_description mm/kasan/report.c:408 [inline]
+ print_report+0x198/0x550 mm/kasan/report.c:521
+ kasan_report+0xd8/0x138 mm/kasan/report.c:634
+ __asan_report_load8_noabort+0x20/0x2c mm/kasan/report_generic.c:381
+ __memcpy_u64s fs/bcachefs/util.h:434 [inline]
+ __memmove_u64s_down fs/bcachefs/util.h:450 [inline]
+ memmove_u64s_down fs/bcachefs/util.h:458 [inline]
+ validate_bset_keys+0xa08/0x16e8 fs/bcachefs/btree_io.c:999
+ bch2_btree_node_read_done+0x19f4/0x4acc fs/bcachefs/btree_io.c:1164
+ btree_node_read_work+0x534/0xf20 fs/bcachefs/btree_io.c:1358
+ process_one_work+0x810/0x1638 kernel/workqueue.c:3236
+ process_scheduled_works kernel/workqueue.c:3317 [inline]
+ worker_thread+0x97c/0xeec kernel/workqueue.c:3398
+ kthread+0x65c/0x7b0 kernel/kthread.c:464
+ ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:862
+
+Allocated by task 6439:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x40/0x78 mm/kasan/common.c:68
+ kasan_save_alloc_info+0x40/0x50 mm/kasan/generic.c:562
+ unpoison_slab_object mm/kasan/common.c:319 [inline]
+ __kasan_slab_alloc+0x74/0x8c mm/kasan/common.c:345
+ kasan_slab_alloc include/linux/kasan.h:250 [inline]
+ slab_post_alloc_hook mm/slub.c:4115 [inline]
+ slab_alloc_node mm/slub.c:4164 [inline]
+ kmem_cache_alloc_noprof+0x254/0x410 mm/slub.c:4171
+ alloc_buffer_head+0x38/0x320 fs/buffer.c:3015
+ folio_alloc_buffers+0x40c/0x974 fs/buffer.c:924
+ create_empty_buffers+0x4c/0x54c fs/buffer.c:1662
+ ext4_block_write_begin+0x21c/0xf24 fs/ext4/inode.c:1046
+ ext4_da_write_begin+0x4e8/0x98c fs/ext4/inode.c:2946
+ generic_perform_write+0x29c/0x868 mm/filemap.c:4189
+ ext4_buffered_write_iter+0x2c0/0x52c fs/ext4/file.c:299
+ ext4_file_write_iter+0x1ac/0x197c fs/ext4/file.c:717
+ new_sync_write fs/read_write.c:586 [inline]
+ vfs_write+0x704/0xa9c fs/read_write.c:679
+ ksys_write+0x15c/0x26c fs/read_write.c:731
+ __do_sys_write fs/read_write.c:742 [inline]
+ __se_sys_write fs/read_write.c:739 [inline]
+ __arm64_sys_write+0x7c/0x90 fs/read_write.c:739
+ __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
+ el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:744
+ el0t_64_sync_handler+0x84/0x108 arch/arm64/kernel/entry-common.c:762
+ el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
+
+The buggy address belongs to the object at ffff0000de610000
+ which belongs to the cache buffer_head of size 168
+The buggy address is located 0 bytes to the right of
+ allocated 168-byte region [ffff0000de610000, ffff0000de6100a8)
 
 The buggy address belongs to the physical page:
-page: refcount:0 mapcount:0 mapping:0000000000000000
-index:0xffff88804d062840 pfn:0x4d060
-flags: 0x4fff00000000000(node=3D1|zone=3D1|lastcpupid=3D0x7ff)
-page_type: f0(buddy)
-raw: 04fff00000000000 ffffea0001301008 ffff88807ffda7a8 0000000000000000
-raw: ffff88804d062840 0000000000000005 00000000f0000000 0000000000000000
+page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x11e610
+flags: 0x5ffc00000000000(node=0|zone=2|lastcpupid=0x7ff)
+page_type: f5(slab)
+raw: 05ffc00000000000 ffff0000c18aadc0 dead000000000122 0000000000000000
+raw: 0000000000000000 0000000000110011 00000000f5000000 0000000000000000
 page dumped because: kasan: bad access detected
-page_owner tracks the page as freed
-page last allocated via order 5, migratetype Reclaimable, gfp_mask
-0x452cd0(GFP_KERNEL_ACCOUNT|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_REC=
-LAIMABLE),
-pid 13836, tgid 13835 (syz.4.204), ts 115647482830, free_ts
-115856278729
- set_page_owner include/linux/page_owner.h:32 [inline]
- post_alloc_hook+0x1a3/0x1d0 mm/page_alloc.c:1551
- prep_new_page mm/page_alloc.c:1559 [inline]
- get_page_from_freelist+0x8a5/0xfa0 mm/page_alloc.c:3477
- __alloc_frozen_pages_noprof+0x1d8/0x3b0 mm/page_alloc.c:4739
- __alloc_pages_noprof+0xc/0x1c0 mm/page_alloc.c:4773
- __alloc_pages_node_noprof include/linux/gfp.h:265 [inline]
- alloc_pages_node_noprof include/linux/gfp.h:292 [inline]
- ___kmalloc_large_node+0x8b/0x1b0 mm/slub.c:4239
- __kmalloc_large_node_noprof+0x1a/0x80 mm/slub.c:4266
- __do_kmalloc_node mm/slub.c:4282 [inline]
- __kmalloc_node_noprof+0x39e/0x570 mm/slub.c:4300
- __kvmalloc_node_noprof+0x7e/0x1c0 mm/util.c:662
- btree_node_data_alloc.constprop.0+0xe9/0x2a0 fs/bcachefs/btree_cache.c:156
- __bch2_btree_node_mem_alloc+0x37/0xa0 fs/bcachefs/btree_cache.c:201
- bch2_fs_btree_cache_init+0x110/0x560 fs/bcachefs/btree_cache.c:655
- bch2_fs_alloc+0x16fc/0x1e30 fs/bcachefs/super.c:919
- bch2_fs_open+0x91b/0xb90 fs/bcachefs/super.c:2064
- bch2_fs_get_tree+0xf83/0x1470 fs/bcachefs/fs.c:2190
- vfs_get_tree+0x93/0x350 fs/super.c:1814
- do_new_mount+0x368/0x730 fs/namespace.c:3560
-page last free pid 13836 tgid 13835 stack trace:
- reset_page_owner include/linux/page_owner.h:25 [inline]
- free_pages_prepare mm/page_alloc.c:1127 [inline]
- __free_pages_ok+0x61f/0xe70 mm/page_alloc.c:1271
- __folio_put+0x304/0x3d0 mm/swap.c:112
- kvfree+0x46/0x50 mm/util.c:705
- btree_bounce_free fs/bcachefs/btree_io.c:111 [inline]
- bch2_btree_node_read_done+0x3acc/0x4b90 fs/bcachefs/btree_io.c:1243
- btree_node_read_work+0x670/0x1060 fs/bcachefs/btree_io.c:1358
- bch2_btree_node_read+0x855/0xc50 fs/bcachefs/btree_io.c:1748
- __bch2_btree_root_read+0x288/0x410 fs/bcachefs/btree_io.c:1789
- bch2_btree_root_read+0x54/0xa0 fs/bcachefs/btree_io.c:1811
- read_btree_roots+0x2ba/0x760 fs/bcachefs/recovery.c:581
- bch2_fs_recovery+0x1822/0x2fa0 fs/bcachefs/recovery.c:928
- bch2_fs_start+0x33d/0x690 fs/bcachefs/super.c:1041
- bch2_fs_get_tree+0x105a/0x1470 fs/bcachefs/fs.c:2203
- vfs_get_tree+0x93/0x350 fs/super.c:1814
- do_new_mount+0x368/0x730 fs/namespace.c:3560
- path_mount+0x4a6/0x17f0 fs/namespace.c:3887
- do_mount fs/namespace.c:3900 [inline]
- __do_sys_mount fs/namespace.c:4111 [inline]
- __se_sys_mount fs/namespace.c:4088 [inline]
- __x64_sys_mount+0x288/0x310 fs/namespace.c:4088
 
 Memory state around the buggy address:
- ffff88804d05ff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff88804d05ff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff88804d060000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                   ^
- ffff88804d060080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff88804d060100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Regards,
-Strforexc
+ ffff0000de60ff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff0000de610000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff0000de610080: 00 00 00 00 00 fc fc fc fc fc fc fc fc 00 00 00
+                                  ^
+ ffff0000de610100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff0000de610180: 00 00 fc fc fc fc fc fc fc fc 00 00 00 00 00 00
+==================================================================
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2095 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2093 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2091 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2089 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2087 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2085 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2083 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2081 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2079 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2077 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2075 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2073 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2071 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2069 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2067 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2065 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2063 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2061 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2059 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2057 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2055 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2053 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2051 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2049 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2047 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2045 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2043 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2041 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2039 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2037 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2035 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2033 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2031 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2029 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2027 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2025 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2023 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2021 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2019 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2017 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2015 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2013 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2011 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2009 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2007 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2005 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2003 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 2001 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1999 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1997 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1995 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1993 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1991 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1989 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1987 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1985 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1983 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1981 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1979 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1977 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1975 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1973 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1971 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1969 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1967 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1965 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1963 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1961 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1959 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1957 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1955 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1953 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1951 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1949 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1947 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1945 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1943 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1941 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1939 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1937 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1935 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1933 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1931 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1929 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1927 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1925 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1923 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1921 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1919 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1917 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1915 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1913 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1911 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1909 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1907 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1905 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1903 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1901 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1899 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1897 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1895 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1893 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1891 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1889 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1887 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1885 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1883 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1881 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1879 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1877 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1875 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1873 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1871 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1869 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1867 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1865 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1863 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1861 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1859 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1857 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1855 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1853 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1851 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1849 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1847 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1845 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1843 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1841 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1839 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1837 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1835 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1833 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1831 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1829 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1827 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1825 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1823 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1821 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1819 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1817 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1815 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1813 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1811 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1809 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1807 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1805 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1803 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1801 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1799 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1797 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1795 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1793 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1791 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1789 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1787 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1785 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1783 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1781 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1779 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1777 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1775 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1773 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1771 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1769 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1767 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1765 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1763 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1761 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1759 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1757 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1755 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1753 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1751 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1749 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1747 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1745 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1743 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1741 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1739 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1737 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1735 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1733 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1731 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1729 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1727 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1725 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1723 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1721 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1719 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1717 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1715 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1713 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1711 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1709 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents level 0/0
+  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 48 min_key 0:36028797018963968:0 durability: 1 ptr: 0:27:0 gen 0  
+  node offset 8/48 bset u64s 1707 bset byte offset 40: bad k->u64s 0 (min 3 max 253), fixing
+bcachefs (loop0): error validating btree node at btree extents leve
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
