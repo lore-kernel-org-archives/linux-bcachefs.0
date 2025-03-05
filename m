@@ -1,180 +1,207 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AC6A202F8F;
-	Tue,  4 Mar 2025 15:14:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CCD243AB7
+	for <linux-bcachefs@vger.kernel.org>; Wed,  5 Mar 2025 05:54:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741101278; cv=none; b=Z8f0kqeGyGdRaP78SgqT+fysve17OAkuwQ4AyxOfoL1nfVQ258+vSBcx2OtCgS2wxV3PZWBcIKZNt57u7hDDDVEx37RhglN/BDjXVt5tluEWBrJLCxM4UTkjErcw2tV2Whvl36KV2UKagNXkh7hOvy8fAaWN5zIDk5sASpGcfVU=
+	t=1741154068; cv=none; b=eo8tEZi811Bel+SE96ljajFyZ6N6HwGa/kaSTIAPYsUb+rkGsWzsrtQMjWfyVEV0pqIYSGtPEKqFN2LAa9TsGfALDZSiZTGnNzIt34xx9mXgmbaaIQxi+vA2ypBPLojB8/4tyVLpAM+ewmsJZBXAMtccAqwa5NjnW4rSNw3l2+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741101278; c=relaxed/simple;
-	bh=zWrzCGCyEtmz4bprxj0QGkAf7nnb/KqKRPqPQWMwaxY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nhySPWhB+8BYwIJCq1VwfggVgtJ7sIkl/ZWDW+nbnQtt8C8deYGAlQZA2cy8FHXs3JvwshjipQPB7npHL3bj4LnI/jqf0Xhlh9yczDjM5gQFmIDea5/vS+b+mpdMxzzhdpGNsSY/uYHByKSTJ4tYpOEt1LzhukmrsdY3GY7CscU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8BC4C4CEE5;
-	Tue,  4 Mar 2025 15:14:36 +0000 (UTC)
-Date: Tue, 4 Mar 2025 10:15:31 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Strforexc yn <strforexc@gmail.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>, "Paul E. McKenney"
- <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, rcu@vger.kernel.org,
- linux-kernel@vger.kernel.org, Kent Overstreet <kent.overstreet@linux.dev>,
- linux-bcachefs@vger.kernel.org
-Subject: Re: KASAN: global-out-of-bounds Read in srcu_gp_start_if_needed
-Message-ID: <20250304101531.55de1072@gandalf.local.home>
-In-Reply-To: <CA+HokZrPb-oHcuZQsc=LZ6_aJfjKy9oMeCBd-tq4b_sX5EG7NQ@mail.gmail.com>
-References: <CA+HokZrPb-oHcuZQsc=LZ6_aJfjKy9oMeCBd-tq4b_sX5EG7NQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1741154068; c=relaxed/simple;
+	bh=LaAntkE8kADInbFez1tYr4UgDOC9fiPwbJFcVkbTmVk=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=cYRkbcEeDCCeLIoSkDjCOulaDDLx5Qxp7rYCfIkQGYH+EHKFSkRXMAvMVIVS+xfx7k+A4qY2HOJOQgiQueSf7xTRNPy9ogDlZPw9wTtWOO4/amoXxZkZcoa027JsYpCB/j0l1iynzA17gZFA5f1z0XbiFAKaz9XJ6oRhy5DDdBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3d2a379bbf0so126782105ab.1
+        for <linux-bcachefs@vger.kernel.org>; Tue, 04 Mar 2025 21:54:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741154065; x=1741758865;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JTa6ANGjulTOYXkBQuLvCQ5G8ZTr11Jh5hb4hDDIvvw=;
+        b=k/hPIv4NCqEz4PNm1bzorbs5MXEDJ5RUVg02lTqSDcHRJ/V/R2BM6zjKfUX3YZLaH5
+         +pAZhoCygUODkJb798S9PisSUfBGBepqxl5k+TIGnzSHgxmB9dxVhk22fhclBarAWWPv
+         jQOIvHecsxhcSk15vYXHP1AeFEPEyIEJFt6QDoNDOiqsnz1eNZgEzqfoWuSMuf1i4C5h
+         b4CfCGgivifTwSp57f32CRCLF/7l2UD33bVa6//+TZL1VByPFKDx22OyE0dPlHsKDvxI
+         FXe6MWECXIWJ14FMy/9W0sHtibWCZ+ka3ldDZeVKjxQdDux/fi6K5NMF74TEfKltBnu0
+         8zjA==
+X-Forwarded-Encrypted: i=1; AJvYcCXUfjCWEBbo9Uks76C+pjmMDGh2z5Bqvq80IS3VHmxTwS+78dEQTj++7dryaAtq6fqYMIGvTuyuWHWY4+Xy0w==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyrMuYHKd6zk6VMdxfay64mKERRNRp316VIMqqco21lH8lFJsYY
+	sx1vNCerQp9e/4hQGe86qZCEW/HoVXf+2f+qgyjX/xUxSnpWfIrJlCgdivzIZ3wMAIevZNw3/Xo
+	31wGYcaQ4Yyv2wG/fuVFmo+srlBeHr7qwoBMGCYw+ukfJVR45UWrjO6U=
+X-Google-Smtp-Source: AGHT+IHsTwIzki3hN8M1gz3aj4zL7mqjiNOOW2ftwWjjXxaIYdDjaMmDaEeJdvdAudBjJ9/Lwp7LcIF3wZlkzjCobtZMqm6aOlJi
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a05:6e02:2196:b0:3d3:f6ee:cc4c with SMTP id
+ e9e14a558f8ab-3d42b75000cmr24850835ab.0.1741154065560; Tue, 04 Mar 2025
+ 21:54:25 -0800 (PST)
+Date: Tue, 04 Mar 2025 21:54:25 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67c7e711.050a0220.15b4b9.001f.GAE@google.com>
+Subject: [syzbot] [bpf?] [bcachefs?] BUG: unable to handle kernel paging
+ request in handle_softirqs
+From: syzbot <syzbot+c32100a0bb8cae0c3dde@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kent.overstreet@linux.dev, 
+	kpsingh@kernel.org, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    276f98efb64a Merge tag 'block-6.14-20250228' of git://git...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16614864580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5b4c41bdaeea1964
+dashboard link: https://syzkaller.appspot.com/bug?extid=c32100a0bb8cae0c3dde
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11614864580000
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-276f98ef.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/5a036150d62e/vmlinux-276f98ef.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/f0b6c8e5972f/bzImage-276f98ef.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/65413c368879/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c32100a0bb8cae0c3dde@syzkaller.appspotmail.com
+
+kernel tried to execute NX-protected page - exploit attempt? (uid: 0)
+BUG: unable to handle page fault for address: ffff8880316c0000
+#PF: supervisor instruction fetch in kernel mode
+#PF: error_code(0x0011) - permissions violation
+PGD 1ac01067 P4D 1ac01067 PUD 1ac02067 PMD 1c3d0063 PTE 80000000316c0163
+Oops: Oops: 0011 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 UID: 0 PID: 7082 Comm: syz.2.568 Not tainted 6.14.0-rc4-syzkaller-00212-g276f98efb64a #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+RIP: 0010:0xffff8880316c0000
+Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <00> 20 6e 31 80 88 ff ff 00 40 eb 30 80 88 ff ff 08 00 00 00 0c 00
+RSP: 0018:ffffc90000007bd8 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: 1ffff1100840de14 RCX: ffff888000a5af28
+RDX: dffffc0000000000 RSI: ffffffff8c2ab700 RDI: ffff88804206f098
+RBP: ffffc90000007e10 R08: ffffffff9454985f R09: 1ffffffff28a930b
+R10: dffffc0000000000 R11: ffff8880316c0000 R12: ffffffff81a8d7d7
+R13: ffff88804206f0a0 R14: ffff8880316c0000 R15: ffff88804206f098
+FS:  00007ff346e2f6c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffff8880316c0000 CR3: 0000000042300000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ handle_softirqs+0x2d4/0x9b0 kernel/softirq.c:561
+ __do_softirq kernel/softirq.c:595 [inline]
+ invoke_softirq kernel/softirq.c:435 [inline]
+ __irq_exit_rcu+0xf7/0x220 kernel/softirq.c:662
+ irq_exit_rcu+0x9/0x30 kernel/softirq.c:678
+ instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1049 [inline]
+ sysvec_apic_timer_interrupt+0xa6/0xc0 arch/x86/kernel/apic/apic.c:1049
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
+RIP: 0010:lock_acquire+0x264/0x550 kernel/locking/lockdep.c:5855
+Code: 2b 00 74 08 4c 89 f7 e8 3a 45 8c 00 f6 44 24 61 02 0f 85 85 01 00 00 41 f7 c7 00 02 00 00 74 01 fb 48 c7 44 24 40 0e 36 e0 45 <4b> c7 44 25 00 00 00 00 00 43 c7 44 25 09 00 00 00 00 43 c7 44 25
+RSP: 0018:ffffc9000260f040 EFLAGS: 00000206
+RAX: 0000000000000001 RBX: 1ffff920004c1e14 RCX: ffff888000a5af28
+RDX: dffffc0000000000 RSI: ffffffff8c2ab700 RDI: ffffffff8c80f060
+RBP: ffffc9000260f190 R08: ffffffff94549847 R09: 1ffffffff28a9308
+R10: dffffc0000000000 R11: fffffbfff28a9309 R12: 1ffff920004c1e10
+R13: dffffc0000000000 R14: ffffc9000260f0a0 R15: 0000000000000246
+ rcu_lock_acquire include/linux/rcupdate.h:337 [inline]
+ rcu_read_lock include/linux/rcupdate.h:849 [inline]
+ is_bpf_text_address+0x46/0x2a0 kernel/bpf/core.c:772
+ kernel_text_address+0xa7/0xe0 kernel/extable.c:125
+ __kernel_text_address+0xd/0x40 kernel/extable.c:79
+ unwind_get_return_address+0x4d/0x90 arch/x86/kernel/unwind_orc.c:369
+ arch_stack_walk+0xfd/0x150 arch/x86/kernel/stacktrace.c:26
+ stack_trace_save+0x118/0x1d0 kernel/stacktrace.c:122
+ save_stack+0xfb/0x1f0 mm/page_owner.c:156
+ __reset_page_owner+0x76/0x430 mm/page_owner.c:297
+ reset_page_owner include/linux/page_owner.h:25 [inline]
+ free_pages_prepare mm/page_alloc.c:1127 [inline]
+ free_unref_folios+0xe40/0x18b0 mm/page_alloc.c:2707
+ folios_put_refs+0x76c/0x860 mm/swap.c:994
+ folio_batch_release include/linux/pagevec.h:101 [inline]
+ shmem_undo_range+0x593/0x1820 mm/shmem.c:1112
+ shmem_truncate_range mm/shmem.c:1224 [inline]
+ shmem_evict_inode+0x29b/0xa80 mm/shmem.c:1352
+ evict+0x4e8/0x9a0 fs/inode.c:796
+ __dentry_kill+0x20d/0x630 fs/dcache.c:643
+ dput+0x19f/0x2b0 fs/dcache.c:885
+ __fput+0x60b/0x9f0 fs/file_table.c:472
+ __do_sys_close fs/open.c:1580 [inline]
+ __se_sys_close fs/open.c:1565 [inline]
+ __x64_sys_close+0x7f/0x110 fs/open.c:1565
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7ff345f8bdca
+Code: 48 3d 00 f0 ff ff 77 48 c3 0f 1f 80 00 00 00 00 48 83 ec 18 89 7c 24 0c e8 43 91 02 00 8b 7c 24 0c 89 c2 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 36 89 d7 89 44 24 0c e8 a3 91 02 00 8b 44 24
+RSP: 002b:00007ff346e2ee00 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+RAX: ffffffffffffffda RBX: 00000000ffffffff RCX: 00007ff345f8bdca
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 0000000000000002 R08: 0000000000000000 R09: 000000000000590c
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000003
+R13: 00007ff346e2eef0 R14: 00007ff346e2eeb0 R15: 00007ff33cc00000
+ </TASK>
+Modules linked in:
+CR2: ffff8880316c0000
+---[ end trace 0000000000000000 ]---
+RIP: 0010:0xffff8880316c0000
+Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <00> 20 6e 31 80 88 ff ff 00 40 eb 30 80 88 ff ff 08 00 00 00 0c 00
+RSP: 0018:ffffc90000007bd8 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: 1ffff1100840de14 RCX: ffff888000a5af28
+RDX: dffffc0000000000 RSI: ffffffff8c2ab700 RDI: ffff88804206f098
+RBP: ffffc90000007e10 R08: ffffffff9454985f R09: 1ffffffff28a930b
+R10: dffffc0000000000 R11: ffff8880316c0000 R12: ffffffff81a8d7d7
+R13: ffff88804206f0a0 R14: ffff8880316c0000 R15: ffff88804206f098
+FS:  00007ff346e2f6c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffff8880316c0000 CR3: 0000000042300000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+  28:	00 00                	add    %al,(%rax)
+* 2a:	00 20                	add    %ah,(%rax) <-- trapping instruction
+  2c:	6e                   	outsb  %ds:(%rsi),(%dx)
+  2d:	31 80 88 ff ff 00    	xor    %eax,0xffff88(%rax)
+  33:	40 eb 30             	rex jmp 0x66
+  36:	80 88 ff ff 08 00 00 	orb    $0x0,0x8ffff(%rax)
+  3d:	00 0c 00             	add    %cl,(%rax,%rax,1)
 
 
-I just realized that the bcachefs maintainer wasn't Cc'd on this.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-As I believe that this is more likely a bcachefs bug than an RCU bug, I'm
-adding the bcachefs maintainer and mailing list to this.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-On Mon, 3 Mar 2025 08:44:48 +0800
-Strforexc yn <strforexc@gmail.com> wrote:
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-> Dear Maintainers, When using our customized Syzkaller to fuzz the
-> latest Linux kernel, the following crash was triggered.
->=20
-> Kernel commit: v6.14-rc4 (Commits on Feb 24, 2025)
-> Kernel Config : https://github.com/Strforexc/LinuxKernelbug/blob/main/.co=
-nfig
-> Kernel Log: attachment
->=20
-> I=E2=80=99ve encountered a KASAN-reported global-out-of-bounds read in Li=
-nux
-> kernel 6.14.0-rc4, involving the RCU subsystem and bcachefs. Here are
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-In the future, if you see an issue between two subsystems, make sure to
-include the maintainers of both subsystems!
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-Thanks,
-
--- Steve
-
-
-> the details:
->=20
-> A global-out-of-bounds read of size 1 was detected at address
-> ffffffff8b8e8d55 in string_nocheck (lib/vsprintf.c:632), called from
-> string (lib/vsprintf.c:714). The buggy address belongs to
-> str__rcu__trace_system_name+0x815/0xb40, triggered by a kworker task.
->=20
-> The issue occurs during a bcachefs transaction commit
-> (bch2_trans_commit), which enqueues an RCU callback via
-> srcu_gp_start_if_needed. The out-of-bounds access happens in
-> string_nocheck, likely during a printk or tracepoint operation
-> (vprintk_emit), triggered by a lockdep warning (__warn_printk). The
-> variable str__rcu__trace_system_name (size 0xb40) is overrun at offset
-> 0x815, suggesting a string handling bug in RCU or bcachefs debug
-> output.
->=20
-> The bug was observed in a QEMU environment during
-> btree_interior_update_work execution in bcachefs. It may involve
-> filesystem operations (e.g., key cache dropping) under load. I don=E2=80=
-=99t
-> have a precise reproducer yet but can assist with testing.
->=20
-> Could RCU or bcachefs maintainers investigate? This might be a
-> tracepoint or printk format string issue in srcu_gp_start_if_needed or
-> related code. I suspect an invalid index into
-> str__rcu__trace_system_name or a pointer corruption. Happy to provide
-> more logs or test patches.
->=20
-> If you fix this issue, please add the following tag to the commit:
-> Reported-by: Zhizhuo Tang <strforexctzzchange@foxmail.com>, Jianzhou
-> Zhao <xnxc22xnxc22@qq.com>, Haoran Liu <cherest_san@163.com>
-> ------------[ cut here ]------------
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> BUG: KASAN: global-out-of-bounds in string_nocheck lib/vsprintf.c:632 [in=
-line]
-> BUG: KASAN: global-out-of-bounds in string+0x4b3/0x500 lib/vsprintf.c:714
-> Read of size 1 at addr ffffffff8b8e8d55 by task kworker/u10:0/28
->=20
-> CPU: 1 UID: 0 PID: 28 Comm: kworker/u10:0 Not tainted 6.14.0-rc4 #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/0=
-1/2014
-> Workqueue: btree_update btree_interior_update_work
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:94 [inline]
->  dump_stack_lvl+0x116/0x1b0 lib/dump_stack.c:120
->  print_address_description.constprop.0+0x2c/0x420 mm/kasan/report.c:408
->  print_report+0xaa/0x270 mm/kasan/report.c:521
->  kasan_report+0xbd/0x100 mm/kasan/report.c:634
->  string_nocheck lib/vsprintf.c:632 [inline]
->  string+0x4b3/0x500 lib/vsprintf.c:714
->  vsnprintf+0x620/0x1120 lib/vsprintf.c:2843
->  vprintk_store+0x34f/0xb90 kernel/printk/printk.c:2279
->  vprintk_emit+0x151/0x330 kernel/printk/printk.c:2408
->  __warn_printk+0x162/0x320 kernel/panic.c:797
->  look_up_lock_class+0xad/0x160 kernel/locking/lockdep.c:938
->  register_lock_class+0xb2/0xfc0 kernel/locking/lockdep.c:1292
->  __lock_acquire+0xc3/0x16a0 kernel/locking/lockdep.c:5103
->  lock_acquire+0x181/0x3a0 kernel/locking/lockdep.c:5851
->  __raw_spin_trylock include/linux/spinlock_api_smp.h:90 [inline]
->  _raw_spin_trylock+0x76/0xa0 kernel/locking/spinlock.c:138
->  spin_lock_irqsave_sdp_contention kernel/rcu/srcutree.c:375 [inline]
->  srcu_gp_start_if_needed+0x1a9/0x5f0 kernel/rcu/srcutree.c:1270
->  __call_rcu fs/bcachefs/rcu_pending.c:76 [inline]
->  __rcu_pending_enqueue fs/bcachefs/rcu_pending.c:497 [inline]
->  rcu_pending_enqueue+0x686/0xd30 fs/bcachefs/rcu_pending.c:531
->  bkey_cached_free+0xfd/0x170 fs/bcachefs/btree_key_cache.c:115
->  bch2_btree_key_cache_drop+0xe7/0x770 fs/bcachefs/btree_key_cache.c:613
->  bch2_trans_commit_write_locked.constprop.0+0x2bc6/0x3bc0
-> fs/bcachefs/btree_trans_commit.c:794
->  do_bch2_trans_commit.isra.0+0x7a6/0x12f0 fs/bcachefs/btree_trans_commit.=
-c:866
->  __bch2_trans_commit+0x1018/0x18e0 fs/bcachefs/btree_trans_commit.c:1070
->  bch2_trans_commit fs/bcachefs/btree_update.h:183 [inline]
->  btree_update_nodes_written+0x1352/0x2210
-> fs/bcachefs/btree_update_interior.c:708
->  btree_interior_update_work+0xda/0x100 fs/bcachefs/btree_update_interior.=
-c:846
->  process_one_work+0x109d/0x18c0 kernel/workqueue.c:3236
->  process_scheduled_works kernel/workqueue.c:3317 [inline]
->  worker_thread+0x677/0xe90 kernel/workqueue.c:3398
->  kthread+0x3b3/0x760 kernel/kthread.c:464
->  ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:148
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
->  </TASK>
->=20
-> The buggy address belongs to the variable:
->  str__rcu__trace_system_name+0x815/0xb40
->=20
-> The buggy address belongs to the physical page:
-> page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xb8e8
-> flags: 0xfff00000002000(reserved|node=3D0|zone=3D1|lastcpupid=3D0x7ff)
-> raw: 00fff00000002000 ffffea00002e3a08 ffffea00002e3a08 0000000000000000
-> raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
-> page_owner info is not present (never set?)
->=20
-> Memory state around the buggy address:
->  ffffffff8b8e8c00: f9 f9 f9 f9 00 00 00 00 03 f9 f9 f9 f9 f9 f9 f9
->  ffffffff8b8e8c80: 00 00 00 00 00 00 01 f9 f9 f9 f9 f9 00 00 00 07
-> >ffffffff8b8e8d00: f9 f9 f9 f9 00 00 00 03 f9 f9 f9 f9 00 00 00 06 =20
->                                                  ^
->  ffffffff8b8e8d80: f9 f9 f9 f9 00 00 03 f9 f9 f9 f9 f9 00 00 01 f9
->  ffffffff8b8e8e00: f9 f9 f9 f9 00 01 f9 f9 f9 f9 f9 f9 00 00 00 00
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Thanks,
-> Zhizhuo Tang
-
+If you want to undo deduplication, reply with:
+#syz undup
