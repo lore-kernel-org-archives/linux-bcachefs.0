@@ -1,77 +1,77 @@
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4FB019CC11
-	for <linux-bcachefs@vger.kernel.org>; Sat,  8 Mar 2025 06:49:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4FFD1A8403
+	for <linux-bcachefs@vger.kernel.org>; Sat,  8 Mar 2025 18:05:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741416546; cv=none; b=Yzsu7qkdP55hcepWV/jJv2lykZV0s+cyUHrNo6jnSczj/1bn4Sk+GGuV3eCGMCCfeltSusPXIE+P5bDmGGp2PIKUFjYXjrRRDY04qNCkLLddasgkzlDy4CEHg3c7haVarNpK+DaiFdKlitqjlC3iAOFO6fr4aRlp8bQjiSBODh4=
+	t=1741457104; cv=none; b=UyX1xitXWR3IuC5ZzZ+LbBzhJ+S3k0Lb5B+5xLPZiSJ80XRfPAuCGUDWEiJxQP382U3ywNCoKaDOOeoXrrVzkwUqnTmwcngzcQ+CuTeqnLdF4zpYl9eFNogXY1gjPAORSMYw2qMC5+KlM5fk6+zx6r75YbHJqdX0a1bhF9sGnBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741416546; c=relaxed/simple;
-	bh=UdXct8Kw1cog1WNDyhopi/uZJsb5mzI8VGq94reyjyg=;
+	s=arc-20240116; t=1741457104; c=relaxed/simple;
+	bh=BFERkLF5tvINM5AMTT7npfSqAfHAEvcSqvUAM7QVZ3I=;
 	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Wktx9okaLvLUsev9MBLyQOaCxDOy07DYkVR3AoJnxm3efgI4fFZAb3DTlo7fjX+2+8PVt6WK2iNHdqE9ZIjyOWXlCrJO6kom9JjpM/L7Rluh5BlrOfc3WARj0CSPHt0KQpwa3DLRnb8zPMKElKnYPyE9aMxGkEhV710zm2Ti3tI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+	 Content-Type; b=KgaUjAgTYNN/0yOD+N6N21BQMDQBTbizjo0vHwIBn5v9iKOeX6ViYUFrr9Se2g1m8VFN28HHi+1jTPy3cgWPww6+m8o8QzPgGvq8YGa98Q+ZZ4ngRpa3AP1uvsbL2FeMmiDTSfGDB8YhKrpFW3YYrRbZSgqZaLmtVYj30wMB2VY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3ce843b51c3so56123425ab.0
-        for <linux-bcachefs@vger.kernel.org>; Fri, 07 Mar 2025 22:49:04 -0800 (PST)
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3d43b460962so55055875ab.2
+        for <linux-bcachefs@vger.kernel.org>; Sat, 08 Mar 2025 10:05:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741416544; x=1742021344;
+        d=1e100.net; s=20230601; t=1741457102; x=1742061902;
         h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UWyY4NWje7PpXQWqUJ01mBM4XnAMZnW6cIcxE47biDI=;
-        b=JjjXRA6XW01RQlrWZaxSkz8xJOe6s/SfKVaP92yNBiQDq1vnhydWHWmVbpSRzJ7w57
-         5Fsp4VtRuL6cR1SQAhQIdKu17xMu5JcQqL3LgKxphYspiMDh/PBo1aj4fk09jp1z9RID
-         bbw3hNBfh7GiqWD7g8GRo/32TwofsmjvIuP1onpqWWA2PeqeXFZjFKybPmtdulJECqf3
-         WVoFsX5m8zb6jxJo7HAmDnOHHxMTkwU45XoUiDwiNvsmB8TXAnJHILqSGWdrxDnUdMa6
-         ZrBc0+MwlZqqKhs9S6CLXrGLGOHgld1eK8grwVw1WFBQx8FJLdZJrEfI33BGg3hQn4Rw
-         l5Tw==
-X-Forwarded-Encrypted: i=1; AJvYcCWu8gPesTK00HN2oO6+1eMYN8cnz7JCvcMTe6mxCvjj+Rr51Ne9siUYYP1wxybbTTYiM/N5ur1HXin5ZJ08CQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy69daBsb8YwTbjD7HNaRtGyRfwoZfk2td8rLdjSuh+4xNODZTl
-	njOJqu4NsK5OCxIxJ1p5DyEc8WxYq0UXKNDOTq9GW0R194uAMSwyXYPy2S0jmdN7mIL9NoFBNct
-	a97tvp9cNf1R9ve8HAgZHtc/LQRz0/oaU3tvP++Bt7YShObbsjr50/X4=
-X-Google-Smtp-Source: AGHT+IGKDdAElXFlhOxW382nEqDhnmu2Yqgs/FN6ZY6fE6kRaewecGBiU9hJZU10j20f2lSdxKcKdEC8OUb1FiVU9k4RZ/A4xEvl
+        bh=OiC+HbgW7R0gX7hV59VQWjAiqUZG5JTOlemCDNoKGj8=;
+        b=DNXujQMzmZsxd7hpSz2TLoZpxGWjlo12TuhpRAsdDIwT1oBns+Ixv/ijZmonI/fzKL
+         PhyOr6r7A8nSGgbk+Wk3ZaitUvDxKmzcaUbOW53mc1OWZDIR2zUHgvgSwcie38GDckaV
+         5ILj0lo3IIFA8YwxdlUBbN0hLct17dAadXAQJt8tuqoZLIWFlc2o4OJsiwLj/M0SIpir
+         YEph8fTDEhq++TQ5KN6E+wJ0lNX6g+EPBMS2STCMeNJ4i1fHNF1tFMiLUeZLNiOrlZUt
+         Hc7xYSRChP99aW576gXnlYAYFw6wRBPaD7Aau+5zJdy0zTir2QARAcHKkDDT5XsxY97B
+         FLcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWnzqc0o6E8BFrnsQ9kcQL+Kp5hrINTlLFAkCaANFHIAqG6IRLimUJzTm7UQv35mqZJYunWqFXFwUvtScvVVg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxT66gfTuuK8sgkyEebQHRVjEOtWwFPTzI3cv1VnCP+MYQ2p6uR
+	6dJhiYCp/PM5zB86QlJDS93uTVuaC2dpuhnOPkdHH+8JxajrTAbHkcAiZanV9zub9piWTPUq+cK
+	coDvC2jIEtZQxk5pMrFSJAWY35TDmK7aTbJ7mQtoNJkKeRfHi557vqEs=
+X-Google-Smtp-Source: AGHT+IHNb06mTcXNBo2l2kG6CG6ZgzR/xmoJHMjCzX6KgJmQOHH+vrlcKgCoFFOUfoQHb7qgCic7gpJhxxqxAoJlleYqBBCxzlUq
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a64:b0:3d0:618c:1b22 with SMTP id
- e9e14a558f8ab-3d441968a12mr54569035ab.11.1741416543918; Fri, 07 Mar 2025
- 22:49:03 -0800 (PST)
-Date: Fri, 07 Mar 2025 22:49:03 -0800
-In-Reply-To: <675e8eec.050a0220.37aaf.00f4.GAE@google.com>
+X-Received: by 2002:a05:6e02:11:b0:3d4:3c21:ba71 with SMTP id
+ e9e14a558f8ab-3d4419ff144mr116769525ab.18.1741457101875; Sat, 08 Mar 2025
+ 10:05:01 -0800 (PST)
+Date: Sat, 08 Mar 2025 10:05:01 -0800
+In-Reply-To: <67a310c5.050a0220.50516.0011.GAE@google.com>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67cbe85f.050a0220.24a339.0000.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_checksum_update (2)
-From: syzbot <syzbot+60ea31958b52b09e04af@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+Message-ID: <67cc86cd.050a0220.14db68.0037.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] general protection fault in inode_permission (3)
+From: syzbot <syzbot+1facc65919790d188467@syzkaller.appspotmail.com>
+To: brauner@kernel.org, jack@suse.cz, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
+	viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 
 syzbot has bisected this issue to:
 
-commit 03ef80b469d5d83530ce1ce15be78a40e5300f9b
+commit 14152654805256d760315ec24e414363bfa19a06
 Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Sat Sep 23 22:41:51 2023 +0000
+Date:   Mon Nov 25 05:21:27 2024 +0000
 
-    bcachefs: Ignore unknown mount options
+    bcachefs: Bad btree roots are now autofix
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14ec14b7980000
-start commit:   00a7d39898c8 fs/pipe: add simpler helpers for common cases
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10305878580000
+start commit:   69b8923f5003 Merge tag 'for-linus-6.14-ofs4' of git://git...
 git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16ec14b7980000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12ec14b7980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=523d3ff8e053340a
-dashboard link: https://syzkaller.appspot.com/bug?extid=60ea31958b52b09e04af
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13c56a54580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1158e4b7980000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=12305878580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14305878580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=57ab43c279fa614d
+dashboard link: https://syzkaller.appspot.com/bug?extid=1facc65919790d188467
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=149d95f8580000
 
-Reported-by: syzbot+60ea31958b52b09e04af@syzkaller.appspotmail.com
-Fixes: 03ef80b469d5 ("bcachefs: Ignore unknown mount options")
+Reported-by: syzbot+1facc65919790d188467@syzkaller.appspotmail.com
+Fixes: 141526548052 ("bcachefs: Bad btree roots are now autofix")
 
 For information about bisection process see: https://goo.gl/tpsmEJ#bisection
