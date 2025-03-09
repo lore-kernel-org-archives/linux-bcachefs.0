@@ -1,94 +1,77 @@
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A98D1DF73C
-	for <linux-bcachefs@vger.kernel.org>; Sat,  8 Mar 2025 21:59:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F3BE4690
+	for <linux-bcachefs@vger.kernel.org>; Sun,  9 Mar 2025 00:32:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741471153; cv=none; b=S9U5ALV4ZNttDlQoG+mSmGEYiR5Z3YcEXTGijrhYh5QsCraket37c1bEBU/ExdpSU7O6aSilomb7/4oIo7qjwMQ1W3jeVJEZuY0ynq5cLqZYEv7N5kCqaCBqQ8fPEN27bPC8RxRON9hDawkVFQm8L6vG55SK+yB23np4+CwX1dk=
+	t=1741480324; cv=none; b=QjQOHshwBoQIs38EpGWE0DzDxDvJPy5pgPf/bcIUh9ZpaUes/iB+U6OwnHId6HwYMDolilONbUCxGG+XVAHn8icZmPnJaJPM0nFeiyF4i5Gakq3+DCFsevEAnrdyWmXzseztpdf2g+pqmGD78vTlsZQDNpEj8USjsOVVjcYzaFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741471153; c=relaxed/simple;
-	bh=p86EgVLWBe8WTppLDti2AJM2Jw1wFafEgiZOs169sE4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n2+FtQfQpnb6v69AtKTob5Cz2N3EftmbjIj8wWpj1EO/+vLMHbpTllY4t/aptYuqf66bmCI/wf/tZNW/hYUOdS8QWmIyiqpVsoSOI1dWdOcz7Pueddxbze19WQQ+wbTE8t1W/JFaF+1hpF0V+6iBAcnm3XGTlQ79O7imW6rRQdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vWK9xA8I; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vWK9xA8I"
-Date: Sat, 8 Mar 2025 16:58:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1741471137;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Au7fJ9XgM21AaQJVoKb8P3+31pAT4gKK4Tj3RdgQ0uk=;
-	b=vWK9xA8IZX7bBOLGG76yt6cBd9DGDYg4PLo+q/15kzkwmKGxtLHxZyDhmfF1m12pKCcOGV
-	zSnbcQ0QtlDDEepRUTQCgqinXfP7PSiJKqPNgwMzmZ106bsiGd+8q9e1kLZGaJi9EgMxfJ
-	vRH/svthsoc4nxJWNEWHgkJZ/or+TVU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Hector Martin <marcan@marcan.st>, 
-	syzbot <syzbot+4364ec1693041cad20de@syzkaller.appspotmail.com>, broonie@kernel.org, joel.granados@kernel.org, kees@kernel.org, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bcachefs?] general protection fault in proc_sys_compare
-Message-ID: <wkn3delpogj7ay7irqjemviubsnvnnd72yaywqr4ibtbfjxfif@efp5mfvixwp5>
-References: <67ca5dd0.050a0220.15b4b9.0076.GAE@google.com>
- <239cbc8a-9886-4ebc-865c-762bb807276c@marcan.st>
- <ph6whomevsnlsndjuewjxaxi6ngezbnlmv2hmutlygrdu37k3w@k57yfx76ptih>
- <20250307133126.GA8837@mit.edu>
- <a5avbx7c6pilz4bnp3iv7ivuxtth7udo6ypepemhumsxvuawrw@qa7kec5sxyhp>
- <20250308215305.GB69932@mit.edu>
+	s=arc-20240116; t=1741480324; c=relaxed/simple;
+	bh=5+w+DpFN07cFMMxG3KtxyUJcBT+QtYSPglebHcuHpoM=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=UiavjuCgCQfhJLZRw3M6Cajy6Ncaz+OVvrRHE3NF6vRlaxWR7qc54Ek8KoHGCrVqOWU3zD5cmn0P2Qq4CPqV+hR4nJJFp9/x9sNO/1+9G9gcEqFUjXzVYkWUkCr3YrN1cGhHuKF6/I5WCkLeCl0nRyKRkWlTFNjS803r+IPHeqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3d443811ed2so40526465ab.3
+        for <linux-bcachefs@vger.kernel.org>; Sat, 08 Mar 2025 16:32:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741480322; x=1742085122;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lfB4DWMuL2dRUjaSj/0Ry9KkaKQ0CpScfoI5b0dPR4o=;
+        b=PBWcCK/NNxVnA46/LraEXh+wRXnfQGBukaKm4rZEjRUs5B0e0V2tS7EBMrkt2K0Bux
+         hJnLrF9/yb41TJmXM007KACJiyyxWFiMB93Ghe/C7loACqFP/IP7jPakxwVrxklVSLiE
+         cMzeGg4ndUwBWesRcxrI1/NQHFgp17sCB7bpJFVJ/1WDuaxL5Pzld4rkculnATc+RyN3
+         UhNiKmqcsAbIXn/SFmKEQKhNdcPfIWXwvOipIG8o5/Qonll7Kib/u2+7NiIbA2qfSd+u
+         pJkhniz5lLeBhHFvbeZrMAA/QIK6fLmt0iVx+ainylDEvrb0VVzRz7vbCG8fnRqJUurE
+         sklg==
+X-Forwarded-Encrypted: i=1; AJvYcCXMpq0/8zDIislSIyI0SWc9IWkgEhYz/FBEjwmebJXiKOJ/64HLQ8wZQaXbEBfOZyRw4LoH+SMjePjJ7yGW9A==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzZ4rRq3VDegeFKEasskz0rrdEwwvN7I0PstTDpf9b2vpUNL1IH
+	gV9qj5zTBcCjpgOnzhv9SNoUoRE4gBtELRYAKnVU0F+NENsqAhIL+7u2/C5NimbwxnMAr4DIvkx
+	1BohMuC9XrNWSQwJcNldW/brdAQHmbGx2xEDgPve5mRWUtqI5NJrLLR8=
+X-Google-Smtp-Source: AGHT+IEO95u4KON9M9kPvSb6+jLVgItwLeyQ52gl27OoeaC/4UUw3Y5B6gO2wA0A8Jz4fVX+dbXDf3ZqYw7CX3nM+UyIWTj3lbjf
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250308215305.GB69932@mit.edu>
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6e02:20e9:b0:3d4:337f:121b with SMTP id
+ e9e14a558f8ab-3d44196060fmr96149465ab.8.1741480322622; Sat, 08 Mar 2025
+ 16:32:02 -0800 (PST)
+Date: Sat, 08 Mar 2025 16:32:02 -0800
+In-Reply-To: <67a2b735.050a0220.50516.0004.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67cce182.050a0220.24a339.009e.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] BUG: corrupted list in new_inode
+From: syzbot <syzbot+2dabb3dce04e28763712@syzkaller.appspotmail.com>
+To: brauner@kernel.org, dakr@kernel.org, gregkh@linuxfoundation.org, 
+	jack@suse.cz, kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	rafael@kernel.org, syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, Mar 08, 2025 at 04:53:05PM -0500, Theodore Ts'o wrote:
-> On Fri, Mar 07, 2025 at 09:33:11AM -0500, Kent Overstreet wrote:
-> >
-> > > Maybe this is something Syzbot could implement?
-> > 
-> > Wouldn't it be better to have it in 'git bisect'?
-> 
-> "Git bisect" is the wrong layer of abstraction.  It doesn't know
-> anything about (a) how build the software package (which might not be
-> the kernel, remember), nor how to run a test, nor how to tell whether
-> a test run was successful or a failure.
+syzbot has bisected this issue to:
 
-Eh?
+commit 14152654805256d760315ec24e414363bfa19a06
+Author: Kent Overstreet <kent.overstreet@linux.dev>
+Date:   Mon Nov 25 05:21:27 2024 +0000
 
-It has a mode for automatic bisections, you just give it a test that
-runs pass/fail.
+    bcachefs: Bad btree roots are now autofix
 
-This works with my ktest, which runs tests in a VM and in non
-interactive gives you that pass/fail in the exit code - I've used it
-that way before.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16f254b7980000
+start commit:   4dc1d1bec898 Merge tag 'mfd-fixes-6.14' of git://git.kerne..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=15f254b7980000
+console output: https://syzkaller.appspot.com/x/log.txt?x=11f254b7980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c516b1c112a81e77
+dashboard link: https://syzkaller.appspot.com/bug?extid=2dabb3dce04e28763712
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11c34aa4580000
 
-> > If only we had interns and grad students for this sort of thing :)
-> 
-> The lightweight test manager (ltm) for gce-xfstests was implemented by
-> an intern.  And the kernel compilation service (kcs), git branch
-> watcher, and git bisection engine for gce-xfstests was done by a group
-> of undergraduates at a unversity in Boston as part of a software
-> engineering class project.
-> 
-> Mentoring interns and undergraduates was incredibly fulfilling, and I
-> very much enjoyed the experience.  I'd like to think I helped them to
-> become better software engineers.  However, mentoring students takes a
-> significant amount of time, and on net, it's not clear it was a win
-> from a personal time ROI perspective.
-> 
-> We did manage to recruit the intern to become a SWE at Google after he
-> graduated, so that was definitely considered a win from my company's
-> perspective.  :-)
+Reported-by: syzbot+2dabb3dce04e28763712@syzkaller.appspotmail.com
+Fixes: 141526548052 ("bcachefs: Bad btree roots are now autofix")
 
-Cool :)
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
