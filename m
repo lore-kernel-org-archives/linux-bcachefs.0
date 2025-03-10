@@ -1,71 +1,75 @@
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBC5722ACFB
-	for <linux-bcachefs@vger.kernel.org>; Mon, 10 Mar 2025 13:49:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F02F229B1F
+	for <linux-bcachefs@vger.kernel.org>; Mon, 10 Mar 2025 14:05:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741614579; cv=none; b=eTpkNaFpGVOn0g3AQNMbwAi7txCWD13iX3exF6RuPtucs0e6CC7tUzPNAbndLBMsTEIWMm1tOeY5ejDoTbG1+EMdidzunYgub1my7KwrbjL6g1V+ykZXuuW6qMn3y6GK2bMCvALPZrsRFeXRes2ovm38J3MKzL6y0whVs1sbjXk=
+	t=1741615510; cv=none; b=qPj1iMr7t9IprL0Qq+eiKpnACVDxWPGliJo8Z6OmlevBVFYA0zsRIBBjjlI4wXGfdMNq66V8sH01lgh41P/jMXNcyZVuSCX9J5fPWb6Z6WLe6gKT1/uHIfp1GSIyYyOkLO/IcboCeNp620dtqud0apJCyE66QUFzbJFAqCrI28E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741614579; c=relaxed/simple;
-	bh=/+jV31PTgw6aqTRc8C6RU/6dvmmCJ1MpYAbbhnWUjPw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jiD/98kIMawNZI+vqrf/+S0i/oeY8uhRyGqWZF+n6kI01l68aZZpCw1bUiONzl6F27ZUWXceQrne+OWfr1dnLrgCrdHG+KODPI3SrY48C0zQcI13V+vZ9LfmYwMW5/2Du954xEzb3dKNKO/8/8auPSGBu1zaL5n/gmaub5KiFGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ibhBt64B; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ibhBt64B"
-Date: Mon, 10 Mar 2025 09:49:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1741614561;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p/YTv0hHn4G4Scu3ATutypohlkwvEToRHT1q3tOxv1M=;
-	b=ibhBt64Bnx5dGjlh8qWaTtLQT4Lz408q33Aqcf4PYL8ztkoC3S5CZA7zWXODC5KvXuXmdT
-	9acI5JMEQsAOzU2TBViyk45087/40QkzGXrXFWLUTTKl/CyuWlEbTO+qe0fe9/nFuycmqC
-	rCRruIPipMxWkv0xrWwzHq0RQ2u3N/s=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, cve@kernel.org, 
-	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, linux-security-module@vger.kernel.org, 
-	Dave Chinner <david@fromorbit.com>, linux-bcachefs@vger.kernel.org
-Subject: Re: CVE-2025-21830: landlock: Handle weird files
-Message-ID: <k7toamo7fd647262axepi5qut2axylrx4rew66jdlw5wmyog3h@3ivphkt2xkxr>
-References: <2025030611-CVE-2025-21830-da64@gregkh>
- <20250310.ooshu9Cha2oo@digikod.net>
+	s=arc-20240116; t=1741615510; c=relaxed/simple;
+	bh=gXBrYCoCcrkWmsP7+K4nV7uUoW+IqEsQV3WmXOQ5P2A=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=C/lkdu3bZNpbZozyDLLTOshGF0KzITLqHKNZ80HfIJwHmlDb1qtaauxHVTCyAzuVw3hAb9lCs8EyO8SXir3gtLaHD8J4MTS5yoDpOQRcLbC6nku9+xKJU8iS97Usy1XGtvDMBnN1lEbaM+5ZQdlQCa4aK8Wc1ShiIQP+9L3ebTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3d43621bb7eso38552525ab.1
+        for <linux-bcachefs@vger.kernel.org>; Mon, 10 Mar 2025 07:05:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741615508; x=1742220308;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AaDrDkpXTwrG6aVIZuXOhK/+8GmMdBih6elTHPJ7xwo=;
+        b=kUeRvDjxMcZb1gWO+R4yeiHuUcm/fXKzTiid6Ja8SFxE3m14ynhhanm3cIUxnYCEvw
+         4t3YCuKYUJ6S3HFuUljlzWUJRMG5GAptzcvfLOQIDi/p/k/vlJBXDsSvpwbubE7zBt9b
+         Nv4UrVlWbdN1l3witzczcLeKth4uwW32IVdPS1fSnONUiEtBKkL1ZP+Ds4mGrGY9Xtsh
+         vKMk7DaVGBv5HW41XF2Ht1DzCk/CLUcMMKSWPMNn5gW2OdrNedyZGpXl3Ahj/ir7CfaU
+         FtcKCQB56kE0Tp/Y5LQB/sApXPNcx4NKaeXJRpPogg3e7LMenVBYR1u5NJuxQZQWv7wx
+         yn9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVrQLRObwrfhbd59mRuj0APgQKmqhB2uKC9wQFNxIFqEObkSQ3oX/g8fXpH2dqxu/B8DSKR4747HaZ8PTIk7w==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy7qPBsxNTGrHwkdggGpk87p9wHW6CPngn2lAikfHhPv7zoyIwb
+	Ar6lYwzowLA3loQRE5v+J9hXYNXcs1ujRga6lMNGQ0IS21E5SknuZ9ac6ApszBuY3dwmNfW8DiI
+	kfWFw3U5bnYOlEzyw9axlZ2+jrDFSBx+KYHi08vMBwQt0168n4a5K4Hc=
+X-Google-Smtp-Source: AGHT+IFcfu7iZ9iAI/dbmeiES7ZqK7CGYDHtmKqtojBc/d+p7jhFfL9oM0l6REB/F23N9BxkhMQ6AEjSytGRFKCCgcKMcAdb5ta/
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250310.ooshu9Cha2oo@digikod.net>
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6e02:3a85:b0:3d4:44:958a with SMTP id
+ e9e14a558f8ab-3d44ae9eb36mr107656265ab.3.1741615507153; Mon, 10 Mar 2025
+ 07:05:07 -0700 (PDT)
+Date: Mon, 10 Mar 2025 07:05:07 -0700
+In-Reply-To: <6735aa91.050a0220.2a2fcc.0062.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67cef193.050a0220.3d01d1.0010.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] kernel BUG in __journal_res_get (2)
+From: syzbot <syzbot+53bb24d476ef8368a7f0@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Mar 10, 2025 at 01:00:50PM +0100, Mickaël Salaün wrote:
-> Hi Greg,
-> 
-> FYI, I don't think this patch fixes a security issue.  If attackers can
-> corrupt a filesystem, then they should already be able to harm the whole
-> system.
-> 
-> The commit description might be a bit confusing, but from an access
-> control point of view, the filesystem on which we spotted this issue
-> (bcachefs) does not allow to open weird files (but they are still
-> visible, hence this patch) and I guess it would be the same for other
-> filesystems, right?  I'm not sure how a weird file could be used by user
-> space.  See
-> https://lore.kernel.org/all/Zpc46HEacI%2Fwd7Rg@dread.disaster.area/
-> 
-> The goal of this fix was mainly to not warn about a bcachefs issue (and
-> avoid related syzkaller report for Landlock), and to harden Landlock in
-> case other filesystems have this kind of bug.
+syzbot suspects this issue was fixed by commit:
 
-Agreed - why was a CVE assigned?
+commit fb8c835b18d48dac953a5d755a8e90b0d8fb9c29
+Author: Kent Overstreet <kent.overstreet@linux.dev>
+Date:   Sat Oct 12 02:50:48 2024 +0000
+
+    bcachefs: bch2_journal_meta() takes ref on c->writes
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1487d074580000
+start commit:   bcde95ce32b6 Merge tag 'devicetree-fixes-for-6.13-1' of gi..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1234f097ee657d8b
+dashboard link: https://syzkaller.appspot.com/bug?extid=53bb24d476ef8368a7f0
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16ff98c4580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11ff98c4580000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: bcachefs: bch2_journal_meta() takes ref on c->writes
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
