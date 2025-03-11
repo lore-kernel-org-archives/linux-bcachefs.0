@@ -1,119 +1,204 @@
-Received: from fout-b5-smtp.messagingengine.com (fout-b5-smtp.messagingengine.com [202.12.124.148])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5851415820C;
-	Tue, 11 Mar 2025 02:20:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C436211C
+	for <linux-bcachefs@vger.kernel.org>; Tue, 11 Mar 2025 04:24:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741659609; cv=none; b=RIXztSuNAyCzqE2hjvD6aYVWKVs/X8svaerqqslNRCZF2C4uw/T9lwqAt/DPMDtU3iN+0rQgQFxngYxMFxRftAoDlVAtqan5KDeRNXquPgmuudxg902pvnnnt8dZVyToUT+59CXU6OnvlIlx/V1Tv0GNYrbYvb/GC32CgHQJpIw=
+	t=1741667086; cv=none; b=TDkE9rGum1REgG9TgaUb7XqoF2shFnEPuvfAUCF4IBAvdTqM52g5lFJFG4prdshvy7t4jI0n4lrYPWNVx+aLZULrn3orcegUVRgxfU65O5lMVsbx9z4d9loR4vgACNg7w2WIMhQ3TA072q/GN/TxFhGLchVa07QNJ2khkOhGwCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741659609; c=relaxed/simple;
-	bh=loFPCxgkMRsEZysLq0xZq8E7JGuBldN57UxyaBpDYDY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tw/ktJqPb5gmTBYj+z6lDKfZu6RYGLsbFp2eUfbWyf/DXOOqc4zARmTborIAegURo47h+f+XAdqw5IE4Qn1aI6VJG2XkCaqlD2POoublsxkAyNgmnlJKRVAyyRPJioG2lTSJ4MV8Al+qItX6il3fAe7GGbK46RQy4PiU3Bs85ZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=invisiblethingslab.com; spf=pass smtp.mailfrom=invisiblethingslab.com; dkim=pass (2048-bit key) header.d=invisiblethingslab.com header.i=@invisiblethingslab.com header.b=aZWc5b8h; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=KFYFjHDV; arc=none smtp.client-ip=202.12.124.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=invisiblethingslab.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=invisiblethingslab.com
+	s=arc-20240116; t=1741667086; c=relaxed/simple;
+	bh=j5z1fLpayUMlzlabBQ92aGfBlGRlGNR+1eQelo0TNaI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tlutQ/qzYw9shoDTjsISVbFm55FP5HezpPHCbrFqEfhS5JRnxkgDnvT0bHBDkVQP5fpuwmupRa4CJ1mVySsDoPbwjHVjGDiYJ/FNivvEcxOzkcv1DYrcYeirp/Y5uSYr6fBOTVSvUSLHJ9eFIc1d1bBG0ELXgEQJpuVuW1B9ryQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=YJ83Xb+X; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=invisiblethingslab.com header.i=@invisiblethingslab.com header.b="aZWc5b8h";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KFYFjHDV"
-Received: from phl-compute-07.internal (phl-compute-07.phl.internal [10.202.2.47])
-	by mailfout.stl.internal (Postfix) with ESMTP id 1E705114022E;
-	Mon, 10 Mar 2025 22:20:06 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-07.internal (MEProxy); Mon, 10 Mar 2025 22:20:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	invisiblethingslab.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to; s=fm1; t=1741659605; x=1741746005; bh=llBkAvx2eSQp24qmvu9Qr
-	u9PnVkiZ4JtbJIJNbPg8tM=; b=aZWc5b8hyYqBFElEkmeHdgyhHw5J7AbmvGFyH
-	0nE8koXh8ZACe9Idc0eXA0Kw8bRLsPl87IEYr0x4sZmUO2x/XykH6r/tfE4f96Bc
-	7OLtyvZvqs9pqW0HN6+ibx4GCwGFuAa2RjY/h4HokJuKwFehvbyvjtf6RELzOXXt
-	XCadL+CWzi/So5HZSRGLaKkpw0ecpYXShFH964ixD64uCQXI5FHdHpi3YLqLwCmv
-	yIPjcoJwH6UoohEYY6R3AteJYbHJp654qBHqwxAnKBV17vQnOzXlEsRsvG5eETM4
-	1R6dyf3TmYo0VHuYeynJmKdf55FABJePMhna5l2WalogyIGSw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm1; t=1741659605; x=1741746005; bh=l
-	lBkAvx2eSQp24qmvu9Qru9PnVkiZ4JtbJIJNbPg8tM=; b=KFYFjHDVEThqjalMI
-	94uTQQ9pstyutIy889v6rQHWFoN4Y2a7Q0wR8helSJ7lllTTrJo/pPNKCmd5H7HI
-	8S9DBh+2tJv6zm7B8nk5gse1PzBkP/fHnuK7Uc1scGLdFE1RMCjW+f3kiSjYUDVj
-	CUMfAruOY9uWyNEEwem/bHS1+Cuc/Sb5wXlC4r1y2xVZNhEBepGLIsCU377PE8Jt
-	x+FEtBjC3Y7oUg9nAf42nnu6I9Yj5kRB2TR62GYNn1xTjo2p8/BnfuCz5N+Dz3pl
-	c0t8bHbKpOxCPn23jXqV4JxOLJ3vIG8PPSUZnO7xOGNxAY6HzsB5bJPuzfiMyCsa
-	KMpOw==
-X-ME-Sender: <xms:1Z3PZyJS0Gkx9j1QY88IrnmDS9i8IToQK53pE0FXcrp9rbpwYv_0bQ>
-    <xme:1Z3PZ6Kgy7LUYWpsZhG6Fh7QP8-u286s1F0SKW_5k3KgefBrtDcgZm6FAkGYPH_Hn
-    kKdjI-SAmFMY8A>
-X-ME-Received: <xmr:1Z3PZytJvZth9nPwK_VrUpsV8xulTzG34roOlamvtouRevFOMX56aNAqX-Do8PnXQM8W35pLLRWIJSi9h3haZtmCKSgKkHlAEDurdCz9rToK0vEh2FkbMdhSCk7f-stz>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduvddutdduucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpefhvf
-    evufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeffvghmihcuofgrrhhivgcu
-    qfgsvghnohhurhcuoeguvghmihesihhnvhhishhisghlvghthhhinhhgshhlrggsrdgtoh
-    hmqeenucggtffrrghtthgvrhhnpeejffejgffgueegudevvdejkefghefghffhffejteek
-    leeufeffteffhfdtudehteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpeguvghmihesihhnvhhishhisghlvghthhhinhhgshhlrggsrdgtohhm
-    pdhnsggprhgtphhtthhopedutddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepug
-    grvhhiugesfhhrohhmohhrsghithdrtghomhdprhgtphhtthhopegtvhgvsehkvghrnhgv
-    lhdrohhrghdprhgtphhtthhopehgnhhorggtkhesghhoohhglhgvrdgtohhmpdhrtghpth
-    htohepghhrvghgkhhhsehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthht
-    ohepkhgvnhhtrdhovhgvrhhsthhrvggvtheslhhinhhugidruggvvhdprhgtphhtthhope
-    hlihhnuhigqdgstggrtghhvghfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphht
-    thhopehlihhnuhigqdhfshguvghvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtg
-    hpthhtoheplhhinhhugidqshgvtghurhhithihqdhmohguuhhlvgesvhhgvghrrdhkvghr
-    nhgvlhdrohhrghdprhgtphhtthhopehmihgtseguihhgihhkohgurdhnvght
-X-ME-Proxy: <xmx:1Z3PZ3Y13GGnFpFJCq67aVWhc5WzX4B7sOgtnK09l2TpmL3V8k0GTw>
-    <xmx:1Z3PZ5aL1lskTxtpEVsxQKuE0mW4IZDUz4GfoLJhaa5ujsPku9SorA>
-    <xmx:1Z3PZzDP8B5C-ePv3HlsUTyKqNdOy-yQGuFp19Y9ERUCQqTIu3xY4w>
-    <xmx:1Z3PZ_boiplEEUgvNHNDHinykL2yYFkYaFxeDVU9BqDPn7v1TlnPiA>
-    <xmx:1Z3PZ2Qv7w7CXIzZF1Jh3rxccyR7oafpKifDo_klKpycMpBPqZ_Zxd99>
-Feedback-ID: iac594737:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 10 Mar 2025 22:20:04 -0400 (EDT)
-From: Demi Marie Obenour <demi@invisiblethingslab.com>
-To: david@fromorbit.com
-Cc: cve@kernel.org,
-	gnoack@google.com,
-	gregkh@linuxfoundation.org,
-	kent.overstreet@linux.dev,
-	linux-bcachefs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="YJ83Xb+X"
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-22401f4d35aso88548055ad.2
+        for <linux-bcachefs@vger.kernel.org>; Mon, 10 Mar 2025 21:24:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1741667084; x=1742271884; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=jd9jbsqGomucBTWvUlBDrFAdf39fzaVwpxG2cHoLRTs=;
+        b=YJ83Xb+XizHPNgnkUhouMtMd9onq+CjkoC4gk72FZC+1M5rgskeMB00fR/da03vDDr
+         XOp44PGVyn5omrEyv/vZtcIqK18UreQn2/b33g3JYP8JqzeJi5e1TBCYfgX3YYYZy47D
+         YdrjPXeiTsQEubpFmt+uKuv6rMzN3KeBt2mUdApwY8nCz22CKyWknqmgh2fr8zYF53Kf
+         QInPGbpoFZ5/nK1gaFQ83S8kjgx/thOrQWLVdBT7IVwepTC/D3xXDMGSH7nY15oFjTKI
+         vnnL6q3xP63SJGXxcUmHsppngDaJTAURzZDb2nEM0UqyqQ+NdoMMjE8XcH+VgGbBVgHp
+         hkWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741667084; x=1742271884;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jd9jbsqGomucBTWvUlBDrFAdf39fzaVwpxG2cHoLRTs=;
+        b=uVFqqjQ0y5qgEy1zED+nIsTnMCa0CbIqPmI1pcZcmTXYCcTAham6EqJhcOMeAK+2fW
+         zXty2+veVyLzxqWGvEjuIieV3K9pt5+qSn6EEUFCOjOe6C5cBYjm6tmkXT3OUBBRTuA3
+         xDemheUFKZOTVTgVNqILZk7BMCrHectHvpBZxPkLPkPP9frJ2bCdnQ9mnquEFVWUTuWN
+         49bsvDZxkawDG0PR9GAMLDH3gw3iUgl13TYlUP0Lk+HqdJQkZQGKAYyXPHCxFCsDua2g
+         lrOTsD3sx5yr76zj4N5cppLzMCPjtOjq+CoZVafKHfgOM53AJuOThD/GcWHDXWO+0zGd
+         LfSg==
+X-Forwarded-Encrypted: i=1; AJvYcCW3gWQMIX9XJnei2Up5ZDvyZSPsJ0dPJhCUPksz0Wy4bvvu3hg0n4dwDB9ZEx8XhGtwpV44klrLa066GW03JQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyK+4EcHdZGfaAQU15XFZ0TeZb6todgSASMvXkzzIqoOJZmeVM2
+	XcxKZDv6e3/FXsQTOq3qNtCO4kcCpM4Dvr3zS1psbxWxN3J07iAzU+bqIWjOlJ8=
+X-Gm-Gg: ASbGncvFyHBHj+Wijiv2P+qx3w93cUdB/PSctD9R+72LVMRRysWPHUO6Tq+IP+prGC1
+	awReyg9o7/H8Kuci1V9vCYajIWYr4iIyLHSHdSYIHjgjRwPif/CRg4CcViTonkYEl0B+ZxRRGkQ
+	qWADp8aZM8nFTOAYDmOF+YiBxHmHWupgtgdrB0U6fzFnOcWcE/gaZupB/q8LQ5G//1A+tF3HH25
+	w660z2LXYgBEu6TEz6WXRhNbhCbAVuFJ6NCgG4Tb6XrbS3BgbbaF6XaovjZ9LXGGEvK+L09W4/+
+	ivqUqNFx/QaDlzcmzzQVT8wWXFjykL8htXLNfXP4CFTFETMElUZyMfTHROZPgI0+yDZPGXutDvh
+	pjHYdooaijEZhmimrsca2
+X-Google-Smtp-Source: AGHT+IH1lEMca+e4bbQ8aq7gN4mYf2VrHtxSVKWBzsaz/yYrg5VAVA+Ej1hPzZHDLyLb/jbTzwoy0g==
+X-Received: by 2002:a17:902:db06:b0:223:4d7e:e52c with SMTP id d9443c01a7336-22592e2014emr28779955ad.5.1741667084374;
+        Mon, 10 Mar 2025 21:24:44 -0700 (PDT)
+Received: from dread.disaster.area (pa49-186-89-135.pa.vic.optusnet.com.au. [49.186.89.135])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-224109e8617sm87332785ad.61.2025.03.10.21.24.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Mar 2025 21:24:43 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.98)
+	(envelope-from <david@fromorbit.com>)
+	id 1trrAW-0000000Ba0u-39kB;
+	Tue, 11 Mar 2025 15:24:40 +1100
+Date: Tue, 11 Mar 2025 15:24:40 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+	cve@kernel.org,
+	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
 	linux-security-module@vger.kernel.org,
-	mic@digikod.net,
-	Demi Marie Obenour <demiobenour@gmail.com>
-Subject: Unprivileged filesystem mounts
-Date: Mon, 10 Mar 2025 22:19:57 -0400
-Message-ID: <20250311021957.2887-1-demi@invisiblethingslab.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <Z8948cR5aka4Cc5g@dread.disaster.area>
-References: <Z8948cR5aka4Cc5g@dread.disaster.area>
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: CVE-2025-21830: landlock: Handle weird files
+Message-ID: <Z8-7CH7mwJtxpgyx@dread.disaster.area>
+References: <2025030611-CVE-2025-21830-da64@gregkh>
+ <20250310.ooshu9Cha2oo@digikod.net>
+ <2025031034-savanna-debit-eb8e@gregkh>
+ <Z8948cR5aka4Cc5g@dread.disaster.area>
+ <33m2msv3elqbviurca3ayebwzfzzjenh472b246gf7hbkfjk25@sl7plpwvpxig>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <33m2msv3elqbviurca3ayebwzfzzjenh472b246gf7hbkfjk25@sl7plpwvpxig>
 
-People have stuff to get done.  If you disallow unprivileged filesystem
-mounts, they will just use sudo (or equivalent) instead.  The problem is
-not that users are mounting untrusted filesystems.  The problem is that
-mounting untrusted filesystems is unsafe.
+On Mon, Mar 10, 2025 at 10:09:22PM -0400, Kent Overstreet wrote:
+> On Tue, Mar 11, 2025 at 10:42:41AM +1100, Dave Chinner wrote:
+> > [cc linux-fsdevel]
+> > 
+> > On Mon, Mar 10, 2025 at 03:36:04PM +0100, Greg Kroah-Hartman wrote:
+> > > On Mon, Mar 10, 2025 at 01:00:50PM +0100, Mickaël Salaün wrote:
+> > > > Hi Greg,
+> > > > 
+> > > > FYI, I don't think this patch fixes a security issue.  If attackers can
+> > > > corrupt a filesystem, then they should already be able to harm the whole
+> > > > system.
+> > > > 
+> > > > The commit description might be a bit confusing, but from an access
+> > > > control point of view, the filesystem on which we spotted this issue
+> > > > (bcachefs) does not allow to open weird files (but they are still
+> > > > visible, hence this patch) and I guess it would be the same for other
+> > > > filesystems, right?  I'm not sure how a weird file could be used by user
+> > > > space.  See
+> > > > https://lore.kernel.org/all/Zpc46HEacI%2Fwd7Rg@dread.disaster.area/
+> > > > 
+> > > > The goal of this fix was mainly to not warn about a bcachefs issue (and
+> > > > avoid related syzkaller report for Landlock), and to harden Landlock in
+> > > > case other filesystems have this kind of bug.
+> > > 
+> > > It was issue a CVE because the reviewers thought that it was a way to
+> > > circumvent the landlock permission checks, based on the changelog text
+> > > (note, creating a "corrupted filesystem" is quite easy to get many Linux
+> > > systems to auto-mount it, so those types of issues do get assigned
+> > > CVEs.)
+> > 
+> > That's an argument straight from the security theatre.
+> > 
+> > > If you all do not think this meets the definition of a vulnerability as
+> > > defined by CVE.org as:
+> > > 	An instance of one or more weaknesses in a Product that can be
+> > > 	exploited, causing a negative impact to confidentiality, integrity, or
+> > > 	availability; a set of conditions or behaviors that allows the
+> > > 	violation of an explicit or implicit security policy.
+> > 
+> > Yes, so shall we follow this reasoning based on untrusted user
+> > auto-mounts of untrusted devices to it's logical conclusion?
+> > 
+> > If an untrusted user is in control of the filesystem image, then
+> > they don't need to corrupt the filesystem image to subvert the
+> > system. They can just change the permissions on files, change ACLs,
+> > change security xattrs (selinux, landlock, smack, etc),
+> > replace the contents of file data (e.g. trojan executables), etc.
+> 
+> If user mounts are enabled, that comes with UID mapping, and device
+> nodes disabled - no?
 
-Making untrusted filesystems safe to mount is the only solution that
-lets users do what they actually need to do.  That means either actually
-fixing the filesystem code, or running it in a sufficiently tight
-sandbox that vulnerabilities in it are of too low importance to matter.
-libguestfs+FUSE is the most obvious way to do this, but the performance
-might not be enough for distros to turn it on.
+Not necessarily. Those security mechanisms are all optional mount
+options under userspace control....
 
-For ext4 and F2FS, if there is a vulnerability that can be exploited by
-a malicious filesystem image, it is a verified boot bypass for Chrome OS
-and Android, respectively.  Verified boot is a security boundary for
-both of them, so just forward syzbot reports to their respective
-security teams and let them do the jobs they are paid to do.
+> Out of curiosity, what's keeping us from saying "user mounts are
+> generally expected to be safe" for XFS?
+
+What does "generally expected to be safe" actually mean?
+
+If be "safe" you mean "won't crash the kernel if the structure has
+been altered in detectable ways with", then we already largely tick
+that box. However, there are whole classes of DOS attacks that are
+very difficult to detect without rigorous, expensive runtime
+checking (e.g. loops in btree pointers).
+
+Hence while we catch almost all the the obvious out-of-bounds
+corruptions within an object, detecting corruptions that require
+spanning a largely unbound number of objects to detect are not
+handled at all. I can corrupt a filesystem to induce an endless
+btree search loop like this pretty easily with a little bit of
+xfs_db magic. Yup, we even provide the tools to make doing stuff
+like this easy...
+
+If by "safe" you mean "can detect all cases where a metadata field
+or file data has been tampered with", then XFS is completely unsafe
+and should not be used.
+
+We can't detect that a malicious actor has changed something like a
+file permission field or the contents of a security xattr.  To do
+that requires cryptographically secure signatures of metadata
+objects and file data. We do not have that sort of feature in the
+on-disk format. We expect users that need protection from such
+tampering will use an envrypted block device to prevent malicious
+actors from being able to mutate the filesystem structure in this
+way.
+
+> Obviously, that does expose a massive attack surface, so saying that for
+> a C codebase that wasn't initially designed for it has a high pucker
+> factor.
+>
+> But I've been impressed with syzbot's ability to find bugs, so barring
+> architectural issues which I assume you'd know about it seems it's not
+> nearly as crazy a thought as it used to be - for XFS, as you guys have
+> been the most rigorous about hardening so I expect that's about as good
+> as it's going to get until we start rewriting our filesystems in Rust.
+
+The concerns I have about malicious actors are not mitigated by the
+language the filesystem is implemented in.
+
+It has everything to do with the fact that a filesystem like XFS or
+ext4 cannot detect someone changing permissions on a file to, say,
+add a setuid bit to the permissions field and then hide the
+modification by recalculating the correct CRC for the metdata block.
+
+Solving that problem requires a fundamentally different fs/device
+trust model (i.e. the device is *never* trusted) and an on-disk
+format that is based around "trust nothing" rather than "trust
+everything".
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
