@@ -1,78 +1,42 @@
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C27F3222566
-	for <linux-bcachefs@vger.kernel.org>; Tue, 11 Mar 2025 05:57:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 366B21EB1A2;
+	Tue, 11 Mar 2025 06:54:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741672680; cv=none; b=HPN8aYLAaNTsXfgJtPr8Hba8AsPBOjJXZSp3wyIqq90WeR3E5wRrVk6PC0wqO1sI2o2z1CmfuN8k8HnEBO017QA0gt0PLNqF2fIjFqr42B3VAdj6oL80ivjRxmNjWiKJKCaieGzWh/frI77neOb2vaqY7GFFsuOWdzWCM+uMsjY=
+	t=1741676073; cv=none; b=I6cIjWpuayA1n+w7Hty8iHFENhITJ6VBBlB3l5bWtyk9Tr7foy8+KdrgkMRR1rzEJa72a3vCyUmdPu6LoOPHzEl1eorlhcwNbZvjkOKguXt17PO0B6L1Adn5zxNEIaBfZiTw3QHawqyjW7blgbSLGJRppfQH8KCTxlF6gcPDcws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741672680; c=relaxed/simple;
-	bh=S+YHLgC0PFi0jJ56JKraJOSFAvaHuC6DfRzjdrQvsGs=;
+	s=arc-20240116; t=1741676073; c=relaxed/simple;
+	bh=Bs+npam0uzqxPNvNikNRrJy0sjSofjBeY8WJW4eGkEg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zp48NNzGm/WKnl7TcYlUCSeIgbT+BY5m/vMjbP7yKbm8+9GQTkjlYJkUqsVUlSh45bWHt0XYYAUg+Ae7gkR7xV9lUEJWh1u45MjHp8Z743PsDim2C9iZACzsYjS2dZYHVeaskG5ck32wUKEsbmD5uLgjdF2TYkMV4xY5ZSjkwFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=B/BJbLbc; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=hifueXVphwB8XIygS0moCIL1R2+jKsKd24uiiI6gOatTGkoal33/o5oJr5mUWrGk3leH0vnasJqIgWmstd8FoKBjx5qeovXVxnVN5m5zDUHwpgtvtLbgWaS8fOnGImxarTc0y6TA+fzUrr47gGDKEjIwkJO4iPPj9wTSRrWLzZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=JLHn6t4A; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="B/BJbLbc"
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-2241053582dso86865895ad.1
-        for <linux-bcachefs@vger.kernel.org>; Mon, 10 Mar 2025 22:57:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1741672678; x=1742277478; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cZ3Ylp2OjaXtS6fzR0TsoJmAHcJDlyRDNWgqOmKMrZo=;
-        b=B/BJbLbcW29XWsW8T2Ir3zkZSU/E5jwAr8ZWnfFZn5iY4W3rcfh3suvqoCYFpf+G/l
-         rxgnyaYvTdW0CAvlfM/Y+W5In9YSR8q3jorncxq8A9Aa1EUWLjjG1LnX2M/G5iTnttvd
-         G8Xm3SiRoR1SqyIwpgEmlX1RZlazd7VmKYPitP5FbVfjpt+12qOLvHmuy7UDzxe2PkKG
-         rs0qTGQS20Ln70Zy/gQ3xnUUmYP2UerMYEw4wiWNYpnLjj4kY/9bf23jS0FLWTSMzJi4
-         2g4lyu+BRKc7tfJhSIZRANuXAl1f/WuHGthakuQHiyhxG2zqMWGIIpAwylcZJCvv+vdN
-         LNiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741672678; x=1742277478;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cZ3Ylp2OjaXtS6fzR0TsoJmAHcJDlyRDNWgqOmKMrZo=;
-        b=XXpCPiaBNyp2IXMjKHZ8NbO7bYc+pb7RlJ7nNNdsd62IVKL1uUVB+ExHlTNlC9QPv/
-         6k2nBRV3IIU96LTbSg174YNrmoQLZ6DUaTF00rBVMbwsvbibFU/GSZtPAxjVHEkEToSp
-         dqiMf8Pbqy0ppNB6qxZXgqlDVOYXhoole2RtkeEUmRCoLD91+XAcyJY5K8nDCe5RvCmG
-         Fn8+b+JjXkebxcvuUkhk4svD2usAJJY9axd8TMV5Kdhp6w5qHMryzSs68C31i7H9QczD
-         iD/xEiBomhtq2GQiESCQi8rWpPn3pMNNNI4sZYpZQil7iNxdKx8SHOecRXZNT4JczxbQ
-         x4ag==
-X-Forwarded-Encrypted: i=1; AJvYcCUtkf9KvNEp0YRJUTBG7M/S2z+fm7T27zdC7sWetzLuCmfqZ7KrJbNmVSwsJXGciVEbEvmThxNHCroND7/U6g==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzjH/awRsyme9ZrK7nKs3ZbqTEkDPT4pXFAs+IaAforFOrTK2CC
-	idbT+0lAoj33sAzrBprZvzvyoyl1ut2bUVxYTZKFTMOb9djFv6Qnr5iTcV3fjHQ=
-X-Gm-Gg: ASbGnctYb0nySd8Jh4tNC+x6o3lGieaHn7HRKUk8RU+hFOILIhIRMtRsYARg94fDGxN
-	ryGGOMfsNK9xVzzIAPanWz8VR/85KSQS9WGdaNo4hoDBbSAJBjB4QpQ+JqUKin3MaaEL5u2dZvY
-	mXvknh9dq5ubVm3wCqiMs5Kc+cRlOn7Cj8JStjvXho3yahYNn+81VetTwwXul/tgIgC377T6TIQ
-	P7b6cZfB1wqKjLDG/MDI+p0unXlcrRpRFG56YuPSohx+i1YnmI3AFWnjm+cdLjiHDfziRweVVSa
-	i4jDsvGWcnryPbwvQpoJr8Za0wlhWsi0wWnOfsLXtGGaUAThDI8BtL5rKVrvAesyzNVxnme9kKy
-	QJQCsSIRck8MJxZyOAPvjSvscrKAN/dk=
-X-Google-Smtp-Source: AGHT+IGPrCbxwl2OSgFwh3gJhjpQQN/SaQWtK58y8pWF0rp29q7pUWQU2Ula8asUjJl2pL9LR7SqKA==
-X-Received: by 2002:a05:6a21:7a44:b0:1f5:8fe3:4e29 with SMTP id adf61e73a8af0-1f58fe38bacmr1664038637.3.1741672678005;
-        Mon, 10 Mar 2025 22:57:58 -0700 (PDT)
-Received: from dread.disaster.area (pa49-186-89-135.pa.vic.optusnet.com.au. [49.186.89.135])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-af51656af2fsm4545874a12.39.2025.03.10.22.57.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Mar 2025 22:57:57 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.98)
-	(envelope-from <david@fromorbit.com>)
-	id 1trsck-0000000Bbs3-2QGD;
-	Tue, 11 Mar 2025 16:57:54 +1100
-Date: Tue, 11 Mar 2025 16:57:54 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Demi Marie Obenour <demi@invisiblethingslab.com>
-Cc: cve@kernel.org, gnoack@google.com, gregkh@linuxfoundation.org,
-	kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, mic@digikod.net,
-	Demi Marie Obenour <demiobenour@gmail.com>
-Subject: Re: Unprivileged filesystem mounts
-Message-ID: <Z8_Q4nOR5X3iZq3j@dread.disaster.area>
-References: <Z8948cR5aka4Cc5g@dread.disaster.area>
- <20250311021957.2887-1-demi@invisiblethingslab.com>
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="JLHn6t4A"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45936C4CEE9;
+	Tue, 11 Mar 2025 06:54:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1741676072;
+	bh=Bs+npam0uzqxPNvNikNRrJy0sjSofjBeY8WJW4eGkEg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JLHn6t4AqIO1gjTJCjdCtVbzbH2/X3hL1nDAp2BDrsO/5p0MOQKuRylc0Gb99E8Py
+	 V0qSv3xXiTy8FNTNQ6QNwENCIb03eMLEnqAjNnBvjN9PXMIEUZn+zNuZKohX3oo8zl
+	 kf5MDiYvVifsXVwfSrAVPYtGcB2WsZcicLtcjGM0=
+Date: Tue, 11 Mar 2025 07:53:16 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Dave Chinner <david@fromorbit.com>
+Cc: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>, cve@kernel.org,
+	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
+	linux-security-module@vger.kernel.org,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: CVE-2025-21830: landlock: Handle weird files
+Message-ID: <2025031131-cactus-turbofan-6ad3@gregkh>
+References: <2025030611-CVE-2025-21830-da64@gregkh>
+ <20250310.ooshu9Cha2oo@digikod.net>
+ <2025031034-savanna-debit-eb8e@gregkh>
+ <Z8948cR5aka4Cc5g@dread.disaster.area>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -81,111 +45,59 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250311021957.2887-1-demi@invisiblethingslab.com>
+In-Reply-To: <Z8948cR5aka4Cc5g@dread.disaster.area>
 
-On Mon, Mar 10, 2025 at 10:19:57PM -0400, Demi Marie Obenour wrote:
-> People have stuff to get done.  If you disallow unprivileged filesystem
-> mounts, they will just use sudo (or equivalent) instead.
+On Tue, Mar 11, 2025 at 10:42:41AM +1100, Dave Chinner wrote:
+> Greg, you have the ability to issue a CVE that will require
+> downstream distros to fix userspace-based vulnerabilities if they
+> want various certifications. You have the power to force downstream
+> distros to -change their security model policies- for the wider
+> good.
+> 
+> We could knock out this whole class of vulnerability in one CVE:
+> issue a CVE considering the auto-mounting of untrusted filesystem
+> images as a *critical system vulnerability*. This can only be solved
+> by changing the distro policies and implementations that allow this
+> dangerous behaviour to persist.
 
-I am not advocating that we disallow mounting of untrusted devices.
+I wish we could do that, but remember, we can not tell people how to use
+Linux.  We have no "control" over that at all.  All we can do is point
+out "here is a potential vulnerability, it might be applicable to you,
+or you might not, depending on your use case, it's up to you to figure
+it out".  And we do that by issuing CVEs.
 
-> The problem is
-> not that users are mounting untrusted filesystems.  The problem is that
-> mounting untrusted filesystems is unsafe.
+Heck, if we could dictate use, I would issue a "stop using panic on warn
+you fools!" CVE right now which would instantly get rid of a huge
+percentage of all kernel CVEs out there.  Smart users of Linux do
+disable that, and so they are not vulnerable to those at all.
 
-> Making untrusted filesystems safe to mount is the only solution that
-> lets users do what they actually need to do. That means either actually
-> fixing the filesystem code,
+Remember, we issue on average, 11-13 CVEs a day, here's our most recent
+numbers:
 
-Yes, and the point I keep making is that we cannot provide that
-guarantee from the kernel for existing filesystems. We cannot detect
-all possible malicous tampering situations without cryptogrpahically
-secure verification, and we can't generate full trust from nothing.
+	=== CVEs Published in Last 6 Months ===
+	   October 2024:  427 CVEs
+	  November 2024:  280 CVEs
+	  December 2024:  358 CVEs
+	   January 2025:  234 CVEs
+	  February 2025:  929 CVEs
+	     March 2025:   56 CVEs
 
-The typical desktop policy of "probe and automount any device that
-is plugged in" prevents the user from examining the device to
-determine if it contains what it is supposed to contain.  The user
-is not given any opportunity to device if trust is warranted before
-the kernel filesystem parser running in ring 0 is exposed to the
-malicious image.
+	=== Overall Averages ===
+	Average CVEs per month: 415.99
+	Average CVEs per week: 95.64
+	Average CVEs per day: 13.66
 
-That's the fundamental policy problem we need to address: the user
-and/or admin is not in control of their own security because
-application developers and/or distro maintainers have decided they
-should not have a choice.
+So don't get all worried about individual CVEs, unless you all think
+they are not valid at all, which we are glad to revoke.
 
-In this situation, the choice of what to do *must* fall to the user,
-but the argument for "filesystem corruption is a CVE-worthy bug" is
-that the choice has been taken away from the user. That's what I'm
-saying needs to change - the choice needs to be returned to the
-user...
+> At worst, this makes the reason you give for filesystem corruption
+> issues being considered CVE worthy go away completely.
 
-> or running it in a sufficiently tight
-> sandbox that vulnerabilities in it are of too low importance to matter.
-> libguestfs+FUSE is the most obvious way to do this, but the performance
-> might not be enough for distros to turn it on.
+Filesystem corruption or data loss is not considered a vulnerability by
+cve.org, so we do not track them at this point in time.  However other
+group's requirements might require this in the future, so this might
+change (i.e. the CRA law in Europe.)
 
-Yes, I have advocated for that to be used for desktop mounts in the
-past. Similarly, I have also advocated for liblinux + FUSE to be
-used so that the kernel filesystem code is used but run from a
-userspace context where the kernel cannot be compromised.
+thanks,
 
-I have also advocated for user removable devices to be encrypted by
-default. The act of the user unlocking the device automatically
-marks it as trusted because undetectable malicious tampering is
-highly unlikely.
-
-I have also advocated for a device registry that records removable
-device signatures and whether the user trusted them or not so that
-they only need to be prompted once for any given removable device
-they use.
-
-There are *many* potential user-friendly solutions to the problem,
-but they -all- lie in the domain of userspace applications and/or
-policies. This is *not* a problem more or better code in the kernel
-can solve.
-
-Kees and Co keep telling us we should be making changes that make it
-harder (or compeltely prevent) entire classes of vulnerabilities
-from being exploited. Yet every time we suggest that a more secure
-policy should be applied to automounting filesystems to prevent
-system compromise on device hotplug, nobody seems to be willing to
-put security first.
-
-> For ext4 and F2FS, if there is a vulnerability that can be exploited by
-> a malicious filesystem image, it is a verified boot bypass for Chrome OS
-> and Android, respectively. Verified boot is a security boundary for
-> both of them,
-
-How does one maliciously corrupt the root filesystem on an Android
-phone? How many security boundaries have to be violated before
-an attacker can directly modify the physical storage underlying the
-read-only system partition?
-
-Again, if the attacker has device modification capability, why
-would they bother trying to perform a complex filesystem
-corruption attack during boot when they can simply modify what
-runs on startup?
-
-And is this a real attack vector that Android must defend against,
-why isn't that device and filesystem image cryptographically signed
-and verified at boot time to prevent such attacks? That will prevent
-the entire class of malicious tampering exploits completely without
-having to care about undiscovered filesystem bugs - that's a much
-more robust solution from a verified boot and system security
-perspective...
-
-> so just forward syzbot reports to their respective
-> security teams and let them do the jobs they are paid to do.
-
-Security teams don't fix "syzbot bugs"; they are typically the
-people that run syzbot instances. It's the developers who then
-have to triage and fix the issues that are found, so that's who the
-bug reports should go to (and do). And just because syzbot finds an
-issue, that doesn't make it a security issue - all it is is another
-bug found by another automated test suite that needs fixing.
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+greg k-h
