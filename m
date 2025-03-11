@@ -1,40 +1,39 @@
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B66C7264A62
-	for <linux-bcachefs@vger.kernel.org>; Tue, 11 Mar 2025 20:15:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98E231DF73B
+	for <linux-bcachefs@vger.kernel.org>; Tue, 11 Mar 2025 20:15:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741724141; cv=none; b=f0Pn0SfhKXyN7a9dIovdjsJsb5GZgWbzHF5iJ1cw1uGJNEByKhzBAI6WEPK9NwuQUe0UYtdoU2vnT0sp/BKQY6R+DfZ7LwiEDHYQ/HM5c6Jp1dRJ3rkDq+5eUuKWlBNon0oap+PaMA3l4/Y7aggiGUGSOPzD3tvSnf8ZFQpi2sc=
+	t=1741724142; cv=none; b=lJ5qBc6KWNPouvyJ0mL9WaADljxlCJLOeG95l87cC3aQkzjwK1o3Sswf5I5XyH83hecPrwNNBAEEmkqq08+eciNO7s8O40A5mDsYj1Gh8p+XjHIDanpyB2I6K3bJ0412SOJv9Th9bGAHvWq3ch99DtCzIFXg4/wjMAMMpRQq6Fo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741724141; c=relaxed/simple;
-	bh=FEISgi/l4oR05eYMQZtexpwvOvtdSl5KimiXIHb0ch8=;
+	s=arc-20240116; t=1741724142; c=relaxed/simple;
+	bh=58LwYD+/RiTwwk5pzvBg/Kv57SPE0C/J693GHoo80sI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JCgR7hhI/tik5AlYWCtJg0bT0SLu7JXbtKMc2gqz0dVhOJdxrX7x4PfY2SEYAl9C6ZfOGfe7J6tV49BEG2osbm2tIcj2no2O1RieKSxYUa/K9kneJL495bjoKKmaMNI9UXJWzYOvRwPWQ4RazCux7PxkaM2f1pR5TTHVl92I91c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WoRpsrIU; arc=none smtp.client-ip=91.218.175.182
+	 MIME-Version; b=tfWpicd6Dkm/XDutdygfDmaUQiKMplTSIoss+L1epDcwk3JRTCn5fM4Tpq4+L1ZzhqsTQc9YxjAHlv4WKdvGxuYXl6gykpBPV85xcGkRdfVSjWtzqSS+1a/wegyCWZGn3acCkmUgSKtMeduupbFmcvxIqGZR3txZmPTz9OXPuUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cNP4k/lh; arc=none smtp.client-ip=91.218.175.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WoRpsrIU"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cNP4k/lh"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1741724137;
+	t=1741724138;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=K3k/t7z7wqE8OoTjAqtCf+7y0qN5BcjA4jAcbb7jrc4=;
-	b=WoRpsrIUazYlL8JVLUi6H26W+CNs9bkGn0kPQ04FPGmeMnuoPWOCVWFQnPbCT+NiL0Fm46
-	opLCUAIb9yHqfsqYjgESSfy8TvXBNieziKIdzOt2VBvsE665FvmT0ZgKuyLOndkm60ufMm
-	jJxRX82tekYkkSygnD2l0VDBEwfSU6g=
+	bh=gtqC6OiwTYoq5kZhKdgHJsrIpFxQrdzbcESeg41ir84=;
+	b=cNP4k/lh+eSOXf6ACMhTqUvDrLIpjMwrF6A99WSti4+wEEzmRX2C+1JflK5XCFZeN1MT0q
+	aX5H14LEcLcEtJ/pu6P/AJZj9e4HN7HTiU+TQEJbxk4mRwd5MnVr/+eDItFYTTZXrOQsJS
+	EF+xdvDveQfJYIVjQ2u4VhbxNZrglT4=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	Jens Axboe <axboe@kernel.dk>,
-	linux-block@vger.kernel.org
-Subject: [PATCH 13/14] block: Allow REQ_FUA|REQ_READ
-Date: Tue, 11 Mar 2025 16:15:15 -0400
-Message-ID: <20250311201518.3573009-14-kent.overstreet@linux.dev>
+	Benjamin LaHaise <bcrl@kvack.org>
+Subject: [PATCH 14/14] bcachefs: Read retries are after checksum errors now REQ_FUA
+Date: Tue, 11 Mar 2025 16:15:16 -0400
+Message-ID: <20250311201518.3573009-15-kent.overstreet@linux.dev>
 In-Reply-To: <20250311201518.3573009-1-kent.overstreet@linux.dev>
 References: <20250311201518.3573009-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -46,60 +45,30 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-REQ_FUA|REQ_READ means "do a read that bypasses the controller cache",
-the same as writes.
+REQ_FUA means "skip the drive cache", and it can be used with reads to.
+If there was a checksum error, we want to retry the whole read path, not
+read it from cache again.
 
-This is useful for when the filesystem gets a checksum error, it's
-possible that a bit was flipped in the controller cache, and when we
-retry we want to retry the entire IO, not just from cache.
-
-The nvme driver already passes through REQ_FUA for reads, not just
-writes, so disabling the warning is sufficient to start using it, and
-bcachefs is implementing additional retries for checksum errors so can
-immediately use it.
-
-Link: https://lore.kernel.org/linux-block/20250311133517.3095878-1-kent.overstreet@linux.dev/
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: linux-block@vger.kernel.org
+Suggested-by: Benjamin LaHaise <bcrl@kvack.org>
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- block/blk-core.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ fs/bcachefs/io_read.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index d6c4fa3943b5..7b1103eb877d 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -793,20 +793,21 @@ void submit_bio_noacct(struct bio *bio)
- 			goto end_io;
- 	}
+diff --git a/fs/bcachefs/io_read.c b/fs/bcachefs/io_read.c
+index 69c1422685e0..d90e32fb6893 100644
+--- a/fs/bcachefs/io_read.c
++++ b/fs/bcachefs/io_read.c
+@@ -1217,6 +1217,10 @@ int __bch2_read_extent(struct btree_trans *trans, struct bch_read_bio *orig,
+ 	rbio->bio.bi_iter.bi_sector = pick.ptr.offset;
+ 	rbio->bio.bi_end_io	= bch2_read_endio;
  
-+	if (WARN_ON_ONCE((bio->bi_opf & REQ_PREFLUSH) &&
-+			 bio_op(bio) != REQ_OP_WRITE &&
-+			 bio_op(bio) != REQ_OP_ZONE_APPEND))
-+		goto end_io;
++	/* XXX: also nvme read recovery level */
++	if (unlikely(failed && bch2_dev_io_failures(failed, pick.ptr.dev)))
++		rbio->bio.bi_opf |= REQ_FUA;
 +
- 	/*
- 	 * Filter flush bio's early so that bio based drivers without flush
- 	 * support don't have to worry about them.
- 	 */
--	if (op_is_flush(bio->bi_opf)) {
--		if (WARN_ON_ONCE(bio_op(bio) != REQ_OP_WRITE &&
--				 bio_op(bio) != REQ_OP_ZONE_APPEND))
-+	if (op_is_flush(bio->bi_opf) &&
-+	    !bdev_write_cache(bdev)) {
-+		bio->bi_opf &= ~(REQ_PREFLUSH | REQ_FUA);
-+		if (!bio_sectors(bio)) {
-+			status = BLK_STS_OK;
- 			goto end_io;
--		if (!bdev_write_cache(bdev)) {
--			bio->bi_opf &= ~(REQ_PREFLUSH | REQ_FUA);
--			if (!bio_sectors(bio)) {
--				status = BLK_STS_OK;
--				goto end_io;
--			}
- 		}
- 	}
+ 	if (rbio->bounce)
+ 		trace_and_count(c, io_read_bounce, &rbio->bio);
  
 -- 
 2.47.2
