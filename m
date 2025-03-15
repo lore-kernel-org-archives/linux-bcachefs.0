@@ -1,95 +1,103 @@
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0488EAD51
-	for <linux-bcachefs@vger.kernel.org>; Sat, 15 Mar 2025 07:39:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 091821C8623
+	for <linux-bcachefs@vger.kernel.org>; Sat, 15 Mar 2025 16:47:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742024389; cv=none; b=ALWbyGbdk9SbIIEqmvDjqECzeJyepkuVESb9NTDOJW83ds52hiH5WN3eQTdqIKAW3LAhHXt5zPIlVpPRNKX49/aJVZRNtYTgi6VP4di/W/4ArzKcwYHgE8gdHO3nCW4y0lHKVARamE8dbhMV3zM7TCFTuAN3Vua4TsEtT0bpO5c=
+	t=1742057234; cv=none; b=hcECs00No9e0AS1kbjo82xefjJf8sRndZPoxnGXvoFBdRejgQAVQSXjFJAOp8l0RUhHDX2sBkq9k3fHNaJ0u5wR+6vQVC93X7h73k1SID6FjU4S+HNWM891yugmfPK/SzOWIdEPXp9XtU1dONt6hvpePIo5BloR1p4OKEcp9DV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742024389; c=relaxed/simple;
-	bh=BuNbskW/+h3AcWFeaYJtyBTcw5oxBrN5qnOMmz2Z89s=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=f60tyzgvnUtRNGbK5hZj+lC8waRJvbICt4aXbtYu4CSnYPvo/1gCNoFZSM+6hKVNjSWYIvCW7AnpJY1h7sqdVB7h+hweLtQ6qeMC0W4Wsi7JeCC9UOvm84pSXpWus5vmvB4dlbIbpaiBFWSGfQmtW7DYrWJwpNz3jjTE1yK7nzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j8WpGOHA; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1742057234; c=relaxed/simple;
+	bh=RzHWaT4y8FPuXSb9EybUcX/aTXlFTIG+ZECIl1glCDs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=t5efdd6+1ab/V6jfnyjwARRUF5p54BEukypO5kLHI2ZhetyeADqH2Zy6j4jH+5hiUm/ORYQkCIunyM4F9hxKv9YpX4aERC8b2xwUyWYs0UHRmJP5PYzEU5kSR5tpu6Ds9BAZNNVxPS4Km5GKCcG4W/o1aXG1DZL0EMBbW2Vvy68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=NezbWjHJ; arc=none smtp.client-ip=209.85.166.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j8WpGOHA"
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2241053582dso67086975ad.1
-        for <linux-bcachefs@vger.kernel.org>; Sat, 15 Mar 2025 00:39:47 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="NezbWjHJ"
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-85da5a36679so301036339f.3
+        for <linux-bcachefs@vger.kernel.org>; Sat, 15 Mar 2025 09:47:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742024387; x=1742629187; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XnW17qxTWFP32PggvsuDObAaIjPsYTObRV/17eeUpZg=;
-        b=j8WpGOHA5pxJwijJc5xugJGo42Zz8gjbvHnJi8ol2rNvLw7z15/JG3TaJN2V7TQsoC
-         h2vf2ABIo9FlNnXkU/H7brwDNaTWjHr0sBAkRNwbBbT+dAA8+7TRi8MiWcTgysOKouPu
-         Mf/Ar1zR1Wwe5gN3eJX1LJLW7a+2n3y+9HBYYCg3yNFxvw8Wk85rLIgAh0qlaYErjNGU
-         D8/00tUTOySJpyuIulhAdGGaKbwXxopjWsTChS0hWo7bueIbZXz4RMLxGh2SH25XzmuQ
-         5D8kuAV7m81SA+RUY84AZoL7+xkhssu8dC/nKzPrXkiRmuDcl0uvUt11PppbfchQgc5U
-         j+Zw==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1742057231; x=1742662031; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RvVjMW0xlIRW+xAq0tG5On8FqH6hGpEXfAg7HOXwb2o=;
+        b=NezbWjHJWogCb+zWyAdo2X381DaXgKolfJvDEb8zZqsIOoEq9DzU5aQ1iUCzVj43US
+         Mi6gCU2K27H9SVnXImmqcAQFKwn6nRTfpcs9nlNIGKf4L2D7qBPHsMXV/ESJa91aIX5q
+         zwCNOHlFQFsH6yEbwMvXZL5a+tzF7o8/pcJp3QvNQTMcbF4j7Qj7kP5JK1JXHrz4h/bW
+         WFpCL9mfNaSWzmdMMLP9y3CYLD+KsFBszYm0Yi+o0TgymxImGZNxCJbw89tF8DxkD3te
+         e0cL34wbXjIBJDlK60DVVjQbeUEjFApw4j5od7A9dIK/l7pAlcC1/kuTATzbSapcOUVd
+         xx+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742024387; x=1742629187;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XnW17qxTWFP32PggvsuDObAaIjPsYTObRV/17eeUpZg=;
-        b=GS9teA3ptP9TGtYWC/e2VVVNOHjcG7pJ6oEnyKHkrmZx38DN8hP0d1FqNYhyMQc9p7
-         p7K8fMEwh6WSk052hQK007yRqpDMpB3pQaV7ZXb7El6XPsE4XP4CRYZXyME7dDIDs+EZ
-         LabWFSpwOaM97YLFoZuXsZbqAgz5N9rrkQKklsFKYdMRE5snovCLaFaoAUgS6nRtf/j9
-         29SDFanUDzi8HK9T4iDLl02/dj4Q2H82kbj7Puzf/0OKO/xlmuAfZgV0kFsJU+lPVPal
-         rWUf+CxOwosamonLeA8bhcNDhTIHF0jHiKP8mKYajXkCzDmN7vGU0tVbH4NtVYaRZgDz
-         9jLQ==
-X-Gm-Message-State: AOJu0Yw65sGTZjqG80V59i79ASpvJ1rs7wiGwxREFh5I8RDGYwXLg1HR
-	Ghcj4YmaJYucRop7unRp3o3ZgSmB2uXN/dvjLf+lHTXTdFQL9iu8
-X-Gm-Gg: ASbGncsl3FBbog424hN0JBv3DKoN1MFg/nEYmLrEq7/BMjJoKhN67g/xKk2Q7em92El
-	imY6ksxA4hJkbKHuVGmrDJCeH+fxY1MVrEn/PfSMN+j99bL0KXeQHP9EFXndwAL6oDKgD2jKZTC
-	kVWfky8pFD7GtOoEK7TuB/3QKiU9DdzIJAymTdrR+fDQnnNYURqVEGme0SwibAvdUj/hvdd4GuY
-	Ifi3DuHr9mlCO1tI2sYZIiFpiGM1iLWFgGODAujULnMNt13E9sKCPJ2TKLCh54Lf5kX1s+PFKQv
-	6C2RTKJsyWmi7kWToJU=
-X-Google-Smtp-Source: AGHT+IHL/ZNlEwyoXPsU+zuE1DzlZTyBoPQ1XOpc8AMmjAS8qFvbmLe6TJO9IsXGjOkObYfs6bjJ/Q==
-X-Received: by 2002:a17:903:1d0:b0:21f:6c81:f63 with SMTP id d9443c01a7336-225e0a89e29mr57080005ad.16.1742024387368;
-        Sat, 15 Mar 2025 00:39:47 -0700 (PDT)
-Received: from localhost ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-225c6bd5a61sm39343425ad.250.2025.03.15.00.39.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Mar 2025 00:39:46 -0700 (PDT)
-From: Alan Huang <mmpgouride@gmail.com>
-To: kent.overstreet@linux.dev
-Cc: linux-bcachefs@vger.kernel.org,
-	Alan Huang <mmpgouride@gmail.com>
-Subject: [PATCH] bcachefs: Increase blacklist range
-Date: Sat, 15 Mar 2025 15:39:42 +0800
-Message-ID: <20250315073942.1909895-1-mmpgouride@gmail.com>
-X-Mailer: git-send-email 2.48.1
+        d=1e100.net; s=20230601; t=1742057231; x=1742662031;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RvVjMW0xlIRW+xAq0tG5On8FqH6hGpEXfAg7HOXwb2o=;
+        b=OJwIdH9f9RbKO3jnfI+pH2b/J/igRvuSUoEYhgeIOymrathDtzx+zOeKcNgptzTySC
+         x3ovU36kvD1Siu4cSY+6SOsStvAUv48mOS7dMNMSFivpAXiK1Pt4QY506UfnL0ETkctH
+         KWIvcIK2eV7lbNpiTaEFUfk66mKVeQKugCkOIBWVd4rYGB7MYXBYPdtB1MOeQirrS02Q
+         NnpVPEBghaVpCIfom0dJ/XFsVv7LFy+i+CCuHJMIeu9iMUMqp9LWLMiXGfrsqZlqRLpD
+         AVT6tXoUa4FWS+0DwfIVv6CtZ5toQfFRvmzzZOsZHKA1fx0gPK0gzPgbvq1BZ3hDSn3a
+         sm3A==
+X-Forwarded-Encrypted: i=1; AJvYcCWeQrstgZZQAkgG06wVkEDTuiMZ2vdJOBgsawUJ3bDnAHHeG7VWjf5QgL9n6T/BQ6sjYW0YkHJzSk6PIx9QUg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwKEMakDuqguL8egj/rBlggtkjN4PIwFD67gFQx/u2yZqoXnqHG
+	Dg/2d0tpOf2J8JBPvL2raN/s4BHBuPi0LlHGvaJceD4ksXPqii4xk0MrBpWPNAlWepteq0FDQ2C
+	Y
+X-Gm-Gg: ASbGnctPagQeCImihPdOBg35iTL7ZcdmhZ6Ldrny5Gg92CUM1sgK1TvvXgSd8CG6ldp
+	QWoKksY4bYvhke/rSGprk1UrLYb4Mee/ea9oJ9IozKn6op9s7gLXsB6IxYyw3HnxbcAkAhK0GCa
+	8beScSciliCOb5k3AtYozn/bc6LU3xvZs8jsKGdANFg7FJsL0fI4T8wGebzr3dORtMDPJs/8JvQ
+	blTKZu3mHKi6mYljgqUZkydERD/pLyL5ZzjYTT8eWeMHXc/Y0+OmdZfJMALZ6Cy0lxmuKazfZM/
+	iMLTPulKREGPkjUgf5jUye0VhxrRGXWsLHKdKAhtSQ==
+X-Google-Smtp-Source: AGHT+IHOOeiIQZQPOu8/OVyhd4PFH31ke+riSoGFw34JBk8pbMYH6OQSgnRrTi5e/eP9N2SBosxEdw==
+X-Received: by 2002:a05:6602:3a0c:b0:85b:5d92:35b9 with SMTP id ca18e2360f4ac-85dc47d6010mr680553339f.2.1742057231114;
+        Sat, 15 Mar 2025 09:47:11 -0700 (PDT)
+Received: from [192.168.1.150] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4f2637fb2b2sm1404595173.94.2025.03.15.09.47.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 15 Mar 2025 09:47:10 -0700 (PDT)
+Message-ID: <9db17620-4b93-4c01-b7f8-ecab83b12d0f@kernel.dk>
+Date: Sat, 15 Mar 2025 10:47:09 -0600
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 13/14] block: Allow REQ_FUA|REQ_READ
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+ linux-bcachefs@vger.kernel.org
+Cc: linux-block@vger.kernel.org
+References: <20250311201518.3573009-1-kent.overstreet@linux.dev>
+ <20250311201518.3573009-14-kent.overstreet@linux.dev>
+Content-Language: en-US
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20250311201518.3573009-14-kent.overstreet@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Now there are 16 journal buffers, 8 is too small to be enough.
+On 3/11/25 2:15 PM, Kent Overstreet wrote:
+> REQ_FUA|REQ_READ means "do a read that bypasses the controller cache",
+> the same as writes.
+> 
+> This is useful for when the filesystem gets a checksum error, it's
+> possible that a bit was flipped in the controller cache, and when we
+> retry we want to retry the entire IO, not just from cache.
+> 
+> The nvme driver already passes through REQ_FUA for reads, not just
+> writes, so disabling the warning is sufficient to start using it, and
+> bcachefs is implementing additional retries for checksum errors so can
+> immediately use it.
 
-Signed-off-by: Alan Huang <mmpgouride@gmail.com>
----
- fs/bcachefs/recovery.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This one got effectively nak'ed by various folks here:
 
-diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
-index 71c786cdb192..a6e26733854d 100644
---- a/fs/bcachefs/recovery.c
-+++ b/fs/bcachefs/recovery.c
-@@ -899,7 +899,7 @@ int bch2_fs_recovery(struct bch_fs *c)
- 	 * journal sequence numbers:
- 	 */
- 	if (!c->sb.clean)
--		journal_seq += 8;
-+		journal_seq += JOURNAL_BUF_NR * 4;
- 
- 	if (blacklist_seq != journal_seq) {
- 		ret =   bch2_journal_log_msg(c, "blacklisting entries %llu-%llu",
+> Link: https://lore.kernel.org/linux-block/20250311133517.3095878-1-kent.overstreet@linux.dev/
+
+yet it's part of this series and in linux-next? Hmm?
+
 -- 
-2.48.1
+Jens Axboe
 
