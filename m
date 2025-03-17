@@ -1,139 +1,100 @@
 Received: from mail.stoffel.org (mail.stoffel.org [172.104.24.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C83CE200120;
-	Mon, 17 Mar 2025 21:04:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FDC023AD
+	for <linux-bcachefs@vger.kernel.org>; Mon, 17 Mar 2025 21:12:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.104.24.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742245450; cv=none; b=DinyHuz2pn3eiOZEdON9mYL0muJN102STWkyuOvCEsc24N29XQZBSS5iYND4vae0bRZh6agQOQwdGIb3Dp7g/9TTnmO47Fdf6q/cirm1gdGaNyggcdKp4cuxcbTM1CtIQyzz0HIZZQqFFNucHpnm2GSODDFIcLB+gkmXQC1z4EM=
+	t=1742245953; cv=none; b=flljb8n359mD6E3fGDM9VNX62tHSvWHP09ncjtEdP0/nvgHt3kcubqbsdoTO+b78BweRSWoe+h/CtsbbHnirh1oX/Vbyj18LSJm8C8aEDkm+UX9bbS1fsQ3aypw2t5iIqCv8WCP8PGU2YtTdHu51hZsNuw3PmTtV7QFo0i7ku+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742245450; c=relaxed/simple;
-	bh=B/H5hBc8DjuP28tLDUztk9nbB9QenvgNHoqRvHBoDN8=;
-	h=MIME-Version:Content-Type:Message-ID:Date:From:To:Cc:Subject:
-	 In-Reply-To:References; b=uBDK5p++wDnlo00gr/0bwmFSdrF1cpKCGuZlxCwgZByPpBC01vUU9vzNhbiqenSc2NWPauiFB6FGfn99AUcLUlKBmHABBk0f5d/OPYophKMJUIwIIz/jlM0hetJNKWS+/JTCSwF8ahj7e7B4cE+6UU52QOtFdP7GNfwc+wqkEQk=
+	s=arc-20240116; t=1742245953; c=relaxed/simple;
+	bh=o7zCnscnjZKCKbwEEgECGvVTASgK34J8wTl026c8hx4=;
+	h=MIME-Version:Content-Type:Message-ID:Date:From:To:Subject:
+	 In-Reply-To:References; b=fPWSRkPm3tyCweygDop89Q9otkaeuAIWJXW4Fq0/nz7H9a3W/D0jM439aHEvZ1vBKDXVqyCZwAkgvVhcv5wC1MZKbNJB10wqyiP/FLwgqpZGHaJXtTwPc3qwjTP0gflWTLZahZCK5fUNvvQrLAhdQOZD3lIxOba/iJL28oNg6ZI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stoffel.org; spf=pass smtp.mailfrom=stoffel.org; arc=none smtp.client-ip=172.104.24.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stoffel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stoffel.org
 Received: from quad.stoffel.org (syn-097-095-183-072.res.spectrum.com [97.95.183.72])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by mail.stoffel.org (Postfix) with ESMTPSA id 514B91E4AB;
-	Mon, 17 Mar 2025 16:55:25 -0400 (EDT)
+	by mail.stoffel.org (Postfix) with ESMTPSA id 79D711E4AB
+	for <linux-bcachefs@vger.kernel.org>; Mon, 17 Mar 2025 17:12:31 -0400 (EDT)
 Received: by quad.stoffel.org (Postfix, from userid 1000)
-	id D6D99A0E76; Mon, 17 Mar 2025 16:55:24 -0400 (EDT)
+	id 1256BA0E7A; Mon, 17 Mar 2025 17:12:31 -0400 (EDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <26584.35900.850011.320586@quad.stoffel.home>
-Date: Mon, 17 Mar 2025 16:55:24 -0400
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Message-ID: <26584.36927.6100.282713@quad.stoffel.home>
+Date: Mon, 17 Mar 2025 17:12:31 -0400
 From: "John Stoffel" <john@stoffel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org,
-    linux-block@vger.kernel.org,
-    Roland Vet <vet.roland@protonmail.com>,
-    linux-fsdevel@vger.kernel.org
+To:     linux-bcachefs@vger.kernel.org
 X-Clacks-Overhead: GNU Terry Pratchett
-Subject: Re: [PATCH 00/14] better handling of checksum errors/bitrot
-In-Reply-To: <20250311201518.3573009-1-kent.overstreet@linux.dev>
+Subject: errors compiling bcachefs-tools v1.20.0 on debian 12
+In-Reply-To: <26584.35900.850011.320586@quad.stoffel.home>
 References: <20250311201518.3573009-1-kent.overstreet@linux.dev>
+	<26584.35900.850011.320586@quad.stoffel.home>
 X-Mailer: VM 8.3.x under 28.2 (x86_64-pc-linux-gnu)
 
->>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
 
-> Roland Vet spotted a good one: currently, rebalance/copygc get stuck if
-> we've got an extent that can't be read, due to checksum error/bitrot.
+Hi guys,
+I'm trying to upgrade the bcachefs tools since I tend to use newer
+kernels on my Debian 12 system.  The debian packages bcachefs-tools
+are ancient.=20=20
 
-> This took some doing to fix properly, because
-
-> - We don't want to just delete such data (replace it with
->   KEY_TYPE_error); we never want to delete anything except when
->   explicitly told to by the user, and while we don't yet have an API for
->   "read this file even though there's errors, just give me what you
->   have" we definitely will in the future.
-
-So will open() just return an error?  How will this look from
-userspace?  
-
-> - Not being able to move data is a non-option: that would block copygc,
->   device removal, etc.
-
-> - And, moving said extent requires giving it a new checksum - strictly
->   required if the move has to fragment it, teaching the write/move path
->   about extents with bad checksums is unpalateable, and anyways we'd
->   like to be able to guard against more bitrot, if we can.
-
-Why does it need a new checksum if there are read errors?  What
-happens if there are more read errors?   If I have a file on a
-filesystem which is based in spinning rust and I get a single bit
-flip, I'm super happy you catch it.  
-
-But now you re-checksum the file, with the read error, and return it?
-I'm stupid and just a user/IT guy.  I want notifications, but I don't
-want my application to block so I can't kill it, or unmount the
-filesystem.  Or continue to use it if I like.  
-
-> So that means:
-
-> - Extents need a poison bit: "reads return errors, even though it now
->   has a good checksum" - this was added in a separate patch queued up
->   for 6.15.
-
-Sorry for being dense, but does a file have one or more extents?  Or
-is this at a level below that?  
-
->   It's an incompat feature because it's a new extent field, and old
->   versions can't parse extents with unknown field types, since they
->   won't know their sizes - meaning users will have to explicitly do an
->   incompat upgrade to make use of this stuff.
-
-> - The read path needs to do additional retries after checksum errors
->   before giving up and marking it poisoned, so that we don't
->   accidentally convert a transient error to permanent corruption.
-
-When doing these retries, is the filesystem locked up or will the
-process doing the read() be blocked from being killed?  
-
-> - The read path gets a whole bunch of work to plumb precise modern error
->   codes around, so that e.g. the retry path, the data move path, and the
->   "mark extent poisoned" path all know exactly what's going on.
-
-> - Read path is responsible for marking extents poisoned after sufficient
->   retry attempts (controlled by a new filesystem option)
-
-> - Data move path is allowed to move extents after a read error, if it's
->   a checksum error (giving it a new checksum) if it's been poisoned
->   (i.e. the extent flags feature is enabled).
-
-So if just a single bit flips, the extent gets moved onto better
-storage, and the file gets re-checksummed.  But what about if more
-bits go bad afterwards?  
-
-> Code should be more or less finalized - still have more tests for corner
-> cases to write, but "write corrupt data and then tell rebalance to move
-> it to another device" works as expected.
-
-> TODO:
-
-> - NVME has a "read recovery level" attribute that controlls how hard the
->   erasure coding algorithms work - we want that plumbed.
-
->   Before we give up and move data that we know is bad, we need to try
->   _as hard as possible_ to get a successful read.
-
-What does this mean exactly in terms of end user and SysAdmin point of
-view?  Locking up the system (no new writes to the now problematic
-storage) that I can't kill would be annoyingly painful.  
+So I cloned the repo, installed the pre-reqs and I'm trying to compile
+it, but I get the following:
 
 
-Don't get me wrong, I'm happy to see data integrity stuff get added,
-I'm just trying to understand how it interacts with userspace.  
+quad:/bcachefs/bcachefs1/bcachefs-tools$ make
+    [CC]     c_src/bcachefs.o
+In file included from ./libbcachefs/bcachefs.h:202,
+                 from c_src/tools-util.h:21,
+                 from c_src/cmds.h:10,
+                 from c_src/bcachefs.c:26:
+include/linux/srcu.h:10:41: error: return type is an incomplete type
+   10 | static inline struct urcu_gp_poll_state get_state_synchronize_rcu()
+      |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/srcu.h: In function =E2=80=98get_state_synchronize_rcu=E2=80=99:
+include/linux/srcu.h:12:16: warning: implicit declaration of function =E2=80=98start_poll_synchronize_rcu=E2=80=99 ]
+   12 |         return start_poll_synchronize_rcu();
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/srcu.h:12:16: warning: =E2=80=98return=E2=80=99 with a value, in function returning void [-Wreturn-ty]
+   12 |         return start_poll_synchronize_rcu();
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/srcu.h:10:41: note: declared here
+   10 | static inline struct urcu_gp_poll_state get_state_synchronize_rcu()
+      |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/srcu.h: At top level:
+include/linux/srcu.h:25:99: error: parameter 2 (=E2=80=98cookie=E2=80=99) has incomplete type
+   25 | bool poll_state_synchronize_srcu(struct srcu_struct *ssp, struct urcu_gp_poll_state cookie)
+      |                                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
 
-John
-
-
+include/linux/srcu.h: In function =E2=80=98poll_state_synchronize_srcu=E2=80=99:
+include/linux/srcu.h:27:16: warning: implicit declaration of function =E2=80=98poll_state_synchronize_rcu=E2=80=99;]
+   27 |         return poll_state_synchronize_rcu(cookie);
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                poll_state_synchronize_srcu
+include/linux/srcu.h: At top level:
+include/linux/srcu.h:30:41: error: return type is an incomplete type
+   30 | static inline struct urcu_gp_poll_state start_poll_synchronize_srcu(struct srcu_struct *ssp)
+      |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/srcu.h: In function =E2=80=98start_poll_synchronize_srcu=E2=80=99:
+include/linux/srcu.h:32:16: warning: =E2=80=98return=E2=80=99 with a value, in function returning void [-Wreturn-ty]
+   32 |         return start_poll_synchronize_rcu();
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/srcu.h:30:41: note: declared here
+   30 | static inline struct urcu_gp_poll_state start_poll_synchronize_srcu(struct srcu_struct *ssp)
+      |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/srcu.h: At top level:
+include/linux/srcu.h:35:41: error: return type is an incomplete type
+   35 | static inline struct urcu_gp_poll_state get_state_synchronize_srcu(struct srcu_struct *ssp)
+      |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~
+make: *** [Makefile:171: c_src/bcachefs.o] Error 1
+quad:/bcachefs/bcachefs1/bcachefs-tools$ git branch
+  master  * v1.20.0
