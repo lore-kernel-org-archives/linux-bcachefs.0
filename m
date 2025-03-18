@@ -1,50 +1,40 @@
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A74C1474DA
-	for <linux-bcachefs@vger.kernel.org>; Tue, 18 Mar 2025 01:06:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 149A65695
+	for <linux-bcachefs@vger.kernel.org>; Tue, 18 Mar 2025 01:15:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742259982; cv=none; b=knVLuaXsOdhcdnebGhRtTkaOoI6+XD8Ejy3S5r30kdnpbz6SWjW07fX+K0hOjPpaFNumQnRLiEz5XRYhocfpNPwG9IB1J3PRJ6e4vYC9ylnCfb5/jRrkIFNIP68r4fFDcR3o30GMBMcMJzaQLpAOK6M8zfovhpZwUbwviajohv4=
+	t=1742260523; cv=none; b=F+zwUYM1Ns44vzcDpYwc+HZsCEveaVJVXh60zrW0bvmiVahUjxMG0wd8m5HWY4e9MmAK0lNtzSUX1PQuDbIMWAzPHMBPLeZa+evqp2TIaOd/kt2KvVjKeZ2VjUmUYxcCsMpQM22WU+FCECk1Hc+ajcfp15q5TSi6gin5SEZCM4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742259982; c=relaxed/simple;
-	bh=Y2KvUn9mx+AOhbawnIaeHzTIGVcVoJ/EVksMjkNeEao=;
+	s=arc-20240116; t=1742260523; c=relaxed/simple;
+	bh=Bli4yDmu5+3qrchprxkFeZDERB5C2XJ6haYQD7Z5688=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z1+FSp1/q2Uabj/78Bx3qsPrJkdioAgxxPVRBuEjHiDxEE1Qywwe1aqFPRr6dV+NxjMmlPT39tbgpCopzoBmbAailA51BqPoclt/DMw09e3COZix+pl1foqTXBPPFXsu7P8VTjAADpkNE0SxUPkp4Fn31ftWTCoUp6TIK6iXOTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NAAsMPge; arc=none smtp.client-ip=91.218.175.182
+	 Content-Type:Content-Disposition:In-Reply-To; b=t1/JHTUBJrEwWXKwGu2TJu0ezwQIZURncoXqEf6HQnG98l0ORZ52FhcqnVHJihZobSyP5NReeT5+eq6Ns5xiK3U2jW9wiQXX2PObuPSXhdUP8Ugw6p39TB6pVVTM67iK4pZJkLT82IGpibA35qMhhStmS9inyd1hTLdlAHbnnJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fN2GcF9H; arc=none smtp.client-ip=91.218.175.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NAAsMPge"
-Date: Mon, 17 Mar 2025 21:06:13 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fN2GcF9H"
+Date: Mon, 17 Mar 2025 21:15:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1742259977;
+	t=1742260509;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=fEM8kcDSSrh8lm8TTW680nIhFq7eS+MT+j83CVl7V4I=;
-	b=NAAsMPgeBRdITv9puxCJCL/jrQ49Stpvc5lDZy8HgDxlhySzZLsVgcYXkuwpe3wMWKDYnj
-	84M9BAYZwCPrdRfF9FArdMfQlx/9/tDyI268dj+FNXD92cwUEIK2kmBFFvO9B3hgUzb7x7
-	me7gCVGYDgXQRXEZFh6Oer250UaynR0=
+	bh=9Q7/l4Ub370JHe+SyOW8etUedb9vG4uU2/MyRZY5mf4=;
+	b=fN2GcF9HJn9s+ei475W6p/NCBLxB68JGBzF8tCZhF8//dsXWCY1aGXCI1CATTqVqYE91XD
+	sw2ArNagu5VKQZwg2tOFtMoh1HPl269S+YkNpoPMTUS0sU1nrjPfgr5Cxek++T/WG+i15I
+	WozqnAJ3P7w/ZPn886CfBNVKx4YGyls=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Bart Van Assche <bvanassche@acm.org>
-Cc: Keith Busch <kbusch@kernel.org>, 
-	"Martin K. Petersen" <martin.petersen@oracle.com>, Christoph Hellwig <hch@infradead.org>, 
-	Jens Axboe <axboe@kernel.dk>, linux-bcachefs@vger.kernel.org, linux-block@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 13/14] block: Allow REQ_FUA|REQ_READ
-Message-ID: <4mqi7e74ji7j3pzfdhfncz2yz3vvvvb6jivtzry4pmljgygcg5@hd5pv2lddzeq>
-References: <fhhgjnhmk72vpruhgftwq3lzfmylbhn6cuajj6saikee2zuqjp@54yfyxu35yiz>
- <Z9guJ2VxvqAmm9o9@kbusch-mbp.dhcp.thefacebook.com>
- <yq1msdjg23p.fsf@ca-mkp.ca.oracle.com>
- <qhc7tpttpt57meqqyxrfuvvfaqg7hgrpivtwa5yxkvv22ubyia@ga3scmjr5kti>
- <yq1bjtzfyen.fsf@ca-mkp.ca.oracle.com>
- <zjwvemsjlshzm5zes7jznmhchvf2erebmuil4ssnkax3lwpw3a@5gnzbjlta36f>
- <Z9h25wvi0VQOaGh2@kbusch-mbp.dhcp.thefacebook.com>
- <ysvt4npanz4qfoxm5cv627cq2ommq6rxpka6pkvl3l2crcatmc@ic7tn5tt7aw4>
- <Z9iIa770ySTgKgp0@kbusch-mbp.dhcp.thefacebook.com>
- <566e4f59-4aaa-4d8e-b61f-b27cf79c1201@acm.org>
+To: John Stoffel <john@stoffel.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-block@vger.kernel.org, 
+	Roland Vet <vet.roland@protonmail.com>, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 00/14] better handling of checksum errors/bitrot
+Message-ID: <avmzp2nswsowb3hg2tcrb6fv2djgkiw7yl3bgdn4dnccuk4yti@ephd5sxy5b7w>
+References: <20250311201518.3573009-1-kent.overstreet@linux.dev>
+ <26584.35900.850011.320586@quad.stoffel.home>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -53,37 +43,109 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <566e4f59-4aaa-4d8e-b61f-b27cf79c1201@acm.org>
+In-Reply-To: <26584.35900.850011.320586@quad.stoffel.home>
 X-Migadu-Flow: FLOW_OUT
 
-On Mon, Mar 17, 2025 at 02:13:14PM -0700, Bart Van Assche wrote:
-> On 3/17/25 1:39 PM, Keith Busch wrote:
-> > On Mon, Mar 17, 2025 at 03:40:10PM -0400, Kent Overstreet wrote:
-> > > If, OTOH, this is just something that hasn't come up before - the
-> > > language in the spec is already there, so once code is out there with
-> > > enough users and a demonstrated use case then it might be a pretty
-> > > simple nudge - "shoot down this range of the cache, don't just flush it"
-> > > is a pretty simple code change, as far as these things go.
-> > 
-> > So you're telling me you've never written SSD firmware then waited for
-> > the manufacturer to release it to your users? Yes, I jest, and maybe
-> > YMMV; but relying on that process is putting your destiny in the wrong
-> > hands.
+On Mon, Mar 17, 2025 at 04:55:24PM -0400, John Stoffel wrote:
+> >>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
 > 
-> As far as I know in the Linux kernel we only support storage device behavior
-> that has been standardized and also workarounds for bugs. I'm
-> not sure we should support behavior in the Linux kernel that deviates
-> from existing standards and that also deviates from longstanding and
-> well-established conventions.
+> > Roland Vet spotted a good one: currently, rebalance/copygc get stuck if
+> > we've got an extent that can't be read, due to checksum error/bitrot.
+> 
+> > This took some doing to fix properly, because
+> 
+> > - We don't want to just delete such data (replace it with
+> >   KEY_TYPE_error); we never want to delete anything except when
+> >   explicitly told to by the user, and while we don't yet have an API for
+> >   "read this file even though there's errors, just give me what you
+> >   have" we definitely will in the future.
+> 
+> So will open() just return an error?  How will this look from
+> userspace?  
 
-What bcachefs is doing is entirely in line with the behaviour the
-standard states.
+Not the open, the read - the typical case is only a single extent goes
+bad; it's like any other IO error.
 
-Keith and Martin are describing systems with a different interpretation,
-because they want the side effect (flush cache) without the main effect
-(possibly evict cache, but read comes from media).
+> > - Not being able to move data is a non-option: that would block copygc,
+> >   device removal, etc.
+> 
+> > - And, moving said extent requires giving it a new checksum - strictly
+> >   required if the move has to fragment it, teaching the write/move path
+> >   about extents with bad checksums is unpalateable, and anyways we'd
+> >   like to be able to guard against more bitrot, if we can.
+> 
+> Why does it need a new checksum if there are read errors?  What
+> happens if there are more read errors?   If I have a file on a
+> filesystem which is based in spinning rust and I get a single bit
+> flip, I'm super happy you catch it.  
 
-It's an amusing state of affairs, but it'd be easily resolved with an
-admin level NVME command to flip a state bit (like the read recovery
-level we were also talking about), and anyways multihoming capable NVME
-devices are an entirely different market from the conventional stuff.
+The data move paths very strictly verify checksums as they move data
+around so they don't introduce bitrot.
+
+I'm not going to add
+	if (!bitrotted_extent) checksum(); else no_checksum()
+Eww...
+
+
+Besides being gross, we also would like to guard against introducing
+more bitrot.
+
+> But now you re-checksum the file, with the read error, and return it?
+> I'm stupid and just a user/IT guy.  I want notifications, but I don't
+> want my application to block so I can't kill it, or unmount the
+> filesystem.  Or continue to use it if I like.  
+
+The aforementioned poison bit ensures that you still get the error from
+the original checksum error when you read that data - unless you use an
+appropriate "give it to me anyways" API.
+
+> > So that means:
+> 
+> > - Extents need a poison bit: "reads return errors, even though it now
+> >   has a good checksum" - this was added in a separate patch queued up
+> >   for 6.15.
+> 
+> Sorry for being dense, but does a file have one or more extents?  Or
+> is this at a level below that?  
+
+Files have multiple extents.
+
+An extent is one contiguous range of data, and in bcachefs checksums are
+at the extent level, not block, so checksummed (and compressed) extents
+are limited to, by default, 128k.
+
+> >   It's an incompat feature because it's a new extent field, and old
+> >   versions can't parse extents with unknown field types, since they
+> >   won't know their sizes - meaning users will have to explicitly do an
+> >   incompat upgrade to make use of this stuff.
+> 
+> > - The read path needs to do additional retries after checksum errors
+> >   before giving up and marking it poisoned, so that we don't
+> >   accidentally convert a transient error to permanent corruption.
+> 
+> When doing these retries, is the filesystem locked up or will the
+> process doing the read() be blocked from being killed?  
+
+The process doing the read() can't be killed during this, no. If
+requested this could be changed, but keep in mind retries are limited in
+number.
+
+Nothing else is "locked up", everything else proceeds as normal.
+
+> > - The read path gets a whole bunch of work to plumb precise modern error
+> >   codes around, so that e.g. the retry path, the data move path, and the
+> >   "mark extent poisoned" path all know exactly what's going on.
+> 
+> > - Read path is responsible for marking extents poisoned after sufficient
+> >   retry attempts (controlled by a new filesystem option)
+> 
+> > - Data move path is allowed to move extents after a read error, if it's
+> >   a checksum error (giving it a new checksum) if it's been poisoned
+> >   (i.e. the extent flags feature is enabled).
+> 
+> So if just a single bit flips, the extent gets moved onto better
+> storage, and the file gets re-checksummed.  But what about if more
+> bits go bad afterwards?  
+
+The new checksum means they're detected, and if you have replication
+enabled they'll be corrected automatically, like any other IO error.
