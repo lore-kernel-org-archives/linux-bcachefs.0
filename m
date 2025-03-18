@@ -1,27 +1,41 @@
-Received: from mail.stoffel.org (mail.stoffel.org [172.104.24.175])
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE7D6207DFD;
-	Tue, 18 Mar 2025 14:47:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.104.24.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4628F20E6E2
+	for <linux-bcachefs@vger.kernel.org>; Tue, 18 Mar 2025 14:57:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742309274; cv=none; b=BzQkInQOLJuaGuNPB3g8SxOom91QR0r5kpfbS7K897jpPu/2zX8yTJykjGfH3xGH+tzA3vvKsyQHUZiP/DLyn9oHaBGBPuwvFjrzxHUmJC+8GUBb6Oq6tgq5ugWJlr9Iekbk2gvqKWmXcRcWxK26VCFod21HBmUgX28ulKWUFdA=
+	t=1742309838; cv=none; b=tFNHtrVLGZVS4Xho/eIxthNi7BjWrkZzkKhQX8UI+/OEgE0JncKR9SCu1XOLl1gfpTI9fRlrubSpcygWlA5zVCusJIuNzJnyHW3rDHDMv688AyC4rFYP/wgAKLE4/FY0tAKrjthgPzXQoB+e2eCGOqLdUrt14Wc+q52YliAtl9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742309274; c=relaxed/simple;
-	bh=HvQIZM+EkifqhBgtCmAJn6RhN+1+XsIWn5ez233abgs=;
-	h=MIME-Version:Content-Type:Message-ID:Date:From:To:Cc:Subject:
-	 In-Reply-To:References; b=iQgUpkgCwQdBhWvvHN1vRyYmZ5jP/VAtjVP1wzS+v7X7bpz5oyNZVuI794F49oQKsQFw9muZUgsi+vio/MmZbOIbirYh0W369KlOwDK0MoYst1R1pGQBpM6VJ4YSxtr4oOJe1M/bnSBlEpAMf46VXy2MW2c8xPcdRa3vUD50hOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stoffel.org; spf=pass smtp.mailfrom=stoffel.org; arc=none smtp.client-ip=172.104.24.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stoffel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stoffel.org
-Received: from quad.stoffel.org (syn-097-095-183-072.res.spectrum.com [97.95.183.72])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by mail.stoffel.org (Postfix) with ESMTPSA id D7A7F1E1D9;
-	Tue, 18 Mar 2025 10:47:51 -0400 (EDT)
-Received: by quad.stoffel.org (Postfix, from userid 1000)
-	id 82458A0E82; Tue, 18 Mar 2025 10:47:51 -0400 (EDT)
+	s=arc-20240116; t=1742309838; c=relaxed/simple;
+	bh=5MeCKu2D7YTXp683k5BVUKZ7rUlSjODZOfA1mpxJmwc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=osneLX8hGYyoi8RI26FGH5uccJwSJnfT9erEuhIVIdFcAWqTWMzJmpuJN+dv4XffwJpFmPD8L9J3eDhndLUYLHFikSPZPZuNOjl6ED7t+Om8TDAvqF0y6862Pp/PbqHcn37aXu6cfMWqLNOn6lRbykaSZhujqfwvh/xLYbsRK+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XvrvX0rG; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XvrvX0rG"
+Date: Tue, 18 Mar 2025 10:57:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1742309830;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vYd6byRtXdPW+3tJeyfMAdazZaHNqVH+PpXWAJ8o+XU=;
+	b=XvrvX0rGkyNd1vz5DVX80039eCXHCEslWfL5DnjRZxvNdJLHJmPHOhRXaNTb70w1oj11Gs
+	2ajiWN1IZ5g+xwYjcLf4NpT0roTnf6Ak41kaU38aHCdIpHG4F8s8zL7FH5bm/lcWsPRPm8
+	nNRilhHacfSH2TCK5eYnKGFjHTzDBZE=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: John Stoffel <john@stoffel.org>
+Cc: Alan Huang <mmpgouride@gmail.com>, linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH] bcachefs: Increase blacklist range
+Message-ID: <gogyhxsomty6ooldwglk36qa2rqn6iwwwhopslmui2k3naky2i@4vzz3myybst5>
+References: <20250315073942.1909895-1-mmpgouride@gmail.com>
+ <26584.36082.936426.143774@quad.stoffel.home>
+ <gchq6w4tyrx4wxjepyfoerprnsp3jlzm2acel4hfaf4z3jp4iw@53mpn6u5edc7>
+ <26585.33403.270413.729999@quad.stoffel.home>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -29,157 +43,74 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <26585.34711.506258.318405@quad.stoffel.home>
-Date: Tue, 18 Mar 2025 10:47:51 -0400
-From: "John Stoffel" <john@stoffel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: John Stoffel <john@stoffel.org>,
-    linux-bcachefs@vger.kernel.org,
-    linux-block@vger.kernel.org,
-    Roland Vet <vet.roland@protonmail.com>,
-    linux-fsdevel@vger.kernel.org
-X-Clacks-Overhead: GNU Terry Pratchett
-Subject: Re: [PATCH 00/14] better handling of checksum errors/bitrot
-In-Reply-To: <avmzp2nswsowb3hg2tcrb6fv2djgkiw7yl3bgdn4dnccuk4yti@ephd5sxy5b7w>
-References: <20250311201518.3573009-1-kent.overstreet@linux.dev>
-	<26584.35900.850011.320586@quad.stoffel.home>
-	<avmzp2nswsowb3hg2tcrb6fv2djgkiw7yl3bgdn4dnccuk4yti@ephd5sxy5b7w>
-X-Mailer: VM 8.3.x under 28.2 (x86_64-pc-linux-gnu)
+Content-Disposition: inline
+In-Reply-To: <26585.33403.270413.729999@quad.stoffel.home>
+X-Migadu-Flow: FLOW_OUT
 
->>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
+On Tue, Mar 18, 2025 at 10:26:03AM -0400, John Stoffel wrote:
+> >>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
+> 
+> > On Mon, Mar 17, 2025 at 04:58:26PM -0400, John Stoffel wrote:
+> >> >>>>> "Alan" == Alan Huang <mmpgouride@gmail.com> writes:
+> >> 
+> >> > Now there are 16 journal buffers, 8 is too small to be enough.
+> >> > Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+> >> > ---
+> >> >  fs/bcachefs/recovery.c | 2 +-
+> >> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >> 
+> >> > diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
+> >> > index 71c786cdb192..a6e26733854d 100644
+> >> > --- a/fs/bcachefs/recovery.c
+> >> > +++ b/fs/bcachefs/recovery.c
+> >> > @@ -899,7 +899,7 @@ int bch2_fs_recovery(struct bch_fs *c)
+> >> >  	 * journal sequence numbers:
+> >> >  	 */
+> >> >  	if (!c->sb.clean)
+> >> > -		journal_seq += 8;
+> >> > +		journal_seq += JOURNAL_BUF_NR * 4;
+> >> 
+> >> Instead of magic numbers, could you put in a define with an
+> >> explanation of how you arrived at this number?  Just to document the
+> >> assumptions better?
+> >> 
+> >> John
+> 
+> > The * 4 is a fudge factor.
+> 
+> Ok.
+> 
+> > But actually, I was giving this more thought and I don't think we have
+> > the correct number.
+> 
+> We have a WAG here.  :-)
+> 
+> > The real bound is "number of unflushed journal entries that might have
+> > been allocated, and have other items (btree nodes) referring to that
+> > sequence number, but which don't hit because beacuse they weren't
+> > flushed".
+> 
+> > And we don't have an actual bound on that.
+> 
+> So what happens if journal_seq overflows?  I don't know the code and
+> haven't looked.   
 
-> On Mon, Mar 17, 2025 at 04:55:24PM -0400, John Stoffel wrote:
->> >>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
->> 
->> > Roland Vet spotted a good one: currently, rebalance/copygc get stuck if
->> > we've got an extent that can't be read, due to checksum error/bitrot.
->> 
->> > This took some doing to fix properly, because
->> 
->> > - We don't want to just delete such data (replace it with
->> >   KEY_TYPE_error); we never want to delete anything except when
->> >   explicitly told to by the user, and while we don't yet have an API for
->> >   "read this file even though there's errors, just give me what you
->> >   have" we definitely will in the future.
->> 
->> So will open() just return an error?  How will this look from
->> userspace?  
+In the olden days, in the before times, blacklisting insufficient
+sequence numbers would mean btree node entries could become visible
+after a crash that should've been ignored, because they were newer than
+the newest (flush) journal entry.
 
-> Not the open, the read - the typical case is only a single extent goes
-> bad; it's like any other IO error.
+That can't happen anymore because pointers to btree nodes now indicate
+how many sectors we've written and completed within that node, and
+they're updated after every btree node write (log append).
 
-Good. But then how would an application know we got a checksum error
-for data corruption?  Would I have to update all my code to do another
-special call when I get a read/write error to see if it was a
-corruption issue?  
+IOW - our mechanism for sequential consistency now is that the b-tree
+behaves like a pure COW btree.
 
->> > - Not being able to move data is a non-option: that would block copygc,
->> >   device removal, etc.
->> 
->> > - And, moving said extent requires giving it a new checksum - strictly
->> >   required if the move has to fragment it, teaching the write/move path
->> >   about extents with bad checksums is unpalateable, and anyways we'd
->> >   like to be able to guard against more bitrot, if we can.
->> 
->> Why does it need a new checksum if there are read errors?  What
->> happens if there are more read errors?   If I have a file on a
->> filesystem which is based in spinning rust and I get a single bit
->> flip, I'm super happy you catch it.  
+So I retract what I said before :) Having just checked the journal read
+path, and the recovery path that creates the blacklist entries, I think
+we're good.
 
-> The data move paths very strictly verify checksums as they move data
-> around so they don't introduce bitrot.
-
-Good.  This is something I really liked as an idea in ZFS, happy to
-see it coming to bcachefs as well. 
-
-> I'm not going to add
-> 	if (!bitrotted_extent) checksum(); else no_checksum()
-> Eww...
-
-LOL!
-
-> Besides being gross, we also would like to guard against introducing
-> more bitrot.
-
->> But now you re-checksum the file, with the read error, and return it?
->> I'm stupid and just a user/IT guy.  I want notifications, but I don't
->> want my application to block so I can't kill it, or unmount the
->> filesystem.  Or continue to use it if I like.  
-
-> The aforementioned poison bit ensures that you still get the error from
-> the original checksum error when you read that data - unless you use an
-> appropriate "give it to me anyways" API.
-
-So this implies that I need to do extra work to A) know I'm on
-bcachefs filesystem, B) that I got a read/write error and I need to do
-some more checks to see what the error exactly is.  
-
-And if I want to re-write the file I can either copy it to a new name,
-but only when I use the new API to say "give me all the data, even if
-you have a checksum error".  
-
->> > So that means:
->> 
->> > - Extents need a poison bit: "reads return errors, even though it now
->> >   has a good checksum" - this was added in a separate patch queued up
->> >   for 6.15.
->> 
->> Sorry for being dense, but does a file have one or more extents?  Or
->> is this at a level below that?  
-
-> Files have multiple extents.
-
-> An extent is one contiguous range of data, and in bcachefs checksums are
-> at the extent level, not block, so checksummed (and compressed) extents
-> are limited to, by default, 128k.
-
->> >   It's an incompat feature because it's a new extent field, and old
->> >   versions can't parse extents with unknown field types, since they
->> >   won't know their sizes - meaning users will have to explicitly do an
->> >   incompat upgrade to make use of this stuff.
->> 
->> > - The read path needs to do additional retries after checksum errors
->> >   before giving up and marking it poisoned, so that we don't
->> >   accidentally convert a transient error to permanent corruption.
->> 
->> When doing these retries, is the filesystem locked up or will the
->> process doing the read() be blocked from being killed?  
-
-> The process doing the read() can't be killed during this, no. If
-> requested this could be changed, but keep in mind retries are limited in
-> number.
-
-How limited?  And in the worse case, if I have 10 or 100 readers of a
-file with checksum errors, now I've blocked all those processes for X
-amount of time.  Will this info be logged somewhere so a sysadm could
-possibly just do an 'rm' on the file to nuke it, or have some means of
-forcing a scrub?  
-
-> Nothing else is "locked up", everything else proceeds as normal.
-
-But is the filesystem able to be unmounted when there's a locked up
-process?  I'm just thinking in terms of system shutdowns when you have
-failing hardware and want to get things closed as cleanly as possible
-since you're going to clone the underlying block device onto new media
-ASAP in an offline manner.  
-
->> > - The read path gets a whole bunch of work to plumb precise modern error
->> >   codes around, so that e.g. the retry path, the data move path, and the
->> >   "mark extent poisoned" path all know exactly what's going on.
->> 
->> > - Read path is responsible for marking extents poisoned after sufficient
->> >   retry attempts (controlled by a new filesystem option)
->> 
->> > - Data move path is allowed to move extents after a read error, if it's
->> >   a checksum error (giving it a new checksum) if it's been poisoned
->> >   (i.e. the extent flags feature is enabled).
->> 
->> So if just a single bit flips, the extent gets moved onto better
->> storage, and the file gets re-checksummed.  But what about if more
->> bits go bad afterwards?  
-
-> The new checksum means they're detected, and if you have replication
-> enabled they'll be corrected automatically, like any other IO error.
-
-Nice!
+The only reason we'd need to blacklist more is if we want some kind of a
+double check on the modern sequential consistency mechanism, and I don't
+think we need that.
