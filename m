@@ -1,112 +1,162 @@
-Received: from mail.tnxip.de (mail.tnxip.de [49.12.77.104])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F72F202978
-	for <linux-bcachefs@vger.kernel.org>; Tue, 18 Mar 2025 21:37:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=49.12.77.104
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F9152063FE
+	for <linux-bcachefs@vger.kernel.org>; Tue, 18 Mar 2025 22:11:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742333855; cv=none; b=b/7nO+svkLnUWFdfr78cq/XAqs+aqHzUfBUo8BgmCDkxrLJuZPq4Q36FppYOvPhHYAqjtGxl6qtkWeCeRzVZfpjzz76EEbnEgGQ/RjGf4VUHCBvAq+nyJEB84001HYu5g+wWbmL6dRqwDxaHxQ8dNpYT+VvgSTr12YKD/w2shxg=
+	t=1742335922; cv=none; b=MiLPDH6wg5eQteCELjkHfwDprZY/jkVSAU1KbREyM3C58WmSQmtMER5ZyqQHHp1UpzQ4HOaQB2XeBl8ms3Ri5XxOSjucSXP/f9yMZSyLhrinIuOAESLpTmUI/qH/ePF3pfnUK/B6aQ+sBAx3jRvaNqPOVNLSuANseujJube1NdI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742333855; c=relaxed/simple;
-	bh=hpDVAKsSkF/h3wEKwidZ+fDlC691WLRL2r+2ukfzmAU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kACmcO7PZNtpv43cIvVuAhj/nkhqHlOtmyiQQvfScEveh30oPYlJxnvNldJRZnAgbfEfWD7UAW8osAP9+eBVB2xDCzjv/bwEewktQN87Tma/y/EXKc40erwSIvMwxrr0/IYa0LcTfubqRKANFB0s8Edvb/hGflNTOxfnI9WLNiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=tnxip.de; spf=pass smtp.mailfrom=tnxip.de; dkim=pass (1024-bit key) header.d=tnxip.de header.i=@tnxip.de header.b=ij2UJd3i; dkim=permerror (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b=Zz7beNY8; dkim=pass (1024-bit key) header.d=tnxip.de header.i=@tnxip.de header.b=OfwBQhEL; dkim=permerror (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b=HIW7y2M5; arc=none smtp.client-ip=49.12.77.104
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=tnxip.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tnxip.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tnxip.de header.i=@tnxip.de header.b="ij2UJd3i";
-	dkim=permerror (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b="Zz7beNY8";
-	dkim=pass (1024-bit key) header.d=tnxip.de header.i=@tnxip.de header.b="OfwBQhEL";
-	dkim=permerror (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b="HIW7y2M5"
-Received: from gw.tnxip.de (unknown [IPv6:fdc7:1cc3:ec03:1:c83d:cb3f:e48:c15a])
-	by mail.tnxip.de (Postfix) with ESMTPS id 4624E208B2;
-	Tue, 18 Mar 2025 22:32:06 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tnxip.de; s=mail-vps;
-	t=1742333526;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cWpt/rbJ4CNby9pswnfkaqUQIzgjHKBmmbE/W4a/+MQ=;
-	b=ij2UJd3ieXt8mIsN3WtY0c5Nxsf6H+evPhQOjzf2YOME01Sa9LaM/IV8uhTPijIK7TRIgn
-	WmDMDSFknDwIKjsL/907gSPGSdsrSHSc3iHUC8bAkqBG3RK+R561bpTES2GQbRmwuWpr76
-	OTDntHIqsuO5RpqzGWdAEOmE5rCybIw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=tnxip.de;
-	s=mail-vps-ed; t=1742333526;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cWpt/rbJ4CNby9pswnfkaqUQIzgjHKBmmbE/W4a/+MQ=;
-	b=Zz7beNY8CAsSPaNGCSgKddJsyzVF4GOof6ybQwEmvv5+RNqo4hvx7zjfUsCm60RVuHVbMj
-	8DpBuPhZDGJmexDQ==
-Received: from [IPV6:2a04:4540:8c01:f100:ff2f:9ba1:7ab2:87d3] (unknown [IPv6:2a04:4540:8c01:f100:ff2f:9ba1:7ab2:87d3])
-	by gw.tnxip.de (Postfix) with ESMTPSA id EAEC52800000000001AE1;
-	Tue, 18 Mar 2025 22:32:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tnxip.de; s=mail-gw;
-	t=1742333521;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cWpt/rbJ4CNby9pswnfkaqUQIzgjHKBmmbE/W4a/+MQ=;
-	b=OfwBQhELhEmpSrTyjNHZaQQUI7C5ZHHi0WkJP0Uk8IfiO5TY/pndwWou1bPbo+Wjdo05qD
-	obOLa/bwrFJEngfGpNirtvIJcx2suDNqKDiUoimf0DrhxZ2Yli/5mbjTF0rrqIsoffxjrz
-	gLB9BWilcmhHbHXLDM8rw+lte/hD3QY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=tnxip.de;
-	s=mail-gw-ed; t=1742333521;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cWpt/rbJ4CNby9pswnfkaqUQIzgjHKBmmbE/W4a/+MQ=;
-	b=HIW7y2M5tT44ACd270Z+JAXkWYl2sjHh9yNeRNlkLSM9vDBhvAvCt7Om6ddVZFFBOGoHAd
-	ym7uZ8AmRaIeWvAw==
-Message-ID: <3e765804-93b5-4102-8d31-0c91d44c726c@tnxip.de>
-Date: Tue, 18 Mar 2025 22:32:00 +0100
+	s=arc-20240116; t=1742335922; c=relaxed/simple;
+	bh=9d3EbaMoYysDxaknxbHqaz2DgcYC2l3wa8cV1wVoKeE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P3slZHQw+5KFsFc2Vs949/q/TiuOTMHXSDScCjTQUlXSTPbtfSocjavUaF9VQq20zhnmZ6tl1XmVEriuhE/h6UBWdbCQwpt9QbTgKw3ZSH2hWfuNv3XJoOP1s5dZGMcSSGIfhp1pmoUNwkxP6LXbgEa23hyyPf2z6sP5kHRsWrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-173-48-82-222.bstnma.fios.verizon.net [173.48.82.222])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 52IMBSSr025381
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 18 Mar 2025 18:11:29 -0400
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id 284D02E010B; Tue, 18 Mar 2025 18:11:28 -0400 (EDT)
+Date: Tue, 18 Mar 2025 18:11:28 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Demi Marie Obenour <demi@invisiblethingslab.com>
+Cc: Dave Chinner <david@fromorbit.com>, cve@kernel.org, gnoack@google.com,
+        gregkh@linuxfoundation.org, kent.overstreet@linux.dev,
+        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, mic@digikod.net,
+        Demi Marie Obenour <demiobenour@gmail.com>
+Subject: Re: Unprivileged filesystem mounts
+Message-ID: <20250318221128.GA1040959@mit.edu>
+References: <Z8948cR5aka4Cc5g@dread.disaster.area>
+ <20250311021957.2887-1-demi@invisiblethingslab.com>
+ <Z8_Q4nOR5X3iZq3j@dread.disaster.area>
+ <Z9CYzjpQUH8Bn4AL@itl-email>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Betterbird (Linux)
-Subject: Re: errors compiling bcachefs-tools v1.20.0 on debian 12
-To: John Stoffel <john@stoffel.org>
-Cc: linux-bcachefs@vger.kernel.org
-References: <20250311201518.3573009-1-kent.overstreet@linux.dev>
- <26584.35900.850011.320586@quad.stoffel.home>
- <26584.36927.6100.282713@quad.stoffel.home>
- <66bf47fc-643e-4e6b-ab6d-492024fdd2e7@tnxip.de>
- <26585.57291.760395.430511@quad.stoffel.home>
-Content-Language: en-US, de-DE
-From: =?UTF-8?Q?Malte_Schr=C3=B6der?= <malte.schroeder@tnxip.de>
-In-Reply-To: <26585.57291.760395.430511@quad.stoffel.home>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z9CYzjpQUH8Bn4AL@itl-email>
 
-On 18/03/2025 22:04, John Stoffel wrote:
->>>>>> "Malte" == Malte Schröder <malte.schroeder@tnxip.de> writes:
->> Libs in Debian 12/Bookworm are too old for bcachefs-tools. I think
->> someone pulled it of by forcing some libs from Trixie, but that caused
->> other things to break.
-> So what is the best Linux distro to use to compile bcachefs-tools?
-> And can someone upgrade the INSTALL.md doc and the
-> https://bcachefs.org website to talk about what is the best
-> development environment now to use as a baseline?  And how to
-> cross-compile the bcachefs-tools for use on older distros with newer
-> kernels?  
->
-> I'm sure more people would test and play with bcachefs if there was
-> more docs for ends users to work from.
->
-> John
+On Tue, Mar 11, 2025 at 04:10:42PM -0400, Demi Marie Obenour wrote:
+> 
+> Why is it not possible to provide that guarantee?  I'm not concerned
+> about infinite loops or deadlocks.  Is there a reason it is not possible
+> to prevent memory corruption?
 
-I'd recommend you join #bcache at OFTC. This kind of things has been and
-still is discussed there and people have found solutions that worked for
-them regarding -tools vs Bookworm. My personal "solution" was to upgrade
-to Trixie.
+Companies and users are willing to pay to improve performance for file
+systems.  q(For example, we have been working for Cloud services that
+are interested in improving the performance of their first party
+database products using the fact with cloud emulated block devices, we
+can guarantee that 16k write won't be torn, and this can resul;t in
+significant database performance.)
 
-/Malte
+However, I have *yet* to see any company willing to invest in
+hardening file systems against maliciously modified file system
+images.  We can debate how much it might cost it to harden a file
+system, but given how much companies are willing to pay --- zero ---
+it's mostly an academic question.
+
+In addition, if someone made a file system which is guaranteed to be
+safe, but it had massive performance regressions relative other file
+systems --- it's unclear how many users or system administrators would
+use it.  And we've seen that --- there are known mitigations for CPU
+cache attacks which are so expensive, that companies or end users have
+chosen not to enable them.  Yes, there are some security folks who
+believe that security is the most important thing, uber alles.
+Unfortunately, those people tend not to be the ones writing the checks
+or authorizing hiring budgets.
+
+That being said, if someone asked me if it was best way to invest
+software development dollars --- I'd say no.  Don't get me wrong, if
+someone were to give me some minions tasked to harden ext4, I know how
+I could keep them busy and productive.  But a more cost effective way
+of addressing the "untrusted file sytem problem" would be:
+
+(a) Run a forced fsck to check the file system for inconsistency
+before letting the file system be mounted.
+
+(b) Mount the file system in a virtual machine, and then make it
+available to the host using something like 9pfs.  9pfs is very simple
+file system which is easy to validate, and it's a strategy used by
+gVisor's file system gopher.
+
+These two approaches are complementary, with (a) being easier, and (b)
+probably a bit more robust from a security perspective, but it a bit
+more work --- with both providing a layered approach.
+
+> > In this situation, the choice of what to do *must* fall to the user,
+> > but the argument for "filesystem corruption is a CVE-worthy bug" is
+> > that the choice has been taken away from the user. That's what I'm
+> > saying needs to change - the choice needs to be returned to the
+> > user...
+
+Users can alwayus do stupid things.  For example, they could download
+a random binary from the web, then execute it.  We've seen very
+popular software which is instaled via "curl <URL> | bash".  Should we
+therefore call bash be a CVE-vulnerability?
+
+Realistically, this is probably a far bigger vulnerability if we're
+talking about stupid user tricks.  ("But.... but... but... users need
+to be able to install software" --- we can't stop them from piping the
+output of curl into bash.)  Which is another reason why I don't really
+blame the VP's that are making funding decisions; it's not clear that
+the ROI of funding file system security hardening is the best way to
+spend a company's dollars.  Remember, Zuckerburg has been quoted as
+saying that he's laying off engineers so his company can buy more
+GPU's, we know that funding is not infinite.  Every company is making
+ROI decisions; you might not agree with the decisions, but trust me,
+they're making them.
+
+But if some company would like to invest software engineering effort
+in addition features or perform security hardening --- they should
+contact me, and I'd be happy to chat.  We have weekly ext4 video
+conference calls, and I'm happy to collaborate with companies have a
+business interest in seeing some feature get pursued.  There *have*
+been some that are security related --- fscrypt and fsverity were both
+implemented for ext4 first, in support of Android and ChromeOS's
+security use cases.  But in practice this has been the exception, and
+not the rule.
+
+> Not automounting filesystems on hotplug is a _part_ of the solution.
+> It cannot be the _entire_ solution.  Users sometimes need to be able to
+> interact with untrusted filesystem images with a reasonable speed.
+
+Running fsck on a file system *before* automounting file systems would
+be a pretty decent start towards a solution.  Is it perfect?  No.  But
+it would provide a huge amount of protection.
+
+Note that this won't help if you have a malicious hardware that
+*pretends* to be a USB storage device, but which doens't behave a like
+a honest storage device.  For example, reading a particular sector
+with one data at time T, and a different data at time T+X, with no
+intervening writes.  There is no real defense to this attack, since
+there is no way that you can authentiate the external storage device;
+you could have a registry of USB vendor and model id's, but a device
+can always lie about its id numbers.
+
+If you are worried about this kind of attack, the only thing you can
+do is to prevent external USB devices from being attached.  This *is*
+something that you can do with Chrome and Android enterprise security
+policies, and, I've talked to a bank's senior I/T leader that chose to
+put epoxy in their desktop, to mitigate aginst a whole *class* of USB
+security attacks.
+
+Like everything else, security and usability and performance and costs
+are all engineering tradeoffs.  So what works for one use case and
+threat model won't be optimal for another, just as fscrypt works well
+for Android and ChromeOS, but it doesn't necessarily work well for
+other use cases (where I might recommed dm-crypt instead).
+
+Cheers,
+
+					- Ted
 
