@@ -1,83 +1,112 @@
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from mail.tnxip.de (mail.tnxip.de [49.12.77.104])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 387061DF240
-	for <linux-bcachefs@vger.kernel.org>; Tue, 18 Mar 2025 21:33:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F72F202978
+	for <linux-bcachefs@vger.kernel.org>; Tue, 18 Mar 2025 21:37:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=49.12.77.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742333629; cv=none; b=GRQM+bcWTQoL7P593BZArCBghehgxupjPYkJdWb2i6Z3h/WErpYNo42PO7lHJBAZ6eg20nbU5zfwpeG6MJDe6qiWiCSyFPM0y3kMqFcd+uGeDQKmk74NuIkWBxWRpKSDdRFV2FWvi12M+WiilQXdeTEb0a8tWnx5qqP0NtbXOCc=
+	t=1742333855; cv=none; b=b/7nO+svkLnUWFdfr78cq/XAqs+aqHzUfBUo8BgmCDkxrLJuZPq4Q36FppYOvPhHYAqjtGxl6qtkWeCeRzVZfpjzz76EEbnEgGQ/RjGf4VUHCBvAq+nyJEB84001HYu5g+wWbmL6dRqwDxaHxQ8dNpYT+VvgSTr12YKD/w2shxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742333629; c=relaxed/simple;
-	bh=yPrACEXC0AHNwx5w8YYzWO946MVzQgap67C/sXvWWB4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cGjG/B926TlmenbjmLw0YQRemEArpx5gE/UQC8OcSHBrSPP5aXuelkH74sbT71hQ1KXFX/RPJYokCYs41l6d6fVnjMei4f1dg3SgqHH0EO/Y9kh4PiuI8RV4IfSO+t/9TOSbdrJODgHyLuEcwg6SlttlbknyuZdDlJI7JcSA7vk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NeJRFR//; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1742333855; c=relaxed/simple;
+	bh=hpDVAKsSkF/h3wEKwidZ+fDlC691WLRL2r+2ukfzmAU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kACmcO7PZNtpv43cIvVuAhj/nkhqHlOtmyiQQvfScEveh30oPYlJxnvNldJRZnAgbfEfWD7UAW8osAP9+eBVB2xDCzjv/bwEewktQN87Tma/y/EXKc40erwSIvMwxrr0/IYa0LcTfubqRKANFB0s8Edvb/hGflNTOxfnI9WLNiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=tnxip.de; spf=pass smtp.mailfrom=tnxip.de; dkim=pass (1024-bit key) header.d=tnxip.de header.i=@tnxip.de header.b=ij2UJd3i; dkim=permerror (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b=Zz7beNY8; dkim=pass (1024-bit key) header.d=tnxip.de header.i=@tnxip.de header.b=OfwBQhEL; dkim=permerror (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b=HIW7y2M5; arc=none smtp.client-ip=49.12.77.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=tnxip.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tnxip.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NeJRFR//"
-Date: Tue, 18 Mar 2025 17:33:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1742333624;
+	dkim=pass (1024-bit key) header.d=tnxip.de header.i=@tnxip.de header.b="ij2UJd3i";
+	dkim=permerror (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b="Zz7beNY8";
+	dkim=pass (1024-bit key) header.d=tnxip.de header.i=@tnxip.de header.b="OfwBQhEL";
+	dkim=permerror (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b="HIW7y2M5"
+Received: from gw.tnxip.de (unknown [IPv6:fdc7:1cc3:ec03:1:c83d:cb3f:e48:c15a])
+	by mail.tnxip.de (Postfix) with ESMTPS id 4624E208B2;
+	Tue, 18 Mar 2025 22:32:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tnxip.de; s=mail-vps;
+	t=1742333526;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=wJkM1Kqmtkvq+hbyPWsnAEsKOLS1w1MOE/fS1Wi5N8M=;
-	b=NeJRFR//a4kY9xCZ2bo9CgpVfP8jsapNnDqs/dNinrQRzE/MZ+Gcg62QE09oKfxkIe0J/1
-	+v5SAZzdL9va0z1GCTV6ulbyt0uWam0uFuLamPlryujuTlcL99UXENMVMeKELGVXMCGtzf
-	ICeJZKorqnXTDvdSjqN3e9qlvpmUfbs=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>, 
-	Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>, linux-bcachefs@vger.kernel.org, 
-	linux-block@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 13/14] block: Allow REQ_FUA|REQ_READ
-Message-ID: <y46xnqnnltwz3y6b5rvepn4gqivkksoszn2ktjts4jlkqgmjqq@qoaq2fb5ayu2>
-References: <ad32deb6-daad-4aa8-8366-2013b08e394f@kernel.dk>
- <fy5lq7bxyr64f7oiypo343s57nujafjue2bcl72ovwszbzasxk@k6jhr6asqtmx>
- <Z9e6dFm_qtW29sVe@infradead.org>
- <fhhgjnhmk72vpruhgftwq3lzfmylbhn6cuajj6saikee2zuqjp@54yfyxu35yiz>
- <Z9guJ2VxvqAmm9o9@kbusch-mbp.dhcp.thefacebook.com>
- <yq1msdjg23p.fsf@ca-mkp.ca.oracle.com>
- <qhc7tpttpt57meqqyxrfuvvfaqg7hgrpivtwa5yxkvv22ubyia@ga3scmjr5kti>
- <yq1bjtzfyen.fsf@ca-mkp.ca.oracle.com>
- <zjwvemsjlshzm5zes7jznmhchvf2erebmuil4ssnkax3lwpw3a@5gnzbjlta36f>
- <Z9kOftZAZgQYYMU6@infradead.org>
+	bh=cWpt/rbJ4CNby9pswnfkaqUQIzgjHKBmmbE/W4a/+MQ=;
+	b=ij2UJd3ieXt8mIsN3WtY0c5Nxsf6H+evPhQOjzf2YOME01Sa9LaM/IV8uhTPijIK7TRIgn
+	WmDMDSFknDwIKjsL/907gSPGSdsrSHSc3iHUC8bAkqBG3RK+R561bpTES2GQbRmwuWpr76
+	OTDntHIqsuO5RpqzGWdAEOmE5rCybIw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=tnxip.de;
+	s=mail-vps-ed; t=1742333526;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cWpt/rbJ4CNby9pswnfkaqUQIzgjHKBmmbE/W4a/+MQ=;
+	b=Zz7beNY8CAsSPaNGCSgKddJsyzVF4GOof6ybQwEmvv5+RNqo4hvx7zjfUsCm60RVuHVbMj
+	8DpBuPhZDGJmexDQ==
+Received: from [IPV6:2a04:4540:8c01:f100:ff2f:9ba1:7ab2:87d3] (unknown [IPv6:2a04:4540:8c01:f100:ff2f:9ba1:7ab2:87d3])
+	by gw.tnxip.de (Postfix) with ESMTPSA id EAEC52800000000001AE1;
+	Tue, 18 Mar 2025 22:32:00 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tnxip.de; s=mail-gw;
+	t=1742333521;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cWpt/rbJ4CNby9pswnfkaqUQIzgjHKBmmbE/W4a/+MQ=;
+	b=OfwBQhELhEmpSrTyjNHZaQQUI7C5ZHHi0WkJP0Uk8IfiO5TY/pndwWou1bPbo+Wjdo05qD
+	obOLa/bwrFJEngfGpNirtvIJcx2suDNqKDiUoimf0DrhxZ2Yli/5mbjTF0rrqIsoffxjrz
+	gLB9BWilcmhHbHXLDM8rw+lte/hD3QY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=tnxip.de;
+	s=mail-gw-ed; t=1742333521;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cWpt/rbJ4CNby9pswnfkaqUQIzgjHKBmmbE/W4a/+MQ=;
+	b=HIW7y2M5tT44ACd270Z+JAXkWYl2sjHh9yNeRNlkLSM9vDBhvAvCt7Om6ddVZFFBOGoHAd
+	ym7uZ8AmRaIeWvAw==
+Message-ID: <3e765804-93b5-4102-8d31-0c91d44c726c@tnxip.de>
+Date: Tue, 18 Mar 2025 22:32:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z9kOftZAZgQYYMU6@infradead.org>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Betterbird (Linux)
+Subject: Re: errors compiling bcachefs-tools v1.20.0 on debian 12
+To: John Stoffel <john@stoffel.org>
+Cc: linux-bcachefs@vger.kernel.org
+References: <20250311201518.3573009-1-kent.overstreet@linux.dev>
+ <26584.35900.850011.320586@quad.stoffel.home>
+ <26584.36927.6100.282713@quad.stoffel.home>
+ <66bf47fc-643e-4e6b-ab6d-492024fdd2e7@tnxip.de>
+ <26585.57291.760395.430511@quad.stoffel.home>
+Content-Language: en-US, de-DE
+From: =?UTF-8?Q?Malte_Schr=C3=B6der?= <malte.schroeder@tnxip.de>
+In-Reply-To: <26585.57291.760395.430511@quad.stoffel.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 17, 2025 at 11:11:10PM -0700, Christoph Hellwig wrote:
-> On Mon, Mar 17, 2025 at 02:21:29PM -0400, Kent Overstreet wrote:
-> > Beyond making sure that retries go to the physical media, there's "retry
-> > level" in the NVME spec which needs to be plumbed, and that one will be
-> > particularly useful in multi device scenarios. (Crank retry level up
-> > or down based on whether we can retry from different devices).
-> 
-> The read recovery level is to reduce the amount or intensity of read
-> retries, not to increase it so that workloads that have multiple sources
-> for data aren't stalled by the sometimes extremely long read recovery.
-> You won't really find much hardware that actually implements it.
-> 
-> As a little background: The read recovery level was added as part of the
-> predictive latency mode and originally tied to the (now heavily deprecated
-> and never implemented in scale) NVM sets.  Yours truly successfully
-> argued that they should not be tied to NVM sets and helped to make them
-> more generic, but the there was basically no uptake of the read recovery
-> level, with or without NVM sets.
+On 18/03/2025 22:04, John Stoffel wrote:
+>>>>>> "Malte" == Malte Schröder <malte.schroeder@tnxip.de> writes:
+>> Libs in Debian 12/Bookworm are too old for bcachefs-tools. I think
+>> someone pulled it of by forcing some libs from Trixie, but that caused
+>> other things to break.
+> So what is the best Linux distro to use to compile bcachefs-tools?
+> And can someone upgrade the INSTALL.md doc and the
+> https://bcachefs.org website to talk about what is the best
+> development environment now to use as a baseline?  And how to
+> cross-compile the bcachefs-tools for use on older distros with newer
+> kernels?  
+>
+> I'm sure more people would test and play with bcachefs if there was
+> more docs for ends users to work from.
+>
+> John
 
-Well, if it can't be set per IO, that makes it fairly useless.
+I'd recommend you join #bcache at OFTC. This kind of things has been and
+still is discussed there and people have found solutions that worked for
+them regarding -tools vs Bookworm. My personal "solution" was to upgrade
+to Trixie.
 
-If it _was_ per IO it'd be dead easy to slot into bcachefs, the tracking
-of IO/checksum errors in a replicated/erasure coded extent is
-sophisticated enough to easily accommodate things like this (mainly you
-need to know when submitting - do we have additional retries? and then
-when you get an error, you don't want count it if it was "fast fail").
+/Malte
+
