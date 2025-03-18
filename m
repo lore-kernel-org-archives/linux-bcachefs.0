@@ -1,38 +1,27 @@
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from mail.stoffel.org (mail.stoffel.org [172.104.24.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA01720D4E6
-	for <linux-bcachefs@vger.kernel.org>; Tue, 18 Mar 2025 13:39:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA906207DFD
+	for <linux-bcachefs@vger.kernel.org>; Tue, 18 Mar 2025 14:26:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.104.24.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742305175; cv=none; b=qWpGq/kIunUpN+xLbybkEZaNeXiOVKnFEFhOSddd6+K3lOEEXLO8eKoyG9CpNUhphhaLPo63X4CWtzTf3RLPIqfZsSn7H9gAd/BntRK6lEcD27dC4Idfgl+kJgOZvHxNJgFi2sLYx2+FYeci37MRC1puFxoRO/BkMONp8W8qegU=
+	t=1742307970; cv=none; b=nMGragVwpkWCqVKXWiyZl2r7Cyf9Ch9AVmbaNBS4s4+CYWEYZv31V/Y/Sw+rjPdPgbuVNN1S9j86QVuJDrWhDoOeeWmkNy0muEqzQFA6emg/ji3XA0rHFQKvs3GuyFSkAK9YzTcpGGjpYSEsnM/sd7BFYotgSZb2cFUEJ5oT7+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742305175; c=relaxed/simple;
-	bh=++oT4a8t+zXc++nUahNOe3wtZnUYg4z8FlHPGqF31Bc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Pw2AvubR9Ru+WgyfhYf/Tf8e7pvVJwaq7TyLPVgarAQBy3OJx8x3gg3s5SxHmd09NiSgFKYnN7o4Uj9GB41xSoNGtKTFe2YQ1kytJLLq+931wj0++8/F2e1iPu3YXAPW5o5bTCw8oUZ+Pt3KFpC3zKPDTttljlWFiikQxIbEEoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eEibi4DE; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eEibi4DE"
-Date: Tue, 18 Mar 2025 09:39:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1742305170;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tp4yLx2NwbZARlA1RwqYS2P3BMtdhn2wXTJn/6zzqTI=;
-	b=eEibi4DEJdhPCNivUR3XbMEuO55awLlPyEQUJn/hMBaMzvq7J5MMpLKcNmeP97kwjhf7pL
-	+5sLvmbmANKdURMr4fP9bFa2bx7qHiVw5yYjijj1c5rhBBfnwsBIMjFvN+FeRsUy4pwmTQ
-	sP4YFbX337VjRrZ0XWS/gJPxAdp3ea8=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Alan Huang <mmpgouride@gmail.com>
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH 1/2] bcachefs: Add missing smp_rmb()
-Message-ID: <fk2m6avva5urejkbhuakahlyptekieyxievrwigrypiqyqdylc@izmg7tw5lef3>
-References: <20250318075001.1976165-1-mmpgouride@gmail.com>
+	s=arc-20240116; t=1742307970; c=relaxed/simple;
+	bh=PvuCiE82m1VTKzFqDJ8b+aKefao3GNmB6T0kKBWDYrA=;
+	h=MIME-Version:Content-Type:Message-ID:Date:From:To:Cc:Subject:
+	 In-Reply-To:References; b=gcR86MAdL3fRV4EWpDt++wI1jWbt3+XrCSWj+gyNeKw3QsV9m6k6fR2fhfo6qy4mCUPlVmPBK7qdPX6IGgDz+z1thTwLQb7onkVM57QZyJEUSS8W11QAS3NvT2Ni02WYMmLsCywe/Kau0rKfrA9Z8733t3ZyS89rVYJHfxUGF3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stoffel.org; spf=pass smtp.mailfrom=stoffel.org; arc=none smtp.client-ip=172.104.24.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stoffel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stoffel.org
+Received: from quad.stoffel.org (syn-097-095-183-072.res.spectrum.com [97.95.183.72])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.stoffel.org (Postfix) with ESMTPSA id C6A731E1D9;
+	Tue, 18 Mar 2025 10:26:03 -0400 (EDT)
+Received: by quad.stoffel.org (Postfix, from userid 1000)
+	id 479C7A0E80; Tue, 18 Mar 2025 10:26:03 -0400 (EDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -40,44 +29,65 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250318075001.1976165-1-mmpgouride@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 7bit
+Message-ID: <26585.33403.270413.729999@quad.stoffel.home>
+Date: Tue, 18 Mar 2025 10:26:03 -0400
+From: "John Stoffel" <john@stoffel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: John Stoffel <john@stoffel.org>,
+    Alan Huang <mmpgouride@gmail.com>,
+    linux-bcachefs@vger.kernel.org
+X-Clacks-Overhead: GNU Terry Pratchett
+Subject: Re: [PATCH] bcachefs: Increase blacklist range
+In-Reply-To: <gchq6w4tyrx4wxjepyfoerprnsp3jlzm2acel4hfaf4z3jp4iw@53mpn6u5edc7>
+References: <20250315073942.1909895-1-mmpgouride@gmail.com>
+	<26584.36082.936426.143774@quad.stoffel.home>
+	<gchq6w4tyrx4wxjepyfoerprnsp3jlzm2acel4hfaf4z3jp4iw@53mpn6u5edc7>
+X-Mailer: VM 8.3.x under 28.2 (x86_64-pc-linux-gnu)
 
-On Tue, Mar 18, 2025 at 03:50:00PM +0800, Alan Huang wrote:
-> The smp_rmb() guarantees that reads from reservations.counter
-> occur before accessing cur_entry_u64s. It's paired with the
-> atomic64_try_cmpxchg in journal_entry_open.
-> 
-> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+>>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
 
-It would also work to recheck j->cur_entry_u64s after the cmxpchg() and
-acquiring the journal reservation, backing out in the event of a race.
+> On Mon, Mar 17, 2025 at 04:58:26PM -0400, John Stoffel wrote:
+>> >>>>> "Alan" == Alan Huang <mmpgouride@gmail.com> writes:
+>> 
+>> > Now there are 16 journal buffers, 8 is too small to be enough.
+>> > Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+>> > ---
+>> >  fs/bcachefs/recovery.c | 2 +-
+>> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>> 
+>> > diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
+>> > index 71c786cdb192..a6e26733854d 100644
+>> > --- a/fs/bcachefs/recovery.c
+>> > +++ b/fs/bcachefs/recovery.c
+>> > @@ -899,7 +899,7 @@ int bch2_fs_recovery(struct bch_fs *c)
+>> >  	 * journal sequence numbers:
+>> >  	 */
+>> >  	if (!c->sb.clean)
+>> > -		journal_seq += 8;
+>> > +		journal_seq += JOURNAL_BUF_NR * 4;
+>> 
+>> Instead of magic numbers, could you put in a define with an
+>> explanation of how you arrived at this number?  Just to document the
+>> assumptions better?
+>> 
+>> John
 
-This is performance sensitive enough that we may want to test both
-options, as well as moving cur_entry_u64s to the same cacheline as the
-journal reservation state.
+> The * 4 is a fudge factor.
 
-> ---
->  fs/bcachefs/journal.h | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/bcachefs/journal.h b/fs/bcachefs/journal.h
-> index ab68c5c4d8d8..47828771f9c2 100644
-> --- a/fs/bcachefs/journal.h
-> +++ b/fs/bcachefs/journal.h
-> @@ -350,8 +350,10 @@ static inline int journal_res_get_fast(struct journal *j,
->  
->  		/*
->  		 * Check if there is still room in the current journal
-> -		 * entry:
-> +		 * entry, smp_rmb() guarantees that reads from reservations.counter
-> +		 * occur before accessing cur_entry_u64s:
->  		 */
-> +		smp_rmb();
->  		if (new.cur_entry_offset + res->u64s > j->cur_entry_u64s)
->  			return 0;
->  
-> -- 
-> 2.48.1
-> 
+Ok.
+
+> But actually, I was giving this more thought and I don't think we have
+> the correct number.
+
+We have a WAG here.  :-)
+
+> The real bound is "number of unflushed journal entries that might have
+> been allocated, and have other items (btree nodes) referring to that
+> sequence number, but which don't hit because beacuse they weren't
+> flushed".
+
+> And we don't have an actual bound on that.
+
+So what happens if journal_seq overflows?  I don't know the code and
+haven't looked.   
