@@ -1,77 +1,80 @@
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.stoffel.org (mail.stoffel.org [172.104.24.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58A37253B7B
-	for <linux-bcachefs@vger.kernel.org>; Wed, 19 Mar 2025 09:40:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1518250F8
+	for <linux-bcachefs@vger.kernel.org>; Wed, 19 Mar 2025 14:16:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.104.24.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742377205; cv=none; b=JrQcaMj/COdPlxS7WKfqUp07HSiyNIQW3/eRqxee7vwt0wnzSU/27EF4lOBF7g7YRnDpX/1Gv5H3/Lkec1qEwgwrLUm4fU0/qs/TM4rYjdHVvAZsUM8kyNzXKd7gAFyueq3u7heAL/fo3lQVdIP7daEuZNQxMN2uwTTLISv1yzk=
+	t=1742393821; cv=none; b=pxM4Ia9nMErsDEDTlic1U5/JQ3OeBP0CywbqKFmHmVaWpLO7RsZS8KKMtiGm4hypBwv7So5lMyZKqmyEB2FUFEDavfi/0HKAFAxtUn48Fk0w3HJGj0SI/nwjkV6GIMInHtUvQGnFKmLljQGwtdWlFbPXRfSIV1h9xsA61zGc85s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742377205; c=relaxed/simple;
-	bh=MUIdGfHqdt7bgez4R5hVp0jGJaNO3W5wLDchdmLq48M=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=PWU5TrtRm+Yp+6mSME4Lq/DbzUT0zhO5n4QAC6xt09UPWkGz5mC/Jg3tMuG3SfvVMcc8sQI6evojInbQFtaBeIKTpNDjzCWaZccpCOKs23xvFYDqb40VcINRTWw9IVveHV1jZptOItzgNKPEjwUwme4tXye2yyz+hTVEn6NLnuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3d458e61faaso5133035ab.0
-        for <linux-bcachefs@vger.kernel.org>; Wed, 19 Mar 2025 02:40:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742377203; x=1742982003;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kjBe+XHI3ciJhsIHuXrQ+GA2Y7SNLmT3NwnpfP+m5c0=;
-        b=B7j2VAIWMJva84OYIeJ3y4HPAGvz0igbBNAKQx4LIn4K3leokTRxyl+MnwjbDrb2RX
-         9EtBwK6YjVjVeCKS3c+JnjEToPC0EySDYnNxdeb64OsRlE6rYhWIGddv+ZCgTM8hHvNU
-         M6l5Z3x9WwGHCsAkeBlo2IudaGs9wmf0nWkUK6LEaGXqoqXmuGYhfmIGjKAbECf4m4nN
-         u7C0XIlOwWyEUNWRYPHwEiaZ6qoxzyqVsRHG8wcrGAY0vLxMjh9io4jCv6LuDmSl17H0
-         Rm4P+EOFqAiDXcSa5OgziOGgtG64HT1nD8R46hCsGtt/u9U6VKQiYeyNQwlxvoSatjrI
-         NVAw==
-X-Forwarded-Encrypted: i=1; AJvYcCXYkxOZIYhBdjrlfGvkqQ08G2CjOeb8ai3wWet4zRPcAFPj0jdJm6qPPCbC5rFJL2JiNlwdCRA+CiNpi/iZEA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwGdiiAd8N1MegRlve9LBkyOMRF22cp/Fd2QqBCDpJ4I/Sw41ve
-	cQmwWZzdnCrOo9Sn3iJbE91TZtXulOZq5SNH2Z3JTS4YjRSyV1tBXr5xov47wG5IMImXKCLP/nY
-	qsX+LZxJREXMGThkUMQ6lssESaRO+3/DZXAVeFgNnvAomaOxkaAg1W2I=
-X-Google-Smtp-Source: AGHT+IGEbYzJWOz86GSJH3d+H/uesMTKCNrZ4yEyh/GDkdwj2Kg7c34kkrPiiVjmgyRe5xz43NyJttqmOUCx3cgB3iWPOfUr81YW
+	s=arc-20240116; t=1742393821; c=relaxed/simple;
+	bh=qSfnseLj7bYA6Sbe9DEhrUOkzsrmo7D1A1jR/lsNB6E=;
+	h=MIME-Version:Content-Type:Message-ID:Date:From:To:Cc:Subject:
+	 In-Reply-To:References; b=I2X5p8ijBrjZXnyfIl2GYsltW6/dF2P1HVK0YckHo5MGdAdOAtYicUW/oCMZ4/6ldPmHDZfpiZtm49nPxzTFpCJjeASEVQivEhJ24VT/YTj5AkoFdridjMpDhtyMadUfBSYrQsOjxzwcnWE86ziCWRfLT4K6xo3s23W3av3Nckc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stoffel.org; spf=pass smtp.mailfrom=stoffel.org; arc=none smtp.client-ip=172.104.24.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stoffel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stoffel.org
+Received: from quad.stoffel.org (syn-097-095-183-072.res.spectrum.com [97.95.183.72])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.stoffel.org (Postfix) with ESMTPSA id 45DB71E4A9;
+	Wed, 19 Mar 2025 10:16:58 -0400 (EDT)
+Received: by quad.stoffel.org (Postfix, from userid 1000)
+	id 8A998A0E88; Wed, 19 Mar 2025 10:16:57 -0400 (EDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3388:b0:3d0:26a5:b2c with SMTP id
- e9e14a558f8ab-3d586ec873cmr16492115ab.8.1742377203511; Wed, 19 Mar 2025
- 02:40:03 -0700 (PDT)
-Date: Wed, 19 Mar 2025 02:40:03 -0700
-In-Reply-To: <67afa09f.050a0220.21dd3.0054.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67da90f3.050a0220.2ca2c6.0194.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] [kernfs?] UBSAN: shift-out-of-bounds in radix_tree_delete_item
-From: syzbot <syzbot+b581c7106aa616bb522c@syzkaller.appspotmail.com>
-To: davem@davemloft.net, dsahern@kernel.org, edumazet@google.com, 
-	gregkh@linuxfoundation.org, horms@kernel.org, kent.overstreet@linux.dev, 
-	kuba@kernel.org, linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	mmpgouride@gmail.com, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com, tj@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+Message-ID: <26586.53721.541198.490221@quad.stoffel.home>
+Date: Wed, 19 Mar 2025 10:16:57 -0400
+From: "John Stoffel" <john@stoffel.org>
+To: Malte =?iso-8859-1?Q?Schr=F6der?= <malte.schroeder@tnxip.de>
+Cc: John Stoffel <john@stoffel.org>,
+    linux-bcachefs@vger.kernel.org
+X-Clacks-Overhead: GNU Terry Pratchett
+Subject: Re: errors compiling bcachefs-tools v1.20.0 on debian 12
+In-Reply-To: <3e765804-93b5-4102-8d31-0c91d44c726c@tnxip.de>
+References: <20250311201518.3573009-1-kent.overstreet@linux.dev>
+	<26584.35900.850011.320586@quad.stoffel.home>
+	<26584.36927.6100.282713@quad.stoffel.home>
+	<66bf47fc-643e-4e6b-ab6d-492024fdd2e7@tnxip.de>
+	<26585.57291.760395.430511@quad.stoffel.home>
+	<3e765804-93b5-4102-8d31-0c91d44c726c@tnxip.de>
+X-Mailer: VM 8.3.x under 28.2 (x86_64-pc-linux-gnu)
 
-syzbot suspects this issue was fixed by commit:
+>>>>> "Malte" =3D=3D Malte Schr=F6der <malte.schroeder@tnxip.de> writes:
 
-commit 3a04334d6282d08fbdd6201e374db17d31927ba3
-Author: Alan Huang <mmpgouride@gmail.com>
-Date:   Fri Mar 7 16:58:27 2025 +0000
+> On 18/03/2025 22:04, John Stoffel wrote:
+>>>>>>> "Malte" =3D=3D Malte Schr=F6der <malte.schroeder@tnxip.de> writes:
+>>> Libs in Debian 12/Bookworm are too old for bcachefs-tools. I think
+>>> someone pulled it of by forcing some libs from Trixie, but that caused
+>>> other things to break.
+>> So what is the best Linux distro to use to compile bcachefs-tools?
+>> And can someone upgrade the INSTALL.md doc and the
+>> https://bcachefs.org website to talk about what is the best
+>> development environment now to use as a baseline?  And how to
+>> cross-compile the bcachefs-tools for use on older distros with newer
+>> kernels?=20=20
+>>=20
+>> I'm sure more people would test and play with bcachefs if there was
+>> more docs for ends users to work from.
+>>=20
+>> John
 
-    bcachefs: Fix b->written overflow
+> I'd recommend you join #bcache at OFTC. This kind of things has been
+> and still is discussed there and people have found solutions that
+> worked for them regarding -tools vs Bookworm. My personal "solution"
+> was to upgrade to Trixie.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=176e8e98580000
-start commit:   09fbf3d50205 Merge tag 'tomoyo-pr-20250211' of git://git.c..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c516b1c112a81e77
-dashboard link: https://syzkaller.appspot.com/bug?extid=b581c7106aa616bb522c
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11e449b0580000
+I'm old, but for some reason I've never done IRC.  :-)  Is there a
+base OS (Fedora?) that people use for development which I can use to
+cross build a package for Debian?=20=20
 
-If the result looks correct, please mark the issue as fixed by replying with:
 
-#syz fix: bcachefs: Fix b->written overflow
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
