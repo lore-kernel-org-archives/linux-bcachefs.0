@@ -1,118 +1,97 @@
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EA99215792
-	for <linux-bcachefs@vger.kernel.org>; Wed, 19 Mar 2025 21:25:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 161181EDA2F
+	for <linux-bcachefs@vger.kernel.org>; Wed, 19 Mar 2025 21:29:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742419543; cv=none; b=LPCZFnYpYTBXm7HUkV15RndCMJcKINAlDdwDhFcX2girZHurKmQSZ07/t8jwxmo50nP0+aBch4P2pfudbnNnbvJl1SlmqsE2eFrQkQzQG1oWB4gp/tlViZoP83PK2CBl2o8KI1LRrQUNEAlaGHivucR2JJGqVmKfUusd/5p9yHI=
+	t=1742419767; cv=none; b=DqJ41i9gfKdo5MMqozEpihJ5mn2fhkisxOW0CXnx3fPAB8qxCwrVZvboAM6eh+dETi4cib3cK/BNc4RCGZsFveKyYSZfKWgstKR+Unhx7TxnHk1B550d55mVN/zQD/Z4N+cYbBiLv30P+zGwcnbElqx9TBILnEJY083f0B5CfFM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742419543; c=relaxed/simple;
-	bh=mFZMXe0p2nN2EmZgPd1cnqREJBnVFgkDcOdhNMk4REc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kvveR93VAmD3YolAysprm2cdc4PEsZIkgLwnueU9xpMtKQw6X51Gk7Ljvxw866KTjzsaSPREqh7SCDJp628LHoJbYL0TEhhsDptP2jK/688X+2nxyIHkQwvIausbGj+dK91d2LlOuEE20M9aB7oLk8pxhYxvXz2y+BS2o0MnzWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-82-222.bstnma.fios.verizon.net [173.48.82.222])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 52JLPH5s012540
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 19 Mar 2025 17:25:18 -0400
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 9956E2E010B; Wed, 19 Mar 2025 17:25:17 -0400 (EDT)
-Date: Wed, 19 Mar 2025 17:25:17 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Demi Marie Obenour <demi@invisiblethingslab.com>
-Cc: Dave Chinner <david@fromorbit.com>, cve@kernel.org, gnoack@google.com,
-        gregkh@linuxfoundation.org, kent.overstreet@linux.dev,
-        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, mic@digikod.net,
-        Demi Marie Obenour <demiobenour@gmail.com>
-Subject: Re: Unprivileged filesystem mounts
-Message-ID: <20250319212517.GB1079074@mit.edu>
-References: <Z8948cR5aka4Cc5g@dread.disaster.area>
- <20250311021957.2887-1-demi@invisiblethingslab.com>
- <Z8_Q4nOR5X3iZq3j@dread.disaster.area>
- <Z9CYzjpQUH8Bn4AL@itl-email>
- <20250318221128.GA1040959@mit.edu>
- <Z9sCcbZ7sdBgbX77@itl-email>
+	s=arc-20240116; t=1742419767; c=relaxed/simple;
+	bh=fPnbNObDotL649FEnfff/h/52LjX/j0sEYkkC7QUKU4=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=JC6EQ6xYZ4t9EJz72+4yizJow9ghffNfwL3+IZe+1K3UcQgsAQ9vM8ydqbUwyc6U5d4N8y25e3cvOhTD22Pi6+v/R98LjxlGmcU59F8McNoCg2TTXwrFxKx5W/QAJRAx7RTm817MxrFSCEqsM+7dIcSjIDg+ekSTHERIbDCvu1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3cf64584097so1566355ab.2
+        for <linux-bcachefs@vger.kernel.org>; Wed, 19 Mar 2025 14:29:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742419765; x=1743024565;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Vz21S4qNzzAqyrIxen6zEuuSUBt6BYGIWgbvRziLXiQ=;
+        b=OruS018Fr4gBF/EHkjwDsoMfHyVyuktwNf1nuWnYjq/EeUEmUrtl2fiHNjHo8MN4b0
+         7q0iSNPGNInj8O8Wfb7XdW90+kQC8gLl70X2seAQ6a4mrTItOkao2JkrG1noQZVtF6bT
+         cjrbh6awyzXwca8j6yucmsGhJl1U5KwQYvj/jlW+hNBw4A4ROg+ih69d53/wcAJ/hUsS
+         zKVkadY7o3tFUu+z7UVT+3Gbl/spn0afU+3JForothOLho/ed5G4I/W/pnjLtPRZgggo
+         nE49jDEohZmBod3DuqyfbKslZ0bf8xBFbHQdT6UbRtssiSWYMZq0WhF8S+x3jdcY4sNa
+         2TmA==
+X-Forwarded-Encrypted: i=1; AJvYcCV0zgBVnjWRmuwo7Gq9gpq0aEPCgqL6/+zPEfFX2sRP1SOo0e5wnI+F5HkEPfzFPl6UE7p0/LVZU9F8mnGiSw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwLyCqm2/xGDMIkCzWNjheTAeDCw0/kVgjV/QIgu05EzPZpM7/B
+	pCFRipgdv+h4+5lFu4LiyIur1IWaJ78uAo6wN7oA7q/MnTp43iWi0auKuuzwPPK2ZZNaYOAc3qh
+	47wyQRgMikp+BmSOPnQ2XOk6qLOq0aYjr4y+CmdityvcI7AVbrpccbQw=
+X-Google-Smtp-Source: AGHT+IGLpopHz8Pnsq75sZ4L0GsNzyxAHMn2y9QHI8TV1NTIKZTGzA1Xyq57Y2G5S70H9lX5DC9sj9B7EuJFN/NQ06SY+E8vTIxq
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z9sCcbZ7sdBgbX77@itl-email>
+X-Received: by 2002:a05:6e02:3d43:b0:3d5:891c:13fb with SMTP id
+ e9e14a558f8ab-3d58ebaa572mr11341875ab.4.1742419765275; Wed, 19 Mar 2025
+ 14:29:25 -0700 (PDT)
+Date: Wed, 19 Mar 2025 14:29:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67db3735.050a0220.3657bb.0145.GAE@google.com>
+Subject: [syzbot] Monthly bcachefs report (Mar 2025)
+From: syzbot <syzbot+list1844da6a324b378d2182@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Mar 19, 2025 at 01:44:13PM -0400, Demi Marie Obenour wrote:
-> > Note that this won't help if you have a malicious hardware that
-> > *pretends* to be a USB storage device, but which doens't behave a like
-> > a honest storage device.  For example, reading a particular sector
-> > with one data at time T, and a different data at time T+X, with no
-> > intervening writes.  There is no real defense to this attack, since
-> > there is no way that you can authentiate the external storage device;
-> > you could have a registry of USB vendor and model id's, but a device
-> > can always lie about its id numbers.
-> 
-> This attack can be defended against by sandboxing the filesystem driver
-> and copying files to trusted storage before using them.  You can
-> authenticate devices based on what port they are plugged into, and Qubes
-> OS is working on exactly that.
+Hello bcachefs maintainers/developers,
 
-Copying files to trusted storge is not sufficient.  The problem is
-that an untrustworthy storage device can still play games with
-metadata blocks.  If you are willing to copy the entire storage device
-to trustworthy storage, and then run fsck on the file system, and then
-mount it, then *sure* that would help.  But if the storage device is
-very large or very slow, this might not be practical.
+This is a 31-day syzbot report for the bcachefs subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/bcachefs
 
-> > Like everything else, security and usability and performance and costs
-> > are all engineering tradeoffs....
->
-> Is the tradeoff fundamental, or is it a consequence of Linux being a
-> monolithic kernel?  If Linux were a microkernel and every filesystem
-> driver ran as a userspace process with no access to anything but the
-> device it is accessing, then there would be no tradeoff when it comes to
-> filesystems: a compromised filesystem driver would have no more access
-> than the device itself would, so compromising a filesystem driver would
-> be of much less value to an attacker.  There is still the problem that
-> plug and play is incompatible with not trusting devices to identify
-> themselves, but that's a different concern.
+During the period, 17 new issues were detected and 3 were fixed.
+In total, 160 issues are still open and 138 have already been fixed.
 
-Microkernels have historically been a performance disaster.  Yes, you
-can invest a *vast* amount of effort into trying to make a microkernel
-OS more performant, but in the meantime, the competing monolithic
-kernel will have gotten even faster, or added more features, leaving
-the microkernel in the dust.
+Some of the still happening issues:
 
-The effort needed to create a new file system from scratch, taking it
-all the way from the initial design, implementation, testing and
-performance tuning, and making it something customers are comfortable
-depending on it for enterprise workloads is between 50 and 100
-engineer years.  This estimate came from looking at the development
-effort needed for various file systems implemented on monolithic
-kernels, including Digital's Advfs (part of Digital Unix and OSF/1),
-IBM's AIX, and Sun's ZFS, as well as GPFS from IBM (although that was
-a cluster file sytem, and the effort estimated from my talking to the
-engineering managers and tech leads was around 200 PY's.)
+Ref  Crashes Repro Title
+<1>  29679   Yes   INFO: task hung in bch2_copygc_stop
+                   https://syzkaller.appspot.com/bug?extid=c6fd966ebbdea1e8ff08
+<2>  7346    Yes   INFO: task hung in __closure_sync
+                   https://syzkaller.appspot.com/bug?extid=7bf808f7fe4a6549f36e
+<3>  5807    Yes   KMSAN: uninit-value in bch2_inode_v3_validate
+                   https://syzkaller.appspot.com/bug?extid=3cd97352d16f0e6066d9
+<4>  3541    Yes   WARNING in bch2_trans_srcu_unlock
+                   https://syzkaller.appspot.com/bug?extid=1e515cab343dbe5aa38a
+<5>  3442    Yes   KASAN: slab-use-after-free Read in percpu_ref_put (2)
+                   https://syzkaller.appspot.com/bug?extid=905d719acdbd213bf67e
+<6>  2491    Yes   WARNING in bch2_fs_release
+                   https://syzkaller.appspot.com/bug?extid=08d08d52c3a09bfc70f7
+<7>  2333    Yes   KMSAN: uninit-value in rw_aux_tree_set (2)
+                   https://syzkaller.appspot.com/bug?extid=ed52fb987e4b52cbfad9
+<8>  1166    Yes   INFO: task hung in bch2_journal_reclaim_thread (2)
+                   https://syzkaller.appspot.com/bug?extid=820dc3b465c69f766a57
+<9>  983     Yes   possible deadlock in bch2_symlink
+                   https://syzkaller.appspot.com/bug?extid=7836a68852a10ec3d790
+<10> 821     Yes   KMSAN: uninit-value in bch2_trans_start_alloc_update
+                   https://syzkaller.appspot.com/bug?extid=f02ee424846cc4e04e04
 
-I'm not sure how much harder it will be to make a performant file
-system which is suitable for enterprise workloads from a performance,
-feature, and stability perspective, *and* to make it secure against
-storage devices which are outside the TCB, *and* to make it work on a
-microkernel.  But I'm going to guess it would inflate these effort
-estimates by at least 50%, if not more.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Of course, if we're just witing a super simple file system that is
-suitable for backups and file transfers, but not much else, that would
-probably take much less efort.  But if we need to support file
-exchange with storge devices with NTFS or HFS, thos aren't simple file
-sytes.  So the VM sandbox approach might still be the better way to go.
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
-Cheers,
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
 
-					- Ted
+You may send multiple commands in a single email message.
