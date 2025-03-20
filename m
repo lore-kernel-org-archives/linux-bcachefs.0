@@ -1,38 +1,38 @@
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 690B522171E
-	for <linux-bcachefs@vger.kernel.org>; Thu, 20 Mar 2025 21:30:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BC9B221D83
+	for <linux-bcachefs@vger.kernel.org>; Thu, 20 Mar 2025 21:30:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742506240; cv=none; b=QyQTso3rCSrghPo/U9bCTA33+92fLiFRVl2r0LqVDXwx3BtNbZZgQaR5uF+NC4GyAcQTKqDobkdg7bRIJ1uLR5iz9d8qGINRLB8Aq9iPG/Ex2VsxbVsTZhZ6anAYkXUukNYYJNDqtVB7s+I1SKr8V4r0/QiA/ixoy405RtfUxfY=
+	t=1742506241; cv=none; b=RslD0ax8cdzuJiHHs4y/AtoHr10cKG0ZPxknbPFwjCDPU9IHhSN+KqkMtCsOwxtlIa/YrmUi0SF4f72J2n/aitOznJl/q//gxOskPr6tyubnW/fTUV++b7/2tXD3n8CMTXCAPqfxTrZM/YOqX9z6THumM3fTCmVksQP2J/NddLw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742506240; c=relaxed/simple;
-	bh=4o5eXrNi/d3Hy1I81ZD55l5jr2VsF1+j8+BOAAihXSE=;
+	s=arc-20240116; t=1742506241; c=relaxed/simple;
+	bh=PVyTeA9HBc/84d076dP9CVOGbh2xdMwXljYhGvsLiwg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dRW9avogRYozCSvG34x38ShpnEI8blTheoun/H/OnobGiTkyj6pw5i4JIzb5ABvKRA3AAOA+aI61goC7o537JJqBrj2SoPKgafbLU3IvM5hhi0Oo/XI8H2ijXz3XIc2yG6HjTVTd26yFNQgazQ9zxnpSYrsjIW9JROggNTq6/Zc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tzJ+M1E3; arc=none smtp.client-ip=95.215.58.177
+	 MIME-Version; b=SF6q5CylBpHInJwrzuRGkGYOhwG1JkR9wNcpQCzT395fkZP8yaJeEsyeherFZaMBOXklnmWp2FcLCFwIoY4aOjeEzfYJqZdNn8hpGwR87l9bHyx41MZyLZgtdvroEWSkxG8TFjEHbH/F+8i0fpJBZ9SAf/X1zzL9puH+HxH64rw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=heligYNo; arc=none smtp.client-ip=95.215.58.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tzJ+M1E3"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="heligYNo"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1742506236;
+	t=1742506237;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=yEK37QpJwuZnSbf8muFm+y9LXJEVrVbadIZiuCzz/A0=;
-	b=tzJ+M1E3sTSW2QSxRVBNu9FzK234XzFZu6qL6ZeG+SeiRB1vnMAtfczPrZfAuo8cOyULz0
-	2rAK/iIL0NqUjSZpDUk9ks1J3ynuXCw/dI0O5ry9HoyHx0wd/8CdrO6XjpjVwOAo5k/eYi
-	4smfu0WMYrma8B8GSIKRtYCXPEwI1K0=
+	bh=69J0PhWzKbwqiNWlP0XJV116QLKtJ0wiZkM+qkH5ESE=;
+	b=heligYNoIv/7tR5CkBxsUWnHQ+Niu6tiUimUooznAQqXztCbIag0OaLC4pxFC9ZiNWI2LH
+	p6zJ0FwuFG4o7R9T/OTEOpPOmIL6P7suJsO/T96HgwjWpbCw1R9sxJYJ5onBsAdzHON5rI
+	dgZ2y47Hw1ycX9uOfsGcoP7bov1l478=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 1/4] bcachefs: fs-common.c -> namei.c
-Date: Thu, 20 Mar 2025 17:30:16 -0400
-Message-ID: <20250320213022.3359645-2-kent.overstreet@linux.dev>
+Subject: [PATCH 3/4] bcachefs: Refactor bch2_check_dirent_target()
+Date: Thu, 20 Mar 2025 17:30:18 -0400
+Message-ID: <20250320213022.3359645-4-kent.overstreet@linux.dev>
 In-Reply-To: <20250320213022.3359645-1-kent.overstreet@linux.dev>
 References: <20250320213022.3359645-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,164 +44,267 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-name <-> inode, code for managing the relationships between inodes and
-dirents.
+Prep work for calling bch2_check_dirent_target() from bch2_lookup().
+
+- Add an inline wrapper, if the target and backpointer match we can skip
+  the function call.
+
+- We don't (yet?) want to remove the dirent we did the lookup from (when
+  we find a directory or subvol with multiple valid dirents pointing to
+  it), we can defer on that until later. For now, add an "are we in
+  fsck?" parameter.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/Makefile                 | 2 +-
- fs/bcachefs/error.c                  | 2 +-
- fs/bcachefs/fs-ioctl.c               | 2 +-
- fs/bcachefs/fs.c                     | 2 +-
- fs/bcachefs/fsck.c                   | 2 +-
- fs/bcachefs/{fs-common.c => namei.c} | 2 +-
- fs/bcachefs/{fs-common.h => namei.h} | 6 +++---
- fs/bcachefs/recovery.c               | 2 +-
- 8 files changed, 10 insertions(+), 10 deletions(-)
- rename fs/bcachefs/{fs-common.c => namei.c} (99%)
- rename fs/bcachefs/{fs-common.h => namei.h} (93%)
+ fs/bcachefs/fsck.c  |   4 +-
+ fs/bcachefs/inode.h |   1 +
+ fs/bcachefs/namei.c | 129 +++++++++++++++++++++++---------------------
+ fs/bcachefs/namei.h |  28 ++++++++--
+ 4 files changed, 94 insertions(+), 68 deletions(-)
 
-diff --git a/fs/bcachefs/Makefile b/fs/bcachefs/Makefile
-index 1cf17a16af9f..9af65079374f 100644
---- a/fs/bcachefs/Makefile
-+++ b/fs/bcachefs/Makefile
-@@ -41,7 +41,6 @@ bcachefs-y		:=	\
- 	extent_update.o		\
- 	eytzinger.o		\
- 	fs.o			\
--	fs-common.o		\
- 	fs-ioctl.o		\
- 	fs-io.o			\
- 	fs-io-buffered.o	\
-@@ -64,6 +63,7 @@ bcachefs-y		:=	\
- 	migrate.o		\
- 	move.o			\
- 	movinggc.o		\
-+	namei.o			\
- 	nocow_locking.o		\
- 	opts.o			\
- 	printbuf.o		\
-diff --git a/fs/bcachefs/error.c b/fs/bcachefs/error.c
-index 6d68c89a49b2..207f35d3cce2 100644
---- a/fs/bcachefs/error.c
-+++ b/fs/bcachefs/error.c
-@@ -3,8 +3,8 @@
- #include "btree_cache.h"
- #include "btree_iter.h"
- #include "error.h"
--#include "fs-common.h"
- #include "journal.h"
-+#include "namei.h"
- #include "recovery_passes.h"
- #include "super.h"
- #include "thread_with_file.h"
-diff --git a/fs/bcachefs/fs-ioctl.c b/fs/bcachefs/fs-ioctl.c
-index 5b47b94fe1ea..e3a3230fc652 100644
---- a/fs/bcachefs/fs-ioctl.c
-+++ b/fs/bcachefs/fs-ioctl.c
-@@ -5,8 +5,8 @@
- #include "chardev.h"
- #include "dirent.h"
- #include "fs.h"
--#include "fs-common.h"
- #include "fs-ioctl.h"
-+#include "namei.h"
- #include "quota.h"
- 
- #include <linux/compat.h>
-diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-index 4453dd2f888e..273078ceb4df 100644
---- a/fs/bcachefs/fs.c
-+++ b/fs/bcachefs/fs.c
-@@ -11,7 +11,6 @@
- #include "errcode.h"
- #include "extents.h"
- #include "fs.h"
--#include "fs-common.h"
- #include "fs-io.h"
- #include "fs-ioctl.h"
- #include "fs-io-buffered.h"
-@@ -22,6 +21,7 @@
- #include "io_read.h"
- #include "journal.h"
- #include "keylist.h"
-+#include "namei.h"
- #include "quota.h"
- #include "rebalance.h"
- #include "snapshot.h"
 diff --git a/fs/bcachefs/fsck.c b/fs/bcachefs/fsck.c
-index 0e85131d0af8..4271ce4a4c8c 100644
+index f3853b741937..091057023fc5 100644
 --- a/fs/bcachefs/fsck.c
 +++ b/fs/bcachefs/fsck.c
-@@ -10,10 +10,10 @@
- #include "dirent.h"
- #include "error.h"
- #include "fs.h"
--#include "fs-common.h"
- #include "fsck.h"
- #include "inode.h"
- #include "keylist.h"
-+#include "namei.h"
- #include "recovery_passes.h"
- #include "snapshot.h"
- #include "super.h"
-diff --git a/fs/bcachefs/fs-common.c b/fs/bcachefs/namei.c
-similarity index 99%
-rename from fs/bcachefs/fs-common.c
-rename to fs/bcachefs/namei.c
-index fbc3da59536c..bc83acbf5414 100644
---- a/fs/bcachefs/fs-common.c
+@@ -2072,7 +2072,7 @@ static int check_dirent_to_subvol(struct btree_trans *trans, struct btree_iter *
+ 			goto err;
+ 	}
+ 
+-	ret = bch2_check_dirent_target(trans, iter, d, &subvol_root);
++	ret = bch2_check_dirent_target(trans, iter, d, &subvol_root, true);
+ 	if (ret)
+ 		goto err;
+ out:
+@@ -2165,7 +2165,7 @@ static int check_dirent(struct btree_trans *trans, struct btree_iter *iter,
+ 		}
+ 
+ 		darray_for_each(target->inodes, i) {
+-			ret = bch2_check_dirent_target(trans, iter, d, &i->inode);
++			ret = bch2_check_dirent_target(trans, iter, d, &i->inode, true);
+ 			if (ret)
+ 				goto err;
+ 		}
+diff --git a/fs/bcachefs/inode.h b/fs/bcachefs/inode.h
+index 428b9be6af34..f82cfbf460d0 100644
+--- a/fs/bcachefs/inode.h
++++ b/fs/bcachefs/inode.h
+@@ -277,6 +277,7 @@ static inline bool bch2_inode_should_have_single_bp(struct bch_inode_unpacked *i
+ 	bool inode_has_bp = inode->bi_dir || inode->bi_dir_offset;
+ 
+ 	return S_ISDIR(inode->bi_mode) ||
++		inode->bi_subvol ||
+ 		(!inode->bi_nlink && inode_has_bp);
+ }
+ 
+diff --git a/fs/bcachefs/namei.c b/fs/bcachefs/namei.c
+index 4d0ee85e5016..93246ad31541 100644
+--- a/fs/bcachefs/namei.c
 +++ b/fs/bcachefs/namei.c
-@@ -4,8 +4,8 @@
- #include "acl.h"
- #include "btree_update.h"
- #include "dirent.h"
--#include "fs-common.h"
- #include "inode.h"
-+#include "namei.h"
- #include "subvolume.h"
- #include "xattr.h"
+@@ -659,17 +659,10 @@ int bch2_inum_to_path(struct btree_trans *trans, subvol_inum inum, struct printb
  
-diff --git a/fs/bcachefs/fs-common.h b/fs/bcachefs/namei.h
-similarity index 93%
-rename from fs/bcachefs/fs-common.h
-rename to fs/bcachefs/namei.h
-index 2b59210bb5e8..7383b76270e9 100644
---- a/fs/bcachefs/fs-common.h
+ /* fsck */
+ 
+-static bool inode_points_to_dirent(struct bch_inode_unpacked *inode,
+-				   struct bkey_s_c_dirent d)
+-{
+-	return  inode->bi_dir		== d.k->p.inode &&
+-		inode->bi_dir_offset	== d.k->p.offset;
+-}
+-
+ static int bch2_check_dirent_inode_dirent(struct btree_trans *trans,
+-				   struct btree_iter *iter,
+-				   struct bkey_s_c_dirent d,
+-				   struct bch_inode_unpacked *target)
++					  struct bkey_s_c_dirent d,
++					  struct bch_inode_unpacked *target,
++					  bool in_fsck)
+ {
+ 	struct bch_fs *c = trans->c;
+ 	struct printbuf buf = PRINTBUF;
+@@ -725,52 +718,65 @@ static int bch2_check_dirent_inode_dirent(struct btree_trans *trans,
+ 	bool backpointer_exists = !ret;
+ 	ret = 0;
+ 
+-	if (fsck_err_on(!backpointer_exists,
+-			trans, inode_wrong_backpointer,
+-			"inode %llu:%u has wrong backpointer:\n"
+-			"got       %llu:%llu\n"
+-			"should be %llu:%llu",
+-			target->bi_inum, target->bi_snapshot,
+-			target->bi_dir,
+-			target->bi_dir_offset,
+-			d.k->p.inode,
+-			d.k->p.offset)) {
+-		target->bi_dir		= d.k->p.inode;
+-		target->bi_dir_offset	= d.k->p.offset;
+-		ret = __bch2_fsck_write_inode(trans, target);
+-		goto out;
+-	}
+-
+-	bch2_bkey_val_to_text(&buf, c, d.s_c);
+-	prt_newline(&buf);
+-	if (backpointer_exists)
++	if (!backpointer_exists) {
++		if (fsck_err(trans, inode_wrong_backpointer,
++			     "inode %llu:%u has wrong backpointer:\n"
++			     "got       %llu:%llu\n"
++			     "should be %llu:%llu",
++			     target->bi_inum, target->bi_snapshot,
++			     target->bi_dir,
++			     target->bi_dir_offset,
++			     d.k->p.inode,
++			     d.k->p.offset)) {
++			target->bi_dir		= d.k->p.inode;
++			target->bi_dir_offset	= d.k->p.offset;
++			ret = __bch2_fsck_write_inode(trans, target);
++		}
++	} else {
++		bch2_bkey_val_to_text(&buf, c, d.s_c);
++		prt_newline(&buf);
+ 		bch2_bkey_val_to_text(&buf, c, bp_dirent.s_c);
+ 
+-	if (fsck_err_on(backpointer_exists &&
+-			(S_ISDIR(target->bi_mode) ||
+-			 target->bi_subvol),
+-			trans, inode_dir_multiple_links,
+-			"%s %llu:%u with multiple links\n%s",
+-			S_ISDIR(target->bi_mode) ? "directory" : "subvolume",
+-			target->bi_inum, target->bi_snapshot, buf.buf)) {
+-		ret = bch2_fsck_remove_dirent(trans, d.k->p);
+-		goto out;
+-	}
+-
+-	/*
+-	 * hardlinked file with nlink 0:
+-	 * We're just adjusting nlink here so check_nlinks() will pick
+-	 * it up, it ignores inodes with nlink 0
+-	 */
+-	if (fsck_err_on(backpointer_exists && !target->bi_nlink,
+-			trans, inode_multiple_links_but_nlink_0,
+-			"inode %llu:%u type %s has multiple links but i_nlink 0\n%s",
+-			target->bi_inum, target->bi_snapshot, bch2_d_types[d.v->d_type], buf.buf)) {
+-		target->bi_nlink++;
+-		target->bi_flags &= ~BCH_INODE_unlinked;
+-		ret = __bch2_fsck_write_inode(trans, target);
+-		if (ret)
+-			goto err;
++		if (S_ISDIR(target->bi_mode) || target->bi_subvol) {
++			/*
++			 * XXX: verify connectivity of the other dirent
++			 * up to the root before removing this one
++			 *
++			 * Additionally, bch2_lookup would need to cope with the
++			 * dirent it found being removed - or should we remove
++			 * the other one, even though the inode points to it?
++			 */
++			if (in_fsck) {
++				if (fsck_err(trans, inode_dir_multiple_links,
++					     "%s %llu:%u with multiple links\n%s",
++					     S_ISDIR(target->bi_mode) ? "directory" : "subvolume",
++					     target->bi_inum, target->bi_snapshot, buf.buf))
++					ret = bch2_fsck_remove_dirent(trans, d.k->p);
++			} else {
++				bch2_fs_inconsistent(c,
++						"%s %llu:%u with multiple links\n%s",
++						S_ISDIR(target->bi_mode) ? "directory" : "subvolume",
++						target->bi_inum, target->bi_snapshot, buf.buf);
++			}
++
++			goto out;
++		} else {
++			/*
++			 * hardlinked file with nlink 0:
++			 * We're just adjusting nlink here so check_nlinks() will pick
++			 * it up, it ignores inodes with nlink 0
++			 */
++			if (fsck_err_on(!target->bi_nlink,
++					trans, inode_multiple_links_but_nlink_0,
++					"inode %llu:%u type %s has multiple links but i_nlink 0\n%s",
++					target->bi_inum, target->bi_snapshot, bch2_d_types[d.v->d_type], buf.buf)) {
++				target->bi_nlink++;
++				target->bi_flags &= ~BCH_INODE_unlinked;
++				ret = __bch2_fsck_write_inode(trans, target);
++				if (ret)
++					goto err;
++			}
++		}
+ 	}
+ out:
+ err:
+@@ -781,16 +787,17 @@ static int bch2_check_dirent_inode_dirent(struct btree_trans *trans,
+ 	return ret;
+ }
+ 
+-int bch2_check_dirent_target(struct btree_trans *trans,
+-			     struct btree_iter *iter,
+-			     struct bkey_s_c_dirent d,
+-			     struct bch_inode_unpacked *target)
++int __bch2_check_dirent_target(struct btree_trans *trans,
++			       struct btree_iter *dirent_iter,
++			       struct bkey_s_c_dirent d,
++			       struct bch_inode_unpacked *target,
++			       bool in_fsck)
+ {
+ 	struct bch_fs *c = trans->c;
+ 	struct printbuf buf = PRINTBUF;
+ 	int ret = 0;
+ 
+-	ret = bch2_check_dirent_inode_dirent(trans, iter, d, target);
++	ret = bch2_check_dirent_inode_dirent(trans, d, target, in_fsck);
+ 	if (ret)
+ 		goto err;
+ 
+@@ -815,11 +822,9 @@ int bch2_check_dirent_target(struct btree_trans *trans,
+ 			n->v.d_inum = cpu_to_le64(target->bi_inum);
+ 		}
+ 
+-		ret = bch2_trans_update(trans, iter, &n->k_i, 0);
++		ret = bch2_trans_update(trans, dirent_iter, &n->k_i, 0);
+ 		if (ret)
+ 			goto err;
+-
+-		d = dirent_i_to_s_c(n);
+ 	}
+ err:
+ fsck_err:
+diff --git a/fs/bcachefs/namei.h b/fs/bcachefs/namei.h
+index 48a2c8cb5fa9..2e6f6364767f 100644
+--- a/fs/bcachefs/namei.h
 +++ b/fs/bcachefs/namei.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _BCACHEFS_FS_COMMON_H
--#define _BCACHEFS_FS_COMMON_H
-+#ifndef _BCACHEFS_NAMEI_H
-+#define _BCACHEFS_NAMEI_H
- 
- #include "dirent.h"
- 
-@@ -44,4 +44,4 @@ bool bch2_reinherit_attrs(struct bch_inode_unpacked *,
+@@ -44,9 +44,29 @@ bool bch2_reinherit_attrs(struct bch_inode_unpacked *,
  
  int bch2_inum_to_path(struct btree_trans *, subvol_inum, struct printbuf *);
  
--#endif /* _BCACHEFS_FS_COMMON_H */
-+#endif /* _BCACHEFS_NAMEI_H */
-diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
-index a6e26733854d..266c5770c824 100644
---- a/fs/bcachefs/recovery.c
-+++ b/fs/bcachefs/recovery.c
-@@ -13,12 +13,12 @@
- #include "disk_accounting.h"
- #include "errcode.h"
- #include "error.h"
--#include "fs-common.h"
- #include "journal_io.h"
- #include "journal_reclaim.h"
- #include "journal_seq_blacklist.h"
- #include "logged_ops.h"
- #include "move.h"
-+#include "namei.h"
- #include "quota.h"
- #include "rebalance.h"
- #include "recovery.h"
+-int bch2_check_dirent_target(struct btree_trans *,
+-			     struct btree_iter *,
+-			     struct bkey_s_c_dirent,
+-			     struct bch_inode_unpacked *);
++int __bch2_check_dirent_target(struct btree_trans *,
++			       struct btree_iter *,
++			       struct bkey_s_c_dirent,
++			       struct bch_inode_unpacked *, bool);
++
++static inline bool inode_points_to_dirent(struct bch_inode_unpacked *inode,
++					  struct bkey_s_c_dirent d)
++{
++	return  inode->bi_dir		== d.k->p.inode &&
++		inode->bi_dir_offset	== d.k->p.offset;
++}
++
++static inline int bch2_check_dirent_target(struct btree_trans *trans,
++					   struct btree_iter *dirent_iter,
++					   struct bkey_s_c_dirent d,
++					   struct bch_inode_unpacked *target,
++					   bool in_fsck)
++{
++	if (likely(inode_points_to_dirent(target, d) &&
++		   d.v->d_type == inode_d_type(target)))
++		return 0;
++
++	return __bch2_check_dirent_target(trans, dirent_iter, d, target, in_fsck);
++}
+ 
+ #endif /* _BCACHEFS_NAMEI_H */
 -- 
 2.49.0
 
