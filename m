@@ -1,21 +1,21 @@
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8C9A1EC01E
-	for <linux-bcachefs@vger.kernel.org>; Thu, 20 Mar 2025 21:33:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5730933E7
+	for <linux-bcachefs@vger.kernel.org>; Thu, 20 Mar 2025 21:33:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742506388; cv=none; b=ZLCEfAvVYIITtDOk3knno+w9l9nx3VJRKXxzcTlOquJk3D9bcpYoo4vVv8lYPPS2QwRxsYHHKUHU9wsP8S1iS63r9HK29i5lp86hCgWXcIs1iVO3nk8iIo5AnKF4nTam5SHOP4bspNCwLNERRP+mPQJnvhVuICJGzyGK96CBdmw=
+	t=1742506389; cv=none; b=OPgTKL+71w0iKqNkc+Dvz9aD+pfQlMOn/O+3DDz6NKNcTgFPNjlNOzvAaFf1cPx4LndcnAUYiyYQnvvpXzDNz5tMfJ3XQ4vqZbWq5aa6BCTvMf3ZLMeIsXA2SiSiZQBsJyB/jxbXA64lJVnqs6NiAsT+0ElDsR8C40kBijrQnwo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742506388; c=relaxed/simple;
-	bh=hLpU4dUo5kkxKBKRy0OwzteQTMTgBBaK0hJ9R+qyPjg=;
+	s=arc-20240116; t=1742506389; c=relaxed/simple;
+	bh=arlzpadwSvfZx57bPawgUw2lOwNWMB1ZpWayPakY6iA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uoPB2d7nlwa+qUYOxKVYoFDuv2u6ksumaMPv19/BMf2x9cAEpONhxQtla2qRTwMoTsf/lBd1yPlb5WpOUGLui17T3zP7+rRKaytFhgC011dcGBW9iptwdcyfOzjS6E7jwTCxAPfEjdmdfRoT6I4tiQ4vldMFMLf4X1AiaC23FBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RrfKFnqD; arc=none smtp.client-ip=95.215.58.180
+	 MIME-Version; b=d8uWP5HsUeAHVFeEH7SeXyaAiVlxP4qG3zLqFnH9LrcF4A9hZmBXCy+iWs7VHxvLg45E7mV9/nBYz14MnC9RYdSS8+NEpT6wgtpw841QTJ6KzCTRBS5CQ6nJQO6RJvQKD9G5f48jchnEByefzJJJDdbulrYSvY3EIJq33yJqH4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=c1Eu1ZYR; arc=none smtp.client-ip=95.215.58.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RrfKFnqD"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="c1Eu1ZYR"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
 	t=1742506385;
@@ -23,16 +23,16 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=F0H0fDGq7oUhyW7LVRANbxtJfyCrAINgRKrf/MARV1E=;
-	b=RrfKFnqDW/u+6uTwy3miR9QXYjpg4CleSSESKEJ0/rb0OtWII9n5cdnfiGA+vKPBl1nu45
-	buYNqQsYdF+ccwZkxtlGJARgD1Pm80xRIWZPN/bST/JgZcH0+PzERWI7smec9ApHIqQEUQ
-	fBIUXJzieVePmbPQIvFCXxNfs+OIsf4=
+	bh=Uva++HQ4UX37p8TFNyAB2b2+EaWzFc1hs8g6e37okSc=;
+	b=c1Eu1ZYRpk2A8jWxEc+wu9XlmInlIdVB1DxGU+hGERt+r/wwxlUBSNB3DwFLwjaD6qXJv/
+	DBpVlEbxhgr8tj/ts5zwotImYQB2ufT4Q9hbOCIxEeNgzAKcz/VWdgiHHrwKyCCt8ldxc1
+	/ctqJVMZxxJZ6QKfToaU72S6lYpDbwk=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 3/5] bcachefs: kmsan asserts
-Date: Thu, 20 Mar 2025 17:32:51 -0400
-Message-ID: <20250320213256.3359777-4-kent.overstreet@linux.dev>
+Subject: [PATCH 4/5] bcachefs: Fix a KMSAN splat in btree_update_nodes_written()
+Date: Thu, 20 Mar 2025 17:32:52 -0400
+Message-ID: <20250320213256.3359777-5-kent.overstreet@linux.dev>
 In-Reply-To: <20250320213256.3359777-1-kent.overstreet@linux.dev>
 References: <20250320213256.3359777-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,53 +44,54 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Catching these early makes them a lot easier to track down.
+We may sometimes read from uninitialized memory; we know, and that's ok.
+
+We check if a btree node has been reused before waiting on any
+outstanding IO.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/btree_trans_commit.c | 1 +
- fs/bcachefs/btree_update.c       | 2 ++
- fs/bcachefs/btree_update.h       | 2 ++
- 3 files changed, 5 insertions(+)
+ fs/bcachefs/btree_update_interior.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/fs/bcachefs/btree_trans_commit.c b/fs/bcachefs/btree_trans_commit.c
-index d50dc31d0bea..7d7e52ddde02 100644
---- a/fs/bcachefs/btree_trans_commit.c
-+++ b/fs/bcachefs/btree_trans_commit.c
-@@ -164,6 +164,7 @@ bool bch2_btree_bset_insert_key(struct btree_trans *trans,
- 	EBUG_ON(bpos_gt(insert->k.p, b->data->max_key));
- 	EBUG_ON(insert->k.u64s > bch2_btree_keys_u64s_remaining(b));
- 	EBUG_ON(!b->c.level && !bpos_eq(insert->k.p, path->pos));
-+	kmsan_check_memory(insert, bkey_bytes(&insert->k));
+diff --git a/fs/bcachefs/btree_update_interior.c b/fs/bcachefs/btree_update_interior.c
+index d3e0cf01ba37..67f1e3202835 100644
+--- a/fs/bcachefs/btree_update_interior.c
++++ b/fs/bcachefs/btree_update_interior.c
+@@ -649,6 +649,14 @@ static int btree_update_nodes_written_trans(struct btree_trans *trans,
+ 	return 0;
+ }
  
- 	k = bch2_btree_node_iter_peek_all(node_iter, b);
- 	if (k && bkey_cmp_left_packed(b, k, &insert->k.p))
-diff --git a/fs/bcachefs/btree_update.c b/fs/bcachefs/btree_update.c
-index b3e346b5f8d7..bd2eb42edb24 100644
---- a/fs/bcachefs/btree_update.c
-+++ b/fs/bcachefs/btree_update.c
-@@ -512,6 +512,8 @@ static noinline int bch2_trans_update_get_key_cache(struct btree_trans *trans,
- int __must_check bch2_trans_update(struct btree_trans *trans, struct btree_iter *iter,
- 				   struct bkey_i *k, enum btree_iter_update_trigger_flags flags)
- {
-+	kmsan_check_memory(k, bkey_bytes(&k->k));
++/* If the node has been reused, we might be reading uninitialized memory - that's fine: */
++static noinline __no_kmsan_checks bool btree_node_seq_matches(struct btree *b, __le64 seq)
++{
++	struct btree_node *b_data = READ_ONCE(b->data);
 +
- 	btree_path_idx_t path_idx = iter->update_path ?: iter->path;
- 	int ret;
++	return (b_data ? b_data->keys.seq : 0) == seq;
++}
++
+ static void btree_update_nodes_written(struct btree_update *as)
+ {
+ 	struct bch_fs *c = as->c;
+@@ -677,17 +685,9 @@ static void btree_update_nodes_written(struct btree_update *as)
+ 	 * on disk:
+ 	 */
+ 	for (i = 0; i < as->nr_old_nodes; i++) {
+-		__le64 seq;
+-
+ 		b = as->old_nodes[i];
  
-diff --git a/fs/bcachefs/btree_update.h b/fs/bcachefs/btree_update.h
-index 47d8690f01bf..d2e1c04353f6 100644
---- a/fs/bcachefs/btree_update.h
-+++ b/fs/bcachefs/btree_update.h
-@@ -133,6 +133,8 @@ static inline int __must_check bch2_trans_update_buffered(struct btree_trans *tr
- 					    enum btree_id btree,
- 					    struct bkey_i *k)
- {
-+	kmsan_check_memory(k, bkey_bytes(&k->k));
-+
- 	if (unlikely(!btree_type_uses_write_buffer(btree))) {
- 		int ret = bch2_btree_write_buffer_insert_err(trans, btree, k);
- 		dump_stack();
+-		bch2_trans_begin(trans);
+-		btree_node_lock_nopath_nofail(trans, &b->c, SIX_LOCK_read);
+-		seq = b->data ? b->data->keys.seq : 0;
+-		six_unlock_read(&b->c.lock);
+-		bch2_trans_unlock_long(trans);
+-
+-		if (seq == as->old_nodes_seq[i])
++		if (btree_node_seq_matches(b, as->old_nodes_seq[i]))
+ 			wait_on_bit_io(&b->flags, BTREE_NODE_write_in_flight_inner,
+ 				       TASK_UNINTERRUPTIBLE);
+ 	}
 -- 
 2.49.0
 
