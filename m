@@ -1,45 +1,42 @@
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58AF0229B02
-	for <linux-bcachefs@vger.kernel.org>; Thu, 20 Mar 2025 16:00:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE4F136AF5
+	for <linux-bcachefs@vger.kernel.org>; Thu, 20 Mar 2025 17:15:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742486459; cv=none; b=mleNpa/ZfeWgYp6HolxVJPfdndvcUKDvGNHVWHLppoak+a0BRWWeiYbW66RcNS8oc3F5wZKTeq8tVSvl17mxob0UVXc51U6wLGO98nuxwJGf/yqOA0t/ci1DoCvoBR/mqIieA5IPaIascGinwf8aeUEG6VCf3PNpRqbDzfjcwCg=
+	t=1742490949; cv=none; b=KTCtl84kbzNiXpzOEmnSAyPR9y88iD19SSrCwelqiL9K7Yfwzh20URklLXoTaqH9O9teTmHaAtAr7jmiMRsWAlv40RPdDMftHKj+ucjO6AtcaudjCNEwSmI+T0WtXSLjq/7dWs+BshlY0kjgdw3svXRxwWDiLpSeNiGrtVG9igo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742486459; c=relaxed/simple;
-	bh=1fZq+9+qN2dWTF6h8mSKQAqErBdbQnc7JZJTp9ov+pA=;
+	s=arc-20240116; t=1742490949; c=relaxed/simple;
+	bh=/d0va4dLjUtsDB6CWfXTmYQPUhBEQPoX5KoZpbfHCek=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QCSsXBsM4ryV/bJCdxH+xwdLt8BzlXZe4gzwSEF50zxsln3WWPPkSniP4IVDfah4ILExwGUozjEFRXUpuVgVRghY9bif+cS6bM+s/Muh4L6I7WSj51Vy8EwDIG0Ev6iZSgHVq9XcVtttfYkMZji6kL8qef15o6SLjmkqjpkdG/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-82-222.bstnma.fios.verizon.net [173.48.82.222])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 52KG0P6K013712
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 20 Mar 2025 12:00:26 -0400
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 974C42E010B; Thu, 20 Mar 2025 12:00:25 -0400 (EDT)
-Date: Thu, 20 Mar 2025 12:00:25 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Demi Marie Obenour <demi@invisiblethingslab.com>
-Cc: Dave Chinner <david@fromorbit.com>, cve@kernel.org, gnoack@google.com,
-        gregkh@linuxfoundation.org, kent.overstreet@linux.dev,
-        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, mic@digikod.net,
-        Demi Marie Obenour <demiobenour@gmail.com>
-Subject: Re: Unprivileged filesystem mounts
-Message-ID: <20250320160025.GE1079074@mit.edu>
-References: <Z8948cR5aka4Cc5g@dread.disaster.area>
- <20250311021957.2887-1-demi@invisiblethingslab.com>
- <Z8_Q4nOR5X3iZq3j@dread.disaster.area>
- <Z9CYzjpQUH8Bn4AL@itl-email>
- <20250318221128.GA1040959@mit.edu>
- <Z9sCcbZ7sdBgbX77@itl-email>
- <20250319212517.GB1079074@mit.edu>
- <Z9u1L_2o71uEiU4g@itl-email>
+	 Content-Type:Content-Disposition:In-Reply-To; b=iZGcjRFCqadLfS/ktUmqu10jO7l8WGbZyiRH5vrKQ/35MznsicNLIDAzbHNsxDgT5/PqIxe0eb6JNEvOAm3odXsQEgvv9QLjGem+ww3LO2PwTLaT3SOmWiDfs4hOQPFIpCJl+/jhjMHQnrVQDsUl5toiUY1rbWuDbannbRJ+EaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lgoPZTMT; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lgoPZTMT"
+Date: Thu, 20 Mar 2025 13:15:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1742490935;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7s1xDgsOv+sRUn3GW9sZwLPbvv26z1k4+WQa1WnKyPY=;
+	b=lgoPZTMTgRRH3dyng9foNARrKYK0AJHiDR7FXiZQ8/A5TBw+yWJzj5VGORRQxutTvnTFBw
+	A1Adrzg8LdeYQRmkxKOJnSmQCRmrKHVYXlXZKBo0VJivQLGkX0OYKbTQlN8LzIm1peujmw
+	5F5Qkc0BBnMT9Qon5bvwTiynIYkMYQY=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: John Stoffel <john@stoffel.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-block@vger.kernel.org, 
+	Roland Vet <vet.roland@protonmail.com>, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 00/14] better handling of checksum errors/bitrot
+Message-ID: <l2dd3a7lcqoug22jtkh2kxgfkhq5eqcipkqzaklnqod4quqo6m@orkkyd434mh4>
+References: <20250311201518.3573009-1-kent.overstreet@linux.dev>
+ <26584.35900.850011.320586@quad.stoffel.home>
+ <avmzp2nswsowb3hg2tcrb6fv2djgkiw7yl3bgdn4dnccuk4yti@ephd5sxy5b7w>
+ <26585.34711.506258.318405@quad.stoffel.home>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -48,61 +45,105 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Z9u1L_2o71uEiU4g@itl-email>
+In-Reply-To: <26585.34711.506258.318405@quad.stoffel.home>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Mar 20, 2025 at 02:26:41AM -0400, Demi Marie Obenour wrote:
-> The L4 family of microkernels, and especially seL4, show that
-> microkernels do not need to be slow.
+On Tue, Mar 18, 2025 at 10:47:51AM -0400, John Stoffel wrote:
+> >>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
+> 
+> > On Mon, Mar 17, 2025 at 04:55:24PM -0400, John Stoffel wrote:
+> >> >>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
+> >> 
+> >> > Roland Vet spotted a good one: currently, rebalance/copygc get stuck if
+> >> > we've got an extent that can't be read, due to checksum error/bitrot.
+> >> 
+> >> > This took some doing to fix properly, because
+> >> 
+> >> > - We don't want to just delete such data (replace it with
+> >> >   KEY_TYPE_error); we never want to delete anything except when
+> >> >   explicitly told to by the user, and while we don't yet have an API for
+> >> >   "read this file even though there's errors, just give me what you
+> >> >   have" we definitely will in the future.
+> >> 
+> >> So will open() just return an error?  How will this look from
+> >> userspace?  
+> 
+> > Not the open, the read - the typical case is only a single extent goes
+> > bad; it's like any other IO error.
+> 
+> Good. But then how would an application know we got a checksum error
+> for data corruption?  Would I have to update all my code to do another
+> special call when I get a read/write error to see if it was a
+> corruption issue?  
 
-With all due respect to folks who have wrked on L4 and its derivatives,
-L4 is a research prototype.  The gap between a research prototype and
-something that can actually be used in wide variety of use cases, from
-smart watches, to mainframes, is... large.
+We can only return -EIO via the normal IO paths.
 
-If some company is willing to fund such work, I'd be very interested
-to see what they can come up with.  I will note that Google has tried
-dabbling in this space with Fuchsia, and getting to something that can
-actually be shipped in a product has been a very long road.  To their
-credit, they have managed to do this for a version of Nest Hub, but
-most people would say that it is very far from being suitable for
-Android or Chrome OS, and supprting data center workloads was
-explicitly a non-goal by the Fuschia team.
+> 
+> >> > - Not being able to move data is a non-option: that would block copygc,
+> >> >   device removal, etc.
+> >> 
+> >> > - And, moving said extent requires giving it a new checksum - strictly
+> >> >   required if the move has to fragment it, teaching the write/move path
+> >> >   about extents with bad checksums is unpalateable, and anyways we'd
+> >> >   like to be able to guard against more bitrot, if we can.
+> >> 
+> >> Why does it need a new checksum if there are read errors?  What
+> >> happens if there are more read errors?   If I have a file on a
+> >> filesystem which is based in spinning rust and I get a single bit
+> >> flip, I'm super happy you catch it.  
+> 
+> > The data move paths very strictly verify checksums as they move data
+> > around so they don't introduce bitrot.
+> 
+> Good.  This is something I really liked as an idea in ZFS, happy to
+> see it coming to bcachefs as well. 
 
-See [1] for more details.  In 2018, it was reported that Google had
-over 100 engineers working on Fuchsia starting in 2016, with the hopes
-that it would be ready "in 5 years".  Per [2], apparently in 2024
-Fuschia "is not dead", but work has slowed and there aren't as many
-people working on it.  (Disclosure: I work at Google but all of my
-recent knowledge about Fuchsia comes from news reports; the last time
-I talked to anyone on the Fuchsia team was well before COVID.)
+Coming? It's been that way since long before bcachefs was merged.
 
-[1] https://www.bloomberg.com/news/articles/2018-07-19/google-team-is-said-to-plot-android-successor-draw-skepticism
-[2] https://www.reddit.com/r/Fuchsia/comments/1g7x2vs/what_happened_to_fuchsia/
+> > The aforementioned poison bit ensures that you still get the error from
+> > the original checksum error when you read that data - unless you use an
+> > appropriate "give it to me anyways" API.
+> 
+> So this implies that I need to do extra work to A) know I'm on
+> bcachefs filesystem, B) that I got a read/write error and I need to do
+> some more checks to see what the error exactly is.  
+> 
+> And if I want to re-write the file I can either copy it to a new name,
+> but only when I use the new API to say "give me all the data, even if
+> you have a checksum error".  
 
-> I do agree that making a microkernel-based OS fast is hard, but on
-> the other hand, running an entire Linux VM just to host a single
-> application isn't exactly an efficient use of resources either.
+This is only if you want an API for "give me possibly corrupted data".
 
-Well, if you want to try to make a business case to VP's with
-estimates of how many engineers this would require, probably in a
-sustained effort taking at least 5 to 10 years, I cordially invite you
-to make the attempt.  :-)
+That's pretty niche.
 
-Given how cheap hardware has been geting, running multiple VM's on an
-Android phone or a ChromeOS laptop might not actally be that
-expensive, relative to the cost of the required number of software
-engineers for some of the alternatives we've discussed on this thread.
-There are ways that you can share the read-only text pages for the
-kernel, etc., to optimize the overhead of the VM, for exaple.
+> > The process doing the read() can't be killed during this, no. If
+> > requested this could be changed, but keep in mind retries are limited in
+> > number.
+> 
+> How limited?  And in the worse case, if I have 10 or 100 readers of a
+> file with checksum errors, now I've blocked all those processes for X
+> amount of time.  Will this info be logged somewhere so a sysadm could
+> possibly just do an 'rm' on the file to nuke it, or have some means of
+> forcing a scrub?  
 
-It is also much easier to collavorate with SOC designers to create
-hardware optimizations for a VM abstraction, as compared to creating
-hardwae optmizations for a software-level OS abstraction such as a
-container or microkernel task.  So I don't think it's a safe
-assumption that VM overheads will always be unacceptable relative to
-the alternatives.
+The poison bit means we won't attempt additional retries on an extent,
+once we've reached the (configurable) limit. Future IOs will just return
+an error without doing the actual read, since we already know it's bad.
 
-Cheers,
+So no, this won't bog down your system.
 
-					- Ted
+> > Nothing else is "locked up", everything else proceeds as normal.
+> 
+> But is the filesystem able to be unmounted when there's a locked up
+> process?  I'm just thinking in terms of system shutdowns when you have
+> failing hardware and want to get things closed as cleanly as possible
+> since you're going to clone the underlying block device onto new media
+> ASAP in an offline manner.  
 
+The number of retries defaults to 3, and there's no real reason to make
+it more than 5, so this isn't a real change over the current situatino
+where drives sometimes take forever on a read as they're going out.
+
+Eventually we could add a configurable hard limit on the amount of time
+we spend trying to service an individual read, but that's niche so
+further down the road.
