@@ -1,44 +1,44 @@
 Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7EFB22D4DB
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7E6622CBFE
 	for <linux-bcachefs@vger.kernel.org>; Fri, 21 Mar 2025 16:40:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742575252; cv=none; b=taT2wv5yeRgj5csdb6TNrONNzOv6sZq7SRz10GG1rkjZhc7UqSwKN7XF8TSwcj3a30QFJjyXDO/mV4JP6+MtoW+7/bS7XKhW150JHnhdvG9Wbnrr1NEZjksgEPzY6Fgwgw/8VMJzAcW/Cm3qsVNkaebfwE13uW0zPGmV2L1VYp4=
+	t=1742575252; cv=none; b=iDi9/r4O/5jwXShDVu84+whE8PeLmyjviAysrC7eKF2UqR376uM/0XNDTWhjhms1i2g7wJZIUeeaB0qpo1x8DwEBF/rDYx2PkykjSyQyCqGLd/eGHame61mKtVJM0hImlSyd8B2r5HNchlkx/iGTngVYaHOfvlNPJ2inhL+NZ/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1742575252; c=relaxed/simple;
-	bh=x96AVgyewFJvCdVMHkvsIgzs2lKVJp74fB+n1fb745U=;
+	bh=6iyeSAmE8Y7e/7UGT5r91+gfRzsqwrpZ+BYwqZuGKoU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Xoq+0B3CUKbr3PzEeU/eWVKr6FuAoNgWfXtimXEz/t2eSEoGfbOyKWQ0z/k4QPCZ2tfciN4OzbxOn84bo1jqrUgcG2FReNtxm9ZULGm5zkgYpRT4spti+VlJ6HCQkuGLUMav5p0NMCwuYewcuE8mr44wIe8h/0bcuFd4WgWz0K8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=JgOIN9fD; arc=none smtp.client-ip=185.67.36.65
+	 MIME-Version; b=CnzOud+k/9DDNrnUE8zFr+BMYmnLVTZ1c3UiADXNhZyS/WEMxbNANfigjzIt3EpoLRgoh16wP2HM1Ptbu8QgFen7Q7KFQy98Xgg1tfH7AtlMSGZ/y7yGyiyS+Gtm4Gc2Q1+GEqPN4/82F88fao8sDJCbMjY6HJvBB9R/7hIy80A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=rdTN3CiR; arc=none smtp.client-ip=185.67.36.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="JgOIN9fD"
+	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="rdTN3CiR"
 Received: from submission (posteo.de [185.67.36.169]) 
-	by mout01.posteo.de (Postfix) with ESMTPS id 1AA5324002B
-	for <linux-bcachefs@vger.kernel.org>; Fri, 21 Mar 2025 17:34:29 +0100 (CET)
+	by mout01.posteo.de (Postfix) with ESMTPS id C002C240027
+	for <linux-bcachefs@vger.kernel.org>; Fri, 21 Mar 2025 17:34:23 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-	t=1742574869; bh=x96AVgyewFJvCdVMHkvsIgzs2lKVJp74fB+n1fb745U=;
+	t=1742574863; bh=6iyeSAmE8Y7e/7UGT5r91+gfRzsqwrpZ+BYwqZuGKoU=;
 	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:
 	 Content-Transfer-Encoding:From;
-	b=JgOIN9fDBL8T2oI1rPubGVHB6b9pmyTFsrTsW0xPYkLRnz+Sq5bVU5MLu5qkytcm1
-	 3HRPbI7TE52zs/tCHk4lKH7v5XUU2uYC1YsPO5ni3mA1CYRow0SIzsr6G5RIOPwJ51
-	 AY570iVqIfjRuf2lv/Ky9eF/4+Syh72Fh5dRbjE9Ed9ZC0q/tnDu+wfQY6A/03h8Vp
-	 UUN7X332Psi9iYq7N8hhlKtpKp1z600cQgk+Fh0YPJ6UXw1ejei28UioX2klJMn7VU
-	 lRMhEUnIO4mcQ17Os/GmuqvY1I2+I6wYDlmeh6bnDdlyJ2jL9paFLZ/qtfEQIJqkMc
-	 iMDaycIwCwiIA==
+	b=rdTN3CiR3rORIUPjo2Zd+Fln3jpt5BCrSgkUOnxD4MQwQmUwCaJAh48yPWgzZXbGx
+	 OoFhE/VitZI81AZAJhWVv2kjNMANDbVLNDEso9MdBN9Zt0jqFTYWshydudYOT0ikNL
+	 IePdVtXilFcm6tWkB0dLkYpfuKke8MYMJ4gk2+kJr1YizcH76XT6Yg//VZ9DkLBmvK
+	 jTwmr8bSEtD2YIG52dDsJz+y9jRP+WkrCaIbBsxwl/04FfyfIaOuImL0MME4aTbYXU
+	 LRPlt4+3M21cKcScvxZIx1iIo8Oba1rihqOxAbXnj+vlExD6YFlekxwOPxIMVU19Su
+	 5z3iLIKYEgTpA==
 Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4ZK7M61jmnz9rxQ;
-	Fri, 21 Mar 2025 17:34:26 +0100 (CET)
+	by submission (posteo.de) with ESMTPSA id 4ZK7M30jGnz9rxM;
+	Fri, 21 Mar 2025 17:34:23 +0100 (CET)
 From: =?UTF-8?q?Thomas=20M=C3=BChlbacher?= <tmuehlbacher@posteo.net>
 To: kent.overstreet@linux.dev
 Cc: linux-bcachefs@vger.kernel.org,
 	=?UTF-8?q?Thomas=20M=C3=BChlbacher?= <tmuehlbacher@posteo.net>
-Subject: [PATCH v2 09/10] feat(nix): add a CI check that builds on 32-bit
-Date: Fri, 21 Mar 2025 16:34:03 +0000
-Message-ID: <20250321163404.353334-10-tmuehlbacher@posteo.net>
+Subject: [PATCH v2 02/10] fix(nix): rm input from crane that no longer exists
+Date: Fri, 21 Mar 2025 16:33:56 +0000
+Message-ID: <20250321163404.353334-3-tmuehlbacher@posteo.net>
 In-Reply-To: <20250321163404.353334-1-tmuehlbacher@posteo.net>
 References: <20250321163404.353334-1-tmuehlbacher@posteo.net>
 Precedence: bulk
@@ -49,25 +49,26 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Picked armv7l-linux but i686-linux would probably also work. Not sure
-which one is more important to check for.
 ---
- flake.nix | 2 ++
- 1 file changed, 2 insertions(+)
+ flake.nix | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/flake.nix b/flake.nix
-index c8225203..abb49a24 100644
+index 4aa66a86..d8836b87 100644
 --- a/flake.nix
 +++ b/flake.nix
-@@ -269,6 +269,8 @@
-               }
-             );
+@@ -11,10 +11,7 @@
+       inputs.nixpkgs.follows = "nixpkgs";
+     };
  
-+          checks."32-bit" = config.packages."${cargoToml.package.name}-i686-linux";
-+
-           devShells.default = pkgs.mkShell {
-             inputsFrom = [
-               config.packages.default
+-    crane = {
+-      url = "github:ipetkov/crane";
+-      inputs.nixpkgs.follows = "nixpkgs";
+-    };
++    crane.url = "github:ipetkov/crane";
+ 
+     fenix = {
+       url = "github:nix-community/fenix";
 -- 
 2.48.1
 
