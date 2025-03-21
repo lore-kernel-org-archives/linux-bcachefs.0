@@ -1,88 +1,87 @@
 Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC8914431
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19312146A68
 	for <linux-bcachefs@vger.kernel.org>; Fri, 21 Mar 2025 16:34:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742574871; cv=none; b=o6I1W1M7gOJ5UcEiMCdp7mq69My4qXLEZfsg37bbLPi0QCuUOb7935/rYi2ZYQr1fMdfhoTVNci3li4By0GLCoWkHKjijROXHGGslXcrpOYGLgrWikWBn/1RbJHu6FbNEWM6FSqS0hlHvdvC90QMyuNdf1lkRyQvnuYR4utEIkU=
+	t=1742574872; cv=none; b=byPRsIahgxKEiyAf+VzyUXY47Ji2GCYrrEPk2IhMP2D7fo+UWulKZ+me899DVayDvxMYwCxS2lYNhXcGJQTDowomeNV9yJQT9LMXqZWixWio1g3vI38hCRMCR1t5woOKAuRDMF5go42ShL6SQsJzvbKpjt/Ep15ks0PKZ+2BOsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742574871; c=relaxed/simple;
-	bh=zogkwvF8gWguaQWaCLd0EsRt+ybSz/r1zWmICMY7mLM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=YMrBlndJw64Z+ZZZIV3C9Bgt5HUFLxyjBqzBN4EPvQFNeTygzXJDFxQ5yABu+oVFspvREtlznehIo3bwQIdGv1UH8j/wo6CGH5nKU2NHjB6edizYH6hZAamrk8VAbE2l8Ap3ALP29nfucfJ8T7yrK3tH164LwJLhJaihMCW77G4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=STNcx0u9; arc=none smtp.client-ip=185.67.36.66
+	s=arc-20240116; t=1742574872; c=relaxed/simple;
+	bh=52G8a8PyLl693DMCD/0zVGr9RwxemND2/mRfPl/VxNI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Nl2UIyCugx2RrEzJEs56+pQwPZZLzmx8m/AO95m4LoL/R8jFAH7uFq33e8SJW8oRKGN2tYMWgUIrHRUWruJkrMqPCGfkDRj5IuLhaB5yiC+TumFvqv3bNtM00ke5k55oLA1SjBUWfpGhCt35HZacPOAVcDUPBJOZ/AXkIsaYF7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=HNZqq/hD; arc=none smtp.client-ip=185.67.36.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="STNcx0u9"
+	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="HNZqq/hD"
 Received: from submission (posteo.de [185.67.36.169]) 
-	by mout02.posteo.de (Postfix) with ESMTPS id 7A4E4240103
-	for <linux-bcachefs@vger.kernel.org>; Fri, 21 Mar 2025 17:34:22 +0100 (CET)
+	by mout02.posteo.de (Postfix) with ESMTPS id 3B8E8240105
+	for <linux-bcachefs@vger.kernel.org>; Fri, 21 Mar 2025 17:34:28 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-	t=1742574862; bh=zogkwvF8gWguaQWaCLd0EsRt+ybSz/r1zWmICMY7mLM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type:
+	t=1742574868; bh=52G8a8PyLl693DMCD/0zVGr9RwxemND2/mRfPl/VxNI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:
 	 Content-Transfer-Encoding:From;
-	b=STNcx0u9Hf59G57UzWBKc07OH3FhUT7rznOWsVN4nsGGWo9waj2VEu0YwkX5F1PZx
-	 x11it/l5mm9sTVimm42QoIll9Hx5yB4FpBls9QnBxlsr1c03zDZsuXPRYzmACg4Is5
-	 1mYl1naTwZTOg5kyuWrYw6JpJ9Yt345aXg4X+s/CsqM1c1mk3FuRoyc4k1F/9sTAVn
-	 /IX8Wrt8TYrCq4PrnSI4HXjDMLkjnZ9lT+Fhad5GWai7c0kvOfIH7UOQwRXXBsbF4v
-	 akdeIx5A55kKo2uMDdOIqanq6F8uHNJuxKz+hwwxM3cM2CjHCrRFVCveTUnLu23MXI
-	 WLpCw0Ojyj7Pw==
+	b=HNZqq/hDbmGo6X1UF+b92h63w92pXjSKDUrg/MoxVDUeLaU6R5i5U5bMYb1poUW51
+	 NWwczo3pqSj8JM6HqGq1zhPzAJhsawayBHEeUEON/Hl8wiVvZYfhKVDbMd2WuNOGfB
+	 UOuhD0XbApMx9Ivsoa4zC0uuMr3QGf4WP6GJK4sl1AhyUNdEyS8tAEwS/3GgawjsYb
+	 qXe8zNOY/uTzklnU+VcpPkix1a9cWl+1+tDOhyJ6+zCF9yTnbdhKGANSuyTr3Fcxw6
+	 k1fEwenqj2G7T3/K2vUcq4ZSGKJi4CNErUywdzeEl8xd0K/pFs7c9fW6w57OKTVlDd
+	 VCJaYpTCiSk9Q==
 Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4ZK7M16YNZz9rxF;
-	Fri, 21 Mar 2025 17:34:21 +0100 (CET)
+	by submission (posteo.de) with ESMTPSA id 4ZK7M45lQvz9rxF;
+	Fri, 21 Mar 2025 17:34:24 +0100 (CET)
 From: =?UTF-8?q?Thomas=20M=C3=BChlbacher?= <tmuehlbacher@posteo.net>
 To: kent.overstreet@linux.dev
 Cc: linux-bcachefs@vger.kernel.org,
 	=?UTF-8?q?Thomas=20M=C3=BChlbacher?= <tmuehlbacher@posteo.net>
-Subject: [PATCH v2 00/10] Nix updates and maintenance
-Date: Fri, 21 Mar 2025 16:33:54 +0000
-Message-ID: <20250321163404.353334-1-tmuehlbacher@posteo.net>
+Subject: [PATCH v2 06/10] fix(makefile): locate built bin with CARGO_BUILD_TARGET set
+Date: Fri, 21 Mar 2025 16:34:00 +0000
+Message-ID: <20250321163404.353334-7-tmuehlbacher@posteo.net>
+In-Reply-To: <20250321163404.353334-1-tmuehlbacher@posteo.net>
+References: <20250321163404.353334-1-tmuehlbacher@posteo.net>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Hi Kent,
+When this environment variable is set, e.g. for some cross compile
+setups, the target dir is nested a little further.
+---
+ Makefile | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-I have some minor patches for bcachefs-tools, mostly to the nix build
-system.
-
-- Cross compilation for all Linux architectures that are available for
-  nix flakes. (check with `nix flake show`.)
-
-- MSRV and 32-bit builds for `nix flake check`.
-
-- Update to using Rust 1.84 for nix builds using rust-overlay.
-
-- Clippy fix by using `c""` literals now.
-
-The flake lock update also brings util-linux 2.40 so that limitation should be
-lifted.
-
-Thomas Mühlbacher (10):
-  flake.lock: Update
-  fix(nix): rm input from crane that no longer exists
-  feat(nix): open up support to more architectures
-  feat(nix): replace fenix with rust-overlay
-  fix(key): replace c_str macro with `c""` literal
-  fix(makefile): locate built bin with CARGO_BUILD_TARGET set
-  feat(nix): enable cross compilation
-  feat(nix): add an MSRV build to CI
-  feat(nix): add a CI check that builds on 32-bit
-  chore(nix): rm unused attr build input
-
- Cargo.toml          |   2 +-
- Makefile            |   9 +-
- flake.lock          |  96 ++++++--------
- flake.nix           | 298 +++++++++++++++++++++++++++++---------------
- src/commands/mod.rs |  25 ----
- src/key.rs          |  15 +--
- 6 files changed, 252 insertions(+), 193 deletions(-)
-
+diff --git a/Makefile b/Makefile
+index 81e3ba1e..95d8cdb5 100644
+--- a/Makefile
++++ b/Makefile
+@@ -22,6 +22,13 @@ else
+   CARGO_CLEAN_ARGS = --quiet
+ endif
+ 
++# when cross compiling, cargo places the built binary in a different location
++ifdef CARGO_BUILD_TARGET
++	BUILT_BIN = target/$(CARGO_BUILD_TARGET)/release/bcachefs
++else
++	BUILT_BIN = target/release/bcachefs
++endif
++
+ # Prevent recursive expansions of $(CFLAGS) to avoid repeatedly performing
+ # compile tests
+ CFLAGS:=$(CFLAGS)
+@@ -195,7 +202,7 @@ cmd_version.o : .version
+ install: INITRAMFS_HOOK=$(INITRAMFS_DIR)/hooks/bcachefs
+ install: INITRAMFS_SCRIPT=$(INITRAMFS_DIR)/scripts/local-premount/bcachefs
+ install: bcachefs $(optional_install)
+-	$(INSTALL) -m0755 -D target/release/bcachefs -t $(DESTDIR)$(ROOT_SBINDIR)
++	$(INSTALL) -m0755 -D $(BUILT_BIN)  -t $(DESTDIR)$(ROOT_SBINDIR)
+ 	$(INSTALL) -m0644 -D bcachefs.8    -t $(DESTDIR)$(PREFIX)/share/man/man8/
+ 	$(INSTALL) -m0755 -D initramfs/script $(DESTDIR)$(INITRAMFS_SCRIPT)
+ 	$(INSTALL) -m0755 -D initramfs/hook   $(DESTDIR)$(INITRAMFS_HOOK)
 -- 
 2.48.1
+
