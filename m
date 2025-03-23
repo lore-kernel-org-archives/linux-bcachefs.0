@@ -1,106 +1,84 @@
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57BA12E337B
-	for <linux-bcachefs@vger.kernel.org>; Sun, 23 Mar 2025 04:20:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E217817D2
+	for <linux-bcachefs@vger.kernel.org>; Sun, 23 Mar 2025 14:03:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742703628; cv=none; b=M+nEUKMHX+kS15000kQ/+UVcxnhdwM3Jcv7Bzt9I3rzr8/n3krZIEltPBYuRm4zjHE8dQQmTidfnGs6+f9hxDMOdVxIzhw09RDb1W9ynp+V0xrZGeDDc1Oag6jix+zyAspfZy57JCIcI5/C+ooxnImaMtYeCOTCrxlXGaqHWMY0=
+	t=1742738614; cv=none; b=AN2+C/I2OnBRTFCCuyPI/QovFsigOfotIiSZEEJlq9L5Nlw2/7ikP+8iJK3HYYrkhSsEdJHHge4xjtxJsoOKtw8mTfsEE64EbPQEsCE8f/NLTK33+TTlLxkeNrOwTM/u67Lb7wY5iGnWwyLWmqy0L3JSGhf3FKvpEFcv1O9A6SQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742703628; c=relaxed/simple;
-	bh=q2jBIUertY3EQrND3M4tOGnLwFde1ojosR4yGEbxNQA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JqHLDtfSF1ZpfYLGrdC+Pq9WddSADnBlZy9lDzy7PCUB5MIrcQGmGbn+NDYaw+caEAn8XLcx4iCHmZX4b6zsNEesuFlA4NR92rsV14BLwcLQR00YgJmYDihffXJLEUnC1RSlMI/wU636MJ0SGE4KNK6V9ADB/RARdITPC74Pv9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XmOO116K; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1742738614; c=relaxed/simple;
+	bh=t3e3ZzW6uHccucb+NCRHL+9CiheGVYZlTc8TQpH57Ag=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tOsaAU4ZTP/rH4WKEiq74CWecW2EjJGO7sQ/Jeq8PMenP5YFeTJ8JBult0AD6vWQp80jqamSgB8p+GBiqJfAmPeCTRAL5zO9ywWUhXFsi8DIMMW/K2PVXN1BHzrVv3XpGTvCLkYk703+RjDKddqCbSCteGjDlP21xZ2AimixvsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Mu8n9KQ0; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XmOO116K"
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-22401f4d35aso68428885ad.2
-        for <linux-bcachefs@vger.kernel.org>; Sat, 22 Mar 2025 21:20:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742703626; x=1743308426; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wM8YOeW/6ubH7cu0W9v7KROAgQCuweaDlOg1B7v97i4=;
-        b=XmOO116Ke7w604c8jt98KJHetm8KHOUH010fKavHijr3g7naFdoVlXko6RUq61fvqI
-         iZlDcatVU4ohETm4kVWRdak0LaZWQbGXUBzptbq2oOOZa8Gzca8g9VdYxTNkWyDF8rwJ
-         wZagCbUe8MYs8umdDbQ0aUcJQ+C/zt4B3pRq0l5YCNjLczfwsofRZSrNgPImHAfLoGqc
-         Vbd+1HAvz3BflH6XY3ypNn3Jkqx5hQ6CBs2oGFP3FwPhU01Gy23KRfhsAtSvdmRvzMKZ
-         5JSQIUULyEJ+dm5aLJgImsq4COj+TNU7elDF1IQVVGjtouUF0pQirGHdJ7ZV7E0YK67X
-         aUGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742703626; x=1743308426;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wM8YOeW/6ubH7cu0W9v7KROAgQCuweaDlOg1B7v97i4=;
-        b=flu80uubUIssiOhhqFL7xSrdNsq4vfIDHz+D/avQZwhEr/U/QDtllkceZ/PEK0CULu
-         FK1kKvT2IC5wOuLfYVCHJz7mTisZEAiMMmG6WCgSnCLWTmd4kAbqSt4E9MYy+3CYlGNX
-         RRtbyXZMKnaaOTKD2vb9/PX5OBQ4r56Uvw3DQicMXdHoqIN0e+CplcAM2YVwKTOfmori
-         A7mOC17pWS9Tc19HGzIwsJdI1LhuBYeUczovxg9Rt+KBFKtDOYf/E0jIrsdkBL++I5qK
-         COgMzO2Vihqkh97ahrDR9oR5A2/onn9i8YqD8HbgRMC43yh7iOn86GzyDs/EtDFK1uoT
-         rd+g==
-X-Gm-Message-State: AOJu0Ywft4p1tsrdBEH0OfCLKmHFibuMpdmBLVEvJkTdIfc8cbWT7fuC
-	VoxfQgaDoEFRJRTQxfJPfnVr0jDUSSAXhe01gn5M1ksoglyZGstz
-X-Gm-Gg: ASbGnctgAy/e3whIb1+aE+YCV2N0eNK++L+7XHt0sbi5mzy9lMBJ7bJx+eCaKJtR9CR
-	Jjr1sK34TJZIDap2nt5sH0BE2JC17Gzj3eK8mrQY4+dwXmuBn4SasF1Y69jpQ4on+LfK3m1VWHC
-	vlfgWYntiX/eZKXXTIKOjuXir975fxKuxTB/V7R4WIB4O8f1rgeTwdrJ2PIE+L9sA4O0N9IVkRf
-	TU/k7CaEmXsdxcvwrB7a+8HzwAoPbn423R6l6On79vmN2mB1IKNLPKnvcLRqSkS5aw3SNDxU+mv
-	+clmvo4wmrf6Qy/xzdD1orT92muCZA==
-X-Google-Smtp-Source: AGHT+IHbHOGgOxeVxi9hxTQ4YBK2riB1m7AqHfuaC0TgP7BtjJV/Kszl4t4ljfsI3JN0X1P8Lpj4GQ==
-X-Received: by 2002:aa7:88c9:0:b0:730:7600:aeab with SMTP id d2e1a72fcca58-739059c5da7mr14076426b3a.13.1742703626397;
-        Sat, 22 Mar 2025 21:20:26 -0700 (PDT)
-Received: from localhost ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73906008299sm4928663b3a.74.2025.03.22.21.20.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Mar 2025 21:20:25 -0700 (PDT)
-From: Alan Huang <mmpgouride@gmail.com>
-To: kent.overstreet@linux.dev
-Cc: linux-bcachefs@vger.kernel.org,
-	Alan Huang <mmpgouride@gmail.com>
-Subject: [PATCH v2] bcachefs: Add missing smp_rmb()
-Date: Sun, 23 Mar 2025 12:20:21 +0800
-Message-ID: <20250323042021.57711-1-mmpgouride@gmail.com>
-X-Mailer: git-send-email 2.48.1
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Mu8n9KQ0"
+Date: Sun, 23 Mar 2025 10:03:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1742738608;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OI9vv1l36WF0yP/IMZOlN7jnxol4Ycr+FUzcV3tV3es=;
+	b=Mu8n9KQ0eCh45h32l37vC3/xPBBYY/p3YvY2YCwdGxM3qvpAJTsQ5+EmPbG9328zbB3GG4
+	KEmFYG2K4q1YL8VyYUq8/0mPCtwC/7+77TPc+E55nGN7Mf3FJg3bSa7IVASinn/X7DlnLj
+	5j8OZeL8sWawiVZ/He1DdBECkn6RCAk=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Alan Huang <mmpgouride@gmail.com>
+Cc: linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH v2] bcachefs: Add missing smp_rmb()
+Message-ID: <mlklkzs4sgq7fnwayq4ozcaaavi5inqghbi7docxyuukedsu5q@e65utej7lejt>
+References: <20250323042021.57711-1-mmpgouride@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250323042021.57711-1-mmpgouride@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-The smp_rmb() guarantees that reads from reservations.counter
-occur before accessing cur_entry_u64s. It's paired with the
-atomic64_try_cmpxchg in journal_entry_open.
+On Sun, Mar 23, 2025 at 12:20:21PM +0800, Alan Huang wrote:
+> The smp_rmb() guarantees that reads from reservations.counter
+> occur before accessing cur_entry_u64s. It's paired with the
+> atomic64_try_cmpxchg in journal_entry_open.
+> 
+> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
 
-Signed-off-by: Alan Huang <mmpgouride@gmail.com>
----
+We're only using this once, the barrier suffices here.
 
-Since I'm touching this part, add the READ_ONCE anyway.
-
-
- fs/bcachefs/journal.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/fs/bcachefs/journal.h b/fs/bcachefs/journal.h
-index ab68c5c4d8d8..fe362ddd2895 100644
---- a/fs/bcachefs/journal.h
-+++ b/fs/bcachefs/journal.h
-@@ -350,9 +350,11 @@ static inline int journal_res_get_fast(struct journal *j,
- 
- 		/*
- 		 * Check if there is still room in the current journal
--		 * entry:
-+		 * entry, smp_rmb() guarantees that reads from reservations.counter
-+		 * occur before accessing cur_entry_u64s:
- 		 */
--		if (new.cur_entry_offset + res->u64s > j->cur_entry_u64s)
-+		smp_rmb();
-+		if (new.cur_entry_offset + res->u64s > READ_ONCE(j->cur_entry_u64s))
- 			return 0;
- 
- 		EBUG_ON(!journal_state_count(new, new.idx));
--- 
-2.48.1
-
+> ---
+> 
+> Since I'm touching this part, add the READ_ONCE anyway.
+> 
+> 
+>  fs/bcachefs/journal.h | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/bcachefs/journal.h b/fs/bcachefs/journal.h
+> index ab68c5c4d8d8..fe362ddd2895 100644
+> --- a/fs/bcachefs/journal.h
+> +++ b/fs/bcachefs/journal.h
+> @@ -350,9 +350,11 @@ static inline int journal_res_get_fast(struct journal *j,
+>  
+>  		/*
+>  		 * Check if there is still room in the current journal
+> -		 * entry:
+> +		 * entry, smp_rmb() guarantees that reads from reservations.counter
+> +		 * occur before accessing cur_entry_u64s:
+>  		 */
+> -		if (new.cur_entry_offset + res->u64s > j->cur_entry_u64s)
+> +		smp_rmb();
+> +		if (new.cur_entry_offset + res->u64s > READ_ONCE(j->cur_entry_u64s))
+>  			return 0;
+>  
+>  		EBUG_ON(!journal_state_count(new, new.idx));
+> -- 
+> 2.48.1
+> 
