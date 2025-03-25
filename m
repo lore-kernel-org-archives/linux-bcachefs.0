@@ -1,185 +1,170 @@
-Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E96E2B9A5
-	for <linux-bcachefs@vger.kernel.org>; Tue, 25 Mar 2025 05:16:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.79
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 890D825A2BF
+	for <linux-bcachefs@vger.kernel.org>; Tue, 25 Mar 2025 14:29:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742879787; cv=none; b=VeX3Qk/I28a8HwylUs0vUn/5rYo5r0s8mYPNljsqLZDLsNIpCXD3Gj4G7p7PitDPq9ww/aXsc7UVVqS03+bI81BcS+937HAH6slCF83xzX9yXmAO1z84xSobstQ37JNjRBfmdhN0zARjEFHqZt2wtTb8j8PZJ9daLxMcFt3D/GM=
+	t=1742912974; cv=none; b=uCpHfVo2PW6EMK3AvjqoWlWDSZf1+GMkcY1gvHRkp/aPoyhLdIFo8tyunIPP4jrwpOvcJl7p66ptIcV9YNcXlYSt9p9ZzBafWw2HfDpvbfHKkC12UqWagGejGL/fHtfMDYRei8Wyxc7X+8rYLGdqUuDdgmgWljiVBbry4Q2jRFA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742879787; c=relaxed/simple;
-	bh=u0ClVa+B6VUbVBmBjaDQe2+IpDcW/Tw46dNL/Qy68Ig=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=AztjEBsJDEiQBWcfAvk4B78FFdp/7pABBwXU2VDNNGkN52JLW/7iI6V7J1dxlhdYPo1dlt2eZCnJs38VSg4F25/+Y8ZY78XsyBBnr7NcBbHT/WX+7IhNu+w0bsfqNoKb5fqKTqyCK6bX/t4TGNHKrDZQMaBxze/Tjr5z7lhmTBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f79.google.com with SMTP id ca18e2360f4ac-85b418faf73so1207500039f.1
-        for <linux-bcachefs@vger.kernel.org>; Mon, 24 Mar 2025 22:16:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742879785; x=1743484585;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=49Wyjot1/RXrsvv+pJOQcQMQcX3wxG5AhGGcKlrmdxs=;
-        b=QkjO++L2OnBxVtBu0YwY2uCCtHN08j8ZLD/hyVrm25BLseLatG6hmnOTNTQT4lsy8s
-         NcCpxAwm0DKoqX6Do97f0sikjo+Hy5LNsm57v+vl2d53QELVB7VO8ZCYnSlZP6qBxcUA
-         CswIJXY/6j8S5KXAb013VOJQOyskoDi40Nsd3dGvL7MmV+CFp+PWR8AN+yjqLUwbHttG
-         8SPq1s3foKy0BAnXN8nN+SEwVS76zAq78tZirXvwPhhsMiHRfBH4i7kdz7YEJ2gF7Vj9
-         /QjR7uAmJHtZHAfV/P0h0y2YcAbvwdrXMdlDiIuA25VTQOVhiCPPBnteNm1b9Gs6/o6e
-         UVig==
-X-Forwarded-Encrypted: i=1; AJvYcCWFHhUFvfiayNhMU06dkgjFX5e6N3eky9pmnEI+BzSlwP85eXVvMl2mi+lt2dwa69PtHxQfAX9LNb8RBZVtvA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxuLF1sAOSS3BQQc6H05UvFF9hnA/vRfEFDgsvqF8PyMvgV3Yzu
-	NAbNsYiAIJaJOXufi6N+wUsBAI217PHN3lmcszrwmcBEpgf3PRyGp/JMvWE5mz34Zwey60K2kh2
-	V38+hRTxgP7tcSfNbTDId/7R4KsJ1t2xhoUdgpcNxYXlXV8AlR6FNW4g=
-X-Google-Smtp-Source: AGHT+IE+ZrLKmMe9eI0OoS/q5K9UZS3ycH+XT8GTMfAeFMsKVw6ua890/hvtVeILa1HKg0dzch014UpFL4SkZsW4EhPXHBawPVzt
+	s=arc-20240116; t=1742912974; c=relaxed/simple;
+	bh=Pp2dOwEyZckqZhfV12l+0XnhWjtie6+RIdYu9jcOMXc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kxePQnG93hTDd6AuyoT8i2L3l7QfnIiHXcJeiZn2iD4DtEwzLSdUoN/2YXBMqloCEuhMYOvlfbo3xeiiwNCQiGb442AzfOAI0wutLsj7uTxFZWxBXAQ7ybK8iWBVSucPE74vn1rEfX2AABruiLiuHBMnViMNLLQeqO4Jok1gCZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XfYMbKzh; arc=none smtp.client-ip=95.215.58.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XfYMbKzh"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1742912969;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=K06mKF+8359jXwNZVKjd5ia975r6DmqrR5EEwQmXHZA=;
+	b=XfYMbKzhV0QEcPE7kRJdAEz31eQK4EagzweZyL/pHmu09B3Cti8KwU/CUo3Td0ANKVc+rk
+	s/XwQK/I7jLwByLxzhLBbJ1RaXa99JAWAKngofFbdsywQpQQixvsbfNQKtKo60SVK7ewIV
+	24B2vmNt2Wd1IdyU1JOozSoPQ+irDdI=
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: linux-bcachefs@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Subject: [PATCH 1/2] bcachefs: Validate number of counters for accounting keys
+Date: Tue, 25 Mar 2025 10:29:24 -0400
+Message-ID: <20250325142925.1999166-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:16ce:b0:3d4:700f:67e7 with SMTP id
- e9e14a558f8ab-3d596177247mr153564915ab.17.1742879784664; Mon, 24 Mar 2025
- 22:16:24 -0700 (PDT)
-Date: Mon, 24 Mar 2025 22:16:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67e23c28.050a0220.a7ebc.0038.GAE@google.com>
-Subject: [syzbot] [bcachefs?] INFO: task hung in __bch2_fsck_err
-From: syzbot <syzbot+6f4fcb1aecbaa2aa6825@syzkaller.appspotmail.com>
-To: anna-maria@linutronix.de, frederic@kernel.org, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
+We weren't checking that accounting keys have the expected number of
+accounters. Originally we probably wanted to be flexible on this, but it
+doesn't look like that will be required - accounting is extended by
+adding new counter types, not more counters to an existing type.
 
-syzbot found the following issue on:
+This means we can drop a BUG_ON() that popped once in automated testing,
+and the new validation will make that bug easier to track down.
 
-HEAD commit:    5fc319360819 Merge tag 'net-6.14-rc8' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10105e98580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=27515cfdbafbb90d
-dashboard link: https://syzkaller.appspot.com/bug?extid=6f4fcb1aecbaa2aa6825
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=110133b0580000
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-5fc31936.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/85179a8915f2/vmlinux-5fc31936.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/cc4a866b3260/bzImage-5fc31936.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/7a8c0330a7ea/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6f4fcb1aecbaa2aa6825@syzkaller.appspotmail.com
-
-INFO: task syz.0.40:5746 blocked for more than 143 seconds.
-      Not tainted 6.14.0-rc7-syzkaller-00137-g5fc319360819 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz.0.40        state:D stack:8536  pid:5746  tgid:5745  ppid:5473   task_flags:0x440140 flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5378 [inline]
- __schedule+0x190e/0x4c90 kernel/sched/core.c:6765
- __schedule_loop kernel/sched/core.c:6842 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6857
- schedule_timeout+0xb0/0x290 kernel/time/sleep_timeout.c:75
- ___down_common kernel/locking/semaphore.c:229 [inline]
- __down_common+0x375/0x820 kernel/locking/semaphore.c:250
- down+0x84/0xc0 kernel/locking/semaphore.c:64
- console_lock+0x145/0x1b0 kernel/printk/printk.c:2833
- __bch2_print_string_as_lines fs/bcachefs/util.c:267 [inline]
- bch2_print_string_as_lines+0x20/0xc0 fs/bcachefs/util.c:286
- __bch2_fsck_err+0x1044/0x1420 fs/bcachefs/error.c:426
- check_snapshot fs/bcachefs/snapshot.c:774 [inline]
- bch2_check_snapshots+0x1ee1/0x3eb0 fs/bcachefs/snapshot.c:831
- bch2_run_recovery_pass+0xf0/0x1e0 fs/bcachefs/recovery_passes.c:226
- bch2_run_recovery_passes+0x2ad/0xa90 fs/bcachefs/recovery_passes.c:291
- bch2_fs_recovery+0x265a/0x3de0 fs/bcachefs/recovery.c:936
- bch2_fs_start+0x37c/0x610 fs/bcachefs/super.c:1041
- bch2_fs_get_tree+0xdb7/0x17a0 fs/bcachefs/fs.c:2203
- vfs_get_tree+0x90/0x2b0 fs/super.c:1814
- do_new_mount+0x2be/0xb40 fs/namespace.c:3560
- do_mount fs/namespace.c:3900 [inline]
- __do_sys_mount fs/namespace.c:4111 [inline]
- __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4088
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f514938e90a
-RSP: 002b:00007f514a2b2e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007f514a2b2ef0 RCX: 00007f514938e90a
-RDX: 00002000000000c0 RSI: 0000200000000000 RDI: 00007f514a2b2eb0
-RBP: 00002000000000c0 R08: 00007f514a2b2ef0 R09: 0000000000800000
-R10: 0000000000800000 R11: 0000000000000246 R12: 0000200000000000
-R13: 00007f514a2b2eb0 R14: 0000000000005903 R15: 0000200000000200
- </TASK>
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/26:
- #0: ffffffff8eb393e0 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:337 [inline]
- #0: ffffffff8eb393e0 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:849 [inline]
- #0: ffffffff8eb393e0 (rcu_read_lock){....}-{1:3}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6746
-2 locks held by getty/5106:
- #0: ffff88801aef10a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
- #1: ffffc9000019b2f0 (&ldata->atomic_read_lock){+.+.}-{4:4}, at: n_tty_read+0x616/0x1770 drivers/tty/n_tty.c:2211
-4 locks held by kworker/0:0/5372:
-2 locks held by kworker/0:5/5483:
-4 locks held by syz.0.40/5746:
- #0: ffff888053680278 (&c->state_lock){+.+.}-{4:4}, at: bch2_fs_start+0x45/0x610 fs/bcachefs/super.c:1010
- #1: ffff888053684378 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu_lock_acquire include/linux/srcu.h:164 [inline]
- #1: ffff888053684378 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu_read_lock include/linux/srcu.h:256 [inline]
- #1: ffff888053684378 (&c->btree_trans_barrier){.+.+}-{0:0}, at: __bch2_trans_get+0x7e4/0xd30 fs/bcachefs/btree_iter.c:3408
- #2: ffff88804e5d4140 (bcachefs_btree){+.+.}-{0:0}, at: srcu_lock_acquire include/linux/srcu.h:164 [inline]
- #2: ffff88804e5d4140 (bcachefs_btree){+.+.}-{0:0}, at: srcu_read_lock include/linux/srcu.h:256 [inline]
- #2: ffff88804e5d4140 (bcachefs_btree){+.+.}-{0:0}, at: __bch2_trans_get+0x7e4/0xd30 fs/bcachefs/btree_iter.c:3408
- #3: ffff8880536e1548 (&c->fsck_error_msgs_lock){+.+.}-{4:4}, at: __bch2_fsck_err+0x3b0/0x1420 fs/bcachefs/error.c:309
-1 lock held by syz.5.468/6650:
-2 locks held by syz.2.470/6654:
-2 locks held by syz.3.471/6656:
-2 locks held by syz.1.472/6658:
-2 locks held by syz.4.473/6660:
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 UID: 0 PID: 26 Comm: khungtaskd Not tainted 6.14.0-rc7-syzkaller-00137-g5fc319360819 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
- nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:162 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:236 [inline]
- watchdog+0x1058/0x10a0 kernel/hung_task.c:399
- kthread+0x7a9/0x920 kernel/kthread.c:464
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:148
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-
-
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/bcachefs/disk_accounting.c        | 11 +++++++++++
+ fs/bcachefs/disk_accounting.h        |  8 +++++---
+ fs/bcachefs/disk_accounting_format.h | 26 ++++++++++++++++----------
+ fs/bcachefs/sb-errors_format.h       |  3 ++-
+ 4 files changed, 34 insertions(+), 14 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/fs/bcachefs/disk_accounting.c b/fs/bcachefs/disk_accounting.c
+index b32e91ba8be8..8a8de61429d8 100644
+--- a/fs/bcachefs/disk_accounting.c
++++ b/fs/bcachefs/disk_accounting.c
+@@ -135,6 +135,12 @@ static inline bool is_zero(char *start, char *end)
+ 
+ #define field_end(p, member)	(((void *) (&p.member)) + sizeof(p.member))
+ 
++static const unsigned bch2_accounting_type_nr_counters[] = {
++#define x(f, id, nr)	[BCH_DISK_ACCOUNTING_##f]	= nr,
++	BCH_DISK_ACCOUNTING_TYPES()
++#undef x
++};
++
+ int bch2_accounting_validate(struct bch_fs *c, struct bkey_s_c k,
+ 			     struct bkey_validate_context from)
+ {
+@@ -193,6 +199,11 @@ int bch2_accounting_validate(struct bch_fs *c, struct bkey_s_c k,
+ 	bkey_fsck_err_on(!is_zero(end, (void *) (&acc_k + 1)),
+ 			 c, accounting_key_junk_at_end,
+ 			 "junk at end of accounting key");
++
++	bkey_fsck_err_on(bch2_accounting_counters(k.k) != bch2_accounting_type_nr_counters[acc_k.type],
++			 c, accounting_key_nr_counters_wrong,
++			 "accounting key with %u counters, should be %u",
++			 bch2_accounting_counters(k.k), bch2_accounting_type_nr_counters[acc_k.type]);
+ fsck_err:
+ 	return ret;
+ }
+diff --git a/fs/bcachefs/disk_accounting.h b/fs/bcachefs/disk_accounting.h
+index f9214e2d1346..abb1f6206fe9 100644
+--- a/fs/bcachefs/disk_accounting.h
++++ b/fs/bcachefs/disk_accounting.h
+@@ -33,10 +33,12 @@ static inline bool bch2_accounting_key_is_zero(struct bkey_s_c_accounting a)
+ static inline void bch2_accounting_accumulate(struct bkey_i_accounting *dst,
+ 					      struct bkey_s_c_accounting src)
+ {
+-	EBUG_ON(dst->k.u64s != src.k->u64s);
+-
+-	for (unsigned i = 0; i < bch2_accounting_counters(&dst->k); i++)
++	for (unsigned i = 0;
++	     i < min(bch2_accounting_counters(&dst->k),
++		     bch2_accounting_counters(src.k));
++	     i++)
+ 		dst->v.d[i] += src.v->d[i];
++
+ 	if (bversion_cmp(dst->k.bversion, src.k->bversion) < 0)
+ 		dst->k.bversion = src.k->bversion;
+ }
+diff --git a/fs/bcachefs/disk_accounting_format.h b/fs/bcachefs/disk_accounting_format.h
+index 15190196485f..09198ffb57b1 100644
+--- a/fs/bcachefs/disk_accounting_format.h
++++ b/fs/bcachefs/disk_accounting_format.h
+@@ -95,19 +95,25 @@ static inline bool data_type_is_hidden(enum bch_data_type type)
+ 	}
+ }
+ 
++/*
++ * field 1: name
++ * field 2: id
++ * field 3: number of counters (max 3)
++ */
++
+ #define BCH_DISK_ACCOUNTING_TYPES()		\
+-	x(nr_inodes,		0)		\
+-	x(persistent_reserved,	1)		\
+-	x(replicas,		2)		\
+-	x(dev_data_type,	3)		\
+-	x(compression,		4)		\
+-	x(snapshot,		5)		\
+-	x(btree,		6)		\
+-	x(rebalance_work,	7)		\
+-	x(inum,			8)
++	x(nr_inodes,		0,	1)	\
++	x(persistent_reserved,	1,	1)	\
++	x(replicas,		2,	1)	\
++	x(dev_data_type,	3,	3)	\
++	x(compression,		4,	3)	\
++	x(snapshot,		5,	1)	\
++	x(btree,		6,	1)	\
++	x(rebalance_work,	7,	1)	\
++	x(inum,			8,	3)
+ 
+ enum disk_accounting_type {
+-#define x(f, nr)	BCH_DISK_ACCOUNTING_##f	= nr,
++#define x(f, nr, ...)	BCH_DISK_ACCOUNTING_##f	= nr,
+ 	BCH_DISK_ACCOUNTING_TYPES()
+ #undef x
+ 	BCH_DISK_ACCOUNTING_TYPE_NR,
+diff --git a/fs/bcachefs/sb-errors_format.h b/fs/bcachefs/sb-errors_format.h
+index 67455beb8358..1736abea9ed1 100644
+--- a/fs/bcachefs/sb-errors_format.h
++++ b/fs/bcachefs/sb-errors_format.h
+@@ -311,13 +311,14 @@ enum bch_fsck_flags {
+ 	x(accounting_key_replicas_nr_required_bad,		279,	FSCK_AUTOFIX)	\
+ 	x(accounting_key_replicas_devs_unsorted,		280,	FSCK_AUTOFIX)	\
+ 	x(accounting_key_version_0,				282,	FSCK_AUTOFIX)	\
++	x(accounting_key_nr_counters_wrong,			307,	FSCK_AUTOFIX)	\
+ 	x(logged_op_but_clean,					283,	FSCK_AUTOFIX)	\
+ 	x(compression_opt_not_marked_in_sb,			295,	FSCK_AUTOFIX)	\
+ 	x(compression_type_not_marked_in_sb,			296,	FSCK_AUTOFIX)	\
+ 	x(directory_size_mismatch,				303,	FSCK_AUTOFIX)	\
+ 	x(dirent_cf_name_too_big,				304,	0)		\
+ 	x(dirent_stray_data_after_cf_name,			305,	0)		\
+-	x(MAX,							307,	0)
++	x(MAX,							308,	0)
+ 
+ enum bch_sb_error_id {
+ #define x(t, n, ...) BCH_FSCK_ERR_##t = n,
+-- 
+2.49.0
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
