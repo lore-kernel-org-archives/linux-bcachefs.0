@@ -1,288 +1,99 @@
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
+Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB7CE9479
-	for <linux-bcachefs@vger.kernel.org>; Tue, 25 Mar 2025 04:45:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E96E2B9A5
+	for <linux-bcachefs@vger.kernel.org>; Tue, 25 Mar 2025 05:16:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.79
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742877923; cv=none; b=LKFs4tByCKs4GCeWg1i3GDpKMJEOsOEe/H+84EoXUNWcvQ9kS2kwaQ8KYsL63GJSO7LzKKjzGpomTYWVdNjldjxC+O6fiQApxjzNorWm4RpZKPUZMGoOidRtHZ2M3jtdj3K2COYiaPBTqZr0JoaKqTvHfBkEXoiASzTp7kOLjTM=
+	t=1742879787; cv=none; b=VeX3Qk/I28a8HwylUs0vUn/5rYo5r0s8mYPNljsqLZDLsNIpCXD3Gj4G7p7PitDPq9ww/aXsc7UVVqS03+bI81BcS+937HAH6slCF83xzX9yXmAO1z84xSobstQ37JNjRBfmdhN0zARjEFHqZt2wtTb8j8PZJ9daLxMcFt3D/GM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742877923; c=relaxed/simple;
-	bh=devzYDNalMsUjT+07OWPsr5ZmxLSUtrHJJ7Th81/KmA=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=jmy+TmQeIxL7nOM8VFGHbRaXkXvU1vL/bzt1MIHvl4nfNH2RPoqv9S88Cs1GFrJHyz/scKMnhylZ1S1sfWKhOYt+QpyI7jFVUb9C6HxKWm1AdU/06DMszg8LViBatsGLdJaWm/F7M4Mu9zxVr2kmWdo47uAQcKQRuv4MFt48v3o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
+	s=arc-20240116; t=1742879787; c=relaxed/simple;
+	bh=u0ClVa+B6VUbVBmBjaDQe2+IpDcW/Tw46dNL/Qy68Ig=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=AztjEBsJDEiQBWcfAvk4B78FFdp/7pABBwXU2VDNNGkN52JLW/7iI6V7J1dxlhdYPo1dlt2eZCnJs38VSg4F25/+Y8ZY78XsyBBnr7NcBbHT/WX+7IhNu+w0bsfqNoKb5fqKTqyCK6bX/t4TGNHKrDZQMaBxze/Tjr5z7lhmTBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.79
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3d2a40e470fso40098825ab.3
-        for <linux-bcachefs@vger.kernel.org>; Mon, 24 Mar 2025 21:45:21 -0700 (PDT)
+Received: by mail-io1-f79.google.com with SMTP id ca18e2360f4ac-85b418faf73so1207500039f.1
+        for <linux-bcachefs@vger.kernel.org>; Mon, 24 Mar 2025 22:16:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742877921; x=1743482721;
+        d=1e100.net; s=20230601; t=1742879785; x=1743484585;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=s2PClflp1mOPEfAM9+lwaW49MMMNvSeyHVI9gRiU4BI=;
-        b=PZLThkDJdZ12wbuJOfeq3Q+hsmEfWvzcQFSEC3YTViPMMvgj+15ptWh0jLT+CWitDB
-         O3Kj+1QUFm+UexWPijIjcnpyIASa4tmXamjZ4Vn9WSG+fU36oz3c/hkc1TaDLJ4FmEVl
-         gwUa0AE6eFPHBhZd/jTqteqQEt9AfH5/zzQqvESy9g1lnBu0hXyxxq9mPG8qttdLH1Ag
-         g4usgtR9JQq26d2zjq7ka8rbnPBujbLCgsDFpBko7KdC7mYC3DKKTgnjmBIq4tBU3wT8
-         fUndLBXsrbpzQSSs2z6e9y6wGCv+ETi/IlONM37Fj4ibkF2b0IRPJDOrdW+4dO8k1vXW
-         Ax0w==
-X-Forwarded-Encrypted: i=1; AJvYcCUxMVLK4vNXcIavsEV5WgXz6RdqIlXIJTcgjgHtyo+q7+jvPTpmUHdhYC2g1GqvkFSzz3yIzYjw7WwoyhsVIA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxNwa3J6gdJgzseim3qmNeHJrVtb7zFhCna7FEilr/35MlpJQWo
-	2ftwqruOfjZgUw67NBpwjB7fjM23iQc886oxXlNhUs8WtHTZYZKCvgrADLD+l/hNb8qSZF8QlXo
-	pB/n8uCheV1+V8vVq4FWHcHDFZqtw/Vo7dxYmNVOlC6wSGY8YCOB5ZWA=
-X-Google-Smtp-Source: AGHT+IFZq+ZHo/JIarbTlRWfyK1/HcaEsKdQlqvo+vvo90zrZBrmKURTSzFjXrXKyBqXBrW6TLymQpa34QDwBrBaYeTekD3tueqB
+        bh=49Wyjot1/RXrsvv+pJOQcQMQcX3wxG5AhGGcKlrmdxs=;
+        b=QkjO++L2OnBxVtBu0YwY2uCCtHN08j8ZLD/hyVrm25BLseLatG6hmnOTNTQT4lsy8s
+         NcCpxAwm0DKoqX6Do97f0sikjo+Hy5LNsm57v+vl2d53QELVB7VO8ZCYnSlZP6qBxcUA
+         CswIJXY/6j8S5KXAb013VOJQOyskoDi40Nsd3dGvL7MmV+CFp+PWR8AN+yjqLUwbHttG
+         8SPq1s3foKy0BAnXN8nN+SEwVS76zAq78tZirXvwPhhsMiHRfBH4i7kdz7YEJ2gF7Vj9
+         /QjR7uAmJHtZHAfV/P0h0y2YcAbvwdrXMdlDiIuA25VTQOVhiCPPBnteNm1b9Gs6/o6e
+         UVig==
+X-Forwarded-Encrypted: i=1; AJvYcCWFHhUFvfiayNhMU06dkgjFX5e6N3eky9pmnEI+BzSlwP85eXVvMl2mi+lt2dwa69PtHxQfAX9LNb8RBZVtvA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxuLF1sAOSS3BQQc6H05UvFF9hnA/vRfEFDgsvqF8PyMvgV3Yzu
+	NAbNsYiAIJaJOXufi6N+wUsBAI217PHN3lmcszrwmcBEpgf3PRyGp/JMvWE5mz34Zwey60K2kh2
+	V38+hRTxgP7tcSfNbTDId/7R4KsJ1t2xhoUdgpcNxYXlXV8AlR6FNW4g=
+X-Google-Smtp-Source: AGHT+IE+ZrLKmMe9eI0OoS/q5K9UZS3ycH+XT8GTMfAeFMsKVw6ua890/hvtVeILa1HKg0dzch014UpFL4SkZsW4EhPXHBawPVzt
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:746:b0:3d3:dcb8:1bf1 with SMTP id
- e9e14a558f8ab-3d5960d1ea3mr176397295ab.3.1742877920787; Mon, 24 Mar 2025
- 21:45:20 -0700 (PDT)
-Date: Mon, 24 Mar 2025 21:45:20 -0700
+X-Received: by 2002:a05:6e02:16ce:b0:3d4:700f:67e7 with SMTP id
+ e9e14a558f8ab-3d596177247mr153564915ab.17.1742879784664; Mon, 24 Mar 2025
+ 22:16:24 -0700 (PDT)
+Date: Mon, 24 Mar 2025 22:16:24 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67e234e0.050a0220.a7ebc.0037.GAE@google.com>
-Subject: [syzbot] [bcachefs?] KASAN: slab-out-of-bounds Read in memscan (2)
-From: syzbot <syzbot+ca8a872d9fa7652522da@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <67e23c28.050a0220.a7ebc.0038.GAE@google.com>
+Subject: [syzbot] [bcachefs?] INFO: task hung in __bch2_fsck_err
+From: syzbot <syzbot+6f4fcb1aecbaa2aa6825@syzkaller.appspotmail.com>
+To: anna-maria@linutronix.de, frederic@kernel.org, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, tglx@linutronix.de
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    88d324e69ea9 Merge tag 'spi-fix-v6.14-rc7' of git://git.ke..
+HEAD commit:    5fc319360819 Merge tag 'net-6.14-rc8' of git://git.kernel...
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14203e98580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10105e98580000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=27515cfdbafbb90d
-dashboard link: https://syzkaller.appspot.com/bug?extid=ca8a872d9fa7652522da
+dashboard link: https://syzkaller.appspot.com/bug?extid=6f4fcb1aecbaa2aa6825
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=110133b0580000
 
 Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-88d324e6.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/0fdb8d29892b/vmlinux-88d324e6.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/f6e1986450b4/bzImage-88d324e6.xz
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-5fc31936.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/85179a8915f2/vmlinux-5fc31936.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/cc4a866b3260/bzImage-5fc31936.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/7a8c0330a7ea/mount_0.gz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ca8a872d9fa7652522da@syzkaller.appspotmail.com
+Reported-by: syzbot+6f4fcb1aecbaa2aa6825@syzkaller.appspotmail.com
 
-bcachefs (loop0): check_unreachable_inodes... done
-bcachefs (loop0): check_subvolume_structure... done
-bcachefs (loop0): check_directory_structure... done
-bcachefs (loop0): check_nlinks... done
-bcachefs (loop0): resume_logged_ops... done
-bcachefs (loop0): delete_dead_inodes... done
-bcachefs (loop0): set_fs_needs_rebalance... done
-bcachefs (loop0): done starting filesystem
-FAULT_INJECTION: forcing a failure.
-name failslab, interval 1, probability 0, space 0, times 1
-CPU: 0 UID: 0 PID: 5321 Comm: syz.0.0 Not tainted 6.14.0-rc7-syzkaller-00196-g88d324e69ea9 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+INFO: task syz.0.40:5746 blocked for more than 143 seconds.
+      Not tainted 6.14.0-rc7-syzkaller-00137-g5fc319360819 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.0.40        state:D stack:8536  pid:5746  tgid:5745  ppid:5473   task_flags:0x440140 flags:0x00004006
 Call Trace:
  <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
- fail_dump lib/fault-inject.c:73 [inline]
- should_fail_ex+0x40a/0x550 lib/fault-inject.c:174
- should_failslab+0xac/0x100 mm/failslab.c:46
- slab_pre_alloc_hook mm/slub.c:4068 [inline]
- slab_alloc_node mm/slub.c:4144 [inline]
- __do_kmalloc_node mm/slub.c:4293 [inline]
- __kmalloc_node_track_caller_noprof+0xdc/0x4c0 mm/slub.c:4313
- __do_krealloc mm/slub.c:4820 [inline]
- krealloc_noprof+0x10f/0x300 mm/slub.c:4873
- bch2_printbuf_make_room+0x1f1/0x350 fs/bcachefs/printbuf.c:59
- printbuf_insert_spaces+0x56/0x530 fs/bcachefs/printbuf.c:81
- __printbuf_do_indent fs/bcachefs/printbuf.c:138 [inline]
- printbuf_do_indent+0x4c4/0xa00 fs/bcachefs/printbuf.c:155
- bch2_prt_printf+0x559/0x6d0 fs/bcachefs/printbuf.c:190
- trace_bucket_alloc2+0x119/0xb90 fs/bcachefs/alloc_foreground.c:485
- bch2_bucket_alloc_trans+0x2e89/0x2ea0 fs/bcachefs/alloc_foreground.c:604
- bch2_bucket_alloc_set_trans+0x57c/0xd60 fs/bcachefs/alloc_foreground.c:730
- __open_bucket_add_buckets+0x13e1/0x1e50 fs/bcachefs/alloc_foreground.c:973
- open_bucket_add_buckets+0x33a/0x410 fs/bcachefs/alloc_foreground.c:1017
- bch2_alloc_sectors_start_trans+0xce9/0x2030
- __bch2_write+0x769/0x5a80 fs/bcachefs/io_write.c:1466
- bch2_write+0x865/0x1660 fs/bcachefs/io_write.c:1659
- closure_queue include/linux/closure.h:270 [inline]
- closure_call include/linux/closure.h:432 [inline]
- bch2_writepage_do_io fs/bcachefs/fs-io-buffered.c:469 [inline]
- bch2_writepages+0x284/0x390 fs/bcachefs/fs-io-buffered.c:652
- do_writepages+0x35f/0x880 mm/page-writeback.c:2687
- filemap_fdatawrite_wbc mm/filemap.c:388 [inline]
- __filemap_fdatawrite_range mm/filemap.c:421 [inline]
- file_write_and_wait_range+0x2a3/0x3c0 mm/filemap.c:796
- bch2_fsync+0x13a/0x350 fs/bcachefs/fs-io.c:228
- generic_write_sync include/linux/fs.h:2970 [inline]
- bch2_write_iter+0x298a/0x2cd0 fs/bcachefs/fs-io-buffered.c:1072
- new_sync_write fs/read_write.c:586 [inline]
- vfs_write+0xacf/0xd10 fs/read_write.c:679
- ksys_write+0x18f/0x2b0 fs/read_write.c:731
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f8b07d8d169
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f8b08b31038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007f8b07fa5fa0 RCX: 00007f8b07d8d169
-RDX: 0000000000000010 RSI: 0000200000000080 RDI: 0000000000000006
-RBP: 00007f8b08b31090 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 0000000000000000 R14: 00007f8b07fa5fa0 R15: 00007ffca8a26258
- </TASK>
-==================================================================
-BUG: KASAN: slab-out-of-bounds in memscan+0x62/0x80 lib/string.c:728
-Read of size 1 at addr ffff8880409bd697 by task syz.0.0/5321
-
-CPU: 0 UID: 0 PID: 5321 Comm: syz.0.0 Not tainted 6.14.0-rc7-syzkaller-00196-g88d324e69ea9 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
- print_address_description mm/kasan/report.c:408 [inline]
- print_report+0x16e/0x5b0 mm/kasan/report.c:521
- kasan_report+0x143/0x180 mm/kasan/report.c:634
- memscan+0x62/0x80 lib/string.c:728
- _Z7memscanPvU25pass_dynamic_object_size0im include/linux/fortify-string.h:708 [inline]
- __printbuf_do_indent fs/bcachefs/printbuf.c:101 [inline]
- printbuf_do_indent+0x110/0xa00 fs/bcachefs/printbuf.c:155
- bch2_prt_printf+0x559/0x6d0 fs/bcachefs/printbuf.c:190
- trace_bucket_alloc2+0x119/0xb90 fs/bcachefs/alloc_foreground.c:485
- bch2_bucket_alloc_trans+0x2e89/0x2ea0 fs/bcachefs/alloc_foreground.c:604
- bch2_bucket_alloc_set_trans+0x57c/0xd60 fs/bcachefs/alloc_foreground.c:730
- __open_bucket_add_buckets+0x13e1/0x1e50 fs/bcachefs/alloc_foreground.c:973
- open_bucket_add_buckets+0x33a/0x410 fs/bcachefs/alloc_foreground.c:1017
- bch2_alloc_sectors_start_trans+0xce9/0x2030
- __bch2_write+0x769/0x5a80 fs/bcachefs/io_write.c:1466
- bch2_write+0x865/0x1660 fs/bcachefs/io_write.c:1659
- closure_queue include/linux/closure.h:270 [inline]
- closure_call include/linux/closure.h:432 [inline]
- bch2_writepage_do_io fs/bcachefs/fs-io-buffered.c:469 [inline]
- bch2_writepages+0x284/0x390 fs/bcachefs/fs-io-buffered.c:652
- do_writepages+0x35f/0x880 mm/page-writeback.c:2687
- filemap_fdatawrite_wbc mm/filemap.c:388 [inline]
- __filemap_fdatawrite_range mm/filemap.c:421 [inline]
- file_write_and_wait_range+0x2a3/0x3c0 mm/filemap.c:796
- bch2_fsync+0x13a/0x350 fs/bcachefs/fs-io.c:228
- generic_write_sync include/linux/fs.h:2970 [inline]
- bch2_write_iter+0x298a/0x2cd0 fs/bcachefs/fs-io-buffered.c:1072
- new_sync_write fs/read_write.c:586 [inline]
- vfs_write+0xacf/0xd10 fs/read_write.c:679
- ksys_write+0x18f/0x2b0 fs/read_write.c:731
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f8b07d8d169
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f8b08b31038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007f8b07fa5fa0 RCX: 00007f8b07d8d169
-RDX: 0000000000000010 RSI: 0000200000000080 RDI: 0000000000000006
-RBP: 00007f8b08b31090 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 0000000000000000 R14: 00007f8b07fa5fa0 R15: 00007ffca8a26258
- </TASK>
-
-Allocated by task 5321:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
- poison_kmalloc_redzone mm/kasan/common.c:377 [inline]
- __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:394
- kasan_kmalloc include/linux/kasan.h:260 [inline]
- __do_kmalloc_node mm/slub.c:4294 [inline]
- __kmalloc_node_track_caller_noprof+0x28b/0x4c0 mm/slub.c:4313
- __do_krealloc mm/slub.c:4820 [inline]
- krealloc_noprof+0x10f/0x300 mm/slub.c:4873
- bch2_printbuf_make_room+0x1f1/0x350 fs/bcachefs/printbuf.c:59
- bch2_prt_printf+0x267/0x6d0 fs/bcachefs/printbuf.c:186
- trace_bucket_alloc2+0x119/0xb90 fs/bcachefs/alloc_foreground.c:485
- bch2_bucket_alloc_trans+0x2e89/0x2ea0 fs/bcachefs/alloc_foreground.c:604
- bch2_bucket_alloc_set_trans+0x57c/0xd60 fs/bcachefs/alloc_foreground.c:730
- __open_bucket_add_buckets+0x13e1/0x1e50 fs/bcachefs/alloc_foreground.c:973
- open_bucket_add_buckets+0x33a/0x410 fs/bcachefs/alloc_foreground.c:1017
- bch2_alloc_sectors_start_trans+0xce9/0x2030
- __bch2_write+0x769/0x5a80 fs/bcachefs/io_write.c:1466
- bch2_write+0x865/0x1660 fs/bcachefs/io_write.c:1659
- closure_queue include/linux/closure.h:270 [inline]
- closure_call include/linux/closure.h:432 [inline]
- bch2_writepage_do_io fs/bcachefs/fs-io-buffered.c:469 [inline]
- bch2_writepages+0x284/0x390 fs/bcachefs/fs-io-buffered.c:652
- do_writepages+0x35f/0x880 mm/page-writeback.c:2687
- filemap_fdatawrite_wbc mm/filemap.c:388 [inline]
- __filemap_fdatawrite_range mm/filemap.c:421 [inline]
- file_write_and_wait_range+0x2a3/0x3c0 mm/filemap.c:796
- bch2_fsync+0x13a/0x350 fs/bcachefs/fs-io.c:228
- generic_write_sync include/linux/fs.h:2970 [inline]
- bch2_write_iter+0x298a/0x2cd0 fs/bcachefs/fs-io-buffered.c:1072
- new_sync_write fs/read_write.c:586 [inline]
- vfs_write+0xacf/0xd10 fs/read_write.c:679
- ksys_write+0x18f/0x2b0 fs/read_write.c:731
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-The buggy address belongs to the object at ffff8880409bd680
- which belongs to the cache kmalloc-16 of size 16
-The buggy address is located 7 bytes to the right of
- allocated 16-byte region [ffff8880409bd680, ffff8880409bd690)
-
-The buggy address belongs to the physical page:
-page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x409bd
-flags: 0x4fff00000000000(node=1|zone=1|lastcpupid=0x7ff)
-page_type: f5(slab)
-raw: 04fff00000000000 ffff88801b041640 dead000000000122 0000000000000000
-raw: 0000000000000000 0000000080800080 00000000f5000000 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x52c40(GFP_NOFS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP), pid 5321, tgid 5320 (syz.0.0), ts 71936914615, free_ts 71869688975
- set_page_owner include/linux/page_owner.h:32 [inline]
- post_alloc_hook+0x1f4/0x240 mm/page_alloc.c:1551
- prep_new_page mm/page_alloc.c:1559 [inline]
- get_page_from_freelist+0x365c/0x37a0 mm/page_alloc.c:3477
- __alloc_frozen_pages_noprof+0x292/0x710 mm/page_alloc.c:4740
- alloc_pages_mpol+0x311/0x660 mm/mempolicy.c:2270
- alloc_slab_page mm/slub.c:2423 [inline]
- allocate_slab+0x8f/0x3a0 mm/slub.c:2587
- new_slab mm/slub.c:2640 [inline]
- ___slab_alloc+0xc27/0x14a0 mm/slub.c:3826
- __slab_alloc+0x58/0xa0 mm/slub.c:3916
- __slab_alloc_node mm/slub.c:3991 [inline]
- slab_alloc_node mm/slub.c:4152 [inline]
- __do_kmalloc_node mm/slub.c:4293 [inline]
- __kmalloc_node_track_caller_noprof+0x2e9/0x4c0 mm/slub.c:4313
- __do_krealloc mm/slub.c:4820 [inline]
- krealloc_noprof+0x10f/0x300 mm/slub.c:4873
- bch2_printbuf_make_room+0x1f1/0x350 fs/bcachefs/printbuf.c:59
- bch2_prt_printf+0x267/0x6d0 fs/bcachefs/printbuf.c:186
- trace_bucket_alloc2+0x119/0xb90 fs/bcachefs/alloc_foreground.c:485
- bch2_bucket_alloc_trans+0x2e89/0x2ea0 fs/bcachefs/alloc_foreground.c:604
- bch2_bucket_alloc_set_trans+0x57c/0xd60 fs/bcachefs/alloc_foreground.c:730
- __open_bucket_add_buckets+0x13e1/0x1e50 fs/bcachefs/alloc_foreground.c:973
- open_bucket_add_buckets+0x33a/0x410 fs/bcachefs/alloc_foreground.c:1017
-page last free pid 5321 tgid 5320 stack trace:
- reset_page_owner include/linux/page_owner.h:25 [inline]
- free_pages_prepare mm/page_alloc.c:1127 [inline]
- free_frozen_pages+0xe0d/0x10e0 mm/page_alloc.c:2660
- __slab_free+0x2c2/0x380 mm/slub.c:4520
- qlink_free mm/kasan/quarantine.c:163 [inline]
- qlist_free_all+0x9a/0x140 mm/kasan/quarantine.c:179
- kasan_quarantine_reduce+0x14f/0x170 mm/kasan/quarantine.c:286
- __kasan_slab_alloc+0x23/0x80 mm/kasan/common.c:329
- kasan_slab_alloc include/linux/kasan.h:250 [inline]
- slab_post_alloc_hook mm/slub.c:4115 [inline]
- slab_alloc_node mm/slub.c:4164 [inline]
- __do_kmalloc_node mm/slub.c:4293 [inline]
- __kmalloc_node_noprof+0x23c/0x4d0 mm/slub.c:4300
- __kvmalloc_node_noprof+0x72/0x190 mm/util.c:665
- __bch2_darray_resize_noprof+0xd2/0x290 fs/bcachefs/darray.c:24
- bch2_write_super+0x48a/0x3cd0 fs/bcachefs/super-io.c:1003
- bch2_clear_recovery_pass_required fs/bcachefs/recovery_passes.c:186 [inline]
- bch2_run_recovery_passes+0x4a3/0xa90 fs/bcachefs/recovery_passes.c:295
+ context_switch kernel/sched/core.c:5378 [inline]
+ __schedule+0x190e/0x4c90 kernel/sched/core.c:6765
+ __schedule_loop kernel/sched/core.c:6842 [inline]
+ schedule+0x14b/0x320 kernel/sched/core.c:6857
+ schedule_timeout+0xb0/0x290 kernel/time/sleep_timeout.c:75
+ ___down_common kernel/locking/semaphore.c:229 [inline]
+ __down_common+0x375/0x820 kernel/locking/semaphore.c:250
+ down+0x84/0xc0 kernel/locking/semaphore.c:64
+ console_lock+0x145/0x1b0 kernel/printk/printk.c:2833
+ __bch2_print_string_as_lines fs/bcachefs/util.c:267 [inline]
+ bch2_print_string_as_lines+0x20/0xc0 fs/bcachefs/util.c:286
+ __bch2_fsck_err+0x1044/0x1420 fs/bcachefs/error.c:426
+ check_snapshot fs/bcachefs/snapshot.c:774 [inline]
+ bch2_check_snapshots+0x1ee1/0x3eb0 fs/bcachefs/snapshot.c:831
+ bch2_run_recovery_pass+0xf0/0x1e0 fs/bcachefs/recovery_passes.c:226
+ bch2_run_recovery_passes+0x2ad/0xa90 fs/bcachefs/recovery_passes.c:291
  bch2_fs_recovery+0x265a/0x3de0 fs/bcachefs/recovery.c:936
  bch2_fs_start+0x37c/0x610 fs/bcachefs/super.c:1041
  bch2_fs_get_tree+0xdb7/0x17a0 fs/bcachefs/fs.c:2203
@@ -291,15 +102,61 @@ page last free pid 5321 tgid 5320 stack trace:
  do_mount fs/namespace.c:3900 [inline]
  __do_sys_mount fs/namespace.c:4111 [inline]
  __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4088
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f514938e90a
+RSP: 002b:00007f514a2b2e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f514a2b2ef0 RCX: 00007f514938e90a
+RDX: 00002000000000c0 RSI: 0000200000000000 RDI: 00007f514a2b2eb0
+RBP: 00002000000000c0 R08: 00007f514a2b2ef0 R09: 0000000000800000
+R10: 0000000000800000 R11: 0000000000000246 R12: 0000200000000000
+R13: 00007f514a2b2eb0 R14: 0000000000005903 R15: 0000200000000200
+ </TASK>
 
-Memory state around the buggy address:
- ffff8880409bd580: fa fb fc fc 00 00 fc fc 00 00 fc fc 00 00 fc fc
- ffff8880409bd600: 00 00 fc fc 00 00 fc fc 00 00 fc fc 00 00 fc fc
->ffff8880409bd680: 00 00 fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                         ^
- ffff8880409bd700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff8880409bd780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
+Showing all locks held in the system:
+1 lock held by khungtaskd/26:
+ #0: ffffffff8eb393e0 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:337 [inline]
+ #0: ffffffff8eb393e0 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:849 [inline]
+ #0: ffffffff8eb393e0 (rcu_read_lock){....}-{1:3}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6746
+2 locks held by getty/5106:
+ #0: ffff88801aef10a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
+ #1: ffffc9000019b2f0 (&ldata->atomic_read_lock){+.+.}-{4:4}, at: n_tty_read+0x616/0x1770 drivers/tty/n_tty.c:2211
+4 locks held by kworker/0:0/5372:
+2 locks held by kworker/0:5/5483:
+4 locks held by syz.0.40/5746:
+ #0: ffff888053680278 (&c->state_lock){+.+.}-{4:4}, at: bch2_fs_start+0x45/0x610 fs/bcachefs/super.c:1010
+ #1: ffff888053684378 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu_lock_acquire include/linux/srcu.h:164 [inline]
+ #1: ffff888053684378 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu_read_lock include/linux/srcu.h:256 [inline]
+ #1: ffff888053684378 (&c->btree_trans_barrier){.+.+}-{0:0}, at: __bch2_trans_get+0x7e4/0xd30 fs/bcachefs/btree_iter.c:3408
+ #2: ffff88804e5d4140 (bcachefs_btree){+.+.}-{0:0}, at: srcu_lock_acquire include/linux/srcu.h:164 [inline]
+ #2: ffff88804e5d4140 (bcachefs_btree){+.+.}-{0:0}, at: srcu_read_lock include/linux/srcu.h:256 [inline]
+ #2: ffff88804e5d4140 (bcachefs_btree){+.+.}-{0:0}, at: __bch2_trans_get+0x7e4/0xd30 fs/bcachefs/btree_iter.c:3408
+ #3: ffff8880536e1548 (&c->fsck_error_msgs_lock){+.+.}-{4:4}, at: __bch2_fsck_err+0x3b0/0x1420 fs/bcachefs/error.c:309
+1 lock held by syz.5.468/6650:
+2 locks held by syz.2.470/6654:
+2 locks held by syz.3.471/6656:
+2 locks held by syz.1.472/6658:
+2 locks held by syz.4.473/6660:
+
+=============================================
+
+NMI backtrace for cpu 0
+CPU: 0 UID: 0 PID: 26 Comm: khungtaskd Not tainted 6.14.0-rc7-syzkaller-00137-g5fc319360819 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+ nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:162 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:236 [inline]
+ watchdog+0x1058/0x10a0 kernel/hung_task.c:399
+ kthread+0x7a9/0x920 kernel/kthread.c:464
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
 
 
 ---
@@ -312,6 +169,10 @@ https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
 If the report is already addressed, let syzbot know by replying with:
 #syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
 If you want to overwrite report's subsystems, reply with:
 #syz set subsystems: new-subsystem
