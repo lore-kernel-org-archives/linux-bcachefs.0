@@ -1,89 +1,239 @@
-Received: from mail-24417.protonmail.ch (mail-24417.protonmail.ch [109.224.244.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 518EC1F3B9C
-	for <linux-bcachefs@vger.kernel.org>; Wed, 26 Mar 2025 17:05:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.224.244.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B0FC23E226
+	for <linux-bcachefs@vger.kernel.org>; Wed, 26 Mar 2025 18:42:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743008731; cv=none; b=amkVDv+UwF4Kzhc+cWY0F5+FxXDutsfW25tXbDcfkOpVjut0PYMSbOVwMtF7OfL9SxEQiorierSNDJ5lGOc7wfx8BfnQYmDnL6jthUzLBfvLPkzLOFrhDqO9bR1ZzOks81uBScguXx/GKYBjJno1Gq2q9Kp3du8ty0Xw8poOfNg=
+	t=1743014543; cv=none; b=DROWWCk7EJa/QtgZ+sWEX6HA7szpd8iSuJW+53/FgcKpuc+l7EyRf8oKPzX44h0BSn02brjBorR9LhEcWaeQwvFnnfYIgtyQPn3MEK1ncEfajLuoh6ObSs0r9qx1+1E8HG/FhIa58Ult8L02K7dobZ1dKMgXkvbQ69pZtyg5K+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743008731; c=relaxed/simple;
-	bh=EppiJDvO33gydWBIyW0r22bPtgqyv/3Q/ZpsaPqZP4o=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VkrMfOEHpkaWSbkCA/EQ7BheyzW1XInTY1F0ZnpabYqQkdmdhA2JHvYfjXrIM4Xmg2FswiQgzVXmVEOyzNS0DScPzXxTIXSwHCbqEgpmgzSUfDBxDYXs/fC89tjuf2sUHulEj5xep9dFoz4ewtuNuGFwJqbGoIinb78kf4/zqRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=mu0+NCgn; arc=none smtp.client-ip=109.224.244.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+	s=arc-20240116; t=1743014543; c=relaxed/simple;
+	bh=BEeWzFcMmpNgrb1iV0rUA2ppfK/qpOxilt/ccNq7njk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H9pwOorPE0CapW2Qrd+Ld7P/igXvaE/gX+zWJscgtRHdseqtWgsbsgZVOOQ2z8X0+gZgS1m1cDzDLbuRjtyNWSw2jFn/G8CEMBIwjTTCJWDmnhKx+NLcYiKLpQyjJqvHPptBHPvj2s7/wM2r8NNIqTJATqm/MzKzd4gBwaGVbnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=aDaEq4wq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3kqJHdvb; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=aDaEq4wq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3kqJHdvb; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="mu0+NCgn"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1743008721; x=1743267921;
-	bh=R14kZJ+myWn+UELCwLDdhoNgVFBwZU+x8ANJXxnhGJA=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
-	b=mu0+NCgn6SWsbz1ZrbBsfa7bFk7a9Vc6N7GH+DLVPy8htWimpxFtVKeWtboZuF7PF
-	 mM+u6rUyQHar/z4+UB3L558ROPXcROk0Um860UT09LHRFM9YL8jy6KC4i+DuE7tltC
-	 HUV+NJbj8KojIe4vG1x+lkCWBt8x4eN9z7tLUUQ3D6s5wNe3zf8HaZGQFBOlLLeNZ2
-	 Uy6o8YTb3lRx7xJpd65O49zBVW3GgG8hsiDbegXxgz6wXYIgAs36btsZosiHHUUvg9
-	 juJf+cSD3H4blRYM0PfLclG95cCGoEUMe39XVgchoK1lrJ5oHchJ67yUOpxlgNlpZn
-	 KcShDfCWz7Nwg==
-Date: Wed, 26 Mar 2025 17:05:17 +0000
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="aDaEq4wq";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3kqJHdvb";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="aDaEq4wq";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3kqJHdvb"
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 645B31F391;
+	Wed, 26 Mar 2025 18:42:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1743014539;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=B9qLH0qpM4x0RyvH9l3nS9+y/Bxb/6gbHoq6XOzakpA=;
+	b=aDaEq4wq9W0uSnAg92BHuG5G+GM2WB7iX3whuDAa46OK9fwbor3OSL5iWzP3L0czOsHr4x
+	IgTaTAL50wobvR46x0UjQizVXmGAXCqrH9iAihvaQg8pPoPliKd4WSyZhh96F+oPMZLOnu
+	v/RlBEtTDGeqDKZeio4JAQSFg8qM7BU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1743014539;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=B9qLH0qpM4x0RyvH9l3nS9+y/Bxb/6gbHoq6XOzakpA=;
+	b=3kqJHdvbGSK/a67Ulvl+95Sey+QWdMkCUsBlhkZj5egLN/xjROclsCZANmcv5oVd0jlcSo
+	K6uxe84DKP1Uc8DA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1743014539;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=B9qLH0qpM4x0RyvH9l3nS9+y/Bxb/6gbHoq6XOzakpA=;
+	b=aDaEq4wq9W0uSnAg92BHuG5G+GM2WB7iX3whuDAa46OK9fwbor3OSL5iWzP3L0czOsHr4x
+	IgTaTAL50wobvR46x0UjQizVXmGAXCqrH9iAihvaQg8pPoPliKd4WSyZhh96F+oPMZLOnu
+	v/RlBEtTDGeqDKZeio4JAQSFg8qM7BU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1743014539;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=B9qLH0qpM4x0RyvH9l3nS9+y/Bxb/6gbHoq6XOzakpA=;
+	b=3kqJHdvbGSK/a67Ulvl+95Sey+QWdMkCUsBlhkZj5egLN/xjROclsCZANmcv5oVd0jlcSo
+	K6uxe84DKP1Uc8DA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2748A13927;
+	Wed, 26 Mar 2025 18:42:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 4TwoCItK5Gf6GQAAD6G6ig
+	(envelope-from <pvorel@suse.cz>); Wed, 26 Mar 2025 18:42:19 +0000
+Date: Wed, 26 Mar 2025 19:42:08 +0100
+From: Petr Vorel <pvorel@suse.cz>
 To: Kent Overstreet <kent.overstreet@linux.dev>
-From: Roxana Nicolescu <nicolescu.roxana@protonmail.com>
-Cc: Alan Huang <mmpgouride@gmail.com>, Bharadwaj Raju <bharadwaj.raju777@gmail.com>, linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, skhan@linuxfoundation.org, linux-kernel-mentees@lists.linux.dev
-Subject: Re: [PATCH] bcachefs: replace deprecated strncpy() with strscpy()
-Message-ID: <ULxTq7SIKI8zZzvCtpIc1c4o41NFzejFbPTVQpNwBNjXjxVeJ-YOEShGUxw_uTLIYTiC0PEvER_FLWMDmD2SXc5NCpZ8wD-WxIA_RkpUzKs=@protonmail.com>
-In-Reply-To: <rl77wgelda45zddkutitervzkxd4iip4mxoheglxinqizf4owm@zmub5beyi6x3>
-References: <20250326094449.16473-1-nicolescu.roxana@protonmail.com> <5F3AB2BC-43DA-47A6-A07A-72540B327D11@gmail.com> <bmjvipermsvb454mdh5zmlmw4gv4oub5fgh4eowedlit75gqei@3or3va3e52ce> <MnHJR6KH9EcCqnLtdxKf3XYBSQQbvXWJafG28O2C2itnS_eETVFoDMfVvFva3dkLMZ-LPRWUhG2g_5HBY_lPZkWOYW2aOg_T4YWTrzXmVZ0=@protonmail.com> <wdagx2vwyv7s2t2tcndwmambwdhmoitvhmnzcopdl3xkfq6ct2@evmzpxnuhi4e> <CAPZ5DTF+Q_-10xF915wF3b3aUm5jqZepqoyivF+G4S6ONf_PcQ@mail.gmail.com> <vfszytfd66lqj54nmkymhnrdjodylb7l3alxblzixnlzv7kxom@4dji3xuvmknj> <A4568396-D1E1-4D93-851B-FA9CF9804E10@gmail.com> <rl77wgelda45zddkutitervzkxd4iip4mxoheglxinqizf4owm@zmub5beyi6x3>
-Feedback-ID: 136600343:user:proton
-X-Pm-Message-ID: 87eb72cbcdb410d097c9c6183d426c4ec761f885
+Cc: Andrea Cervesato <andrea.cervesato@suse.de>, ltp@lists.linux.it,
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	Li Wang <liwang@redhat.com>, Cyril Hrubis <chrubis@suse.cz>
+Subject: Re: [LTP] [PATCH] ioctl_ficlone03: fix capabilities on immutable
+ files
+Message-ID: <20250326184208.GA53635@pevik>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+References: <20250326-fix_ioctl_ficlone03_32bit_bcachefs-v1-1-554a0315ebf5@suse.com>
+ <20250326134749.GA45449@pevik>
+ <7ry7netcdqchal5pyoa5qdiris5klyxg6pqnz3qj6toodfgyuw@zder35svbr7v>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7ry7netcdqchal5pyoa5qdiris5klyxg6pqnz3qj6toodfgyuw@zder35svbr7v>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.50 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	HAS_REPLYTO(0.30)[pvorel@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	RCVD_TLS_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:email,suse.cz:replyto];
+	REPLYTO_EQ_FROM(0.00)[]
+X-Spam-Score: -3.50
+X-Spam-Flag: NO
 
-On Wednesday, March 26th, 2025 at 5:41 PM, Kent Overstreet <kent.overstreet=
-@linux.dev> wrote:
+Hi Kent,
 
-> On Thu, Mar 27, 2025 at 12:36:25AM +0800, Alan Huang wrote:
->=20
-> > On Mar 27, 2025, at 00:17, Kent Overstreet kent.overstreet@linux.dev wr=
-ote:
-> >=20
-> > > On Wed, Mar 26, 2025 at 09:19:06PM +0530, Bharadwaj Raju wrote:
-> > >=20
-> > > > On Wed, Mar 26, 2025 at 8:22=E2=80=AFPM Kent Overstreet
-> > > > kent.overstreet@linux.dev wrote:
-> > > >=20
-> > > > > Or better, a new helper: when we're copying to a fixed size buffe=
-r we
-> > > > > really want to zero out the rest of the buffer - we don't just wa=
-nt a
-> > > > > single terminating nul.
-> > > >=20
-> > > > I believe strscpy_pad does this?
-> > > >=20
-> > > > https://docs.kernel.org/core-api/kernel-api.html#c.strscpy_pad
-> > >=20
-> > > almost, we don't want the 'required nul termination'; that's a
-> > > requirement at least for disk labels where we need to preserve existi=
-ng
-> > > behaviour
-> >=20
-> > memcpy_and_pad :)
->=20
->=20
-> I'll take that patch :)
+> On Wed, Mar 26, 2025 at 02:47:49PM +0100, Petr Vorel wrote:
+> > Hi all,
 
-I'll send a follow-up patch with memcpy_and_pad with the pad_char=3D0. Even=
- though strscpy_pad does not require it, it does make the assumption that t=
-he destination buffer should be NUL-terminated, and it does some extra chec=
-ks we don't need, so memcpy_and_pad is the way to go.
-=20
-I'll also replace the memcpy calls in bch2_trans_log_msg() and __bch2_fs_lo=
-g_ms().  
+> > [ Cc Kent and other filesystem folks to be sure we don't hide a bug ]
+
+> I'm missing context here, and the original thread doesn't seem to be on
+> lore?
+
+I'm sorry, to put more info: this is an attempt to fix of LTP test
+ioctl_ficlone03.c [1], which is failing on 32 bit compatibility mode:
+
+# ./ioctl_ficlone03
+tst_test.c:1833: TINFO: === Testing on bcachefs ===
+..
+ioctl_ficlone03.c:74: TBROK: ioctl .. failed: ENOTTY (25)
+ioctl_ficlone03.c:89: TWARN: ioctl ..  failed: ENOTTY (25)
+ioctl_ficlone03.c:91: TWARN: ioctl ..  failed: ENOTTY (25)
+ioctl_ficlone03.c:98: TWARN: close(-1) failed: EBADF (9)
+
+Original thread of this is on LTP ML [2].
+
+Kind regards,
+Petr
+
+[1] https://github.com/linux-test-project/ltp/tree/master/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c
+[2] https://lore.kernel.org/ltp/20250326-fix_ioctl_ficlone03_32bit_bcachefs-v1-1-554a0315ebf5@suse.com/
+
+> > > From: Andrea Cervesato <andrea.cervesato@suse.com>
+
+> > > Make sure that capabilities requirements are satisfied when accessing
+> > > immutable files. On OpenSUSE Tumbleweed 32bit bcachefs fails with the
+> > > following error due to missing capabilities:
+
+> > > tst_test.c:1833: TINFO: === Testing on bcachefs ===
+> > > ..
+> > > ioctl_ficlone03.c:74: TBROK: ioctl .. failed: ENOTTY (25)
+> > > ioctl_ficlone03.c:89: TWARN: ioctl ..  failed: ENOTTY (25)
+> > > ioctl_ficlone03.c:91: TWARN: ioctl ..  failed: ENOTTY (25)
+> > > ioctl_ficlone03.c:98: TWARN: close(-1) failed: EBADF (9)
+
+> > > Introduce CAP_LINUX_IMMUTABLE capability to make sure that test won't
+> > > fail on other systems as well.
+
+> > > Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> > > ---
+> > >  testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c | 6 +++++-
+> > >  1 file changed, 5 insertions(+), 1 deletion(-)
+
+> > > diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c b/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c
+> > > index 6a9d270d9fb56f3a263f0aed976f62c4576e6a5f..6716423d9c96d9fc1d433f28e0ae1511b912ae2c 100644
+> > > --- a/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c
+> > > +++ b/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c
+> > > @@ -122,5 +122,9 @@ static struct tst_test test = {
+> > >  	.bufs = (struct tst_buffers []) {
+> > >  		{&clone_range, .size = sizeof(struct file_clone_range)},
+> > >  		{},
+> > > -	}
+> > > +	},
+> > > +	.caps = (struct tst_cap []) {
+> > > +		TST_CAP(TST_CAP_REQ, CAP_LINUX_IMMUTABLE),
+> > > +		{}
+> > > +	},
+
+> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+> > LGTM, obviously it is CAP_LINUX_IMMUTABLE related.
+
+> > This looks like fs/bcachefs/fs-ioctl.c
+
+> > static int bch2_inode_flags_set(struct btree_trans *trans,
+> > 				struct bch_inode_info *inode,
+> > 				struct bch_inode_unpacked *bi,
+> > 				void *p)
+> > {
+> > 	...
+> > 	if (((newflags ^ oldflags) & (BCH_INODE_append|BCH_INODE_immutable)) &&
+> > 	    !capable(CAP_LINUX_IMMUTABLE))
+> > 		return -EPERM;
+
+
+> > We don't test on vfat and exfat. If I try to do it fail the same way (bcachefs,
+> > fat, exfat and ocfs2 use custom handler for FAT_IOCTL_SET_ATTRIBUTES).
+
+> > I wonder why it does not fail for generic VFS fs/ioctl.c used by Btrfs and XFS:
+
+> > /*
+> >  * Generic function to check FS_IOC_FSSETXATTR/FS_IOC_SETFLAGS values and reject
+> >  * any invalid configurations.
+> >  *
+> >  * Note: must be called with inode lock held.
+> >  */
+> > static int fileattr_set_prepare(struct inode *inode,
+> > 			      const struct fileattr *old_ma,
+> > 			      struct fileattr *fa)
+> > {
+> > 	int err;
+
+> > 	/*
+> > 	 * The IMMUTABLE and APPEND_ONLY flags can only be changed by
+> > 	 * the relevant capability.
+> > 	 */
+> > 	if ((fa->flags ^ old_ma->flags) & (FS_APPEND_FL | FS_IMMUTABLE_FL) &&
+> > 	    !capable(CAP_LINUX_IMMUTABLE))
+> > 		return -EPERM;
+
+
+> > Kind regards,
+> > Petr
+
+> > >  };
+
+> > > ---
+> > > base-commit: 753bd13472d4be44eb70ff183b007fe9c5fffa07
+> > > change-id: 20250326-fix_ioctl_ficlone03_32bit_bcachefs-2ec15bd6c0c6
+
+> > > Best regards,
