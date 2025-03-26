@@ -1,239 +1,97 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from lamorak.hansenpartnership.com (lamorak.hansenpartnership.com [198.37.111.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B0FC23E226
-	for <linux-bcachefs@vger.kernel.org>; Wed, 26 Mar 2025 18:42:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D96B25D91C;
+	Wed, 26 Mar 2025 20:46:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.37.111.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743014543; cv=none; b=DROWWCk7EJa/QtgZ+sWEX6HA7szpd8iSuJW+53/FgcKpuc+l7EyRf8oKPzX44h0BSn02brjBorR9LhEcWaeQwvFnnfYIgtyQPn3MEK1ncEfajLuoh6ObSs0r9qx1+1E8HG/FhIa58Ult8L02K7dobZ1dKMgXkvbQ69pZtyg5K+o=
+	t=1743021986; cv=none; b=MFbio7fq77+g8/SXinEOp2uoL6l//5KUZTlBKycgpo3CuOHyDgpNqiZjNyaYjbh1zh8bWpJBdzEvbS4vEfcKsr/lVQiPkf4pSEqS8ZdFM6/Kt7AqSMPLGkuQLvMGAK7w+NagsT3BPet1REI4DyeZgUU5AMX2EShLtsWUHe6OA6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743014543; c=relaxed/simple;
-	bh=BEeWzFcMmpNgrb1iV0rUA2ppfK/qpOxilt/ccNq7njk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H9pwOorPE0CapW2Qrd+Ld7P/igXvaE/gX+zWJscgtRHdseqtWgsbsgZVOOQ2z8X0+gZgS1m1cDzDLbuRjtyNWSw2jFn/G8CEMBIwjTTCJWDmnhKx+NLcYiKLpQyjJqvHPptBHPvj2s7/wM2r8NNIqTJATqm/MzKzd4gBwaGVbnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=aDaEq4wq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3kqJHdvb; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=aDaEq4wq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3kqJHdvb; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1743021986; c=relaxed/simple;
+	bh=uPIdZzvUZ3Cb3h6qpZvceuKU3wTY/PbfMb1Oq2SX1+w=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=bdt5bZ4EODshRqrT7OhsDRd7ZbaU1aZj814dVw+HepoALszi/z//kKCo2YWSwwyT/QHQ0U0RTW1TTa1fRnrkT6R1JLIMzLTySw+Lko79ZzvGUg2E7BZdyWm5Q2boMnZ77pTyn85JAOf49SJn/sG/PO8YnP45VavTphTD2yq8Mmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=TVgI0SUa; arc=none smtp.client-ip=198.37.111.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="aDaEq4wq";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3kqJHdvb";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="aDaEq4wq";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3kqJHdvb"
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="TVgI0SUa"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1743021983;
+	bh=uPIdZzvUZ3Cb3h6qpZvceuKU3wTY/PbfMb1Oq2SX1+w=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=TVgI0SUatr+ieXOlq2Tq8wVq5Imja7W68y0snp77lb6JLAOa8h1vGkm27d6PoaNjZ
+	 24eRS6U2T5W8ro53JTBOmT1tsdBkhxnkTh6hHYbOSHsr1dXoK5PemwPByzUSbQMmv7
+	 5B+HrNOxw/vNAo+BW4xB97FfhdOQUfEA/EtZPSvs=
+Received: from [172.20.0.78] (unknown [99.209.85.25])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 645B31F391;
-	Wed, 26 Mar 2025 18:42:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1743014539;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=B9qLH0qpM4x0RyvH9l3nS9+y/Bxb/6gbHoq6XOzakpA=;
-	b=aDaEq4wq9W0uSnAg92BHuG5G+GM2WB7iX3whuDAa46OK9fwbor3OSL5iWzP3L0czOsHr4x
-	IgTaTAL50wobvR46x0UjQizVXmGAXCqrH9iAihvaQg8pPoPliKd4WSyZhh96F+oPMZLOnu
-	v/RlBEtTDGeqDKZeio4JAQSFg8qM7BU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1743014539;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=B9qLH0qpM4x0RyvH9l3nS9+y/Bxb/6gbHoq6XOzakpA=;
-	b=3kqJHdvbGSK/a67Ulvl+95Sey+QWdMkCUsBlhkZj5egLN/xjROclsCZANmcv5oVd0jlcSo
-	K6uxe84DKP1Uc8DA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1743014539;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=B9qLH0qpM4x0RyvH9l3nS9+y/Bxb/6gbHoq6XOzakpA=;
-	b=aDaEq4wq9W0uSnAg92BHuG5G+GM2WB7iX3whuDAa46OK9fwbor3OSL5iWzP3L0czOsHr4x
-	IgTaTAL50wobvR46x0UjQizVXmGAXCqrH9iAihvaQg8pPoPliKd4WSyZhh96F+oPMZLOnu
-	v/RlBEtTDGeqDKZeio4JAQSFg8qM7BU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1743014539;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=B9qLH0qpM4x0RyvH9l3nS9+y/Bxb/6gbHoq6XOzakpA=;
-	b=3kqJHdvbGSK/a67Ulvl+95Sey+QWdMkCUsBlhkZj5egLN/xjROclsCZANmcv5oVd0jlcSo
-	K6uxe84DKP1Uc8DA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2748A13927;
-	Wed, 26 Mar 2025 18:42:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 4TwoCItK5Gf6GQAAD6G6ig
-	(envelope-from <pvorel@suse.cz>); Wed, 26 Mar 2025 18:42:19 +0000
-Date: Wed, 26 Mar 2025 19:42:08 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Andrea Cervesato <andrea.cervesato@suse.de>, ltp@lists.linux.it,
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	Li Wang <liwang@redhat.com>, Cyril Hrubis <chrubis@suse.cz>
-Subject: Re: [LTP] [PATCH] ioctl_ficlone03: fix capabilities on immutable
- files
-Message-ID: <20250326184208.GA53635@pevik>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-References: <20250326-fix_ioctl_ficlone03_32bit_bcachefs-v1-1-554a0315ebf5@suse.com>
- <20250326134749.GA45449@pevik>
- <7ry7netcdqchal5pyoa5qdiris5klyxg6pqnz3qj6toodfgyuw@zder35svbr7v>
+	by lamorak.hansenpartnership.com (Postfix) with ESMTPSA id 991041C001A;
+	Wed, 26 Mar 2025 16:46:22 -0400 (EDT)
+Message-ID: <5b02fcfedcd006d202d38e2ec16b477919264408.camel@HansenPartnership.com>
+Subject: Re: [GIT PULL] bcachefs for 6.15, v2...
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>, Linus Torvalds
+	 <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-mm@kvack.org,  tech-board-discuss@lists.linux.dev
+Date: Wed, 26 Mar 2025 16:46:21 -0400
+In-Reply-To: <wg47lanrvfqkqdospive4b3ymc5snuhqdygcle33q3cxudw3xl@rkllblbmre4v>
+References: 
+	<wg47lanrvfqkqdospive4b3ymc5snuhqdygcle33q3cxudw3xl@rkllblbmre4v>
+Autocrypt: addr=James.Bottomley@HansenPartnership.com;
+ prefer-encrypt=mutual;
+ keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7ry7netcdqchal5pyoa5qdiris5klyxg6pqnz3qj6toodfgyuw@zder35svbr7v>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.50 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	HAS_REPLYTO(0.30)[pvorel@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_TLS_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:email,suse.cz:replyto];
-	REPLYTO_EQ_FROM(0.00)[]
-X-Spam-Score: -3.50
-X-Spam-Flag: NO
 
-Hi Kent,
+On Mon, 2025-03-24 at 14:56 -0400, Kent Overstreet wrote:
+> The following changes since commit
+> 1a2b74d0a2a46c219b25fdb0efcf9cd7f55cfe5e:
+>=20
+> =C2=A0 bcachefs: fix build on 32 bit in get_random_u64_below() (2025-03-1=
+4
+> 19:45:54 -0400)
+>=20
+> are available in the Git repository at:
+>=20
+> =C2=A0 git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-03-24
+>=20
+> for you to fetch changes up to
+> d8bdc8daac1d1b0a4efb1ecc69bef4eb4fc5e050:
+>=20
+> =C2=A0 bcachefs: Kill unnecessary bch2_dev_usage_read() (2025-03-24
+> 09:50:37 -0400)
+>=20
+> ----------------------------------------------------------------
+> bcachefs updates for 6.15
 
-> On Wed, Mar 26, 2025 at 02:47:49PM +0100, Petr Vorel wrote:
-> > Hi all,
+I note that the controversial block changes that got NAK'd but which
+you tried to put into your first pull request are now removed from this
+v2 pull request, thanks.
 
-> > [ Cc Kent and other filesystem folks to be sure we don't hide a bug ]
+I also thought it was time to state more formally what's been
+circulating around a few maintainers as shared knowledge: any tree you
+send a pull request for that includes changes outside of bcachefs won't
+be accepted by Linus.
 
-> I'm missing context here, and the original thread doesn't seem to be on
-> lore?
+Regards,
 
-I'm sorry, to put more info: this is an attempt to fix of LTP test
-ioctl_ficlone03.c [1], which is failing on 32 bit compatibility mode:
+James Bottomley
 
-# ./ioctl_ficlone03
-tst_test.c:1833: TINFO: === Testing on bcachefs ===
-..
-ioctl_ficlone03.c:74: TBROK: ioctl .. failed: ENOTTY (25)
-ioctl_ficlone03.c:89: TWARN: ioctl ..  failed: ENOTTY (25)
-ioctl_ficlone03.c:91: TWARN: ioctl ..  failed: ENOTTY (25)
-ioctl_ficlone03.c:98: TWARN: close(-1) failed: EBADF (9)
-
-Original thread of this is on LTP ML [2].
-
-Kind regards,
-Petr
-
-[1] https://github.com/linux-test-project/ltp/tree/master/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c
-[2] https://lore.kernel.org/ltp/20250326-fix_ioctl_ficlone03_32bit_bcachefs-v1-1-554a0315ebf5@suse.com/
-
-> > > From: Andrea Cervesato <andrea.cervesato@suse.com>
-
-> > > Make sure that capabilities requirements are satisfied when accessing
-> > > immutable files. On OpenSUSE Tumbleweed 32bit bcachefs fails with the
-> > > following error due to missing capabilities:
-
-> > > tst_test.c:1833: TINFO: === Testing on bcachefs ===
-> > > ..
-> > > ioctl_ficlone03.c:74: TBROK: ioctl .. failed: ENOTTY (25)
-> > > ioctl_ficlone03.c:89: TWARN: ioctl ..  failed: ENOTTY (25)
-> > > ioctl_ficlone03.c:91: TWARN: ioctl ..  failed: ENOTTY (25)
-> > > ioctl_ficlone03.c:98: TWARN: close(-1) failed: EBADF (9)
-
-> > > Introduce CAP_LINUX_IMMUTABLE capability to make sure that test won't
-> > > fail on other systems as well.
-
-> > > Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> > > ---
-> > >  testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c | 6 +++++-
-> > >  1 file changed, 5 insertions(+), 1 deletion(-)
-
-> > > diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c b/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c
-> > > index 6a9d270d9fb56f3a263f0aed976f62c4576e6a5f..6716423d9c96d9fc1d433f28e0ae1511b912ae2c 100644
-> > > --- a/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c
-> > > +++ b/testcases/kernel/syscalls/ioctl/ioctl_ficlone03.c
-> > > @@ -122,5 +122,9 @@ static struct tst_test test = {
-> > >  	.bufs = (struct tst_buffers []) {
-> > >  		{&clone_range, .size = sizeof(struct file_clone_range)},
-> > >  		{},
-> > > -	}
-> > > +	},
-> > > +	.caps = (struct tst_cap []) {
-> > > +		TST_CAP(TST_CAP_REQ, CAP_LINUX_IMMUTABLE),
-> > > +		{}
-> > > +	},
-
-> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-> > LGTM, obviously it is CAP_LINUX_IMMUTABLE related.
-
-> > This looks like fs/bcachefs/fs-ioctl.c
-
-> > static int bch2_inode_flags_set(struct btree_trans *trans,
-> > 				struct bch_inode_info *inode,
-> > 				struct bch_inode_unpacked *bi,
-> > 				void *p)
-> > {
-> > 	...
-> > 	if (((newflags ^ oldflags) & (BCH_INODE_append|BCH_INODE_immutable)) &&
-> > 	    !capable(CAP_LINUX_IMMUTABLE))
-> > 		return -EPERM;
-
-
-> > We don't test on vfat and exfat. If I try to do it fail the same way (bcachefs,
-> > fat, exfat and ocfs2 use custom handler for FAT_IOCTL_SET_ATTRIBUTES).
-
-> > I wonder why it does not fail for generic VFS fs/ioctl.c used by Btrfs and XFS:
-
-> > /*
-> >  * Generic function to check FS_IOC_FSSETXATTR/FS_IOC_SETFLAGS values and reject
-> >  * any invalid configurations.
-> >  *
-> >  * Note: must be called with inode lock held.
-> >  */
-> > static int fileattr_set_prepare(struct inode *inode,
-> > 			      const struct fileattr *old_ma,
-> > 			      struct fileattr *fa)
-> > {
-> > 	int err;
-
-> > 	/*
-> > 	 * The IMMUTABLE and APPEND_ONLY flags can only be changed by
-> > 	 * the relevant capability.
-> > 	 */
-> > 	if ((fa->flags ^ old_ma->flags) & (FS_APPEND_FL | FS_IMMUTABLE_FL) &&
-> > 	    !capable(CAP_LINUX_IMMUTABLE))
-> > 		return -EPERM;
-
-
-> > Kind regards,
-> > Petr
-
-> > >  };
-
-> > > ---
-> > > base-commit: 753bd13472d4be44eb70ff183b007fe9c5fffa07
-> > > change-id: 20250326-fix_ioctl_ficlone03_32bit_bcachefs-2ec15bd6c0c6
-
-> > > Best regards,
