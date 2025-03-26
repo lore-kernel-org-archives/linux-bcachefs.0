@@ -1,97 +1,175 @@
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D66C1F30DE
-	for <linux-bcachefs@vger.kernel.org>; Wed, 26 Mar 2025 14:48:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 825DB14A4C6;
+	Wed, 26 Mar 2025 15:26:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743000498; cv=none; b=tD/LfLWtEshjydWS3tPcGiukINapW6MT2C0hx+qBn00ZK53o7emUt7WiKCCe8ei4ooefyekfRjKQLWdrrEPwsmJHoGJ8/wFIJT9rDvMcpQN9AW97MohF5j53yMDHQMxytCNlMWDRohopWo3GAwucJKXHccMZa2nCDled4HXh9DA=
+	t=1743002781; cv=none; b=g686PwssVT+RJuTVUevI+LpmA+6BdPL82pTq01fZg11TYhJtSE1th3ocgk0MYseIixa+On+oy0ZIxZLkjJE7cb+G9n0q5bSvguFrNCeWk1RP0y8SgviNGhoLNy8T2opQ/Q+Ub1fd3OiPdbpkMYxCK7QTpl8T/sFbqZsjdzVzuNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743000498; c=relaxed/simple;
-	bh=P/YGDyAuI5cdqgreFYOTvG0r4vimRMchc6eat/dWEEA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=twnu8E3p9HvZXquNY0RCMOHsx8hU1APiMSe/RJu84hQ+Lb5KFxL5sXeadkvgfhMc1l8nCNINlMg4QvPN1az0WCDtgJwRdmIkvCnm3fl+fgJIBSmHXo2D0hFnl18EGIqk5ehjIy1RimOlzvXCusToYMoyu4fE4UxxRwxjclEV+Dw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AsUx8/vw; arc=none smtp.client-ip=95.215.58.173
+	s=arc-20240116; t=1743002781; c=relaxed/simple;
+	bh=KcLx+LUsuQ+1FVIso4P5u4UhRImurn8WgvxTB/HPrz8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Vyh0ZJ5lTl9Hx+3iqDQMGl/N/vbclolNcf0A85j0pOCWT7b4ET54u2U8OLIC+EctIkX3s+rsdVscNZOyz7WvCUb9v1BM1rvDpRBBCyQANkzW++7TsHNF9aYm1uOZFLfDpcHAzyWljBuqzWwJpDgnmVbBcSS+pUDiZZcTljtdMV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fMKrbAZ9; arc=none smtp.client-ip=91.218.175.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AsUx8/vw"
-Date: Wed, 26 Mar 2025 10:47:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1743000484;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xeUr8pi1jeRPBjVWF8zaOS4IrJNw7MAtgeOuC7rRdTo=;
-	b=AsUx8/vwPjbbb4SPcOLAD1Oyq5bVqDikcrp620Zrw4gKD3QGFetMyFo6CRasIMl3bXHQz6
-	TrN5ndV4i5L7PFkQ3iDhcySCDh+O5JQNe7wrH8hdIyO3oSlNRL4aUaYEM7iBxyQDHk78/3
-	eLaBuqebdZPxWlf1gTkU9Ze1r5ohBNc=
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fMKrbAZ9"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1743002776;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=EZLo1jQQXln+Xf5Ba7tBgf55edk8Etnb6mTfw0jd+O0=;
+	b=fMKrbAZ95CgFQx1idRLbepXmVc+5F+vVd/5nGzLidOuej04JwpEj0X7PHCYyIkPSakfpvt
+	f1FAlskEJ+PoDpuNcerDcjYSN52EF2JAGwbuiHyVCiwAxmxLkVKMU2n8XUcy9xrd9jxj6b
+	SEIB62cQDziFrnhiJRWaGCgve8x50Bw=
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Roxana Nicolescu <nicolescu.roxana@protonmail.com>
-Cc: Alan Huang <mmpgouride@gmail.com>, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, skhan@linuxfoundation.org, linux-kernel-mentees@lists.linux.dev
-Subject: Re: [PATCH] bcachefs: replace deprecated strncpy() with strscpy()
-Message-ID: <wdagx2vwyv7s2t2tcndwmambwdhmoitvhmnzcopdl3xkfq6ct2@evmzpxnuhi4e>
-References: <20250326094449.16473-1-nicolescu.roxana@protonmail.com>
- <5F3AB2BC-43DA-47A6-A07A-72540B327D11@gmail.com>
- <bmjvipermsvb454mdh5zmlmw4gv4oub5fgh4eowedlit75gqei@3or3va3e52ce>
- <MnHJR6KH9EcCqnLtdxKf3XYBSQQbvXWJafG28O2C2itnS_eETVFoDMfVvFva3dkLMZ-LPRWUhG2g_5HBY_lPZkWOYW2aOg_T4YWTrzXmVZ0=@protonmail.com>
+To: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Kuan-Wei Chiu <visitorckw@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] lib/sort.c: Add _nonatomic() variants with cond_resched()
+Date: Wed, 26 Mar 2025 11:26:06 -0400
+Message-ID: <20250326152606.2594920-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <MnHJR6KH9EcCqnLtdxKf3XYBSQQbvXWJafG28O2C2itnS_eETVFoDMfVvFva3dkLMZ-LPRWUhG2g_5HBY_lPZkWOYW2aOg_T4YWTrzXmVZ0=@protonmail.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Wed, Mar 26, 2025 at 02:40:22PM +0000, Roxana Nicolescu wrote:
-> On Wednesday, March 26th, 2025 at 1:19 PM, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> 
-> > On Wed, Mar 26, 2025 at 06:02:31PM +0800, Alan Huang wrote:
-> > 
-> > > On Mar 26, 2025, at 17:44, Roxana Nicolescu nicolescu.roxana@protonmail.com wrote:
-> > > 
-> > > > strncpy() is deprecated for NUL-terminated destination buffers. Use
-> > > > strscpy() instead.
-> > > > 
-> > > > Link: https://github.com/KSPP/linux/issues/90
-> > > > Signed-off-by: Roxana Nicolescu nicolescu.roxana@protonmail.com
-> > > > ---
-> > > > fs/bcachefs/btree_trans_commit.c | 2 +-
-> > > > 1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/fs/bcachefs/btree_trans_commit.c b/fs/bcachefs/btree_trans_commit.c
-> > > > index c4f524b2ca9a..7ab25b425d11 100644
-> > > > --- a/fs/bcachefs/btree_trans_commit.c
-> > > > +++ b/fs/bcachefs/btree_trans_commit.c
-> > > > @@ -364,7 +364,7 @@ static noinline void journal_transaction_name(struct btree_trans *trans)
-> > > > struct jset_entry_log *l =
-> > > > container_of(entry, struct jset_entry_log, entry);
-> > > > 
-> > > > - strncpy(l->d, trans->fn, JSET_ENTRY_LOG_U64s * sizeof(u64));
-> > > > + strscpy(l->d, trans->fn, JSET_ENTRY_LOG_U64s * sizeof(u64));
-> > > 
-> > > The last time I asked Kent about this line, he didn’t want this.
-> > 
-> > 
-> > Yes, the destination buffer isn't required to be nul terminated.
-> > 
-> > But it seems we should add a comment explaining that :)
-> 
-> I should have checked the mailing list before, but I will keep this in mind for my next contributions.
-> I wonder if we should use memcpy in this case. This is also recommended by the security team here https://github.com/KSPP/linux/issues/90
-> This will also prevent other people from trying to send a similar patch in the future.
+Andrew - if you're ok with this patch I'd like to get it in soon as a
+bugfix, I've been getting quite a few reports on this one.
 
-Or better, a new helper: when we're copying to a fixed size buffer we
-really want to zero out the rest of the buffer - we don't just want a
-single terminating nul.
+I don't much care for the naming though, thoughts there?
 
-This has come up in other places in bcachefs, see __bch2_fs_log_msg() in
-btree_update.c, and I would imagine the code for updating superblock
-labels as well.
+-- >8 --
+
+bcachefs calls sort() during recovery to sort all keys it found in the
+journal, and this may be very large - gigabytes on large machines.
+
+This has been causing "task blocked" warnings, so needs a
+cond_resched().
+
+Cc: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+---
+ include/linux/sort.h | 11 +++++++++++
+ lib/sort.c           | 46 +++++++++++++++++++++++++++++++++++++++-----
+ 2 files changed, 52 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/sort.h b/include/linux/sort.h
+index e163287ac6c1..8e5603b10941 100644
+--- a/include/linux/sort.h
++++ b/include/linux/sort.h
+@@ -13,4 +13,15 @@ void sort(void *base, size_t num, size_t size,
+ 	  cmp_func_t cmp_func,
+ 	  swap_func_t swap_func);
+ 
++/* Versions that periodically call cond_resched(): */
++
++void sort_r_nonatomic(void *base, size_t num, size_t size,
++		      cmp_r_func_t cmp_func,
++		      swap_r_func_t swap_func,
++		      const void *priv);
++
++void sort_nonatomic(void *base, size_t num, size_t size,
++		    cmp_func_t cmp_func,
++		    swap_func_t swap_func);
++
+ #endif
+diff --git a/lib/sort.c b/lib/sort.c
+index 8e73dc55476b..60b51dac00ec 100644
+--- a/lib/sort.c
++++ b/lib/sort.c
+@@ -186,6 +186,8 @@ static size_t parent(size_t i, unsigned int lsbit, size_t size)
+ 	return i / 2;
+ }
+ 
++#include <linux/sched.h>
++
+ /**
+  * sort_r - sort an array of elements
+  * @base: pointer to data to sort
+@@ -212,10 +214,11 @@ static size_t parent(size_t i, unsigned int lsbit, size_t size)
+  * O(n*n) worst-case behavior and extra memory requirements that make
+  * it less suitable for kernel use.
+  */
+-void sort_r(void *base, size_t num, size_t size,
+-	    cmp_r_func_t cmp_func,
+-	    swap_r_func_t swap_func,
+-	    const void *priv)
++static void __sort_r(void *base, size_t num, size_t size,
++		     cmp_r_func_t cmp_func,
++		     swap_r_func_t swap_func,
++		     const void *priv,
++		     bool may_schedule)
+ {
+ 	/* pre-scale counters for performance */
+ 	size_t n = num * size, a = (num/2) * size;
+@@ -286,6 +289,9 @@ void sort_r(void *base, size_t num, size_t size,
+ 			b = parent(b, lsbit, size);
+ 			do_swap(base + b, base + c, size, swap_func, priv);
+ 		}
++
++		if (may_schedule)
++			cond_resched();
+ 	}
+ 
+ 	n -= size;
+@@ -293,8 +299,25 @@ void sort_r(void *base, size_t num, size_t size,
+ 	if (n == size * 2 && do_cmp(base, base + size, cmp_func, priv) > 0)
+ 		do_swap(base, base + size, size, swap_func, priv);
+ }
++
++void sort_r(void *base, size_t num, size_t size,
++	    cmp_r_func_t cmp_func,
++	    swap_r_func_t swap_func,
++	    const void *priv)
++{
++	__sort_r(base, num, size, cmp_func, swap_func, priv, false);
++}
+ EXPORT_SYMBOL(sort_r);
+ 
++void sort_r_nonatomic(void *base, size_t num, size_t size,
++		      cmp_r_func_t cmp_func,
++		      swap_r_func_t swap_func,
++		      const void *priv)
++{
++	__sort_r(base, num, size, cmp_func, swap_func, priv, true);
++}
++EXPORT_SYMBOL(sort_r_nonatomic);
++
+ void sort(void *base, size_t num, size_t size,
+ 	  cmp_func_t cmp_func,
+ 	  swap_func_t swap_func)
+@@ -304,6 +327,19 @@ void sort(void *base, size_t num, size_t size,
+ 		.swap = swap_func,
+ 	};
+ 
+-	return sort_r(base, num, size, _CMP_WRAPPER, SWAP_WRAPPER, &w);
++	return __sort_r(base, num, size, _CMP_WRAPPER, SWAP_WRAPPER, &w, false);
+ }
+ EXPORT_SYMBOL(sort);
++
++void sort_nonatomic(void *base, size_t num, size_t size,
++		    cmp_func_t cmp_func,
++		    swap_func_t swap_func)
++{
++	struct wrapper w = {
++		.cmp  = cmp_func,
++		.swap = swap_func,
++	};
++
++	return __sort_r(base, num, size, _CMP_WRAPPER, SWAP_WRAPPER, &w, true);
++}
++EXPORT_SYMBOL(sort_nonatomic);
+-- 
+2.49.0
+
