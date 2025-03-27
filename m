@@ -1,150 +1,81 @@
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from wiki.archlinuxcn.org (wiki.archlinuxcn.org [104.245.9.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A8CA10F2
-	for <linux-bcachefs@vger.kernel.org>; Thu, 27 Mar 2025 00:49:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6C2C1E505
+	for <linux-bcachefs@vger.kernel.org>; Thu, 27 Mar 2025 06:38:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.245.9.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743036564; cv=none; b=QkQkSrx3f2i0iwiV6CbgVgMlYe6USGAwjU928JVVX7vPTjsH7yPSpiBtvG3EWKPxjlQrkg/MqRA2JmEVGp9HXy65XXv2p5CpTAwFvh+BBvxEd5wRBy+/k6Scsw7fe/3hrHmFmUfL/Q8c4tbkfE6Ok1ReErL0ablRwXPoG/ArkII=
+	t=1743057507; cv=none; b=F7/ETsjtrm7ycdXSFZY1aB24wENUUnFlVL/i/8eznpYz++2aU3UxkYh+zckqq7W0xu48G4QtiY+CThcQLTHYTIatM1QlxaOiX0pgy74Ky4mds5+pvLCArOP97KJBUTYN0Ak1FCQ2M6Z0fMZd8mXylEoNhQHBoeC65xgQ6mBVc3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743036564; c=relaxed/simple;
-	bh=vas3lG2zNno1SckSd4WbKbyu5O+A37fZcy1pbm9gH3I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=evo0u3rVEx5cWA/RpfTS/oVnbS0fD5yVDRBmRZoSKVMYJMIhwc/eZUEyJSFwxGPTkHQm9/fiYRCU7kqXhAGUB9A8wPf1DoSQayexASdmW2/UwTCv/l1grK7mR+DoyrhTAfg+ftrayfGtM0aqoqYQZpxC9A0DIv1btzo/0oUihe4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=YzxnSyKm; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+	s=arc-20240116; t=1743057507; c=relaxed/simple;
+	bh=45iEoHkGo6ZGTU/yB0Fbf8YEZF6HsXio7J43aDc3ftc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JphHrq5lKgnttcTYR14AXK6NBkyKSmbZ//coVKfyvSQt5wYoLU7xLUATtVy/Qskibpm0CjPintfUAMFqWDVr6bP33aDfd2FBsmD1DsB89nYmXLcSj2ukQRmMS67d4tlvkH+kcw//EyhfhpIuEokO+w9I8V3dGFLvPxxshDD1zZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org; spf=pass smtp.mailfrom=archlinuxcn.org; dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b=MSDvU+pH; arc=none smtp.client-ip=104.245.9.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=archlinuxcn.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="YzxnSyKm"
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-227aaa82fafso9924735ad.2
-        for <linux-bcachefs@vger.kernel.org>; Wed, 26 Mar 2025 17:49:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1743036562; x=1743641362; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=U3ibaiMuu+COMl2CleDE3M0U3/NtyoxWAeWllDuQocU=;
-        b=YzxnSyKmdSaV1poyNBEyI6UiHNoF7ftIb+lsNYesV3skiZ3zuhYmLnWlcrDmQSXNiJ
-         Nz5kxCHlJ+ptIm99W8NuZsyJRMvFa08mDNdtmxCfosrC12NW01t5QGyW5jUlBldkobrR
-         Pgcajrn+HP4G5P9pLrEFQKGaBzYxiqHwiuq7lshgjn3naALa6krCuwaIH9Kgx3WIUmGf
-         HbqULy03IuRQtg7t+ehBdOZ1+jeYeXTEXjw5Eh3XOcCq0ZPcs/HePUHqjRwe/utKY7nc
-         ltieODn9avUyZRgp3EYFxt/zN5t10cSom5Vf7Ch5FmhaJTdAkd8mhxcFhUJtKObf09eL
-         xAVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743036562; x=1743641362;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U3ibaiMuu+COMl2CleDE3M0U3/NtyoxWAeWllDuQocU=;
-        b=NPGYlAiyq8a6KRDHS0Z2B1/Z4Mv5N7nduzlszm33/DHgYBdyhyCVmPZq62q+MTw8k7
-         a6TdeTl2nlShLwaQdjSMkzEtzuxfMRcxe4vYPphw8cHI++GjTr3GuNFM79H8VvGjKGsI
-         gqApze2Hr/gJtgEqJpefbT+T4Be8qvkar7AIL2NbgpHTrqrjUvqJ+/K3ueI0qHazWru9
-         xDE2itG+JPvLT55/00OegmI445E/dLLfJzwnILcMmhPcTRTjycuWJ1JuNahKDhWCrnM6
-         IK1huuns5cgVRDL3uWZLdumwEoqj7R84VsviGlhloqlr0S/PStL2AgOcC2jgpUf06Z3S
-         Vd6A==
-X-Forwarded-Encrypted: i=1; AJvYcCUbva5y/A98bqVrPLdXnSuv1ahBZP/eI1pLUHaVmS0jHJEFQOF5x3mJFEUtVqxs60XmXqfphFgWnlImmpThUA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyWX9sMxt6K9A8jhv5l/cIZCcROQF98QsHXtTdLDit90JxAcdFF
-	IAhCUfXWqwdf9MOMieG+cQzvU30sG6wquuCtFO6/1Iuc590Ob9VHXSUOz//QVnE=
-X-Gm-Gg: ASbGncv6JWoScbKdB+eVKWSHnaTSPMinT0rC93VlSIWwOdEzdVqhEwV6rt0pedhyvwf
-	WrNam7dUkOGA5iQHAFdJit1a36bQ7W9gDqWGdyUuR61EQZwex1ztbAevQ+LL0jX5t24xG6lFW34
-	0n8YdBK4VEhby0+NhaUZhkiJcp67SAj7Mu2Mz+fAu5GT/ezYP9ujgQlj2mjdQ442gyZM2jhXpyD
-	2+AaD1mhuxj1t2TsKtmRlNzmO1ktPfqM3emiFRvQDEvofzQDGL89/0Nicc6J781WhkEmFUl4LSF
-	0GeXZWxoFmqHbJEQXCpaHrh9i1IcsyFdROCIuTDernlDQzIX8ibuxsPm753fzJ2/iNdtXJdd2Ol
-	cA7Kcq6w=
-X-Google-Smtp-Source: AGHT+IFnAErnvRw6w6zYA8RwNXoDN/pZhTmE2gfdgW366+JFnzo8IFmWZzTDFcSClOKbvjQXE59Ogg==
-X-Received: by 2002:a05:6a20:2d20:b0:1f0:e42e:fb1d with SMTP id adf61e73a8af0-1fea301bd45mr3128802637.36.1743036562470;
-        Wed, 26 Mar 2025 17:49:22 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-60-96.pa.nsw.optusnet.com.au. [49.181.60.96])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7390611c950sm13311890b3a.104.2025.03.26.17.49.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Mar 2025 17:49:21 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.98)
-	(envelope-from <david@fromorbit.com>)
-	id 1txbQt-00000000kyo-0I5r;
-	Thu, 27 Mar 2025 11:49:19 +1100
-Date: Thu, 27 Mar 2025 11:49:19 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Petr Vorel <pvorel@suse.cz>
-Cc: Andrea Cervesato <andrea.cervesato@suse.de>, ltp@lists.linux.it,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	Li Wang <liwang@redhat.com>, Cyril Hrubis <chrubis@suse.cz>
-Subject: Re: [LTP] [PATCH] ioctl_ficlone03: fix capabilities on immutable
- files
-Message-ID: <Z-Sgj_XOVar8myLw@dread.disaster.area>
-References: <20250326-fix_ioctl_ficlone03_32bit_bcachefs-v1-1-554a0315ebf5@suse.com>
- <20250326134749.GA45449@pevik>
+	dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b="MSDvU+pH"
+DKIM-Signature: a=rsa-sha256; bh=3hUWt6c5N7wTqe0+1t8J/SwyoG8EMRPe5JhX4iPVzNg=;
+ c=relaxed/relaxed; d=archlinuxcn.org;
+ h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:Message-Id:Message-Id:References:Autocrypt:Openpgp;
+ i=@archlinuxcn.org; s=default; t=1743057478; v=1; x=1743489478;
+ b=MSDvU+pHGjdnFCy9AofjVplEPXPJfJX7jnuOICJW7pHrP18FpY/bMMZd593j8s7e2inEoKUl
+ l3O7i/XTl9NOaeGpbtYZcRbYqVIERD8LXlGEi091IMGfEp/qfq3CnEBeHniTilxYzR5au4RGBOw
+ fuYZ8UGTIodpXUYjHWBP3JucnR+VhXLfThZhiDi89xOH+TvHAWh4XpK1TcWv0wfXI+PBKiJFozy
+ 8A2cfvBcBFtDv1DxbHWXFwOdAM2FcU3/bc09v5hq1JIt0GCArWSG1lBIptQpkn5E5xdpPGNDx43
+ 8fdEOdKYZht5JNmdUTY7D/MjP4PEiQirBQ3lp/7RnHphw==
+Received: by wiki.archlinuxcn.org (envelope-sender
+ <integral@archlinuxcn.org>) with ESMTPS id a9a87ac2; Thu, 27 Mar 2025
+ 14:37:58 +0800
+From: Integral <integral@archlinuxcn.org>
+To: kent.overstreet@gmail.com,
+	kent.overstreet@linux.dev,
+	lihongbo22@huawei.com
+Cc: mmpgouride@gmail.com,
+	linux-bcachefs@vger.kernel.org,
+	integral@archlinuxcn.org
+Subject: [PATCH] [PATCH resend] bcachefs-tools: make targets of subvolume create/delete required
+Date: Thu, 27 Mar 2025 14:37:19 +0800
+Message-ID: <20250327063718.211541-2-integral@archlinuxcn.org>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250326134749.GA45449@pevik>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 26, 2025 at 02:47:49PM +0100, Petr Vorel wrote:
-> Hi all,
-> 
-> [ Cc Kent and other filesystem folks to be sure we don't hide a bug ]
-> 
-> > From: Andrea Cervesato <andrea.cervesato@suse.com>
-> 
-> > Make sure that capabilities requirements are satisfied when accessing
-> > immutable files. On OpenSUSE Tumbleweed 32bit bcachefs fails with the
-> > following error due to missing capabilities:
-> 
-> > tst_test.c:1833: TINFO: === Testing on bcachefs ===
-> > ..
-> > ioctl_ficlone03.c:74: TBROK: ioctl .. failed: ENOTTY (25)
-> > ioctl_ficlone03.c:89: TWARN: ioctl ..  failed: ENOTTY (25)
-> > ioctl_ficlone03.c:91: TWARN: ioctl ..  failed: ENOTTY (25)
-> > ioctl_ficlone03.c:98: TWARN: close(-1) failed: EBADF (9)
+Currently, when no targets are provided for "bcachefs subvolume create" or
+"bcachefs subvolume delete", it will exit silently with code 0. Make targets
+(arguments) required to solve this problem.
 
-None of these are -EPERM, so how is a missing capability that
-results in -EPERM being returned cause -ENOTTY or -EBADF failures?
+This patch solves issue https://github.com/koverstreet/bcachefs/issues/766.
 
-ohhhhh. ENOTTY is a result of a kernel side compat ioctl handling bug
-w/ bcachefs.
+Signed-off-by: Integral <integral@archlinuxcn.org>
+---
+ src/commands/subvolume.rs | 2 ++
+ 1 file changed, 2 insertions(+)
 
-bcachefs doesn't implement ->fileattr_set().
-
-sys_compat_ioctl() does:
-
-        case FS_IOC32_GETFLAGS:
-        case FS_IOC32_SETFLAGS:
-                cmd = (cmd == FS_IOC32_GETFLAGS) ?
-                        FS_IOC_GETFLAGS : FS_IOC_SETFLAGS;
-
-and then calls do_vfs_ioctl().
-
-This then ends up in vfs_fileattr_set(), which does:
-
-	if (!inode->i_op->fileattr_set)
-                return -ENOIOCTLCMD;
-
-which means sys_compat_ioctl() then falls back to calling
-->compat_ioctl().
-
-However, cmd has been overwritten to FS_IOC_SETFLAGS and
-bch2_compat_fs_ioctl() looks for FS_IOC32_SETFLAGS, so it returns
--ENOIOCTLCMD as it doesn't handle the ioctl command passed in.
-
-sys_compat_ioctl() then converts the -ENOIOCTLCMD to -ENOTTY, and
-there's the error being reported.
-
-OK, this is a bcachefs compat ioctl handling bug, triggered by not
-implementing ->fileattr_set and implementing FS_IOC_SETFLAGS
-directly itself via ->unlocked_ioctl.
-
-Yeah, fixes to bcachefs needed here, not LTP.
-
-> I wonder why it does not fail for generic VFS fs/ioctl.c used by Btrfs and XFS:
-
-Because they implement ->fileattr_set() and so all the compat ioctl
-FS_IOC32_SETFLAGS handling works as expected.
-
--Dave.
+diff --git a/src/commands/subvolume.rs b/src/commands/subvolume.rs
+index 7df20819..6f5f2f2b 100644
+--- a/src/commands/subvolume.rs
++++ b/src/commands/subvolume.rs
+@@ -18,12 +18,14 @@ enum Subcommands {
+     #[command(visible_aliases = ["new"])]
+     Create {
+         /// Paths
++        #[arg(required = true)]
+         targets: Vec<PathBuf>,
+     },
+ 
+     #[command(visible_aliases = ["del"])]
+     Delete {
+         /// Path
++        #[arg(required = true)]
+         targets: Vec<PathBuf>,
+     },
+ 
 -- 
-Dave Chinner
-david@fromorbit.com
+2.49.0
+
