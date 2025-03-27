@@ -1,67 +1,63 @@
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D599717A31E
-	for <linux-bcachefs@vger.kernel.org>; Thu, 27 Mar 2025 19:47:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B93671D7E52;
+	Thu, 27 Mar 2025 20:48:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743104852; cv=none; b=eNPaNuz2Rb7DW6JXj5T3H4VAOuUis42+1dVpOTRF5A4HYRiY9N9GVoBcBrlAPefODC80l817Ce9/qM1bxHqMknDzPb0PTUOx+1DBIb5EqdH0M0leW60eSUhBykGNAEQqsPMUDeP2EzIrWqg/x46AOdihSLA1sF1XuiPi4dMuexE=
+	t=1743108495; cv=none; b=P+UPotqWZPHoCGYFd2rhKKq74BQCa8IYaRo6Op7U0OG1ZQeD1VCcei9Xatc01qj8faVdSuRBeEao4Duej0SsUdoP9KWxas1VI9uO+LB6ZYDJqP4UzSTHy6MKHMm9TEP4bO1BNWKdf+nOLUAQqAg06EGcylvpDuwGJImQwxU8JYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743104852; c=relaxed/simple;
-	bh=JlC2gHCw+8MGXjZ6W/LP52zt1zrM6G+eZzEKbugCaQ8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A71MLZMYinjawY0q8/7+cfHWNqjsTOCotZ27+t4lUn1TtRBqNyVCe7e2+M6B8e4RAgjFMO2UXx/yj2AKIau0xcb9zrwJyfQdB/mKOvnmEco/gY7dleK4Dmcght6oswtmsA/Q5MJCRLM5Mil0xNfdJHWu4S9RCxYJVBJ1lqi/2KM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NQiSwXD4; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1743108495; c=relaxed/simple;
+	bh=SdPbA0aHeBLqE7nZx4Bu1kmxgHP5+VLI0VP6d+QffGg=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=UdpmgRz66YKFWePi9fSDAJO1eZttQ4hUrMBYINTGPNx+NH8/qlXzvs3MteppB33nuVCP6bz9pmbwr14j/tRZjUyNMxAXCkBert1lljj7mNPGkqsPLF/4sEZlwgRByskTh/AfTKqWeQK4YMhbNLMBiXQJnpXyvYXpFDugDdQGdTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZizUhPCU; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NQiSwXD4"
-Date: Thu, 27 Mar 2025 15:47:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1743104837;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ua+2XTJbjfYYpVjP8YCjxEQGmfQkkTUtH1bVwBILcqc=;
-	b=NQiSwXD4oBJRP4j3k/vtElhzkc563VRKlN3NDdQ8LigLF0LUWE10O1puA0gJx1DU8QKdlZ
-	s/4hxo4bB7X5/xj9DrGWYeE9WA+WMooBpS366uxavpuX475g8UJdndcYrVXW03G1ajzPD+
-	bVEXACN87O09EuC2oa2cEPFIf0MnEGA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: Re: [PATCH] lib/sort.c: Add _nonatomic() variants with cond_resched()
-Message-ID: <novak4bihej44g63emwr6aohnnv3737ssbbbeldq2tqwmbf65n@j3fh7vsg77z5>
-References: <20250326152606.2594920-1-kent.overstreet@linux.dev>
- <20250327110923.41e281e75fcf5b1152a55a64@linux-foundation.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZizUhPCU"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92703C4CEDD;
+	Thu, 27 Mar 2025 20:48:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1743108495;
+	bh=SdPbA0aHeBLqE7nZx4Bu1kmxgHP5+VLI0VP6d+QffGg=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=ZizUhPCUAiblDjVSUe1cDhQr3cvefNf/hqa0qkC7PmGhGRZP5wFB0WoiDBzlLsqM2
+	 v+s8vZ3y9Yx7LNFgA5d2I6HIg96kbWFCa2WZt9Vs+Ff2Mavv5JIUNFAOB4069FrLL9
+	 Tu7CbE/99qCAJyB4r+/SQYZW0J5Z4v3cXumqNaFOTTQuNCJTWz8kz5OqsVHF3opx9q
+	 HZir1cagp+bXXGbv7LAYwRwdtCbySFl7PQFs6XlH12c149xG2wjHy5B0hlRogl7ShH
+	 DTfmhWSkQFaAv51e9YgnRzMKIPALPxaniQsDrBMt1DHsEU5AFlDW5wtlJmOOEH1XkM
+	 T26EVoa5msDSw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33D72380AAFD;
+	Thu, 27 Mar 2025 20:48:53 +0000 (UTC)
+Subject: Re: [GIT PULL] bcachefs for 6.15, v2...
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <wg47lanrvfqkqdospive4b3ymc5snuhqdygcle33q3cxudw3xl@rkllblbmre4v>
+References: <wg47lanrvfqkqdospive4b3ymc5snuhqdygcle33q3cxudw3xl@rkllblbmre4v>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <wg47lanrvfqkqdospive4b3ymc5snuhqdygcle33q3cxudw3xl@rkllblbmre4v>
+X-PR-Tracked-Remote: git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-03-24
+X-PR-Tracked-Commit-Id: d8bdc8daac1d1b0a4efb1ecc69bef4eb4fc5e050
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 4a4b30ea80d8cb5e8c4c62bb86201f4ea0d9b030
+Message-Id: <174310853165.2212788.13300034262823916193.pr-tracker-bot@kernel.org>
+Date: Thu, 27 Mar 2025 20:48:51 +0000
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250327110923.41e281e75fcf5b1152a55a64@linux-foundation.org>
-X-Migadu-Flow: FLOW_OUT
 
-On Thu, Mar 27, 2025 at 11:09:23AM -0700, Andrew Morton wrote:
-> On Wed, 26 Mar 2025 11:26:06 -0400 Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> 
-> > bcachefs calls sort() during recovery to sort all keys it found in the
-> > journal, and this may be very large - gigabytes on large machines.
-> > 
-> > This has been causing "task blocked" warnings, so needs a
-> > cond_resched().
-> 
-> I assume this has been happening for a while, so a cc:stable is appropriate?
+The pull request you sent on Mon, 24 Mar 2025 14:56:15 -0400:
 
-Well, right now I'm only doing backports for the most critical stuff,
-and this doesn't meet that bar. I'm planning on doing normal backports
-after I take the experimental label off, in at most another year.
+> git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-03-24
 
-And I've told the stable team I don't want them touching fs/bcachefs/, I
-want to be doing those backports and running them through my normal QA
-process. We could for this, but perhaps better not to let the process
-get confused :)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4a4b30ea80d8cb5e8c4c62bb86201f4ea0d9b030
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
