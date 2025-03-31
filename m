@@ -1,39 +1,40 @@
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C33B1E47C9
-	for <linux-bcachefs@vger.kernel.org>; Mon, 31 Mar 2025 16:51:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BC322E630
+	for <linux-bcachefs@vger.kernel.org>; Mon, 31 Mar 2025 16:53:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743439904; cv=none; b=g2zYsI5flmJazOFGtHKZJhAkS9aK/HFN2FoVtSjeYP5BPWD5mQCGPjtPcCKGpI6P0QHcNXbL3C+7acHSv7OkZkvHKIP8d4pAFQp3VKqLx8CI+sk/LhXUdUb3eE/DpmYkNnvvG45qGwWjhwO/FXiqOUrxW1fP/qJ51BsZOHZ4kBY=
+	t=1743439983; cv=none; b=NIbYL0Hfk9wTVYE5yJXXR0oyMvx/quVWLFisu4Dk7ZADbkaAtA/69EX7ZQsVa9C0LfW0zvRGWQTKdoHNU3KUidnNbnERkTi2jg2+WCyV/ZNacYkitqTPfkLyD9tcMh+/c88FaboMZZJljmP4Pq0ZStbKucgPBRNocrbKO7PR3O4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743439904; c=relaxed/simple;
-	bh=g6c8NjTeWtM3CaUT0fcwLGfnp62ES8eY8AVtoLbWnbA=;
+	s=arc-20240116; t=1743439983; c=relaxed/simple;
+	bh=MIYXgxS2/VM94Y5OmEVjC+QXmA+6LgG1T8ggbU374NQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dhnihGM2zh+h9VzR+P08G2O7HFayPczfAiZxFV8EdpcwIoOVc6d/XqjzLB1LgI2Kr377pFf+RnK/wGzCkWS/j5z++40PPrNt2VouILwXrLcpYuMzTO+t9eO4qbq0UCd2ggCzD1sf7vuA5TZpmjCng74PnFC92XQc6XFpsu9cYsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=umkGFwEO; arc=none smtp.client-ip=95.215.58.176
+	 Content-Type:Content-Disposition:In-Reply-To; b=om5Uip76XsUz0fVLs8YwsTnN2wC4YAvFzG8jTzsD9ni6B8KAvjy5IDl1TVVzwrX2jYfPFZo3LzHokOqqCxoYDB7rWOuXbvvqZcNLnMzNlt+IOo4/lqkw1bQNI3G2RKHE2IldhDERVuOBewAc5JTYtyP6GTQ+AIx6cKbHMyfs20w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mH73TlOE; arc=none smtp.client-ip=91.218.175.183
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="umkGFwEO"
-Date: Mon, 31 Mar 2025 12:51:35 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mH73TlOE"
+Date: Mon, 31 Mar 2025 12:52:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1743439899;
+	t=1743439979;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=d9YMiSoQtLB7I67sGXZ0Atagk/BpGc7cqaYIpXWQIf0=;
-	b=umkGFwEOZrtM6LnujgL6RYb2S5/cy+t+IHl2iHeOCrJImv3aDDX8xRFW7xUc/CyPKtum2O
-	C3VKSDPErWcHrms3cG4TQFxBarUE7048Nt/ik6Ci8B0s42f7hjeCnjfZOltycQD/PgcN2k
-	MJPBwmihMpFotG/mHA4BVzSsyrECAOQ=
+	bh=jIWuFkkwxfJGGzmkM6LA9KmCKLeTEZjLrljbgmZZtQA=;
+	b=mH73TlOEUg1Lnr7Ox71beFR/iEzQlz7PMSy5CJaDVqO8fxdnrz7c+WDcayMeLGvL9PwT/y
+	5T5NEZgqbNINcL/Y8FsTmRTtfrjshdtUkDBxf2XS2Hpzizljv71scw+0J4JVp49h3280v8
+	owdeCF4hy9upTs3r+URMKz58WT5Doyw=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: Integral <integral@archlinuxcn.org>
 Cc: kent.overstreet@gmail.com, lihongbo22@huawei.com, mmpgouride@gmail.com, 
 	linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH v2 combined resend] bcachefs-tools: add fs_usage &
-Message-ID: <cyorewdfsnc4n63a64umawov2yzu3tkqnxr6zwfsmstebjfa25@xt6vfaeysk64>
-References: <20250331115830.79127-1-integral@archlinuxcn.org>
+Subject: Re: [PATCH v2 combined resend v2] bcachefs-tools: add fs_usage &
+ return -EINVAL when no matching subcommand
+Message-ID: <5oyr7jshm3mj5cf7upxb2xpzzywv3wjequgfhh7bx3s4oo7lu3@pinr7deb7rvq>
+References: <20250331120031.79365-2-integral@archlinuxcn.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -42,16 +43,16 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250331115830.79127-1-integral@archlinuxcn.org>
+In-Reply-To: <20250331120031.79365-2-integral@archlinuxcn.org>
 X-Migadu-Flow: FLOW_OUT
 
-On Mon, Mar 31, 2025 at 07:58:30PM +0800, Integral wrote:
+On Mon, Mar 31, 2025 at 08:00:32PM +0800, Integral wrote:
 > Add the missing usage function for "fs" subcommand; when no matching
 > subcommand exists, print the usage and return -EINVAL.
 > 
 > Signed-off-by: Integral <integral@archlinuxcn.org>
 
-Applied
+err, you sent me duplicates?
 
 > ---
 >  c_src/bcachefs.c | 15 ++++++++-------
