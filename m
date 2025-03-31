@@ -1,114 +1,140 @@
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from wiki.archlinuxcn.org (wiki.archlinuxcn.org [104.245.9.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92B63A935
-	for <linux-bcachefs@vger.kernel.org>; Fri, 28 Mar 2025 16:26:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A573A13C9C4
+	for <linux-bcachefs@vger.kernel.org>; Mon, 31 Mar 2025 11:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.245.9.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743179184; cv=none; b=SWH/X+KVxHcBWByab3LA8+d+YuwoYuRXW00XbKgfqJDUfZJkUMSqYgqCTuZZqsRlWGfFqZ+9bvdoc8JHTHxraySOLUr/a4ZB6hJ2BfhPI8KJoJmZrZc3YRWwKWHRqtjmfppeWSy4waZy6evDk1o3xs5IO4aPbNTt4ZhxPvz6v6I=
+	t=1743422367; cv=none; b=QVGYIx4VbeE47lDlkZOJgkwkAJUY7c3fQX4QHRQ3b7h2QeWQl5a2EArNbGzDlmJCCytYi8yvQAad1821kM4CJEY3YloJaT8haiIWo9V3SrTXnVbkNdBJoJYQ7E1Y58i4wYvzqDcfZsDsPHEmY6NXl90s7Y94Ftply6lDBgRsx0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743179184; c=relaxed/simple;
-	bh=+pAYmFG35tho5dbQ3eLOJhU94fwqXMapm7RQeM3QjC4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CqoODE1ZSvDP7+N289pWXEq4gmCtiRwAAacu/QmBNEnZwlLn6xG/VHyjFO3vIhD4ycWYh4a+5jfv8knUkH6G6oTm4M3lehAmunlv/0tBkCbtWXi895nTVkNCq/rjdAKB/VVv6X5jiIOzyQq9a1Tbb/tF+kuePoJECKu72MJbYxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jKlnddoY; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1743422367; c=relaxed/simple;
+	bh=CtEeAYdYTz7xSC8ZIF2PZB5N+XLcSSw9UFTrUnlDrvo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DGgC/gzilmqDwMiAxKDx2/YdvU5RaajBJ6LtKlYJtRM0amLP88uwCXgl5PWVdAZGzmNOdLdBwFmUdovaCVA1JHk1g5O6eeuaaWCzwP9z6bhLiW82GfeWPnvM3SL7vjVv0w0Ey3tJ7ogj5eeHVCmTslavjmpDZSb7/k5SPGW09Z8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org; spf=pass smtp.mailfrom=archlinuxcn.org; dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b=04kEbRl9; arc=none smtp.client-ip=104.245.9.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=archlinuxcn.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jKlnddoY"
-Date: Fri, 28 Mar 2025 12:26:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1743179170;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7/qa0edAWMlranoyL+nTInr92sFi6AEqh1M+j4KdVPI=;
-	b=jKlnddoYpmjg9phx+tRf0Scr2nVY6PxB/rX7rK0bqICrPXOdGTZxgRHFb+70t4/lwALSWt
-	iTcR0iVt8ngqj2e+yvamJcJNd4jwcYCApBjAd9TqlS0VrmE+CvGKKJEdk+XuFLeN0T5MJF
-	GSr3p1jBf2Pwsu2cgYvjqjt/ibTi34o=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Dave Chinner <david@fromorbit.com>
-Cc: Petr Vorel <pvorel@suse.cz>, 
-	Andrea Cervesato <andrea.cervesato@suse.de>, ltp@lists.linux.it, linux-bcachefs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, Li Wang <liwang@redhat.com>, Cyril Hrubis <chrubis@suse.cz>
-Subject: Re: [LTP] [PATCH] ioctl_ficlone03: fix capabilities on immutable
- files
-Message-ID: <7ltgrgqgfummyrlvw7hnfhnu42rfiamoq3lpcvrjnlyytldmzp@yazbhusnztqn>
-References: <20250326-fix_ioctl_ficlone03_32bit_bcachefs-v1-1-554a0315ebf5@suse.com>
- <20250326134749.GA45449@pevik>
- <Z-Sgj_XOVar8myLw@dread.disaster.area>
+	dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b="04kEbRl9"
+DKIM-Signature: a=rsa-sha256; bh=ktExUNRETTxeC7sRlXpf5sLQ0RudcdXJzTTO6jVq/RM=;
+ c=relaxed/relaxed; d=archlinuxcn.org;
+ h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:Message-Id:Message-Id:References:Autocrypt:Openpgp;
+ i=@archlinuxcn.org; s=default; t=1743422332; v=1; x=1743854332;
+ b=04kEbRl9heCMMq/C23rvyilx+gVWVRFK2JGkEaKry0J3+qsbpCo9XkIHC6rYrt0BcrNAcS6I
+ ZXCBRlFZQ3G2yi8hwsT1mHtsf1ZuGQ6+d6yTGNBzeaJ9+46wLK2Lc9tAxg+r5KdhvFmvCEeblpq
+ Mgl0mSYvE8xOZRlV2eAfADCyeKcRgwCJeA/skBsmpt8QyA0Bs4AwufsgsHxgNfLa00RknBQOvd8
+ 3eVJoEd4jSPzR+QY0PIBGOo02e/Px5O2ebkBQiA2hHVK0ZNYOsWcDaVbE0syfGJvDUaLVfUA6MW
+ EcWh+g4/0f005/WJrjTVWH+68eiVs5dQbRIV7XC6fcBiw==
+Received: by wiki.archlinuxcn.org (envelope-sender
+ <integral@archlinuxcn.org>) with ESMTPS id c08cb5a0; Mon, 31 Mar 2025
+ 19:58:52 +0800
+From: Integral <integral@archlinuxcn.org>
+To: kent.overstreet@gmail.com,
+	kent.overstreet@linux.dev,
+	lihongbo22@huawei.com
+Cc: mmpgouride@gmail.com,
+	linux-bcachefs@vger.kernel.org,
+	integral@archlinuxcn.org
+Subject: [PATCH v2 combined resend] bcachefs-tools: add fs_usage &
+Date: Mon, 31 Mar 2025 19:58:30 +0800
+Message-ID: <20250331115830.79127-1-integral@archlinuxcn.org>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z-Sgj_XOVar8myLw@dread.disaster.area>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 27, 2025 at 11:49:19AM +1100, Dave Chinner wrote:
-> On Wed, Mar 26, 2025 at 02:47:49PM +0100, Petr Vorel wrote:
-> > Hi all,
-> > 
-> > [ Cc Kent and other filesystem folks to be sure we don't hide a bug ]
-> > 
-> > > From: Andrea Cervesato <andrea.cervesato@suse.com>
-> > 
-> > > Make sure that capabilities requirements are satisfied when accessing
-> > > immutable files. On OpenSUSE Tumbleweed 32bit bcachefs fails with the
-> > > following error due to missing capabilities:
-> > 
-> > > tst_test.c:1833: TINFO: === Testing on bcachefs ===
-> > > ..
-> > > ioctl_ficlone03.c:74: TBROK: ioctl .. failed: ENOTTY (25)
-> > > ioctl_ficlone03.c:89: TWARN: ioctl ..  failed: ENOTTY (25)
-> > > ioctl_ficlone03.c:91: TWARN: ioctl ..  failed: ENOTTY (25)
-> > > ioctl_ficlone03.c:98: TWARN: close(-1) failed: EBADF (9)
-> 
-> None of these are -EPERM, so how is a missing capability that
-> results in -EPERM being returned cause -ENOTTY or -EBADF failures?
-> 
-> ohhhhh. ENOTTY is a result of a kernel side compat ioctl handling bug
-> w/ bcachefs.
-> 
-> bcachefs doesn't implement ->fileattr_set().
-> 
-> sys_compat_ioctl() does:
-> 
->         case FS_IOC32_GETFLAGS:
->         case FS_IOC32_SETFLAGS:
->                 cmd = (cmd == FS_IOC32_GETFLAGS) ?
->                         FS_IOC_GETFLAGS : FS_IOC_SETFLAGS;
-> 
-> and then calls do_vfs_ioctl().
-> 
-> This then ends up in vfs_fileattr_set(), which does:
-> 
-> 	if (!inode->i_op->fileattr_set)
->                 return -ENOIOCTLCMD;
-> 
-> which means sys_compat_ioctl() then falls back to calling
-> ->compat_ioctl().
-> 
-> However, cmd has been overwritten to FS_IOC_SETFLAGS and
-> bch2_compat_fs_ioctl() looks for FS_IOC32_SETFLAGS, so it returns
-> -ENOIOCTLCMD as it doesn't handle the ioctl command passed in.
-> 
-> sys_compat_ioctl() then converts the -ENOIOCTLCMD to -ENOTTY, and
-> there's the error being reported.
-> 
-> OK, this is a bcachefs compat ioctl handling bug, triggered by not
-> implementing ->fileattr_set and implementing FS_IOC_SETFLAGS
-> directly itself via ->unlocked_ioctl.
-> 
-> Yeah, fixes to bcachefs needed here, not LTP.
-> 
-> > I wonder why it does not fail for generic VFS fs/ioctl.c used by Btrfs and XFS:
-> 
-> Because they implement ->fileattr_set() and so all the compat ioctl
-> FS_IOC32_SETFLAGS handling works as expected.
+Add the missing usage function for "fs" subcommand; when no matching
+subcommand exists, print the usage and return -EINVAL.
 
-thanks for the analysis, I'll try to get this fixed soon
+Signed-off-by: Integral <integral@archlinuxcn.org>
+---
+ c_src/bcachefs.c | 15 ++++++++-------
+ c_src/cmd_fs.c   | 13 +++++++++++++
+ c_src/cmds.h     |  1 +
+ 3 files changed, 22 insertions(+), 7 deletions(-)
+
+diff --git a/c_src/bcachefs.c b/c_src/bcachefs.c
+index f2a1449e..2f718147 100644
+--- a/c_src/bcachefs.c
++++ b/c_src/bcachefs.c
+@@ -118,16 +118,15 @@ int fs_cmds(int argc, char *argv[])
+ {
+ 	char *cmd = pop_cmd(&argc, argv);
+ 
+-	if (argc < 1) {
+-		bcachefs_usage();
+-		exit(EXIT_FAILURE);
+-	}
++	if (argc < 1)
++		return fs_usage();
+ 	if (!strcmp(cmd, "usage"))
+ 		return cmd_fs_usage(argc, argv);
+ 	if (!strcmp(cmd, "top"))
+ 		return cmd_fs_top(argc, argv);
+ 
+-	return 0;
++	fs_usage();
++	return -EINVAL;
+ }
+ 
+ int device_cmds(int argc, char *argv[])
+@@ -153,7 +152,8 @@ int device_cmds(int argc, char *argv[])
+ 	if (!strcmp(cmd, "resize-journal"))
+ 		return cmd_device_resize_journal(argc, argv);
+ 
+-	return 0;
++	device_usage();
++	return -EINVAL;
+ }
+ 
+ int data_cmds(int argc, char *argv[])
+@@ -169,5 +169,6 @@ int data_cmds(int argc, char *argv[])
+ 	if (!strcmp(cmd, "job"))
+ 		return cmd_data_job(argc, argv);
+ 
+-	return 0;
++	data_usage();
++	return -EINVAL;
+ }
+diff --git a/c_src/cmd_fs.c b/c_src/cmd_fs.c
+index 06f797b9..4ab3ec0d 100644
+--- a/c_src/cmd_fs.c
++++ b/c_src/cmd_fs.c
+@@ -491,6 +491,19 @@ devs:
+ 	bcache_fs_close(fs);
+ }
+ 
++int fs_usage(void)
++{
++	puts("bcachefs fs - manage a running filesystem\n"
++	     "Usage: bcachefs fs <CMD> [OPTIONS]\n"
++	     "\n"
++	     "Commands:\n"
++	     "  usage                   Display detailed filesystem usage\n"
++	     "  top                     Show runtime performance information\n"
++	     "\n"
++	     "Report bugs to <linux-bcachefs@vger.kernel.org>");
++	return 0;
++}
++
+ static void fs_usage_usage(void)
+ {
+ 	puts("bcachefs fs usage - display detailed filesystem usage\n"
+diff --git a/c_src/cmds.h b/c_src/cmds.h
+index 9502d539..82f28af2 100644
+--- a/c_src/cmds.h
++++ b/c_src/cmds.h
+@@ -15,6 +15,7 @@ int cmd_recover_super(int argc, char *argv[]);
+ int cmd_reset_counters(int argc, char *argv[]);
+ int cmd_set_option(int argc, char *argv[]);
+ 
++int fs_usage(void);
+ int cmd_fs_usage(int argc, char *argv[]);
+ int cmd_fs_top(int argc, char *argv[]);
+ 
+-- 
+2.49.0
+
