@@ -1,32 +1,32 @@
 Received: from wiki.archlinuxcn.org (wiki.archlinuxcn.org [104.245.9.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A573A13C9C4
-	for <linux-bcachefs@vger.kernel.org>; Mon, 31 Mar 2025 11:59:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 029911C5D7B
+	for <linux-bcachefs@vger.kernel.org>; Mon, 31 Mar 2025 12:01:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.245.9.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743422367; cv=none; b=QVGYIx4VbeE47lDlkZOJgkwkAJUY7c3fQX4QHRQ3b7h2QeWQl5a2EArNbGzDlmJCCytYi8yvQAad1821kM4CJEY3YloJaT8haiIWo9V3SrTXnVbkNdBJoJYQ7E1Y58i4wYvzqDcfZsDsPHEmY6NXl90s7Y94Ftply6lDBgRsx0M=
+	t=1743422495; cv=none; b=KoZnZgTTXsO/yXiDumnFDeD2Fg7wy1gw9t+yzEqKvJzhqg/Xb532XjQxUyoc1hI64ysdvIuswycZLpkFNkfxgVyIv+yT/Kd5pkKPDGfo3qhC56WDl4w+v4NZ7AiOujEhZrs/k0+FsvEvm2y08UYsvdAmuJvFRrbzeA3ArT39m/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743422367; c=relaxed/simple;
+	s=arc-20240116; t=1743422495; c=relaxed/simple;
 	bh=CtEeAYdYTz7xSC8ZIF2PZB5N+XLcSSw9UFTrUnlDrvo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DGgC/gzilmqDwMiAxKDx2/YdvU5RaajBJ6LtKlYJtRM0amLP88uwCXgl5PWVdAZGzmNOdLdBwFmUdovaCVA1JHk1g5O6eeuaaWCzwP9z6bhLiW82GfeWPnvM3SL7vjVv0w0Ey3tJ7ogj5eeHVCmTslavjmpDZSb7/k5SPGW09Z8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org; spf=pass smtp.mailfrom=archlinuxcn.org; dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b=04kEbRl9; arc=none smtp.client-ip=104.245.9.4
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mxncWgPz6lYnstLIeRKKDlx4r3eXjIFgZ4Ud4wg3LhsAIF50Zh2GANCyqbxkn1tVq0KEEIWnVqlSId10TSbqf+sp2CYIMkfyMVgBBjr/ND6fqGT/e3r6wQjCSDRVvgyZrGydjZL6yvZaFcMKUNVoBNUTtF/7LUkvmY43LjVvbck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org; spf=pass smtp.mailfrom=archlinuxcn.org; dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b=SF9syHv4; arc=none smtp.client-ip=104.245.9.4
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=archlinuxcn.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b="04kEbRl9"
+	dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b="SF9syHv4"
 DKIM-Signature: a=rsa-sha256; bh=ktExUNRETTxeC7sRlXpf5sLQ0RudcdXJzTTO6jVq/RM=;
  c=relaxed/relaxed; d=archlinuxcn.org;
  h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:Message-Id:Message-Id:References:Autocrypt:Openpgp;
- i=@archlinuxcn.org; s=default; t=1743422332; v=1; x=1743854332;
- b=04kEbRl9heCMMq/C23rvyilx+gVWVRFK2JGkEaKry0J3+qsbpCo9XkIHC6rYrt0BcrNAcS6I
- ZXCBRlFZQ3G2yi8hwsT1mHtsf1ZuGQ6+d6yTGNBzeaJ9+46wLK2Lc9tAxg+r5KdhvFmvCEeblpq
- Mgl0mSYvE8xOZRlV2eAfADCyeKcRgwCJeA/skBsmpt8QyA0Bs4AwufsgsHxgNfLa00RknBQOvd8
- 3eVJoEd4jSPzR+QY0PIBGOo02e/Px5O2ebkBQiA2hHVK0ZNYOsWcDaVbE0syfGJvDUaLVfUA6MW
- EcWh+g4/0f005/WJrjTVWH+68eiVs5dQbRIV7XC6fcBiw==
+ i=@archlinuxcn.org; s=default; t=1743422456; v=1; x=1743854456;
+ b=SF9syHv4Km7cXQAVxxvthbOubGktd+kqsQiKrcmWRwIOZuxuHgBIdkukxMZTCfi8+EjFMBpE
+ MKa8eYvdaotpFGWH7nZKuUFtEuO8Q5r10mJwFgabUuG8EWpzn401oIPtly+y9sLvLbw1+mQvilY
+ YiZVSt/n1qj3dQoRjE608PthuunhaZOf2nodxHaB6xGEmZgaRLKOi9eiC0HRG8VlIGhKpa4FWRl
+ Mxd2YkmPw0tfxnsxi0Ia3oSse2Ba5gaJhhKw/I5k7CGMR5B6lhw4SfEKiKFROVdIvPIvMAkSOqw
+ N0IU1Hqc09D0OA6gpvOn9HVj2z96ttU9l1UDi7G3nv1bg==
 Received: by wiki.archlinuxcn.org (envelope-sender
- <integral@archlinuxcn.org>) with ESMTPS id c08cb5a0; Mon, 31 Mar 2025
- 19:58:52 +0800
+ <integral@archlinuxcn.org>) with ESMTPS id 731a9d9b; Mon, 31 Mar 2025
+ 20:00:56 +0800
 From: Integral <integral@archlinuxcn.org>
 To: kent.overstreet@gmail.com,
 	kent.overstreet@linux.dev,
@@ -34,9 +34,9 @@ To: kent.overstreet@gmail.com,
 Cc: mmpgouride@gmail.com,
 	linux-bcachefs@vger.kernel.org,
 	integral@archlinuxcn.org
-Subject: [PATCH v2 combined resend] bcachefs-tools: add fs_usage &
-Date: Mon, 31 Mar 2025 19:58:30 +0800
-Message-ID: <20250331115830.79127-1-integral@archlinuxcn.org>
+Subject: [PATCH v2 combined resend v2] bcachefs-tools: add fs_usage & return -EINVAL when no matching subcommand
+Date: Mon, 31 Mar 2025 20:00:32 +0800
+Message-ID: <20250331120031.79365-2-integral@archlinuxcn.org>
 X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
