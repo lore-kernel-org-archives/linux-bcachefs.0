@@ -1,150 +1,285 @@
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F359B21325F
-	for <linux-bcachefs@vger.kernel.org>; Mon, 31 Mar 2025 14:06:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A8D3223313
+	for <linux-bcachefs@vger.kernel.org>; Mon, 31 Mar 2025 14:35:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743429988; cv=none; b=mI+uGD5iNiSjkShWFG5Y4Si/ywc4wzsheBbq8CgDUiLirJZsXx3PDIi5ccXEdjZh+G0En8eGq0PCk2esfMbllVVaWjBIHSqnuCR4+Cn7JKzIcWqA6VrKZjLJoCvQOY0G/7ucPzZsD1Z6Q7focjms5wae7IiyOod6kkODTLLJsn4=
+	t=1743431727; cv=none; b=NNu3ZmarisriHEjHvYREuru/Uen+4lCG4qq7ZrVqnin4Mkrd93h+h/a+NDSz3VG7HJDu3XxjFapabjzIn681rKRtUdmw7AkimNFn1xWAaoB6y5W4D7cNPBAV0jddk9kt7Os1dxFpZiTqn2jN5KpeIk6un60PNS1tt2HXLBandNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743429988; c=relaxed/simple;
-	bh=o58API7/MSUGGecLyCQOD9QENF0cJpxOJUXTJvS/ZY8=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=i2TWCyDnawsKuDNJKFvvLmIJtuOZMT0eqF8huxUPQjBvmW2qsacvNsdsqzpOmnTa+Hgr6NIfYJYzwVoZj1bh6kvZsufR6IQ4VtHY7fyJkAKOnzmulGpuQOTNA6phUxSDZvc/d0QRdX/AEaHCgPYa8FDh4iVqanGTG34C2A592kk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3d43d3338d7so85367155ab.0
-        for <linux-bcachefs@vger.kernel.org>; Mon, 31 Mar 2025 07:06:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743429986; x=1744034786;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZOpejcwMdppDg0dMAfgX7XGjKXOhvdEBn+I8f9/ikIE=;
-        b=TKhaNWFq9mOxxoOfsysri4TqZEzHl94EUPEqI80QwK8ON43Pjcy1RvmYNSCS3p92zQ
-         ISVd/RYyl/29FSnf/zOZMty/Hcc4hs2FZfp/aA9JgZCZpmZ341k4pS0pWyfNaYG3Hop8
-         8ClDJKSzCDOq+ndHN2y9dcKsRzFgKmnWGzf4tcfE5aw17YneCGQPZ5CmKB9HSKa21HUA
-         K2HrYitw9MsXUJNuWCfrf8YFgONxn3/6pUstkVTzdDoMvX0nbZWdKcau3GolQjYszQ4o
-         HGTrWwIEUnqnQEDp5YeqpIXw9JLKnDAepM6TwpTXse+6iP2cAu5I/tokZ9Ug+qlZz6OW
-         JqxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXH3twpGAG8sA0n1wOe1IPiImhFHtT9Gd9Y6HGUhvkBFhyk80JWcF+C5hj1s7cWCOYclx1BUjoNqFtT4YnDig==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwmyGPmA70JYMynd9OjKRHOHg2Gh7O+HpI/UP0rXJJE6Z0Gjkcf
-	FQf1mtYyB7nmAskCdXEZr5FDCfcbqUtAorC03PsWiD+MinNgQLZ4kBwTLx/K9E9g1zMllaNadIq
-	qgbSe2LFl5mZBJCWdrXlmNt+kPBKweCnvBgA1KKHJ8A5DVu0piUYRgkA=
-X-Google-Smtp-Source: AGHT+IG9VYXT62i/paAthE79LI4prD6ZoYlm+FBsFiCPSC2k5ramWsYpdiQMy93RazuRM1LZUhDWiDp8RWJDF0196YBhBQyBNUXr
+	s=arc-20240116; t=1743431727; c=relaxed/simple;
+	bh=HjHT29Z/5oeaCzxvGA1ybc/NkIoFLP/CdoBkmXmYARQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=VXeqMXT+EhH87tO/sb2HchQTXC8Z8qLd2aP5zmWXQXRw2x6MJ/52nqudqH566QyyhDVCPmJ6Uq0+a3Gl7o67n4pjEAMDkqlQbaK9M+EeBfzz6qUUIHC3rRvCPT7OFOJ6T4uBSj4F3zU+2zyxiyP01U8uMaJJdQiW/CAVluvdMmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=p/Jb8cFD; arc=none smtp.client-ip=185.67.36.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="p/Jb8cFD"
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout01.posteo.de (Postfix) with ESMTPS id 29542240028
+	for <linux-bcachefs@vger.kernel.org>; Mon, 31 Mar 2025 16:35:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+	t=1743431718; bh=HjHT29Z/5oeaCzxvGA1ybc/NkIoFLP/CdoBkmXmYARQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding:From;
+	b=p/Jb8cFDlNSz0nSNEvtZaJjAJTevECOXP6bxGMKHzjzSJr3ydwnhmsBVIQ4F4FkKf
+	 iATvdEQ7195J+KXv2hogmtlfCJfi27XzPrvW48NSaAaN/Dv7G4HvO0DJtIp0NTNKbj
+	 GiWKjDUa34XEV01sKbBRnyQnJ7o6nqgEYOtqntjS0Biusf9ZI1HVfVEp1RPDwiSK71
+	 4SxO0Ak4WzGqggL4r58zOY8IEyaWhWsI3edUIPqBRVXQSfJKArR24JTweV1WKOXoJ8
+	 pNxR5iY2of1pFp4HwX5xrtKpGEhHboFN2YPVkN7Xgu+yaA85ibYE767KbZjXyuXhTH
+	 4WRqHwwLL1t7Q==
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4ZRDF13v6xz9rxD;
+	Mon, 31 Mar 2025 16:35:17 +0200 (CEST)
+From: =?UTF-8?q?Thomas=20M=C3=BChlbacher?= <tmuehlbacher@posteo.net>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	=?UTF-8?q?Thomas=20M=C3=BChlbacher?= <tmuehlbacher@posteo.net>
+Subject: [PATCH 1/5] chore(nix): structure github CI nix flake checks
+Date: Mon, 31 Mar 2025 14:35:05 +0000
+Message-ID: <20250331143509.157528-2-tmuehlbacher@posteo.net>
+In-Reply-To: <20250331143509.157528-1-tmuehlbacher@posteo.net>
+References: <20250331143509.157528-1-tmuehlbacher@posteo.net>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1544:b0:3d3:f4fc:a291 with SMTP id
- e9e14a558f8ab-3d5e0a01a36mr78412185ab.19.1743429986078; Mon, 31 Mar 2025
- 07:06:26 -0700 (PDT)
-Date: Mon, 31 Mar 2025 07:06:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67eaa162.050a0220.3c3d88.0044.GAE@google.com>
-Subject: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_copygc (2)
-From: syzbot <syzbot+cebfe3f22eeaff4ddd7c@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hello,
+Makes it way easier to identify CI failures for people who try to use
+github for contributions.
 
-syzbot found the following issue on:
-
-HEAD commit:    1e1ba8d23dae Merge tag 'timers-clocksource-2025-03-26' of ..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15a8ede4580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=887673359f1a92bf
-dashboard link: https://syzkaller.appspot.com/bug?extid=cebfe3f22eeaff4ddd7c
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/97b3a10186d9/disk-1e1ba8d2.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/de4a9446d205/vmlinux-1e1ba8d2.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/529352453703/bzImage-1e1ba8d2.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cebfe3f22eeaff4ddd7c@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in rht_ptr_rcu include/linux/rhashtable.h:376 [inline]
-BUG: KMSAN: uninit-value in __rhashtable_lookup include/linux/rhashtable.h:607 [inline]
-BUG: KMSAN: uninit-value in rhashtable_lookup include/linux/rhashtable.h:646 [inline]
-BUG: KMSAN: uninit-value in rhashtable_lookup_fast include/linux/rhashtable.h:672 [inline]
-BUG: KMSAN: uninit-value in bucket_in_flight fs/bcachefs/movinggc.c:143 [inline]
-BUG: KMSAN: uninit-value in bch2_copygc_get_buckets fs/bcachefs/movinggc.c:169 [inline]
-BUG: KMSAN: uninit-value in bch2_copygc+0x1d5c/0x5e00 fs/bcachefs/movinggc.c:221
- rht_ptr_rcu include/linux/rhashtable.h:376 [inline]
- __rhashtable_lookup include/linux/rhashtable.h:607 [inline]
- rhashtable_lookup include/linux/rhashtable.h:646 [inline]
- rhashtable_lookup_fast include/linux/rhashtable.h:672 [inline]
- bucket_in_flight fs/bcachefs/movinggc.c:143 [inline]
- bch2_copygc_get_buckets fs/bcachefs/movinggc.c:169 [inline]
- bch2_copygc+0x1d5c/0x5e00 fs/bcachefs/movinggc.c:221
- bch2_copygc_thread+0x7d2/0xf80 fs/bcachefs/movinggc.c:383
- kthread+0x6b9/0xef0 kernel/kthread.c:464
- ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:153
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
-
-Local variable b214.i created at:
- bucket_in_flight fs/bcachefs/movinggc.c:-1 [inline]
- bch2_copygc_get_buckets fs/bcachefs/movinggc.c:169 [inline]
- bch2_copygc+0x159e/0x5e00 fs/bcachefs/movinggc.c:221
- bch2_copygc_thread+0x7d2/0xf80 fs/bcachefs/movinggc.c:383
-
-CPU: 1 UID: 0 PID: 5998 Comm: bch-copygc/loop Not tainted 6.14.0-syzkaller-03576-g1e1ba8d23dae #0 PREEMPT(undef) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
-=====================================================
-Kernel panic - not syncing: kmsan.panic set ...
-CPU: 1 UID: 0 PID: 5998 Comm: bch-copygc/loop Tainted: G    B              6.14.0-syzkaller-03576-g1e1ba8d23dae #0 PREEMPT(undef) 
-Tainted: [B]=BAD_PAGE
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x216/0x2d0 lib/dump_stack.c:120
- dump_stack+0x1e/0x24 lib/dump_stack.c:129
- panic+0x4e5/0xcf0 kernel/panic.c:354
- kmsan_report+0x2ca/0x2d0 mm/kmsan/report.c:218
- __msan_warning+0x95/0x120 mm/kmsan/instrumentation.c:318
- rht_ptr_rcu include/linux/rhashtable.h:376 [inline]
- __rhashtable_lookup include/linux/rhashtable.h:607 [inline]
- rhashtable_lookup include/linux/rhashtable.h:646 [inline]
- rhashtable_lookup_fast include/linux/rhashtable.h:672 [inline]
- bucket_in_flight fs/bcachefs/movinggc.c:143 [inline]
- bch2_copygc_get_buckets fs/bcachefs/movinggc.c:169 [inline]
- bch2_copygc+0x1d5c/0x5e00 fs/bcachefs/movinggc.c:221
- bch2_copygc_thread+0x7d2/0xf80 fs/bcachefs/movinggc.c:383
- kthread+0x6b9/0xef0 kernel/kthread.c:464
- ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:153
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
+Signed-off-by: Thomas Mühlbacher <tmuehlbacher@posteo.net>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ .github/workflows/nix-flake.yml | 41 +++++++++------
+ flake.lock                      | 21 ++++++++
+ flake.nix                       | 89 ++++++++++++++++++++-------------
+ 3 files changed, 100 insertions(+), 51 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/.github/workflows/nix-flake.yml b/.github/workflows/nix-flake.yml
+index 4dfb6453..91d9b27e 100644
+--- a/.github/workflows/nix-flake.yml
++++ b/.github/workflows/nix-flake.yml
+@@ -1,22 +1,31 @@
+-name: "Nix-Tests"
++name: Nix Flake actions
++
+ on:
+   pull_request:
+   push:
++
+ jobs:
+-  nix-flake-check:
++  nix-matrix:
+     runs-on: ubuntu-latest
++    outputs:
++      matrix: ${{ steps.set-matrix.outputs.matrix }}
+     steps:
+-    - uses: actions/checkout@v4
+-    - uses: cachix/install-nix-action@v27
+-      with:
+-        extra_nix_config: |
+-          experimental-features = nix-command flakes
+-          access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+-    - uses: cachix/cachix-action@v15
+-      with:
+-        name: bcachefs-tools
+-        # If you chose API tokens for write access OR if you have a private cache
+-        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+-    - run: nix flake show
+-    - run: nix flake check --print-build-logs
+-    - run: nix build --print-build-logs
++      - uses: actions/checkout@v4
++      - uses: cachix/install-nix-action@v30
++      - id: set-matrix
++        name: Generate Nix Matrix
++        run: |
++          set -Eeu
++          matrix="$(nix eval --json '.#githubActions.matrix')"
++          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
++
++  nix-build:
++    name: ${{ matrix.name }} (${{ matrix.system }})
++    needs: nix-matrix
++    runs-on: ${{ matrix.os }}
++    strategy:
++      matrix: ${{fromJSON(needs.nix-matrix.outputs.matrix)}}
++    steps:
++      - uses: actions/checkout@v4
++      - uses: cachix/install-nix-action@v30
++      - run: nix build -L '.#${{ matrix.attr }}'
+diff --git a/flake.lock b/flake.lock
+index c8ea8d15..0a9b2b85 100644
+--- a/flake.lock
++++ b/flake.lock
+@@ -49,6 +49,26 @@
+         "type": "github"
+       }
+     },
++    "nix-github-actions": {
++      "inputs": {
++        "nixpkgs": [
++          "nixpkgs"
++        ]
++      },
++      "locked": {
++        "lastModified": 1737420293,
++        "narHash": "sha256-F1G5ifvqTpJq7fdkT34e/Jy9VCyzd5XfJ9TO8fHhJWE=",
++        "owner": "nix-community",
++        "repo": "nix-github-actions",
++        "rev": "f4158fa080ef4503c8f4c820967d946c2af31ec9",
++        "type": "github"
++      },
++      "original": {
++        "owner": "nix-community",
++        "repo": "nix-github-actions",
++        "type": "github"
++      }
++    },
+     "nixpkgs": {
+       "locked": {
+         "lastModified": 1742422364,
+@@ -85,6 +105,7 @@
+         "crane": "crane",
+         "flake-compat": "flake-compat",
+         "flake-parts": "flake-parts",
++        "nix-github-actions": "nix-github-actions",
+         "nixpkgs": "nixpkgs",
+         "rust-overlay": "rust-overlay",
+         "treefmt-nix": "treefmt-nix"
+diff --git a/flake.nix b/flake.nix
+index 1200a3b9..79ebfb94 100644
+--- a/flake.nix
++++ b/flake.nix
+@@ -22,6 +22,11 @@
+       url = "github:edolstra/flake-compat";
+       flake = false;
+     };
++
++    nix-github-actions = {
++      url = "github:nix-community/nix-github-actions";
++      inputs.nixpkgs.follows = "nixpkgs";
++    };
+   };
+ 
+   outputs =
+@@ -33,6 +38,7 @@
+       crane,
+       rust-overlay,
+       flake-compat,
++      nix-github-actions,
+     }:
+     let
+       systems = nixpkgs.lib.filter (s: nixpkgs.lib.hasSuffix "-linux" s) nixpkgs.lib.systems.flakeExposed;
+@@ -40,6 +46,13 @@
+     flake-parts.lib.mkFlake { inherit inputs; } {
+       imports = [ inputs.treefmt-nix.flakeModule ];
+ 
++      flake = {
++        githubActions = nix-github-actions.lib.mkGithubMatrix {
++          # github actions supports fewer architectures
++          checks = nixpkgs.lib.getAttrs [ "aarch64-linux" "x86_64-linux" ] self.checks;
++        };
++      };
++
+       inherit systems;
+ 
+       perSystem =
+@@ -225,49 +238,55 @@
+               default = config.packages.${name};
+             };
+ 
+-          checks.cargo-clippy = common.craneLib.cargoClippy (
+-            common.args
+-            // {
+-              inherit (common) cargoArtifacts;
+-              cargoClippyExtraArgs = "--all-targets --all-features -- --deny warnings";
+-            }
+-          );
+-
+-          # we have to build our own `craneLib.cargoTest`
+-          checks.cargo-test = common.craneLib.mkCargoDerivation (
+-            common.args
+-            // {
+-              inherit (common) cargoArtifacts;
+-              doCheck = true;
+-
+-              enableParallelChecking = true;
+-
+-              pnameSuffix = "-test";
+-              buildPhaseCargoCommand = "";
+-              checkPhaseCargoCommand = ''
+-                make ''${enableParallelChecking:+-j''${NIX_BUILD_CORES}} $makeFlags libbcachefs.a
+-                cargo test --profile release -- --nocapture
+-              '';
+-            }
+-          );
++          checks = {
++            inherit (config.packages)
++              bcachefs-tools
++              bcachefs-tools-fuse
++              bcachefs-tools-fuse-i686-linux
++              ;
+ 
+-          # cargo clippy with the current minimum supported rust version
+-          # according to Cargo.toml
+-          checks.msrv =
+-            let
+-              rustVersion = cargoToml.package.rust-version;
+-              common = pkgs.callPackage mkCommon { inherit crane rustVersion; };
+-            in
+-            common.craneLib.cargoClippy (
++            cargo-clippy = common.craneLib.cargoClippy (
+               common.args
+               // {
+-                pname = "msrv";
+                 inherit (common) cargoArtifacts;
+                 cargoClippyExtraArgs = "--all-targets --all-features -- --deny warnings";
+               }
+             );
+ 
+-          checks."32-bit" = config.packages."${cargoToml.package.name}-i686-linux";
++            # we have to build our own `craneLib.cargoTest`
++            cargo-test = common.craneLib.mkCargoDerivation (
++              common.args
++              // {
++                inherit (common) cargoArtifacts;
++                doCheck = true;
++
++                enableParallelChecking = true;
++
++                pnameSuffix = "-test";
++                buildPhaseCargoCommand = "";
++                checkPhaseCargoCommand = ''
++                  make ''${enableParallelChecking:+-j''${NIX_BUILD_CORES}} $makeFlags libbcachefs.a
++                  cargo test --profile release -- --nocapture
++                '';
++              }
++            );
++
++            # cargo clippy with the current minimum supported rust version
++            # according to Cargo.toml
++            msrv =
++              let
++                rustVersion = cargoToml.package.rust-version;
++                common = pkgs.callPackage mkCommon { inherit crane rustVersion; };
++              in
++              common.craneLib.cargoClippy (
++                common.args
++                // {
++                  pname = "msrv";
++                  inherit (common) cargoArtifacts;
++                  cargoClippyExtraArgs = "--all-targets --all-features -- --deny warnings";
++                }
++              );
++          };
+ 
+           devShells.default = pkgs.mkShell {
+             inputsFrom = [
+-- 
+2.48.1
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
