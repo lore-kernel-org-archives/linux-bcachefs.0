@@ -1,40 +1,39 @@
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53A091DF748
-	for <linux-bcachefs@vger.kernel.org>; Mon, 31 Mar 2025 16:51:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C33B1E47C9
+	for <linux-bcachefs@vger.kernel.org>; Mon, 31 Mar 2025 16:51:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743439875; cv=none; b=qKSGGJmHLgOr8Yx0ri7sk0iIV2NVL1tOggvOZ5w1VRL0YDPMb9kOn/OYH7aSVLYaspa9TLdlQgv8gPRsJUjQJXDNz4Sgj27pEjV6YTDpKz8t6y9K1qEyLdXlmHbsqxvIfJ37RZi3mUZlaNLF99bdeiBUuTa4/1Ug3Q0XlJouzhs=
+	t=1743439904; cv=none; b=g2zYsI5flmJazOFGtHKZJhAkS9aK/HFN2FoVtSjeYP5BPWD5mQCGPjtPcCKGpI6P0QHcNXbL3C+7acHSv7OkZkvHKIP8d4pAFQp3VKqLx8CI+sk/LhXUdUb3eE/DpmYkNnvvG45qGwWjhwO/FXiqOUrxW1fP/qJ51BsZOHZ4kBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743439875; c=relaxed/simple;
-	bh=iSzeKwvYY5igAv+Dq5DHICkKY04qnqr5oHEU6bhUxpU=;
+	s=arc-20240116; t=1743439904; c=relaxed/simple;
+	bh=g6c8NjTeWtM3CaUT0fcwLGfnp62ES8eY8AVtoLbWnbA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AcghfiW0u1BHxxxShYprlTNxnBwn7pMXj2qMApbI+63UWE7KVFx3pFtFxePQKJuUfG/2oaHEt27iRs8g7IWyI0zetozBgil3MhmeT/xDjp+z+w6x6XlPCvMWvLRDxEJgf+SI76K5SujeNpFaaV88mZ/Ickg8Ywkzr/KwkJIMHTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bXCbOUCd; arc=none smtp.client-ip=95.215.58.186
+	 Content-Type:Content-Disposition:In-Reply-To; b=dhnihGM2zh+h9VzR+P08G2O7HFayPczfAiZxFV8EdpcwIoOVc6d/XqjzLB1LgI2Kr377pFf+RnK/wGzCkWS/j5z++40PPrNt2VouILwXrLcpYuMzTO+t9eO4qbq0UCd2ggCzD1sf7vuA5TZpmjCng74PnFC92XQc6XFpsu9cYsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=umkGFwEO; arc=none smtp.client-ip=95.215.58.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bXCbOUCd"
-Date: Mon, 31 Mar 2025 12:51:06 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="umkGFwEO"
+Date: Mon, 31 Mar 2025 12:51:35 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1743439870;
+	t=1743439899;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/usS0Lo/xITtjKWqocpjDIx6TYt+B0WVxwifVvcGQw4=;
-	b=bXCbOUCdkiux7fJAjypQowkSV3rQxcMDg00OQZMNPuHVAAhGQlmkKZzM/ZGKU2yGcgkGlT
-	U04kxERNzynNDVncnQRIk4zhi/j27X6ys0bBN7qzxy30WDpHDFG9GeGNFwaqrsPdkAWbTk
-	iSt9WKv0P2Ag3wMkwjdXOoEwwJokJns=
+	bh=d9YMiSoQtLB7I67sGXZ0Atagk/BpGc7cqaYIpXWQIf0=;
+	b=umkGFwEOZrtM6LnujgL6RYb2S5/cy+t+IHl2iHeOCrJImv3aDDX8xRFW7xUc/CyPKtum2O
+	C3VKSDPErWcHrms3cG4TQFxBarUE7048Nt/ik6Ci8B0s42f7hjeCnjfZOltycQD/PgcN2k
+	MJPBwmihMpFotG/mHA4BVzSsyrECAOQ=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: Integral <integral@archlinuxcn.org>
 Cc: kent.overstreet@gmail.com, lihongbo22@huawei.com, mmpgouride@gmail.com, 
 	linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH v2 combined resend v2] bcachefs-tools: add fs_usage &
- return -EINVAL when no matching subcommand
-Message-ID: <5hiiscopghqxaxgjnbfmkkxlq53gc7nxavu27bc47eu5qa2lgv@4t52gwtcncph>
-References: <20250331120031.79365-2-integral@archlinuxcn.org>
+Subject: Re: [PATCH v2 combined resend] bcachefs-tools: add fs_usage &
+Message-ID: <cyorewdfsnc4n63a64umawov2yzu3tkqnxr6zwfsmstebjfa25@xt6vfaeysk64>
+References: <20250331115830.79127-1-integral@archlinuxcn.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -43,32 +42,16 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250331120031.79365-2-integral@archlinuxcn.org>
+In-Reply-To: <20250331115830.79127-1-integral@archlinuxcn.org>
 X-Migadu-Flow: FLOW_OUT
 
-On Mon, Mar 31, 2025 at 08:00:32PM +0800, Integral wrote:
+On Mon, Mar 31, 2025 at 07:58:30PM +0800, Integral wrote:
 > Add the missing usage function for "fs" subcommand; when no matching
 > subcommand exists, print the usage and return -EINVAL.
 > 
 > Signed-off-by: Integral <integral@archlinuxcn.org>
 
-I'm applying this. But -
-
-We don't want to be adding more references to standard error codes. This
-is ok for now only because it's in -tools, and we haven't started
-ripping out standard error codes there yet.
-
-But using the same standard error codes everywhere is a nightmore for
-debugging - "I got -EINVAL, but where did it come from?"
-
-In the future we'll want to extend errcode.h instead (and split that up
-into two files, so that -tools doesn't have to add its error codes to
-the file it pulls from the kernel).
-
-These ones are unlikely to cause problems, but it's a hygeine issue; the
-first thing I do when I get a "where did that error code come from?" bug
-report is go through and replace all instances of that error code with
-private ones.
+Applied
 
 > ---
 >  c_src/bcachefs.c | 15 ++++++++-------
