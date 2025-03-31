@@ -1,44 +1,44 @@
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E18D22333A
-	for <linux-bcachefs@vger.kernel.org>; Mon, 31 Mar 2025 14:35:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88E5C22332D
+	for <linux-bcachefs@vger.kernel.org>; Mon, 31 Mar 2025 14:35:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743431729; cv=none; b=kHJpSFCGWyWFgOrKzx1KeC38Ppp070alVzcFoXbEX+1qlNUEpGKSUiiCGmBf+t5KBqb+/B/B+3iUuNz10cgTU6UtFsb4/VYCZoK2lvHNqAJDVmgYbY/x9OXOGbUmopLOjUpPEQDBLjgikSjYwnBJ0msimMxAfuOcQ8y2m1LwJhk=
+	t=1743431730; cv=none; b=IwIPETbcsqev2L4JxrJem5DfjDrRjY8ywXR2kM9zyuXn7IPYHkqVt++UD0FoislAV/GGDVhHvk/bvfKKftQ8TrK7xAP5DpewNoNQZR178W+U6KZQ/k1FRq522Y9tbcQbQU+KT8BYOrHbEFD7ua3F2Z4yRgk0IukGi3AcYy0pUZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743431729; c=relaxed/simple;
-	bh=oWz8mMuCo3aCAHEJmNC1xGTOkxm/u1A/93Nre8kpc8o=;
+	s=arc-20240116; t=1743431730; c=relaxed/simple;
+	bh=lMXpb2teKn4UYGna7mHez6t/edSgapV+boQQHyXGuV4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=td8Eh5gizKB+FdXmKQbsk3SCyyodkeJandweE/Xg8TRTFY1aFMsISeVl2kOlxz0mLViW8RjlAfgnyBYz/fYAIcMgkyUWbQVcTWYT0Pxt5aoRWSZO/nCgWTswY1Waty3NgVHWc3vO96IIN/wB+tT+ntRyGrpMAPjTyuBx3YLaU08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=pS6l2dBI; arc=none smtp.client-ip=185.67.36.66
+	 MIME-Version:Content-Type; b=uJXC9hLGH958nBLbVne0yNRf8KDqJNNHI3tGDY04alSriJQ34rNHofp33aiaXTVaixOlsuscVPuKfyvUbdAxXh8WSZIjVX77rybHPQX8hLHw6DBYf/3Z38H9oSejCSoty1KmPDQPL1cpQiKY4JadlhO5bqlRiKnI61agAC3aNWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=SG+1Yzl5; arc=none smtp.client-ip=185.67.36.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="pS6l2dBI"
+	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="SG+1Yzl5"
 Received: from submission (posteo.de [185.67.36.169]) 
-	by mout02.posteo.de (Postfix) with ESMTPS id F34D9240103
-	for <linux-bcachefs@vger.kernel.org>; Mon, 31 Mar 2025 16:35:19 +0200 (CEST)
+	by mout01.posteo.de (Postfix) with ESMTPS id BF424240028
+	for <linux-bcachefs@vger.kernel.org>; Mon, 31 Mar 2025 16:35:20 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-	t=1743431719; bh=oWz8mMuCo3aCAHEJmNC1xGTOkxm/u1A/93Nre8kpc8o=;
+	t=1743431720; bh=lMXpb2teKn4UYGna7mHez6t/edSgapV+boQQHyXGuV4=;
 	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type:
 	 Content-Transfer-Encoding:From;
-	b=pS6l2dBIhZZ6v3YXq0WGiQc83k+jmJv7TsDvWE4kmwv4VbrcAFTNBl/Io2jt24CBF
-	 ZF9FuywFdoZtfFjCRaVdNVaDwfbLbXrlB/8h50sfSHjOv1CHdBsrlp7vRKKY3OqpVt
-	 Aq+s5M3Kbh0hbww9ZLHmN4ECfIyG4Z6SZC+YCrOskik8dencHYPjMbC6Mfu2+RPsem
-	 AeKxuHBTfxhNS8trekhB3hTsfgkd/r8oMGmduavtsioq6dUYX8oiBqx1xzE7SkTaBS
-	 l46wSoz4MBFUAYcGb0YohSyzVnzr5cMqOGVoQCfB/Eokrijv41f0hoRILsF3/nPKWe
-	 LWgtuA3mTBFyw==
+	b=SG+1Yzl5H+ut3kEoOWiTDMs8Y07KIr9gi6XZvT3GUJbiQyFB0TsDQB7n+OBfySc5B
+	 njjPLS+AsalUEi+oV2S+rHcEM+CI04JI72BPxgMAyHugJWAzKhifuw9qniuwqThkKn
+	 o4BZKhPm6qH12615WsOBhFyIUzP9bsY+GsnpoQI0LepAO7hxey9c30VF6/Yt/8IWWV
+	 ZGm82PBy47PiBuz7sAOwb16875u2VMhsz32FrzJNf+CZT7bamTeD2ZO+edJKor+DXl
+	 7Iyha6darEioMQJ9m0szPA5ikukoDdFUehH304ZkKXknaHbPbKkBXs4WI+hoxhEZ3/
+	 g3TqSgGdtG41w==
 Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4ZRDF32nMdz9rxG;
+	by submission (posteo.de) with ESMTPSA id 4ZRDF41F7jz9rxG;
 	Mon, 31 Mar 2025 16:35:19 +0200 (CEST)
 From: =?UTF-8?q?Thomas=20M=C3=BChlbacher?= <tmuehlbacher@posteo.net>
 To: kent.overstreet@linux.dev
 Cc: linux-bcachefs@vger.kernel.org,
 	=?UTF-8?q?Thomas=20M=C3=BChlbacher?= <tmuehlbacher@posteo.net>
-Subject: [PATCH 3/5] refactor: `cargo clippy --fix && cargo fmt`
-Date: Mon, 31 Mar 2025 14:35:07 +0000
-Message-ID: <20250331143509.157528-4-tmuehlbacher@posteo.net>
+Subject: [PATCH 4/5] refactor: `cargo clippy --fix -- -W clippy::pedantic && cargo fmt`
+Date: Mon, 31 Mar 2025 14:35:08 +0000
+Message-ID: <20250331143509.157528-5-tmuehlbacher@posteo.net>
 In-Reply-To: <20250331143509.157528-1-tmuehlbacher@posteo.net>
 References: <20250331143509.157528-1-tmuehlbacher@posteo.net>
 Precedence: bulk
@@ -52,220 +52,436 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Thomas Mühlbacher <tmuehlbacher@posteo.net>
 ---
- bch_bindgen/src/bkey.rs  |  2 +-
- bch_bindgen/src/btree.rs | 24 ++++++++++++------------
- bch_bindgen/src/lib.rs   | 15 ++++-----------
- src/commands/mount.rs    | 19 ++++++++++++++-----
- 4 files changed, 31 insertions(+), 29 deletions(-)
+ bch_bindgen/src/bcachefs.rs | 12 ++++++++++--
+ bch_bindgen/src/bkey.rs     | 29 +++++++++++++++++++++++++----
+ bch_bindgen/src/btree.rs    | 31 ++++++++++++++++++-------------
+ bch_bindgen/src/errcode.rs  |  2 +-
+ bch_bindgen/src/lib.rs      | 10 ++++++----
+ bch_bindgen/src/sb_io.rs    |  2 +-
+ src/commands/mount.rs       | 12 ++++++------
+ src/key.rs                  |  9 +++++----
+ src/wrappers/handle.rs      |  4 +++-
+ 9 files changed, 75 insertions(+), 36 deletions(-)
 
-diff --git a/bch_bindgen/src/bkey.rs b/bch_bindgen/src/bkey.rs
-index 2a012508..77e05900 100644
---- a/bch_bindgen/src/bkey.rs
-+++ b/bch_bindgen/src/bkey.rs
-@@ -129,7 +129,7 @@ pub struct BkeySCToText<'a, 'b> {
-     fs: &'b Fs,
+diff --git a/bch_bindgen/src/bcachefs.rs b/bch_bindgen/src/bcachefs.rs
+index 8f6d41a4..fbbac5ed 100644
+--- a/bch_bindgen/src/bcachefs.rs
++++ b/bch_bindgen/src/bcachefs.rs
+@@ -20,6 +20,7 @@ bitfield! {
+ }
+ use std::mem::offset_of;
+ impl bch_sb_field_crypt {
++    #[must_use]
+     pub fn scrypt_flags(&self) -> Option<bch_scrypt_flags> {
+         use std::convert::TryInto;
+         match bch_kdf_types(bch_crypt_flags(self.flags).TYPE().try_into().ok()?) {
+@@ -27,6 +28,7 @@ impl bch_sb_field_crypt {
+             _ => None,
+         }
+     }
++    #[must_use]
+     pub fn key(&self) -> &bch_encrypted_key {
+         &self.key
+     }
+@@ -43,29 +45,33 @@ impl PartialEq for bch_sb {
  }
  
--impl<'a, 'b> fmt::Display for BkeySCToText<'a, 'b> {
-+impl fmt::Display for BkeySCToText<'_, '_> {
+ impl bch_sb {
++    #[must_use]
+     pub fn crypt(&self) -> Option<&bch_sb_field_crypt> {
+         unsafe {
+             let ptr = bch2_sb_field_get_id(
+-                self as *const _ as *mut _,
++                std::ptr::from_ref(self).cast_mut(),
+                 bch_sb_field_type::BCH_SB_FIELD_crypt,
+             ) as *const u8;
+             if ptr.is_null() {
+                 None
+             } else {
+                 let offset = offset_of!(bch_sb_field_crypt, field);
+-                Some(&*((ptr.sub(offset)) as *const _))
++                Some(&*(ptr.sub(offset)).cast())
+             }
+         }
+     }
++    #[must_use]
+     pub fn uuid(&self) -> uuid::Uuid {
+         uuid::Uuid::from_bytes(self.user_uuid.b)
+     }
+ 
++    #[must_use]
+     pub fn number_of_devices(&self) -> u32 {
+         unsafe { c::bch2_sb_nr_devices(self) }
+     }
+ 
+     /// Get the nonce used to encrypt the superblock
++    #[must_use]
+     pub fn nonce(&self) -> nonce {
+         let [a, b, c, d, e, f, g, h, _rest @ ..] = self.uuid.b;
+         let dword1 = u32::from_le_bytes([a, b, c, d]);
+@@ -76,10 +82,12 @@ impl bch_sb {
+     }
+ }
+ impl bch_sb_handle {
++    #[must_use]
+     pub fn sb(&self) -> &bch_sb {
+         unsafe { &*self.sb }
+     }
+ 
++    #[must_use]
+     pub fn bdev(&self) -> &block_device {
+         unsafe { &*self.bdev }
+     }
+diff --git a/bch_bindgen/src/bkey.rs b/bch_bindgen/src/bkey.rs
+index 77e05900..af109167 100644
+--- a/bch_bindgen/src/bkey.rs
++++ b/bch_bindgen/src/bkey.rs
+@@ -61,16 +61,37 @@ impl<'a, 'b> BkeySC<'a> {
+         }
+     }
+ 
++    #[must_use]
+     pub fn to_text(&'a self, fs: &'b Fs) -> BkeySCToText<'a, 'b> {
+         BkeySCToText { k: self, fs }
+     }
+ 
++    #[must_use]
+     pub fn v(&'a self) -> BkeyValC<'a> {
+         unsafe {
+-            let ty: c::bch_bkey_type = transmute(self.k.type_ as u32);
++            let ty: c::bch_bkey_type = transmute(u32::from(self.k.type_));
+ 
+-            use c::bch_bkey_type::*;
+-            use BkeyValC::*;
++            use c::bch_bkey_type::{
++                KEY_TYPE_accounting, KEY_TYPE_alloc, KEY_TYPE_alloc_v2, KEY_TYPE_alloc_v3,
++                KEY_TYPE_alloc_v4, KEY_TYPE_backpointer, KEY_TYPE_btree_ptr, KEY_TYPE_btree_ptr_v2,
++                KEY_TYPE_bucket_gens, KEY_TYPE_cookie, KEY_TYPE_deleted, KEY_TYPE_dirent,
++                KEY_TYPE_error, KEY_TYPE_extent, KEY_TYPE_hash_whiteout,
++                KEY_TYPE_indirect_inline_data, KEY_TYPE_inline_data, KEY_TYPE_inode,
++                KEY_TYPE_inode_alloc_cursor, KEY_TYPE_inode_generation, KEY_TYPE_inode_v2,
++                KEY_TYPE_inode_v3, KEY_TYPE_logged_op_finsert, KEY_TYPE_logged_op_truncate,
++                KEY_TYPE_lru, KEY_TYPE_quota, KEY_TYPE_reflink_p, KEY_TYPE_reflink_v,
++                KEY_TYPE_reservation, KEY_TYPE_set, KEY_TYPE_snapshot, KEY_TYPE_snapshot_tree,
++                KEY_TYPE_stripe, KEY_TYPE_subvolume, KEY_TYPE_whiteout, KEY_TYPE_xattr,
++                KEY_TYPE_MAX,
++            };
++            use BkeyValC::{
++                accounting, alloc, alloc_v2, alloc_v4, backpointer, btree_ptr, btree_ptr_v2,
++                bucket_gens, cookie, deleted, dirent, error, extent, hash_whiteout,
++                indirect_inline_data, inline_data, inode, inode_alloc_cursor, inode_generation,
++                inode_v2, inode_v3, logged_op_finsert, logged_op_truncate, lru, quota, reflink_p,
++                reflink_v, reservation, set, snapshot, snapshot_tree, stripe, subvolume, whiteout,
++                xattr,
++            };
+             match ty {
+                 KEY_TYPE_deleted => deleted,
+                 KEY_TYPE_whiteout => whiteout,
+@@ -133,7 +154,7 @@ impl fmt::Display for BkeySCToText<'_, '_> {
      fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
          unsafe {
              printbuf_to_formatter(f, |buf| {
-diff --git a/bch_bindgen/src/btree.rs b/bch_bindgen/src/btree.rs
-index 1aaf3018..ed563b95 100644
---- a/bch_bindgen/src/btree.rs
-+++ b/bch_bindgen/src/btree.rs
-@@ -25,7 +25,7 @@ impl<'f> BtreeTrans<'f> {
-     }
- }
- 
--impl<'f> Drop for BtreeTrans<'f> {
-+impl Drop for BtreeTrans<'_> {
-     fn drop(&mut self) {
-         unsafe { c::bch2_trans_put(&mut *self.raw) }
-     }
-@@ -81,7 +81,7 @@ impl<'t> BtreeIter<'t> {
+-                c::bch2_bkey_val_to_text(buf, self.fs.raw, self.k.to_raw())
++                c::bch2_bkey_val_to_text(buf, self.fs.raw, self.k.to_raw());
+             })
          }
      }
+diff --git a/bch_bindgen/src/btree.rs b/bch_bindgen/src/btree.rs
+index ed563b95..99c2a5b5 100644
+--- a/bch_bindgen/src/btree.rs
++++ b/bch_bindgen/src/btree.rs
+@@ -15,6 +15,7 @@ pub struct BtreeTrans<'f> {
+ }
  
--    pub fn peek_max<'i>(&'i mut self, end: c::bpos) -> Result<Option<BkeySC<'i>>, bch_errcode> {
-+    pub fn peek_max(&mut self, end: c::bpos) -> Result<Option<BkeySC<'_>>, bch_errcode> {
+ impl<'f> BtreeTrans<'f> {
++    #[must_use]
+     pub fn new(fs: &'f Fs) -> BtreeTrans<'f> {
+         unsafe {
+             BtreeTrans {
+@@ -57,6 +58,7 @@ pub struct BtreeIter<'t> {
+ }
+ 
+ impl<'t> BtreeIter<'t> {
++    #[must_use]
+     pub fn new(
+         trans: &'t BtreeTrans<'t>,
+         btree: c::btree_id,
+@@ -71,7 +73,7 @@ impl<'t> BtreeIter<'t> {
+                 iter.as_mut_ptr(),
+                 btree,
+                 pos,
+-                flags.bits as u32,
++                u32::from(flags.bits),
+             );
+ 
+             BtreeIter {
+@@ -85,14 +87,14 @@ impl<'t> BtreeIter<'t> {
          unsafe {
              let k = c::bch2_btree_iter_peek_max(&mut self.raw, end);
              errptr_to_result_c(k.k).map(|_| {
-@@ -127,7 +127,7 @@ impl<'t> BtreeIter<'t> {
-     }
+-                if !k.k.is_null() {
++                if k.k.is_null() {
++                    None
++                } else {
+                     Some(BkeySC {
+                         k:    &*k.k,
+                         v:    &*k.v,
+                         iter: PhantomData,
+                     })
+-                } else {
+-                    None
+                 }
+             })
+         }
+@@ -107,14 +109,14 @@ impl<'t> BtreeIter<'t> {
+             let k = c::bch2_btree_iter_peek_and_restart_outlined(&mut self.raw);
+ 
+             errptr_to_result_c(k.k).map(|_| {
+-                if !k.k.is_null() {
++                if k.k.is_null() {
++                    None
++                } else {
+                     Some(BkeySC {
+                         k:    &*k.k,
+                         v:    &*k.v,
+                         iter: PhantomData,
+                     })
+-                } else {
+-                    None
+                 }
+             })
+         }
+@@ -139,6 +141,7 @@ pub struct BtreeNodeIter<'t> {
  }
  
--impl<'t> Drop for BtreeIter<'t> {
-+impl Drop for BtreeIter<'_> {
-     fn drop(&mut self) {
-         unsafe { c::bch2_trans_iter_exit(self.raw.trans, &mut self.raw) }
-     }
-@@ -166,27 +166,27 @@ impl<'t> BtreeNodeIter<'t> {
-         }
-     }
+ impl<'t> BtreeNodeIter<'t> {
++    #[must_use]
+     pub fn new(
+         trans: &'t BtreeTrans<'t>,
+         btree: c::btree_id,
+@@ -156,7 +159,7 @@ impl<'t> BtreeNodeIter<'t> {
+                 pos,
+                 locks_want,
+                 depth,
+-                flags.bits as u32,
++                u32::from(flags.bits),
+             );
  
--    pub fn peek<'i>(&'i mut self) -> Result<Option<&'i c::btree>, bch_errcode> {
-+    pub fn peek(&mut self) -> Result<Option<&c::btree>, bch_errcode> {
+             BtreeNodeIter {
+@@ -169,14 +172,14 @@ impl<'t> BtreeNodeIter<'t> {
+     pub fn peek(&mut self) -> Result<Option<&c::btree>, bch_errcode> {
          unsafe {
              let b = c::bch2_btree_iter_peek_node(&mut self.raw);
-             errptr_to_result_c(b).map(|b| if !b.is_null() { Some(&*b) } else { None })
+-            errptr_to_result_c(b).map(|b| if !b.is_null() { Some(&*b) } else { None })
++            errptr_to_result_c(b).map(|b| if b.is_null() { None } else { Some(&*b) })
          }
      }
  
--    pub fn peek_and_restart<'i>(&'i mut self) -> Result<Option<&'i c::btree>, bch_errcode> {
-+    pub fn peek_and_restart(&mut self) -> Result<Option<&c::btree>, bch_errcode> {
+     pub fn peek_and_restart(&mut self) -> Result<Option<&c::btree>, bch_errcode> {
          unsafe {
              let b = c::bch2_btree_iter_peek_node_and_restart(&mut self.raw);
-             errptr_to_result_c(b).map(|b| if !b.is_null() { Some(&*b) } else { None })
+-            errptr_to_result_c(b).map(|b| if !b.is_null() { Some(&*b) } else { None })
++            errptr_to_result_c(b).map(|b| if b.is_null() { None } else { Some(&*b) })
          }
      }
  
--    pub fn advance<'i>(&'i mut self) {
-+    pub fn advance(&mut self) {
-         unsafe {
-             c::bch2_btree_iter_next_node(&mut self.raw);
-         }
-     }
- 
--    pub fn next<'i>(&'i mut self) -> Result<Option<&'i c::btree>, bch_errcode> {
-+    pub fn next(&mut self) -> Result<Option<&c::btree>, bch_errcode> {
+@@ -189,7 +192,7 @@ impl<'t> BtreeNodeIter<'t> {
+     pub fn next(&mut self) -> Result<Option<&c::btree>, bch_errcode> {
          unsafe {
              let b = c::bch2_btree_iter_next_node(&mut self.raw);
-             errptr_to_result_c(b).map(|b| if !b.is_null() { Some(&*b) } else { None })
-@@ -194,7 +194,7 @@ impl<'t> BtreeNodeIter<'t> {
+-            errptr_to_result_c(b).map(|b| if !b.is_null() { Some(&*b) } else { None })
++            errptr_to_result_c(b).map(|b| if b.is_null() { None } else { Some(&*b) })
+         }
      }
  }
- 
--impl<'t> Drop for BtreeNodeIter<'t> {
-+impl Drop for BtreeNodeIter<'_> {
-     fn drop(&mut self) {
-         unsafe { c::bch2_trans_iter_exit(self.raw.trans, &mut self.raw) }
-     }
-@@ -202,11 +202,11 @@ impl<'t> Drop for BtreeNodeIter<'t> {
+@@ -201,10 +204,12 @@ impl Drop for BtreeNodeIter<'_> {
+ }
  
  impl<'b, 'f> c::btree {
++    #[must_use]
      pub fn to_text(&'b self, fs: &'f Fs) -> BtreeNodeToText<'b, 'f> {
--        BtreeNodeToText { b: &self, fs }
-+        BtreeNodeToText { b: self, fs }
+         BtreeNodeToText { b: self, fs }
      }
  
++    #[must_use]
      pub fn ondisk_to_text(&'b self, fs: &'f Fs) -> BtreeNodeOndiskToText<'b, 'f> {
--        BtreeNodeOndiskToText { b: &self, fs }
-+        BtreeNodeOndiskToText { b: self, fs }
+         BtreeNodeOndiskToText { b: self, fs }
+     }
+@@ -218,7 +223,7 @@ pub struct BtreeNodeToText<'b, 'f> {
+ impl fmt::Display for BtreeNodeToText<'_, '_> {
+     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+         printbuf_to_formatter(f, |buf| unsafe {
+-            c::bch2_btree_node_to_text(buf, self.fs.raw, self.b)
++            c::bch2_btree_node_to_text(buf, self.fs.raw, self.b);
+         })
+     }
+ }
+@@ -231,7 +236,7 @@ pub struct BtreeNodeOndiskToText<'b, 'f> {
+ impl fmt::Display for BtreeNodeOndiskToText<'_, '_> {
+     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+         printbuf_to_formatter(f, |buf| unsafe {
+-            c::bch2_btree_node_ondisk_to_text(buf, self.fs.raw, self.b)
++            c::bch2_btree_node_ondisk_to_text(buf, self.fs.raw, self.b);
+         })
+     }
+ }
+diff --git a/bch_bindgen/src/errcode.rs b/bch_bindgen/src/errcode.rs
+index 4d75f1d2..b8d12c19 100644
+--- a/bch_bindgen/src/errcode.rs
++++ b/bch_bindgen/src/errcode.rs
+@@ -7,7 +7,7 @@ pub use crate::c::bch_errcode;
+ impl fmt::Display for bch_errcode {
+     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+         let s = unsafe { CStr::from_ptr(bcachefs::bch2_err_str(*self as i32)) };
+-        write!(f, "{:?}", s)
++        write!(f, "{s:?}")
      }
  }
  
-@@ -215,7 +215,7 @@ pub struct BtreeNodeToText<'b, 'f> {
-     fs: &'f Fs,
- }
- 
--impl<'b, 'f> fmt::Display for BtreeNodeToText<'b, 'f> {
-+impl fmt::Display for BtreeNodeToText<'_, '_> {
-     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-         printbuf_to_formatter(f, |buf| unsafe {
-             c::bch2_btree_node_to_text(buf, self.fs.raw, self.b)
-@@ -228,7 +228,7 @@ pub struct BtreeNodeOndiskToText<'b, 'f> {
-     fs: &'f Fs,
- }
- 
--impl<'b, 'f> fmt::Display for BtreeNodeOndiskToText<'b, 'f> {
-+impl fmt::Display for BtreeNodeOndiskToText<'_, '_> {
-     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-         printbuf_to_formatter(f, |buf| unsafe {
-             c::bch2_btree_node_ondisk_to_text(buf, self.fs.raw, self.b)
 diff --git a/bch_bindgen/src/lib.rs b/bch_bindgen/src/lib.rs
-index b68f2d9b..7825cde1 100644
+index 7825cde1..7c313921 100644
 --- a/bch_bindgen/src/lib.rs
 +++ b/bch_bindgen/src/lib.rs
-@@ -109,13 +109,8 @@ impl FromStr for c::btree_id {
-         let s = CString::new(s).unwrap();
-         let p = s.as_ptr();
+@@ -14,14 +14,16 @@ pub mod c {
  
--        let v = unsafe {
--            c::match_string(
--                c::__bch2_btree_ids[..].as_ptr(),
--                (-(1 as isize)) as usize,
--                p,
--            )
--        };
-+        let v =
-+            unsafe { c::match_string(c::__bch2_btree_ids[..].as_ptr(), (-1_isize) as usize, p) };
-         if v >= 0 {
-             Ok(unsafe { std::mem::transmute(v) })
-         } else {
-@@ -131,9 +126,7 @@ impl FromStr for c::bch_bkey_type {
-         let s = CString::new(s).unwrap();
-         let p = s.as_ptr();
+ use c::bpos as Bpos;
  
--        let v = unsafe {
--            c::match_string(c::bch2_bkey_types[..].as_ptr(), (-(1 as isize)) as usize, p)
--        };
-+        let v = unsafe { c::match_string(c::bch2_bkey_types[..].as_ptr(), (-1_isize) as usize, p) };
-         if v >= 0 {
-             Ok(unsafe { std::mem::transmute(v) })
-         } else {
-@@ -192,7 +185,7 @@ impl FromStr for c::bpos {
++#[must_use]
+ pub const fn spos(inode: u64, offset: u64, snapshot: u32) -> Bpos {
+     Bpos {
+-        inode,
+-        offset,
+         snapshot,
++        offset,
++        inode,
+     }
+ }
  
-         let ino: u64 = ino_str.parse().map_err(|_| BchToolsErr::InvalidBpos)?;
-         let off: u64 = off_str.parse().map_err(|_| BchToolsErr::InvalidBpos)?;
--        let snp: u32 = snp_str.map(|s| s.parse().ok()).flatten().unwrap_or(0);
-+        let snp: u32 = snp_str.and_then(|s| s.parse().ok()).unwrap_or(0);
++#[must_use]
+ pub const fn pos(inode: u64, offset: u64) -> Bpos {
+     spos(inode, offset, 0)
+ }
+@@ -69,7 +71,7 @@ impl fmt::Display for c::btree_id {
+     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+         let s = unsafe { CStr::from_ptr(c::bch2_btree_id_str(*self)) };
+         let s = s.to_str().unwrap();
+-        write!(f, "{}", s)
++        write!(f, "{s}")
+     }
+ }
  
-         Ok(c::bpos {
-             inode:    ino,
+@@ -158,7 +160,7 @@ impl fmt::Display for Bpos {
+ 
+         let s = unsafe { CStr::from_ptr(buf.buf) };
+         let s = s.to_str().unwrap();
+-        write!(f, "{}", s)
++        write!(f, "{s}")
+     }
+ }
+ 
+diff --git a/bch_bindgen/src/sb_io.rs b/bch_bindgen/src/sb_io.rs
+index 46e17673..de6ee4ad 100644
+--- a/bch_bindgen/src/sb_io.rs
++++ b/bch_bindgen/src/sb_io.rs
+@@ -1,5 +1,5 @@
+ use crate::bcachefs;
+-use crate::bcachefs::*;
++use crate::bcachefs::{bch_opts, bch_sb_handle};
+ use crate::errcode::bch_errcode;
+ use crate::path_to_cstr;
+ use anyhow::anyhow;
 diff --git a/src/commands/mount.rs b/src/commands/mount.rs
-index 1b8f444a..148d686e 100644
+index 148d686e..07354d89 100644
 --- a/src/commands/mount.rs
 +++ b/src/commands/mount.rs
-@@ -35,7 +35,9 @@ fn mount_inner(
-     // convert to pointers for ffi
-     let c_src = c_src.as_ptr();
-     let c_target = c_target.as_ptr();
--    let data_ptr = data.as_ref().map_or(ptr::null(), |data| data.as_ptr().cast());
-+    let data_ptr = data
-+        .as_ref()
-+        .map_or(ptr::null(), |data| data.as_ptr().cast());
-     let fstype = fstype.as_ptr();
- 
-     let mut ret;
-@@ -66,7 +68,11 @@ fn mount_inner(
-         let e = crate::ErrnoError(err);
- 
-         if err.0 == libc::EBUSY {
--            eprintln!("mount: {}: {} already mounted or mount point busy", target.to_string_lossy(), src);
-+            eprintln!(
-+                "mount: {}: {} already mounted or mount point busy",
-+                target.to_string_lossy(),
-+                src
-+            );
+@@ -74,7 +74,7 @@ fn mount_inner(
+                 src
+             );
          } else {
-             eprintln!("mount: {}: {}", src, e);
+-            eprintln!("mount: {}: {}", src, e);
++            eprintln!("mount: {src}: {e}");
          }
-@@ -248,7 +254,10 @@ fn devs_str_sbs_from_device(
-     let dev_sb = read_super_silent(device, *opts)?;
  
-     if dev_sb.sb().number_of_devices() == 1 {
--        Ok((device.as_os_str().to_str().unwrap().to_string(), vec![dev_sb]))
-+        Ok((
-+            device.as_os_str().to_str().unwrap().to_string(),
-+            vec![dev_sb],
-+        ))
-     } else {
-         let uuid = dev_sb.sb().uuid();
+         Err(e.into())
+@@ -211,15 +211,15 @@ fn get_devices_by_uuid(
+     opts: &bch_opts
+ ) -> anyhow::Result<Vec<(PathBuf, bch_sb_handle)>> {
+     let devices = {
+-        if !udev_bcachefs.is_empty() {
++        if udev_bcachefs.is_empty() {
++            get_all_block_devnodes()?
++        } else {
+             let uuid_string = uuid.hyphenated().to_string();
+             if let Some(devices) = udev_bcachefs.get(&uuid_string) {
+                 devices.clone()
+             } else {
+                 Vec::new()
+             }
+-        } else {
+-            get_all_block_devnodes()?
+         }
+     };
  
-@@ -390,8 +399,8 @@ pub fn mount(mut argv: Vec<String>, symlink_cmd: Option<&str>) -> std::process::
+@@ -351,7 +351,7 @@ pub struct Cli {
+     /// Path to passphrase file
+     ///
+     /// This can be used to optionally specify a file to read the passphrase
+-    /// from. An explictly specified key_location/unlock_policy overrides this
++    /// from. An explictly specified `key_location/unlock_policy` overrides this
+     /// argument.
+     #[arg(short = 'f', long)]
+     passphrase_file: Option<PathBuf>,
+@@ -399,7 +399,7 @@ pub fn mount(mut argv: Vec<String>, symlink_cmd: Option<&str>) -> std::process::
      logging::setup(cli.verbose, cli.colorize);
  
      match cmd_mount_inner(&cli) {
--        Ok(_)   => std::process::ExitCode::SUCCESS,
--        Err(e)   => {
-+        Ok(_) => std::process::ExitCode::SUCCESS,
-+        Err(e) => {
+-        Ok(_) => std::process::ExitCode::SUCCESS,
++        Ok(()) => std::process::ExitCode::SUCCESS,
+         Err(e) => {
              error!("Mount failed: {e}");
              std::process::ExitCode::FAILURE
+diff --git a/src/key.rs b/src/key.rs
+index 8cf4f124..50cae47c 100644
+--- a/src/key.rs
++++ b/src/key.rs
+@@ -175,9 +175,10 @@ impl Passphrase {
+ 
+     // blocks indefinitely if no input is available on stdin
+     pub fn new_from_prompt(uuid: &Uuid) -> Result<Self> {
+-        match Self::new_from_askpassword(uuid) {
+-            Ok(phrase) => return phrase,
+-            Err(_) => debug!("Failed to start systemd-ask-password, doing the prompt ourselves"),
++        if let Ok(phrase) = Self::new_from_askpassword(uuid) {
++            return phrase;
++        } else {
++            debug!("Failed to start systemd-ask-password, doing the prompt ourselves")
          }
+         let old = termios::tcgetattr(stdin())?;
+         let mut new = old.clone();
+@@ -219,7 +220,7 @@ impl Passphrase {
+     }
+ 
+     fn derive(&self, crypt: &bch_sb_field_crypt) -> bch_key {
+-        let crypt_ptr = (crypt as *const bch_sb_field_crypt).cast_mut();
++        let crypt_ptr = std::ptr::from_ref::<bch_sb_field_crypt>(crypt).cast_mut();
+ 
+         unsafe { bcachefs::derive_passphrase(crypt_ptr, self.get().as_ptr()) }
+     }
+diff --git a/src/wrappers/handle.rs b/src/wrappers/handle.rs
+index b9a4a63d..3aec53ef 100644
+--- a/src/wrappers/handle.rs
++++ b/src/wrappers/handle.rs
+@@ -42,7 +42,9 @@ pub enum BcachefsIoctlPayload {
+ impl From<&BcachefsIoctlPayload> for *const libc::c_void {
+     fn from(value: &BcachefsIoctlPayload) -> Self {
+         match value {
+-            BcachefsIoctlPayload::Subvolume(p) => (p as *const bch_ioctl_subvolume).cast(),
++            BcachefsIoctlPayload::Subvolume(p) => {
++                std::ptr::from_ref::<bch_ioctl_subvolume>(p).cast()
++            }
+         }
+     }
+ }
 -- 
 2.48.1
 
