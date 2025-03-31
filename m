@@ -1,161 +1,80 @@
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3404757F3
-	for <linux-bcachefs@vger.kernel.org>; Mon, 31 Mar 2025 18:48:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EC1D1DC9B8
+	for <linux-bcachefs@vger.kernel.org>; Mon, 31 Mar 2025 23:48:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743446907; cv=none; b=VuYovzg0GYWl3Eb8VDEEdLViQjjqXm4p5bfKXyqrJSh38feJ+UYEAVUPeaj2xCaE4iKWndqt7/B40x+peYTKqbw2XFA5X2a3zNVa8DH/9tJ02MxtZt6Ui31+HD5BDW5EG+YPoqUqwD6e2sQL5JPPui5tLLaYax/4UziM7LC5ugc=
+	t=1743464883; cv=none; b=ozAOdE2UytLul84I2zgnubRMD99DfgTwkK7CGX/G/1dalwSe5JegY1rKInrtCVX147F69kC0a3NCxvNwTtoz0Lu2Wha49DY1iRXMD0ul2Z+Bw58erEqPckBQl5XGmbhBISTeKfReGJeeQ720ab4fnIlkW7Iol7VrwnJSryFeH0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743446907; c=relaxed/simple;
-	bh=unqEZwi2atuLdssigP/ZEm9NIVzsIX3bliyuRp11/9s=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=N8F8B4kOeD2Z2UGc7ai2kB9GIpR97IFobbmzqWLvwPEeX+NHQjaMNgDw8iCRJrDfO6kBqbpCp9iG1xPCBfm+D1UcrAp7FoLshCvSxXNjA3El+My5Xu+nXjJfuIOHJOf+rcGGIkRaWCRCKBu7UT5SIQB7WMArfH6G0W+p84vDYUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=n17C1uqp; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1743464883; c=relaxed/simple;
+	bh=UIALoqVNy9jyOJh4zmq39it75O+oM6VqhdRsyH0adMw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=rSGy90UuW3pwTa+MmKbfUd7xh9KJgKNS93DDsw8cDnCI2KPHNSxkFJbl4HbXEW5008RQTHdfUX4hFP+exI4O0BxT1WeAAi2SbD0Ddz8Ubh0Mpcivfkpk7SEadcq5vnwoTe+lSKxTv56R6OKz8aevcdt0A6fS4+SKHIB1AxlivHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=sNgB1cn8; arc=none smtp.client-ip=185.67.36.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="n17C1uqp"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1743446904;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=YVbwvqZcUcMYwY9Di0+ZCfDwvlCtag0r+dze2iL6qVs=;
-	b=n17C1uqpt2rNrjzPI2Y4r72Yh/H8WSBpc7/zzFDkU9wQdjmx/3DMDiPVcKFTAmN6T9pKo4
-	9RLaUcxTKyZXXCi+fJCTvaegqsCSJowT0fqUKNu4e+h6FWHzAAJ80Oa29ODDOAGzmyjAOz
-	9jJP4dOYh2vp4U0GWcgZ5aFyQn+lB0k=
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH] bcachefs: Fix striping behaviour
-Date: Mon, 31 Mar 2025 14:48:18 -0400
-Message-ID: <20250331184818.431245-1-kent.overstreet@linux.dev>
+	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="sNgB1cn8"
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout01.posteo.de (Postfix) with ESMTPS id 8BCC6240027
+	for <linux-bcachefs@vger.kernel.org>; Tue,  1 Apr 2025 01:47:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+	t=1743464878; bh=UIALoqVNy9jyOJh4zmq39it75O+oM6VqhdRsyH0adMw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding:From;
+	b=sNgB1cn8mdFGu5xf76FeYrJZILG9MVEBXqDBob/yCH7YdORWMn/8CIv0PUsWnhu+i
+	 Z2GALIsThAASeo1ccZwYMwAhtWkFUUi5NiY+Lqvo4rb8SvqnBFF+4JQZsLibY04+nh
+	 7O2NXFKwAqaxVhs60g/Ke/iF3wYhM6XLiP95khrU/P7BM2Rh4OoSlWDLT0Ls2gG/kT
+	 fT32Ti7M1zRObulVZLQNR9Y4IPCPQIP9LqPzuhGcecO9Io/v7AUhlGR8ta3S12Vaop
+	 BFnG9AiMQ9Sj1j5co6FcMHobf5ks8HmaZQakveMS4nSTRMVqwr277nS020D/p3w7+M
+	 bpQGd7SVBYSEQ==
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4ZRSVk0GjMz6tvd;
+	Tue,  1 Apr 2025 01:47:57 +0200 (CEST)
+From: =?UTF-8?q?Thomas=20M=C3=BChlbacher?= <tmuehlbacher@posteo.net>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	=?UTF-8?q?Thomas=20M=C3=BChlbacher?= <tmuehlbacher@posteo.net>
+Subject: [PATCH 0/2] bcachefs-tools: get most of CI to pass again
+Date: Mon, 31 Mar 2025 23:47:42 +0000
+Message-ID: <20250331234744.428142-1-tmuehlbacher@posteo.net>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-For striping across devices, we maintain "clocks", and we advance them
-by the inverse of "how much free space this device has left", so that we
-round robin biased in favor of devices with more free space.
+Ok, so I have now tried to minimize the patch from the last patch set to
+at least have most of the CI (except for i686 builds) pass.
 
-This code was originally trying to do EWMA-ish stuff when originally
-written, ~10 years ago, and was never properly cleaned up when it was
-realized that an EWMA is not the right approach here.
+I threw out the pedantic automatic clippy fixes, so the `Bpos`
+instantiation change from before is gone. I am pretty sure that wouldn't
+have changed anything about the binary layout of that structure, though.
 
-That left a bug, when we rescale to keep all the clocks in the correct
-range and prevent overflow.
+I know you don't like formatting commits and I wish they wouldn't pick
+up anything except for what I changed. However, since `clippy --fix`
+doesn't format itself, I previously had that in there as part of a
+commit that only includes tool-generated changes.
 
-It was assumed that we'd always be allocated from the device with the
-smallest clock hand, but that's actually not correct: with the target
-options, allocations will be first tried from a subset of devices, and
-then the entire filesystem if that fails.
+I also now just avoid the ugly transmute annotations and just suppress
+the lint instead for that function. This also requires changing the MSRV
+CI check, because that lint did not yet exist for the MSRV Rust version.
 
-Thus, the rescale from the first allocation - allocating from a subset
-of devices - can pick the wrong rescale value and cause the rest of the
-clocks to go to 0, losing information.
+Thomas Mühlbacher (2):
+  fix(nix): allow msrv test to have warnings
+  refactor: make bch_bindgen pass clippy
 
-This resuls in incorrect striping behaviour when the desired number of
-replicas doesn't fit on the foreground target.
+ bch_bindgen/src/bcachefs.rs |  5 +++++
+ bch_bindgen/src/bkey.rs     |  3 ++-
+ bch_bindgen/src/btree.rs    | 25 +++++++++++++------------
+ bch_bindgen/src/fs.rs       |  2 +-
+ bch_bindgen/src/lib.rs      | 19 ++++++-------------
+ flake.nix                   |  2 +-
+ 6 files changed, 28 insertions(+), 28 deletions(-)
 
-Link: https://www.reddit.com/r/bcachefs/comments/1jn3t26/replica_allocation_not_evenly_distributed_among/
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
----
- fs/bcachefs/alloc_foreground.c | 60 +++++++++++++++++++++++++++-------
- 1 file changed, 48 insertions(+), 12 deletions(-)
-
-diff --git a/fs/bcachefs/alloc_foreground.c b/fs/bcachefs/alloc_foreground.c
-index da0d72928b5b..1a25a8a4ae09 100644
---- a/fs/bcachefs/alloc_foreground.c
-+++ b/fs/bcachefs/alloc_foreground.c
-@@ -606,8 +606,7 @@ struct open_bucket *bch2_bucket_alloc(struct bch_fs *c, struct bch_dev *ca,
- static int __dev_stripe_cmp(struct dev_stripe_state *stripe,
- 			    unsigned l, unsigned r)
- {
--	return ((stripe->next_alloc[l] > stripe->next_alloc[r]) -
--		(stripe->next_alloc[l] < stripe->next_alloc[r]));
-+	return cmp_int(stripe->next_alloc[l], stripe->next_alloc[r]);
- }
- 
- #define dev_stripe_cmp(l, r) __dev_stripe_cmp(stripe, l, r)
-@@ -626,25 +625,62 @@ struct dev_alloc_list bch2_dev_alloc_list(struct bch_fs *c,
- 	return ret;
- }
- 
-+static const u64 stripe_clock_hand_rescale	= 1ULL << 62; /* trigger rescale at */
-+static const u64 stripe_clock_hand_max		= 1ULL << 56; /* max after rescale */
-+static const u64 stripe_clock_hand_inv		= 1ULL << 52; /* max increment, if a device is empty */
-+
-+static noinline void bch2_stripe_state_rescale(struct dev_stripe_state *stripe)
-+{
-+	/*
-+	 * Avoid underflowing clock hands if at all possible, if clock hands go
-+	 * to 0 then we lose information - clock hands can be in a wide range if
-+	 * we have devices we rarely try to allocate from, if we generally
-+	 * allocate from a specified target but only sometimes have to fall back
-+	 * to the whole filesystem.
-+	 */
-+	u64 scale_max = U64_MAX;	/* maximum we can subtract without underflow */
-+	u64 scale_min = 0;		/* minumum we must subtract to avoid overflow */
-+
-+	for (u64 *v = stripe->next_alloc;
-+	     v < stripe->next_alloc + ARRAY_SIZE(stripe->next_alloc); v++) {
-+		if (*v)
-+			scale_max = min(scale_max, *v);
-+		if (*v > stripe_clock_hand_max)
-+			scale_min = max(scale_min, *v - stripe_clock_hand_max);
-+	}
-+
-+	u64 scale = max(scale_min, scale_max);
-+
-+	for (u64 *v = stripe->next_alloc;
-+	     v < stripe->next_alloc + ARRAY_SIZE(stripe->next_alloc); v++)
-+		*v = *v < scale ? 0 : *v - scale;
-+}
-+
- static inline void bch2_dev_stripe_increment_inlined(struct bch_dev *ca,
- 			       struct dev_stripe_state *stripe,
- 			       struct bch_dev_usage *usage)
- {
-+	/*
-+	 * Stripe state has a per device clock hand: we allocate from the device
-+	 * with the smallest clock hand.
-+	 *
-+	 * When we allocate, we don't do a simple increment; we add the inverse
-+	 * of the device's free space. This results in round robin behavior that
-+	 * biases in favor of the device(s) with more free space.
-+	 */
-+
- 	u64 *v = stripe->next_alloc + ca->dev_idx;
- 	u64 free_space = __dev_buckets_available(ca, *usage, BCH_WATERMARK_normal);
- 	u64 free_space_inv = free_space
--		? div64_u64(1ULL << 48, free_space)
--		: 1ULL << 48;
--	u64 scale = *v / 4;
-+		? div64_u64(stripe_clock_hand_inv, free_space)
-+		: stripe_clock_hand_inv;
- 
--	if (*v + free_space_inv >= *v)
--		*v += free_space_inv;
--	else
--		*v = U64_MAX;
-+	/* Saturating add, avoid overflow: */
-+	u64 sum = *v + free_space_inv;
-+	*v = sum >= *v ? sum : U64_MAX;
- 
--	for (v = stripe->next_alloc;
--	     v < stripe->next_alloc + ARRAY_SIZE(stripe->next_alloc); v++)
--		*v = *v < scale ? 0 : *v - scale;
-+	if (unlikely(*v > stripe_clock_hand_rescale))
-+		bch2_stripe_state_rescale(stripe);
- }
- 
- void bch2_dev_stripe_increment(struct bch_dev *ca,
 -- 
-2.49.0
+2.48.1
 
