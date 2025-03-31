@@ -1,165 +1,161 @@
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BD3B21322E
-	for <linux-bcachefs@vger.kernel.org>; Mon, 31 Mar 2025 17:07:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3404757F3
+	for <linux-bcachefs@vger.kernel.org>; Mon, 31 Mar 2025 18:48:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743440873; cv=none; b=tf83XiVjcKE6+Q3DiXs5DI2qeprGmWJPVa/jCsZQvXGuXe2WCgUulmy4h9n8DX6+ykDioOyacGiqCGI5q1fBJpdZm1+EfZrV5FBiySGKFlJnDhOB2FJckRSYUgsbEFS2JmphWJTEOC9hvlRqk5+eOYD00+M9qrXebWxX9dN0oBM=
+	t=1743446907; cv=none; b=VuYovzg0GYWl3Eb8VDEEdLViQjjqXm4p5bfKXyqrJSh38feJ+UYEAVUPeaj2xCaE4iKWndqt7/B40x+peYTKqbw2XFA5X2a3zNVa8DH/9tJ02MxtZt6Ui31+HD5BDW5EG+YPoqUqwD6e2sQL5JPPui5tLLaYax/4UziM7LC5ugc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743440873; c=relaxed/simple;
-	bh=0XXHvVH3uTDCMxcR0WdIaNLdp3YBldH2uI8GRVxW53s=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=UrAZNm4PPEuDIemtofBnpJL0VZ2BqpWx4vBxsczg0Od60E6Gcr+drPANd/YTXNHwafl2Ufq+IAOU87WXsXGKNh0XTnJHGs/C5Rf4tQDnpptHCo3mX7q+/083lCWnZPk3e2P91TNFwrwyxmOUv6lBJigwO2VO/vt4nVccO2ptuxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fPehXRci; arc=none smtp.client-ip=91.218.175.186
+	s=arc-20240116; t=1743446907; c=relaxed/simple;
+	bh=unqEZwi2atuLdssigP/ZEm9NIVzsIX3bliyuRp11/9s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=N8F8B4kOeD2Z2UGc7ai2kB9GIpR97IFobbmzqWLvwPEeX+NHQjaMNgDw8iCRJrDfO6kBqbpCp9iG1xPCBfm+D1UcrAp7FoLshCvSxXNjA3El+My5Xu+nXjJfuIOHJOf+rcGGIkRaWCRCKBu7UT5SIQB7WMArfH6G0W+p84vDYUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=n17C1uqp; arc=none smtp.client-ip=95.215.58.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fPehXRci"
-Date: Mon, 31 Mar 2025 13:07:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1743440859;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=5OupMGobLMAwcSJf51wqGLHPQ4jZkY1BiImmx9cF0Dg=;
-	b=fPehXRci0Usgern7GARpYrL022EgKSkHiT2ifiNiDLZ7nRJ9q7skctJBP84hIECOFcFSeb
-	ZViJuCPxxknN6nvxOkzNz+vwMfk7LpKtWqYVKbUP2x6UaSd+t+/L9g3JY21fGVsl06sM9l
-	nadt6Ba9UIp0BuEBMI7Y8UbigRqqDbU=
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="n17C1uqp"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1743446904;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=YVbwvqZcUcMYwY9Di0+ZCfDwvlCtag0r+dze2iL6qVs=;
+	b=n17C1uqpt2rNrjzPI2Y4r72Yh/H8WSBpc7/zzFDkU9wQdjmx/3DMDiPVcKFTAmN6T9pKo4
+	9RLaUcxTKyZXXCi+fJCTvaegqsCSJowT0fqUKNu4e+h6FWHzAAJ80Oa29ODDOAGzmyjAOz
+	9jJP4dOYh2vp4U0GWcgZ5aFyQn+lB0k=
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] bcachefs updates for 6.15 part 2
-Message-ID: <insmfmxhkgbdvnnqaxkxfllhrea25hojvjaetxgdu3jr6txyjv@i44r2xo2virt>
+To: linux-bcachefs@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Subject: [PATCH] bcachefs: Fix striping behaviour
+Date: Mon, 31 Mar 2025 14:48:18 -0400
+Message-ID: <20250331184818.431245-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-The following changes since commit d8bdc8daac1d1b0a4efb1ecc69bef4eb4fc5e050:
+For striping across devices, we maintain "clocks", and we advance them
+by the inverse of "how much free space this device has left", so that we
+round robin biased in favor of devices with more free space.
 
-  bcachefs: Kill unnecessary bch2_dev_usage_read() (2025-03-24 09:50:37 -0400)
+This code was originally trying to do EWMA-ish stuff when originally
+written, ~10 years ago, and was never properly cleaned up when it was
+realized that an EWMA is not the right approach here.
 
-are available in the Git repository at:
+That left a bug, when we rescale to keep all the clocks in the correct
+range and prevent overflow.
 
-  git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-03-31
+It was assumed that we'd always be allocated from the device with the
+smallest clock hand, but that's actually not correct: with the target
+options, allocations will be first tried from a subset of devices, and
+then the entire filesystem if that fails.
 
-for you to fetch changes up to 650f5353dcc9b6e690a1c763754fa1e98d217bfc:
+Thus, the rescale from the first allocation - allocating from a subset
+of devices - can pick the wrong rescale value and cause the rest of the
+clocks to go to 0, losing information.
 
-  bcachefs: fix bch2_write_point_to_text() units (2025-03-30 20:04:16 -0400)
+This resuls in incorrect striping behaviour when the desired number of
+replicas doesn't fit on the foreground target.
 
-----------------------------------------------------------------
-bcachefs updates for 6.15, part 2
+Link: https://www.reddit.com/r/bcachefs/comments/1jn3t26/replica_allocation_not_evenly_distributed_among/
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+---
+ fs/bcachefs/alloc_foreground.c | 60 +++++++++++++++++++++++++++-------
+ 1 file changed, 48 insertions(+), 12 deletions(-)
 
-All bugfixes and logging improvements.
+diff --git a/fs/bcachefs/alloc_foreground.c b/fs/bcachefs/alloc_foreground.c
+index da0d72928b5b..1a25a8a4ae09 100644
+--- a/fs/bcachefs/alloc_foreground.c
++++ b/fs/bcachefs/alloc_foreground.c
+@@ -606,8 +606,7 @@ struct open_bucket *bch2_bucket_alloc(struct bch_fs *c, struct bch_dev *ca,
+ static int __dev_stripe_cmp(struct dev_stripe_state *stripe,
+ 			    unsigned l, unsigned r)
+ {
+-	return ((stripe->next_alloc[l] > stripe->next_alloc[r]) -
+-		(stripe->next_alloc[l] < stripe->next_alloc[r]));
++	return cmp_int(stripe->next_alloc[l], stripe->next_alloc[r]);
+ }
+ 
+ #define dev_stripe_cmp(l, r) __dev_stripe_cmp(stripe, l, r)
+@@ -626,25 +625,62 @@ struct dev_alloc_list bch2_dev_alloc_list(struct bch_fs *c,
+ 	return ret;
+ }
+ 
++static const u64 stripe_clock_hand_rescale	= 1ULL << 62; /* trigger rescale at */
++static const u64 stripe_clock_hand_max		= 1ULL << 56; /* max after rescale */
++static const u64 stripe_clock_hand_inv		= 1ULL << 52; /* max increment, if a device is empty */
++
++static noinline void bch2_stripe_state_rescale(struct dev_stripe_state *stripe)
++{
++	/*
++	 * Avoid underflowing clock hands if at all possible, if clock hands go
++	 * to 0 then we lose information - clock hands can be in a wide range if
++	 * we have devices we rarely try to allocate from, if we generally
++	 * allocate from a specified target but only sometimes have to fall back
++	 * to the whole filesystem.
++	 */
++	u64 scale_max = U64_MAX;	/* maximum we can subtract without underflow */
++	u64 scale_min = 0;		/* minumum we must subtract to avoid overflow */
++
++	for (u64 *v = stripe->next_alloc;
++	     v < stripe->next_alloc + ARRAY_SIZE(stripe->next_alloc); v++) {
++		if (*v)
++			scale_max = min(scale_max, *v);
++		if (*v > stripe_clock_hand_max)
++			scale_min = max(scale_min, *v - stripe_clock_hand_max);
++	}
++
++	u64 scale = max(scale_min, scale_max);
++
++	for (u64 *v = stripe->next_alloc;
++	     v < stripe->next_alloc + ARRAY_SIZE(stripe->next_alloc); v++)
++		*v = *v < scale ? 0 : *v - scale;
++}
++
+ static inline void bch2_dev_stripe_increment_inlined(struct bch_dev *ca,
+ 			       struct dev_stripe_state *stripe,
+ 			       struct bch_dev_usage *usage)
+ {
++	/*
++	 * Stripe state has a per device clock hand: we allocate from the device
++	 * with the smallest clock hand.
++	 *
++	 * When we allocate, we don't do a simple increment; we add the inverse
++	 * of the device's free space. This results in round robin behavior that
++	 * biases in favor of the device(s) with more free space.
++	 */
++
+ 	u64 *v = stripe->next_alloc + ca->dev_idx;
+ 	u64 free_space = __dev_buckets_available(ca, *usage, BCH_WATERMARK_normal);
+ 	u64 free_space_inv = free_space
+-		? div64_u64(1ULL << 48, free_space)
+-		: 1ULL << 48;
+-	u64 scale = *v / 4;
++		? div64_u64(stripe_clock_hand_inv, free_space)
++		: stripe_clock_hand_inv;
+ 
+-	if (*v + free_space_inv >= *v)
+-		*v += free_space_inv;
+-	else
+-		*v = U64_MAX;
++	/* Saturating add, avoid overflow: */
++	u64 sum = *v + free_space_inv;
++	*v = sum >= *v ? sum : U64_MAX;
+ 
+-	for (v = stripe->next_alloc;
+-	     v < stripe->next_alloc + ARRAY_SIZE(stripe->next_alloc); v++)
+-		*v = *v < scale ? 0 : *v - scale;
++	if (unlikely(*v > stripe_clock_hand_rescale))
++		bch2_stripe_state_rescale(stripe);
+ }
+ 
+ void bch2_dev_stripe_increment(struct bch_dev *ca,
+-- 
+2.49.0
 
-Minor merge conflict, see:
-https://lore.kernel.org/linux-next/20250331092816.778a7c83@canb.auug.org.au/T/#u
-
-CI says the fs-next tree is good:
-https://evilpiepirate.org/~testdashboard/ci?user=fs-next&branch=master
-
-----------------------------------------------------------------
-Florian Albrechtskirchinger (1):
-      bcachefs: Fix bch2_fs_get_tree() error path
-
-Kent Overstreet (34):
-      bcachefs: Fix nonce inconsistency in bch2_write_prep_encoded_data()
-      bcachefs: Fix silent short reads in data read retry path
-      bcachefs: Fix duplicate checksum error messages in write path
-      bcachefs: Use print_string_as_lines() for journal stuck messages
-      bcachefs: Validate number of counters for accounting keys
-      bcachefs: Document disk accounting keys and conuters
-      bcachefs: Don't unnecessarily decrypt data when moving
-      bcachefs: Fix btree iter flags in data move (2)
-      bcachefs: Fix 'hung task' messages in btree node scan
-      bcachefs: cond_resched() in journal_key_sort_cmp()
-      bcachefs: Fix permissions on version modparam
-      bcachefs: Recovery no longer holds state_lock
-      bcachefs: Fix bch2_seek_hole() locking
-      bcachefs: Don't return 0 size holes from bch2_seek_hole()
-      bcachefs: Fix WARN() in bch2_bkey_pick_read_device()
-      bcachefs: print_string_as_lines: fix extra newline
-      bcachefs: add missing newline in bch2_trans_updates_to_text()
-      bcachefs: fix logging in journal_entry_err_msg()
-      bcachefs: bch2_time_stats_init_no_pcpu()
-      bcachefs: Add an "ignore unknown" option to bch2_parse_mount_opts()
-      bcachefs: Consistent indentation of multiline fsck errors
-      bcachefs: Better helpers for inconsistency errors
-      bcachefs: bch2_count_fsck_err()
-      bcachefs: Better printing of inconsistency errors
-      bcachefs: Change btree_insert_node() assertion to error
-      bcachefs: Clear fs_path_parent on subvolume unlink
-      bcachefs: bch2_ioctl_subvolume_destroy() fixes
-      bcachefs: fix units in rebalance_status
-      bcachefs: Silence errors after emergency shutdown
-      bcachefs: Don't use designated initializers for disk_accounting_pos
-      bcachefs: Reorder error messages that include journal debug
-      bcachefs: BCH_JSET_ENTRY_log_bkey
-      bcachefs: Log original key being moved in data updates
-      bcachefs: fix bch2_write_point_to_text() units
-
- fs/bcachefs/alloc_background.c       |  22 ++--
- fs/bcachefs/alloc_foreground.c       |   2 +-
- fs/bcachefs/backpointers.c           |  43 ++++---
- fs/bcachefs/bcachefs_format.h        |   3 +-
- fs/bcachefs/btree_cache.c            |   2 +-
- fs/bcachefs/btree_gc.c               |  23 ++--
- fs/bcachefs/btree_io.c               |  63 +++++-----
- fs/bcachefs/btree_iter.c             |  14 +--
- fs/bcachefs/btree_iter.h             |   1 -
- fs/bcachefs/btree_journal_iter.c     |   2 +
- fs/bcachefs/btree_node_scan.c        |  14 ++-
- fs/bcachefs/btree_update.c           |  13 ++
- fs/bcachefs/btree_update.h           |   2 +
- fs/bcachefs/btree_update_interior.c  |  91 ++++++++------
- fs/bcachefs/buckets.c                | 161 ++++++++++++++-----------
- fs/bcachefs/chardev.c                |   6 +-
- fs/bcachefs/data_update.c            |  22 +++-
- fs/bcachefs/data_update.h            |  12 ++
- fs/bcachefs/disk_accounting.c        |  40 ++++---
- fs/bcachefs/disk_accounting.h        |   8 +-
- fs/bcachefs/disk_accounting_format.h |  80 +++++++++++--
- fs/bcachefs/ec.c                     |  22 ++--
- fs/bcachefs/errcode.h                |   3 +
- fs/bcachefs/error.c                  | 226 ++++++++++++++++++++++++++---------
- fs/bcachefs/error.h                  |  48 ++++----
- fs/bcachefs/extents.c                |   7 +-
- fs/bcachefs/fs-io-buffered.c         |   2 +-
- fs/bcachefs/fs-io.c                  |  31 +++--
- fs/bcachefs/fs-ioctl.c               |   6 +-
- fs/bcachefs/fs.c                     |   9 +-
- fs/bcachefs/fsck.c                   |  22 ++--
- fs/bcachefs/io_read.c                |   4 +-
- fs/bcachefs/io_read.h                |   6 +-
- fs/bcachefs/io_write.c               |  44 ++++---
- fs/bcachefs/journal.c                |  19 +--
- fs/bcachefs/journal_io.c             |  38 ++++--
- fs/bcachefs/lru.c                    |   7 +-
- fs/bcachefs/move.c                   |  37 +++++-
- fs/bcachefs/namei.c                  |   4 +-
- fs/bcachefs/opts.c                   |  49 ++++----
- fs/bcachefs/opts.h                   |   3 +-
- fs/bcachefs/printbuf.c               |  19 +++
- fs/bcachefs/printbuf.h               |   1 +
- fs/bcachefs/progress.c               |   6 +-
- fs/bcachefs/rebalance.c              |   5 +-
- fs/bcachefs/recovery_passes.c        |  12 +-
- fs/bcachefs/reflink.c                |  12 +-
- fs/bcachefs/sb-errors_format.h       |   6 +-
- fs/bcachefs/snapshot.c               |  16 +--
- fs/bcachefs/str_hash.c               |   2 +-
- fs/bcachefs/subvolume.c              |   1 +
- fs/bcachefs/super.c                  |  38 +++---
- fs/bcachefs/sysfs.c                  |   9 +-
- fs/bcachefs/time_stats.c             |  20 +++-
- fs/bcachefs/time_stats.h             |   1 +
- fs/bcachefs/util.c                   |   2 +-
- fs/bcachefs/util.h                   |   1 +
- 57 files changed, 856 insertions(+), 506 deletions(-)
