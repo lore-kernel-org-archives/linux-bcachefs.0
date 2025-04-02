@@ -1,90 +1,65 @@
-Received: from cstnet.cn (smtp81.cstnet.cn [159.226.251.81])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37E9A367;
-	Wed,  2 Apr 2025 13:46:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CEE61096F;
+	Wed,  2 Apr 2025 14:01:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743601570; cv=none; b=FKiWrv+xkpE7q3Qe9dMPrWg1o6xV78mQMBSw1iMedPfLiq7Gotm3Lwvxj3s2xALYa+WbLKvSmI85+7ONU6hkcuPmFsqxgC+XzAHsowsjNE0gL+2fwoNi/h3s/o9UBQQE+9UXYY2gmXZriPbOQTiXXGj1b7LcJ0tmbDVr+9GD1Kk=
+	t=1743602476; cv=none; b=mJOUMu9vBygG7xXV4+Pao6ZhGvg0ZhuH9SPlLcjX+Ca2WJlZWh58avQXCFy3puMq0CGkvZqHwjE3CQcFtVIm3svH1awgUHJzdYlPPKd/9hdtru0WV7wWlm81fED+j3l17kD85vreVEorB9WKSI5VCvdMsbuaCog41DMD8bVCIK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743601570; c=relaxed/simple;
-	bh=Q6TsAsf1PmVEMK/9Ux+9Xz91SJre9b2vU9MLqiHjI30=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jJvvcKBA9P+6j7nchL9IkXck+MPBruhPiIZs4UFLTwzKxxZil9ma4po1f4QTIlm6jtrxs4r2h0Kw8hZOXJkjpBuOMWMm/9pethXK7b7DhYHC7Mrn4R5CYijeJvaEPzYF6n9Q1CkUM62o9/vBAqgxJ4vTllfdG1xzJ2TWNua6hUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from localhost.localdomain (unknown [124.16.141.245])
-	by APP-03 (Coremail) with SMTP id rQCowAD3mziYP+1nplkwBQ--.19456S2;
-	Wed, 02 Apr 2025 21:46:02 +0800 (CST)
-From: Wentao Liang <vulab@iscas.ac.cn>
-To: kent.overstreet@linux.dev
-Cc: linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Wentao Liang <vulab@iscas.ac.cn>,
-	stable@vger.kernel.org
-Subject: [PATCH] bcachefs: Add error handling for zlib_deflateInit2()
-Date: Wed,  2 Apr 2025 21:45:44 +0800
-Message-ID: <20250402134544.3550-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.42.0.windows.2
+	s=arc-20240116; t=1743602476; c=relaxed/simple;
+	bh=Dr2t55OpW1GrH/hocApAIXTppSrYNfmY6dXRSidyODc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q3BGOfGsOMXQKr+Xr/oz1h961ySkK0j1cg5zw6pE7gD1iq1olZJf2YmnIrwmTKKpkelrNp7zbUVTrzCa/Kx2sf/mdSwgS4dwuhVcROdT9cCmZubqVxs195CgrolQCcm2OJWckxUHU8uK5bMhe00OFMN6Ob2Cw8Uz3P9Ny+Ip+3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BmhCAixz; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BmhCAixz"
+Date: Wed, 2 Apr 2025 10:01:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1743602471;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8oHVQ5oCNgw1ju/7pFOtSR61vGXzimnYD1atSgbbvrM=;
+	b=BmhCAixzZkdSqHpl07myyEhniPLMn5v0Acer5VqiZK+nk9EedZaV/6WvM4jMDHjoXzvMcN
+	GXJFU3xYt4dd/MvCWFk+2G5dJV2F+MjCi8JB9KfvdPBw6hOztK2/WvuHystC+iemxsLago
+	b5AZ5fLy4yTnqX5fcF+sXBKQewj2OsE=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, "Jason A . Donenfeld" <Jason@zx2c4.com>
+Subject: Re: [PATCH] bcachefs: use library APIs for ChaCha20 and Poly1305
+Message-ID: <icwysnfc3v7b2hpwvm6ay6567sb5zcmcctmlt44cag6gblaylv@ubrzwcmphci2>
+References: <20250402043333.352723-1-ebiggers@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:rQCowAD3mziYP+1nplkwBQ--.19456S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7GF4fCry8ZF4xtr47Aw47urg_yoWkAFc_KF
-	s7XanF9ws5tF4j9r1DGrWvqrW29rWxCr47ZwsFqr9Iy34Yyw4fXrZ5K34kGr4UXry0k3W3
-	W3srCry7JFy7ujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUb48FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-	Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-	jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
-	1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkF7I0En4kS14v26r12
-	6r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
-	0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y
-	0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-	WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
-	IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjO6pDUUUU
-	U==
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBg0AA2ftA5qZkAACsQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250402043333.352723-1-ebiggers@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 
-In attempt_compress(), the return value of zlib_deflateInit2() needs to be
-checked. A proper implementation can be found in  pstore_compress().
+On Tue, Apr 01, 2025 at 09:33:33PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Just use the ChaCha20 and Poly1305 libraries instead of the clunky
+> crypto API.  This is much simpler.  It is also slightly faster, since
+> the libraries provide more direct access to the same
+> architecture-optimized ChaCha20 and Poly1305 code.
+> 
+> I've tested that existing encrypted bcachefs filesystems can be continue
+> to be accessed with this patch applied.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Add an error check and return 0 immediately if the initialzation fails.
+Fantastic!
 
-Fixes: 986e9842fb68 ("bcachefs: Compression levels")
-Cc: stable@vger.kernel.org
-Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
----
- fs/bcachefs/compress.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/fs/bcachefs/compress.c b/fs/bcachefs/compress.c
-index f99ff1819597..5af37c40cef0 100644
---- a/fs/bcachefs/compress.c
-+++ b/fs/bcachefs/compress.c
-@@ -365,13 +365,14 @@ static int attempt_compress(struct bch_fs *c,
- 		};
- 
- 		zlib_set_workspace(&strm, workspace);
--		zlib_deflateInit2(&strm,
-+		if (zlib_deflateInit2(&strm,
- 				  compression.level
- 				  ? clamp_t(unsigned, compression.level,
- 					    Z_BEST_SPEED, Z_BEST_COMPRESSION)
- 				  : Z_DEFAULT_COMPRESSION,
- 				  Z_DEFLATED, -MAX_WBITS, DEF_MEM_LEVEL,
--				  Z_DEFAULT_STRATEGY);
-+				  Z_DEFAULT_STRATEGY) != Z_OK)
-+			return 0;
- 
- 		if (zlib_deflate(&strm, Z_FINISH) != Z_STREAM_END)
- 			return 0;
--- 
-2.42.0.windows.2
-
+Applied, and this should go into 6.15 - this should get the strange bugs
+in the poly1305 path that I wasn't able to reproduce off the dashboard
+(and if they're still there, they'll be much easier to debug.)
