@@ -1,87 +1,122 @@
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C3A533993
-	for <linux-bcachefs@vger.kernel.org>; Wed,  2 Apr 2025 14:15:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A2E0139D0A;
+	Wed,  2 Apr 2025 16:10:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743603356; cv=none; b=uIXjGmYB5VbCQN0vpf1ToLLKZCt23wa3SMJ9KL2L8QiXwNa1q+3g4xjZaxkyDyW0jRbfsJRaWffbiYjzSbk8A2ybi5AwdSWx/f5anZU/0OsU356qclfmUlmExb61djo2jq7qRJZJi2tJT37kjm+g8+pHkLCq/inWAIkTbn8kM/Y=
+	t=1743610254; cv=none; b=ayEEiKquUaIDqgd49Thq6V4HxJ7ppcbj+cQUHlytb7gh241dRAGR3sAzbESmAA3vF34jsSTrVJ3r97u3wplj03ayczPDiqhFMa7IZGugoF1QHO/L+X8nLM0cjmeDfh1XOiOPg52MdG32rjrvzHfQ26+a6YW8IfRMbY8MbFaolRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743603356; c=relaxed/simple;
-	bh=HmxXuuLvTGRW2v0lSm/MV17CTpYebj+3WV1Y2S95tAE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gJKkK+8N5H6gBQHZhTFmiC7e7KalJcUWNQ6/FvIuA+8aNS9QGPrV4bFs/1oK+sJYV6+j9CSnPzdN9oEDz+eLBva79ILFLrtAPL05urNignbsE6JK+rCZKAMSKzU3cyKyMOXeJ/Uht8Hn8UXJuNshtQcGYn3HUK1KAgEUnT4fLbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cJaMMfMJ; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1743610254; c=relaxed/simple;
+	bh=OIVqJJNsFrMiqu/uq1QlcvPuIL4Ese/KYrI1dezFYZ4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iZGWhC1OsJYeiy7oOk28llBzJnZ7ZkHDZOS1j59iTsfJTG1aqVATR3c8/G7Nf0m0TGNV0PMEkfo4l70gjSumFXVcTG3gkY/RMc4UWP2va5MldWHKwWYO5BwMlanGQ7w2E8/tNz+EmrIFAVPGG4X9RwTOYv91fRXqiZmq2lyvFGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PdOe+IRl; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cJaMMfMJ"
-Date: Wed, 2 Apr 2025 10:15:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1743603342;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CM4At2M6VUr7hqgzQbMZ99RPNNt354raBAzhLjuv9tY=;
-	b=cJaMMfMJzHtPeZSRikn8f6yctUS9lY7DG5BJtz3NWsqYcgD7NrJlYzXUdVwLCn1MvdI4bt
-	Oa6xIOTFBbcUJkoMDapN9DDPaxurXFHBNoMxSEkwWCn0a/xJl1Vqfz++jGYwQeEN+xzBuj
-	/RxPxYdFUypswelsB0pxamJoN4mGtEc=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Wentao Liang <vulab@iscas.ac.cn>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: Add error handling for zlib_deflateInit2()
-Message-ID: <xjtejtaya3znotupznz4eywstkjvucxwyo2gf4b6phcwq6a2i5@pqicczp3ty5g>
-References: <20250402134544.3550-1-vulab@iscas.ac.cn>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PdOe+IRl"
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-227cf12df27so125ad.0;
+        Wed, 02 Apr 2025 09:10:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1743610252; x=1744215052; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZIIr79S8E8NybYY6gtYpu9PlGyNiRm8JHaUp3As1v3w=;
+        b=PdOe+IRljOzZiEWsDLjzCg01V4TCzZQLejqRLzKitHTMHKMO9laG/f4MV3YXY3Mm8e
+         d94moG71M6WHSginUZxh9/Dtr52QUe/8oCz31O9Gth5VLoS8PxGn1K07tgkQ+q4kwjQ7
+         ba7RUM9c7/zHGEQdJ6gTOdCUz3DK5mPEW3Tc6HHTz0kBkxZCULKommk+tDOJy7J9z4bU
+         Xkv+5WCnjpdYs457uld2ZXu49Wi7BQvCbNjBJ7ba+fscul8st5zB0yEwZaAxzYqEfLsb
+         4v4BveVUdoC7fzdvcz2lOEUYuRHSd0KSu6dX9SmRCKZsMCBIOV238STCZjOtVa/EmFij
+         bWpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743610252; x=1744215052;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZIIr79S8E8NybYY6gtYpu9PlGyNiRm8JHaUp3As1v3w=;
+        b=wQXztwVRbVyluMk8zKHummeE3Zw7JMTP1qdJ/avF/AKHuZIWLnIpbX3utm8yNx1RBR
+         nGj6UbNvHUVK313cY8vwzjc979xQ5G2UUi19NhPM3WBkCEdrpjWHNGMRDaxgHxmQZso3
+         /lH0IW7CbJ9FYeqFUeb9wAEg3tsweSoqmW8QPrj16xB2PB3PzPSGMIn645My/lk3NUKr
+         BBo/gMFc6FB9cIjCC0K2457pbIDcOba+c1f1YgDJuKvhLW+UCsXtg/N2vTxWf4uiY9rw
+         GlLXx7JEXaUnC8bvNKUXJ37GiN6c0ClG4ZwVI/MCP5DrKNCxyxbzPVTK5MrERq6MZwDf
+         M6ew==
+X-Forwarded-Encrypted: i=1; AJvYcCU2rZSw8fH8z/ukIge3e4NFqX6xm+BotkdMEydbCEqpjEUpkXlnuKMohudf4JhfcpP0y6RSuPcEOPe31PfK@vger.kernel.org, AJvYcCXNnWJMntgc8zQ0y2DD/hiOHub6Ysz2CQj3llqn1CjMwlbknVkXJb7KHWtWOctPbPf++0SN8CUOqSblNnxG7A==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyP5YCHoUsXuGlL1Nilb3IgiHg0V3CJuq+dUbOPuQYBp4d9yXkE
+	A2Iv5GJaScy/TS2XA5L5ltyUiZAxf55IZmc/Vn8L5UXLhkYnu5TK
+X-Gm-Gg: ASbGncvfW4kVKuYfSQGNXYXZlJIev5x9vyPxfYLgGe/VofSMl1XoXo2s4EbEzvwqhY0
+	mjm2JZMd0S49yPkSP4oM5h/MirmMzTZ8ijqy1QBEBEkZ9dN0PzRYtWPFlOge/U4GuEBFJPioksN
+	/33TCiVcWtTbUbWHslABdfsnk+Jam1cIOzkzo3WQSBxsoJpDOXsuzHRdTxBlaMPDnsknHW02aFX
+	Jngb1s9gRrvwlYwBAd/ZQtSBGsfCeoUCcjbvhozVTMnlVgNcOXVYAJ6h7EHDwU3MK/49HwoZ0T7
+	4HMb65acdKTBvdrJycr92FitfSMb5gUvVSnDKAVqYFopjTOP0rL1lHH1qclVHqFArA==
+X-Google-Smtp-Source: AGHT+IE7ktB2KWY480DsrcKFnuDQRmNlfL3ZQiO+dZdrtj8/7tTzLyWkyo/QVitSv9v+OWHDkn89lg==
+X-Received: by 2002:a17:903:1b27:b0:223:4d5e:76a6 with SMTP id d9443c01a7336-229765ba827mr1321195ad.1.1743610252117;
+        Wed, 02 Apr 2025 09:10:52 -0700 (PDT)
+Received: from localhost.localdomain ([14.139.69.34])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2291f1fa0a5sm110205435ad.240.2025.04.02.09.10.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Apr 2025 09:10:51 -0700 (PDT)
+From: Bharadwaj Raju <bharadwaj.raju777@gmail.com>
+To: kent.overstreet@linux.dev
+Cc: Bharadwaj Raju <bharadwaj.raju777@gmail.com>,
+	linux-bcachefs@vger.kernel.org,
+	shuah@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kernel-mentees@lists.linux.dev,
+	syzbot+c82cd2906e2f192410bb@syzkaller.appspotmail.com
+Subject: [PATCH] bcachefs: don't call sleeping funcs when handling inconsistency errors
+Date: Wed,  2 Apr 2025 21:40:40 +0530
+Message-ID: <20250402161043.161795-1-bharadwaj.raju777@gmail.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250402134544.3550-1-vulab@iscas.ac.cn>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 02, 2025 at 09:45:44PM +0800, Wentao Liang wrote:
-> In attempt_compress(), the return value of zlib_deflateInit2() needs to be
-> checked. A proper implementation can be found in  pstore_compress().
-> 
-> Add an error check and return 0 immediately if the initialzation fails.
-> 
-> Fixes: 986e9842fb68 ("bcachefs: Compression levels")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
+In bch2_bkey_pick_read_device, we're in an RCU lock. So, we can't call
+any potentially-sleeping functions. However, we call bch2_dev_rcu,
+which calls bch2_fs_inconsistent in its error case. That then calls
+bch2_prt_print on a non-atomic printbuf, as well as uses the blocking
+variant of bch2_print_string_as_lines, both of which lead to calls to
+potentially-sleeping functions, namely krealloc with GFP_KERNEL
+and console_lock respectively.
 
-Applied
+Give a nonzero atomic to the printbuf, and use the nonblocking variant
+of bch2_print_string_as_lines.
 
-> ---
->  fs/bcachefs/compress.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/bcachefs/compress.c b/fs/bcachefs/compress.c
-> index f99ff1819597..5af37c40cef0 100644
-> --- a/fs/bcachefs/compress.c
-> +++ b/fs/bcachefs/compress.c
-> @@ -365,13 +365,14 @@ static int attempt_compress(struct bch_fs *c,
->  		};
->  
->  		zlib_set_workspace(&strm, workspace);
-> -		zlib_deflateInit2(&strm,
-> +		if (zlib_deflateInit2(&strm,
->  				  compression.level
->  				  ? clamp_t(unsigned, compression.level,
->  					    Z_BEST_SPEED, Z_BEST_COMPRESSION)
->  				  : Z_DEFAULT_COMPRESSION,
->  				  Z_DEFLATED, -MAX_WBITS, DEF_MEM_LEVEL,
-> -				  Z_DEFAULT_STRATEGY);
-> +				  Z_DEFAULT_STRATEGY) != Z_OK)
-> +			return 0;
->  
->  		if (zlib_deflate(&strm, Z_FINISH) != Z_STREAM_END)
->  			return 0;
-> -- 
-> 2.42.0.windows.2
-> 
+Reported-by: syzbot+c82cd2906e2f192410bb@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=c82cd2906e2f192410bb
+Signed-off-by: Bharadwaj Raju <bharadwaj.raju777@gmail.com>
+---
+ fs/bcachefs/error.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/fs/bcachefs/error.c b/fs/bcachefs/error.c
+index d4dfd13a8076..6f0f2f12c004 100644
+--- a/fs/bcachefs/error.c
++++ b/fs/bcachefs/error.c
+@@ -60,6 +60,8 @@ static bool bch2_fs_trans_inconsistent(struct bch_fs *c, struct btree_trans *tra
+ {
+ 	struct printbuf buf = PRINTBUF;
+ 
++	buf.atomic++;
++
+ 	bch2_log_msg_start(c, &buf);
+ 
+ 	prt_vprintf(&buf, fmt, args);
+@@ -68,7 +70,9 @@ static bool bch2_fs_trans_inconsistent(struct bch_fs *c, struct btree_trans *tra
+ 	if (trans)
+ 		bch2_trans_updates_to_text(&buf, trans);
+ 	bool ret = __bch2_inconsistent_error(c, &buf);
+-	bch2_print_string_as_lines(KERN_ERR, buf.buf);
++	bch2_print_string_as_lines_nonblocking(KERN_ERR, buf.buf);
++
++	buf.atomic--;
+ 
+ 	printbuf_exit(&buf);
+ 	return ret;
+-- 
+2.49.0
+
