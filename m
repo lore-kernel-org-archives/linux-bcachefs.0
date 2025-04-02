@@ -1,51 +1,52 @@
 Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2329433BE
-	for <linux-bcachefs@vger.kernel.org>; Tue,  1 Apr 2025 02:59:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05293D299
+	for <linux-bcachefs@vger.kernel.org>; Wed,  2 Apr 2025 00:00:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743476365; cv=none; b=Xm0gfNpE8gsqV7FNKMujoEMTY02srIGNY4RtfD8Wc5gV3LKyjrN8O3mHa9j3wiXVZBbE54KrcxI5Wj8nekIj5fkg8zPsob/sXbzyV8tt9JEGcroFr0sXtS8/3ey8dRvHypyC8ZcqxX5UMBC3RWmmU0dX7G81s3y7y/5R6N6dNgw=
+	t=1743552023; cv=none; b=VNEXF+XyjNzBi5qC8zk4EcKExeaSAv1+gN8oEuibgZ3QqGMM6OfJEuirHaugXuMhOHj4GZXJ9qHnlm9vskq4B6crCVE04v2SDChKm/WtKkyn8HDZ7DIb9v8q15kh3UWO2q77qUepBLcWeNA1ikh5RpobMGgbZdDce31nM+3BMOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743476365; c=relaxed/simple;
-	bh=LsvChKKRv3/j7nieYUgWEKHZIli7k8KU7pIgT2JEA8w=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=uiqvaCgPTvFlRlXW/VhaTtcDUTdeq6Q2wARTjqm43wb3nfC3IAo9YXcShHJD0C+iI5JQhgF9OWqUQVsEHu4VN7vJzSYZmKYxubjU1OgJWd781BbXhyCNWq9ErGa/arR5Hfo50Nld3zDlueDmTFSmwAo+j2sXgh22wYoGB2XBiVY=
+	s=arc-20240116; t=1743552023; c=relaxed/simple;
+	bh=cJxkda7Gx5YVBJViSDIl6CFdsXsvGC+94JzbWEpkWTM=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=YiFyovuyggfygx/2atwQwWeKpCm1u8Oo/LEKCvKbWI4FdDQzDejmlIr8WrtzFbl+RX2YCAEuJbQpc2NXSzV0RMfkndid6jrqYWa7rYBtokO7cFSWLB7c+MTYBxVn5nytxkHXH6FgWAH8Hy9/wU5naqHUt6M3OwnGRyEO9LyzqXI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3d43d1df18bso53624145ab.0
-        for <linux-bcachefs@vger.kernel.org>; Mon, 31 Mar 2025 19:59:23 -0700 (PDT)
+Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3d5da4fb5e0so47144045ab.2
+        for <linux-bcachefs@vger.kernel.org>; Tue, 01 Apr 2025 17:00:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743476363; x=1744081163;
+        d=1e100.net; s=20230601; t=1743552020; x=1744156820;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=83nVH0DnaY45rtxvjoLL6GmIF2+Ux0lBPVi7Ia6BVHk=;
-        b=QtLrqjcZsoTKw4EbR9aXdruJTN+Cl2vF/ID8qU0oBuBh8C6tHy9DQ9xGfi9URTkHZf
-         Bn6c1+oKaE9Tdp8b4d4mKC+Nc6/L/356zhp/VCNf7uI8AOvckiBZ0x7thMK+aBPANhg2
-         mT7gPZAGiotEZzDmeWecdizqoL0POft7pX3L5QadZkIoIEAJUe0GSJgJGUWT4sZ2GRhD
-         l3e80eAaKa0pU1wR6TG8d5hGgBiJJwtz9c0dbvPOxzx1Jf5AlaIjOCjPcQj9hFcHzbKd
-         kb9aJFRUCxcpEm2KGrMNKNPWfT4kADHHf+x/+7VZypWh0aWIV4RdVQ67jl8xc06kDtYd
-         GZOg==
-X-Forwarded-Encrypted: i=1; AJvYcCV+5FNQuAl/1mlBhytAtappDgRbNic7tOUAXZJ1f2ilPSJT6HRQ2FHkHR/oT2Ejv5jykCH8bqJwg6+gRacw8A==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxf3vdn3UUbjPdI6lsTx7Nz3+JZV+LZsr0UqXGFxBdY35gKLj+q
-	ZSTzb9CuDKmJ+fXxgypzDb6EwQ8Kfg00RLjLM5+f1eTEeYbsoJJWYiM1mADz3Std13VD474CWYP
-	of8BGOMKEC6A8L5t7ZTnhQjkw1UjBTACC5JIscjwVNJR41DmCiYx6ssg=
-X-Google-Smtp-Source: AGHT+IGBTRRzLWLg+ljnBrz+Y2opAIxt0lyBIXlMYHrpNfkLPXZ2R+oDKwBifM5JHJU5+JfH8lnsX9v+yteBnflnSYfhoHG6GEFj
+        bh=OaNey3U9DjWvymRTTPA4aTMvYHymOcXePWEHX2t7R6A=;
+        b=Bz/Or4WdW4PPfuS6NX8HJbOKNuZA9d3JaXa+ecUr/5IE+1TtFv2jhMV27FXcf2po71
+         c/2jv2RWEfIJLjUG16zVPHAp/psV/kGjP4EUO7WX4BZPDBonDHwKQyaOlw2Ew+/NORRI
+         BMU9qNqgaKw2x6/JjqtkgvEMayyZhefDNGty5vp20CAcPejeETO8BBmMoltYH5PYCLUM
+         y85EddKzjMA2W/CEErpYIdkuejF8DsGUmZUJINXEqfZUbVnnu83ovILepDOrDEJYrBBz
+         khDpkYjuIOB5hfD6fkdzvlmuSX17M09+PFdWo80IG+Bnq9NdAT8ix7aaR5SZxPyR/SNt
+         a5hw==
+X-Forwarded-Encrypted: i=1; AJvYcCWAjR64TSNIZTZMr4xnQ8auZD7cXTBWTDiHluv6pmhtjDWV/B0ZTpvkxXXcDmHHCYGg/mJO2XqJJgp4KDPXIg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwdZpYr4wN2YEPnx4wTrb7pwEUIED+YtGo1dQlG+wDPLdXG+V3Y
+	qP7oyiMpJAJA0C2fAyajqEYMYciFeDEmOVhjbtjNEfAtCVVmDUk78JbgQ1NFS657W2pd4EZ9uw0
+	1AKncesWrXYsHWLCEQj6Q6SSTSa1yGqIK9pY2OoJyg/3n2NOK1k5LIYc=
+X-Google-Smtp-Source: AGHT+IGINzhe34NdLtrWSNq6aybwx4SoRt5Fphr4N5XRLH25tUIMoRoXqNmuEhtzDDSZR3JyOc4eodMvxonYv+EIW+eUuZTqTgHv
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:ca09:0:b0:3d3:f19c:77c7 with SMTP id
- e9e14a558f8ab-3d5e09c8d9fmr99345695ab.16.1743476363067; Mon, 31 Mar 2025
- 19:59:23 -0700 (PDT)
-Date: Mon, 31 Mar 2025 19:59:23 -0700
+X-Received: by 2002:a05:6e02:184e:b0:3d0:4e57:bbda with SMTP id
+ e9e14a558f8ab-3d5e08eacfbmr186247725ab.1.1743552020068; Tue, 01 Apr 2025
+ 17:00:20 -0700 (PDT)
+Date: Tue, 01 Apr 2025 17:00:20 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67eb568b.050a0220.e5efe.0001.GAE@google.com>
-Subject: [syzbot] [bcachefs?] WARNING in bch2_opt_check_may_set
-From: syzbot <syzbot+64fe47118b53a051c3d7@syzkaller.appspotmail.com>
+Message-ID: <67ec7e14.050a0220.31979b.002f.GAE@google.com>
+Subject: [syzbot] [bcachefs?] BUG: sleeping function called from invalid
+ context in bch2_printbuf_make_room (2)
+From: syzbot <syzbot+c82cd2906e2f192410bb@syzkaller.appspotmail.com>
 To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
@@ -54,132 +55,194 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    4fa118e5b79f Merge tag 'trace-tools-v6.15' of git://git.ke..
+HEAD commit:    08733088b566 Merge tag 'rust-fixes-6.15-merge' of git://gi..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=101d3804580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dd14976ddc05593f
-dashboard link: https://syzkaller.appspot.com/bug?extid=64fe47118b53a051c3d7
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=132cfbcf980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=acce2ca43d1e8c46
+dashboard link: https://syzkaller.appspot.com/bug?extid=c82cd2906e2f192410bb
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=110f1404580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1794b7b0580000
 
 Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-4fa118e5.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/75d19710545a/vmlinux-4fa118e5.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/8e9456ff5bb7/bzImage-4fa118e5.xz
+disk image: https://storage.googleapis.com/syzbot-assets/89e502f70725/disk-08733088.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/a8fe89a101eb/vmlinux-08733088.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6d559e3eea04/bzImage-08733088.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/58c2eae09840/mount_0.gz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+64fe47118b53a051c3d7@syzkaller.appspotmail.com
+Reported-by: syzbot+c82cd2906e2f192410bb@syzkaller.appspotmail.com
 
-  u64s 8 type snapshot 0:4294967295:0 len 0 ver 0: is_subvol 1 deleted 0 parent          0 children          0          0 subvol 1 tree 0, fixing
-snapshot points to missing/incorrect tree:
-  u64s 8 type snapshot 0:4294967295:0 len 0 ver 0: is_subvol 1 deleted 0 parent          0 children          0          0 subvol 1 tree 0, fixing
- done
-bcachefs (loop0): check_subvols... done
-bcachefs (loop0): check_subvol_children... done
-bcachefs (loop0): delete_dead_snapshots... done
-bcachefs (loop0): check_inodes... done
-bcachefs (loop0): check_extents... done
-bcachefs (loop0): check_indirect_extents... done
-bcachefs (loop0): check_dirents... done
-bcachefs (loop0): check_xattrs... done
-bcachefs (loop0): check_root... done
-bcachefs (loop0): check_unreachable_inodes... done
-bcachefs (loop0): check_subvolume_structure... done
-bcachefs (loop0): check_directory_structure... done
-bcachefs (loop0): check_nlinks... done
-bcachefs (loop0): resume_logged_ops... done
-bcachefs (loop0): delete_dead_inodes... done
-bcachefs (loop0): set_fs_needs_rebalance... done
-bcachefs (loop0): Fixed errors, running fsck a second time to verify fs is clean
-bcachefs (loop0): check_alloc_info... done
-bcachefs (loop0): check_lrus... done
-bcachefs (loop0): check_btree_backpointers... done
-bcachefs (loop0): check_backpointers_to_extents... done
-bcachefs (loop0): check_extents_to_backpointers...
-bcachefs (loop0): scanning for missing backpointers in 1/128 buckets
- done
-bcachefs (loop0): check_alloc_to_lru_refs... done
-bcachefs (loop0): bucket_gens_init... done
-bcachefs (loop0): check_snapshot_trees... done
-bcachefs (loop0): check_snapshots... done
-bcachefs (loop0): check_subvols... done
-bcachefs (loop0): check_subvol_children... done
-bcachefs (loop0): delete_dead_snapshots... done
-bcachefs (loop0): check_inodes... done
-bcachefs (loop0): check_extents... done
-bcachefs (loop0): check_indirect_extents... done
-bcachefs (loop0): check_dirents... done
-bcachefs (loop0): check_xattrs... done
-bcachefs (loop0): check_root... done
-bcachefs (loop0): check_unreachable_inodes... done
-bcachefs (loop0): check_subvolume_structure... done
-bcachefs (loop0): check_directory_structure... done
-bcachefs (loop0): check_nlinks... done
-bcachefs (loop0): resume_logged_ops... done
-bcachefs (loop0): delete_dead_inodes... done
-bcachefs (loop0): set_fs_needs_rebalance... done
-bcachefs (loop0): done starting filesystem
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5325 at fs/bcachefs/opts.c:485 bch2_opt_check_may_set+0x189/0x1c0 fs/bcachefs/opts.c:485
-Modules linked in:
-CPU: 0 UID: 0 PID: 5325 Comm: syz.0.0 Not tainted 6.14.0-syzkaller-07318-g4fa118e5b79f #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:bch2_opt_check_may_set+0x189/0x1c0 fs/bcachefs/opts.c:485
-Code: e8 fc a1 3f fd eb 0c e8 f5 a1 3f fd eb 05 e8 ee a1 3f fd 31 c0 5b 41 5c 41 5d 41 5e 41 5f 5d c3 cc cc cc cc e8 d8 a1 3f fd 90 <0f> 0b 90 e9 f3 fe ff ff 48 c7 c1 30 04 5e 90 80 e1 07 80 c1 03 38
-RSP: 0018:ffffc9000d505e88 EFLAGS: 00010283
-RAX: ffffffff8483e478 RBX: 0000000000000000 RCX: 0000000000100000
-RDX: ffffc9000ea2a000 RSI: 0000000000007706 RDI: 0000000000007707
-RBP: 0000000000000041 R08: ffffffff8483e360 R09: 1ffffffff20bbaae
-R10: dffffc0000000000 R11: fffffbfff20bbaaf R12: ffff888053380000
-R13: dffffc0000000000 R14: 0000000000000000 R15: 0000000000000000
-FS:  00007efcdf4256c0(0000) GS:ffff88808c5f1000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000200000001240 CR3: 000000004348a000 CR4: 0000000000352ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  node offset 8/24 bset u64s 375 bset byte offset 184: keys out of order: u64s 11 type alloc_v4 0:32:0 len 0 ver 0 > u64s 11 type alloc_v4 0:2:0 len 0 ver 0, fixing
+bcachefs (loop0): btree_node_read_work: rewriting btree node at due to error
+  btree=alloc level=0 u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq ac62141f8dc7e261 written 24 min_key POS_MIN durability: 1 ptr: 0:26:0 gen 0
+BUG: sleeping function called from invalid context at ./include/linux/sched/mm.h:321
+in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 5828, name: syz-executor246
+preempt_count: 0, expected: 0
+RCU nest depth: 1, expected: 0
+3 locks held by syz-executor246/5828:
+ #0: ffff88807ad6a0e0 (&type->s_umount_key#42/1){+.+.}-{4:4}, at: alloc_super+0x221/0x9d0 fs/super.c:344
+ #1: ffff888075a84210 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu_lock_acquire include/linux/srcu.h:161 [inline]
+ #1: ffff888075a84210 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu_read_lock include/linux/srcu.h:253 [inline]
+ #1: ffff888075a84210 (&c->btree_trans_barrier){.+.+}-{0:0}, at: __bch2_trans_get+0x7ed/0xd40 fs/bcachefs/btree_iter.c:3386
+ #2: ffffffff8ed3b560 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:331 [inline]
+ #2: ffffffff8ed3b560 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:841 [inline]
+ #2: ffffffff8ed3b560 (rcu_read_lock){....}-{1:3}, at: bch2_bkey_pick_read_device+0x29c/0x19b0 fs/bcachefs/extents.c:144
+CPU: 0 UID: 0 PID: 5828 Comm: syz-executor246 Not tainted 6.14.0-syzkaller-11270-g08733088b566 #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
 Call Trace:
  <TASK>
- bch2_xattr_bcachefs_set+0x3a7/0xb10 fs/bcachefs/xattr.c:526
- __vfs_setxattr+0x468/0x4a0 fs/xattr.c:200
- __vfs_setxattr_noperm+0x12e/0x660 fs/xattr.c:234
- vfs_setxattr+0x223/0x430 fs/xattr.c:321
- ovl_do_setxattr fs/overlayfs/overlayfs.h:315 [inline]
- ovl_copy_xattr+0x861/0xb60 fs/overlayfs/copy_up.c:156
- ovl_copy_up_metadata+0x269/0xef0 fs/overlayfs/copy_up.c:668
- ovl_copy_up_tmpfile fs/overlayfs/copy_up.c:893 [inline]
- ovl_do_copy_up fs/overlayfs/copy_up.c:999 [inline]
- ovl_copy_up_one fs/overlayfs/copy_up.c:1202 [inline]
- ovl_copy_up_flags+0x20b2/0x47f0 fs/overlayfs/copy_up.c:1257
- ovl_open+0x14f/0x320 fs/overlayfs/file.c:211
- do_dentry_open+0xdec/0x1960 fs/open.c:956
- vfs_open+0x3b/0x370 fs/open.c:1086
- dentry_open+0x61/0xa0 fs/open.c:1109
- ima_calc_file_hash+0x16a/0x1af0 security/integrity/ima/ima_crypto.c:553
- ima_collect_measurement+0x52b/0xb20 security/integrity/ima/ima_api.c:293
- process_measurement+0x1353/0x1fb0 security/integrity/ima/ima_main.c:375
- ima_file_check+0xdb/0x130 security/integrity/ima/ima_main.c:603
- security_file_post_open+0xb9/0x280 security/security.c:3130
- do_open fs/namei.c:3847 [inline]
- path_openat+0x2cf7/0x35d0 fs/namei.c:4004
- do_filp_open+0x284/0x4e0 fs/namei.c:4031
- do_sys_openat2+0x12b/0x1d0 fs/open.c:1429
- do_sys_open fs/open.c:1444 [inline]
- __do_sys_openat fs/open.c:1460 [inline]
- __se_sys_openat fs/open.c:1455 [inline]
- __x64_sys_openat+0x249/0x2a0 fs/open.c:1455
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+ __might_resched+0x558/0x6c0 kernel/sched/core.c:8818
+ might_alloc include/linux/sched/mm.h:321 [inline]
+ slab_pre_alloc_hook mm/slub.c:4089 [inline]
+ slab_alloc_node mm/slub.c:4167 [inline]
+ __do_kmalloc_node mm/slub.c:4317 [inline]
+ __kmalloc_node_track_caller_noprof+0xd3/0x4d0 mm/slub.c:4337
+ __do_krealloc mm/slub.c:4895 [inline]
+ krealloc_noprof+0x10f/0x300 mm/slub.c:4948
+ bch2_printbuf_make_room+0x1f1/0x350 fs/bcachefs/printbuf.c:59
+ bch2_prt_printf+0x269/0x6d0 fs/bcachefs/printbuf.c:186
+ bch2_log_msg_start fs/bcachefs/error.c:19 [inline]
+ bch2_fs_trans_inconsistent fs/bcachefs/error.c:63 [inline]
+ bch2_fs_inconsistent+0x143/0x220 fs/bcachefs/error.c:81
+ bch2_dev_rcu fs/bcachefs/sb-members.h:226 [inline]
+ bch2_bkey_pick_read_device+0x95e/0x19b0 fs/bcachefs/extents.c:165
+ bch2_btree_node_read+0x7ac/0x29e0 fs/bcachefs/btree_io.c:1706
+ __bch2_btree_root_read fs/bcachefs/btree_io.c:1796 [inline]
+ bch2_btree_root_read+0x656/0x7e0 fs/bcachefs/btree_io.c:1818
+ read_btree_roots+0x3d7/0xa80 fs/bcachefs/recovery.c:581
+ bch2_fs_recovery+0x28e4/0x3e20 fs/bcachefs/recovery.c:928
+ bch2_fs_start+0x2fb/0x610 fs/bcachefs/super.c:1060
+ bch2_fs_get_tree+0x113e/0x18f0 fs/bcachefs/fs.c:2253
+ vfs_get_tree+0x90/0x2b0 fs/super.c:1759
+ do_new_mount+0x2cf/0xb70 fs/namespace.c:3878
+ do_mount fs/namespace.c:4218 [inline]
+ __do_sys_mount fs/namespace.c:4429 [inline]
+ __se_sys_mount+0x38c/0x400 fs/namespace.c:4406
  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
  do_syscall_64+0xf3/0x230 arch/x86/entry/syscall_64.c:94
  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7efcde58d169
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007efcdf425038 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 00007efcde7a5fa0 RCX: 00007efcde58d169
-RDX: 0000000000000083 RSI: 0000200000000000 RDI: ffffffffffffff9c
-RBP: 00007efcde60e2a0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 00007efcde7a5fa0 R15: 00007fffc7b7c218
+RIP: 0033:0x7f8dd0844c3a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc3c4a4f58 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffc3c4a4f70 RCX: 00007f8dd0844c3a
+RDX: 0000200000000000 RSI: 0000200000000100 RDI: 00007ffc3c4a4f70
+RBP: 0000200000000100 R08: 00007ffc3c4a4fb0 R09: 000000000000596a
+R10: 0000000000800800 R11: 0000000000000282 R12: 0000200000000000
+R13: 00007ffc3c4a4fb0 R14: 0000000000000003 R15: 0000000000800800
  </TASK>
+bcachefs (loop0): pointer to nonexistent device 8
+  inconsistency detected - emergency read only at journal seq 10
+  
+bcachefs (loop0): btree node read error: no device to read from
+ at backpointers level 0/0
+u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq 4a8b0fa43a9980a6 written 24 min_key POS_MIN durability: 0 ptr: 8:9472 gen 0
+bcachefs (loop0): flagging btree backpointers lost data
+bcachefs (loop0): running explicit recovery pass check_topology (2), currently at recovery_pass_empty (0)
+bcachefs (loop0): error reading btree root btree=backpointers level=0: btree_node_read_error, fixing
+bcachefs (loop0): check_topology... done
+bcachefs (loop0): accounting_read... done
+bcachefs (loop0): alloc_read... done
+bcachefs (loop0): snapshots_read... done
+bcachefs (loop0): check_allocations...
+bcachefs (loop0): bucket 0:26 data type btree ptr gen 0 missing in alloc btree
+  while marking u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq ac62141f8dc7e261 written 24 min_key POS_MIN durability: 1 ptr: 0:26:0 gen 0, fixing
+bcachefs (loop0): bucket 0:38 data type btree ptr gen 0 missing in alloc btree
+  while marking u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq 7589ab5e0c11cc7a written 24 min_key POS_MIN durability: 1 ptr: 0:38:0 gen 0, fixing
+bcachefs (loop0): bucket 0:41 data type btree ptr gen 0 missing in alloc btree
+  while marking u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq 9aa2895aefce4bdf written 24 min_key POS_MIN durability: 1 ptr: 0:41:0 gen 0, fixing
+bcachefs (loop0): bucket 0:35 data type btree ptr gen 0 missing in alloc btree
+  while marking u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c0bef60d07ceb940 written 16 min_key POS_MIN durability: 1 ptr: 0:35:0 gen 0, fixing
+bcachefs (loop0): bucket 0:29 data type btree ptr gen 0 missing in alloc btree
+  while marking u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq e81e1ed936acf3df written 32 min_key POS_MIN durability: 1 ptr: 0:29:0 gen 0, fixing
+bcachefs (loop0): bucket 0:1 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:1 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:2 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:2 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:3 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:3 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:4 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:4 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:5 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:5 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:6 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:6 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:7 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:7 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:8 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:8 gen 0 data type sb has wrong dirty_sectors: got 0, should be 8, fixing
+bcachefs (loop0): bucket 0:9 gen 0 has wrong data_type: got free, should be journal, fixing
+bcachefs (loop0): bucket 0:9 gen 0 data type journal has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:10 gen 0 has wrong data_type: got free, should be journal, fixing
+bcachefs (loop0): bucket 0:10 gen 0 data type journal has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:11 gen 0 has wrong data_type: got free, should be journal, fixing
+bcachefs (loop0): bucket 0:11 gen 0 data type journal has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:12 gen 0 has wrong data_type: got free, should be journal, fixing
+bcachefs (loop0): bucket 0:12 gen 0 data type journal has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:13 gen 0 has wrong data_type: got free, should be journal, fixing
+bcachefs (loop0): bucket 0:13 gen 0 data type journal has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:14 gen 0 has wrong data_type: got free, should be journal, fixing
+bcachefs (loop0): bucket 0:14 gen 0 data type journal has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:15 gen 0 has wrong data_type: got free, should be journal, fixing
+bcachefs (loop0): bucket 0:15 gen 0 data type journal has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:16 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:16 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:17 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:17 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:18 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:18 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:19 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:19 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:20 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:20 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:21 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:21 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:22 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:22 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:23 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:23 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:24 gen 0 has wrong data_type: got free, should be journal, fixing
+bcachefs (loop0): bucket 0:24 gen 0 data type journal has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:26 gen 0 has wrong data_type: got free, should be btree, fixing
+bcachefs (loop0): bucket 0:26 gen 0 data type btree has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:29 gen 0 has wrong data_type: got free, should be btree, fixing
+bcachefs (loop0): bucket 0:29 gen 0 data type btree has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:32 gen 0 has wrong data_type: got sb, should be btree, fixing
+bcachefs (loop0): bucket 0:35 gen 0 has wrong data_type: got free, should be btree, fixing
+bcachefs (loop0): bucket 0:35 gen 0 data type btree has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:37 gen 0 has wrong data_type: got btree, should be need_discard, fixing
+bcachefs (loop0): bucket 0:37 gen 0 data type need_discard has wrong dirty_sectors: got 256, should be 0, fixing
+bcachefs (loop0): bucket 0:38 gen 0 has wrong data_type: got free, should be btree, fixing
+bcachefs (loop0): bucket 0:38 gen 0 data type btree has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:41 gen 0 has wrong data_type: got free, should be btree, fixing
+bcachefs (loop0): bucket 0:41 gen 0 data type btree has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:120 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:120 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:121 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:121 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:122 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:122 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:123 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:123 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:124 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:124 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:125 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:125 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:126 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:126 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+bcachefs (loop0): bucket 0:127 gen 0 has wrong data_type: got free, should be sb, fixing
+bcachefs (loop0): bucket 0:127 gen 0 data type sb has wrong dirty_sectors: got 0, should be 256, fixing
+ done
+bcachefs (loop0): going read-write
+bcachefs (loop0): journal_replay...
+bcachefs (loop0): bch2_journal_replay(): error journal_shutdown
+bcachefs (loop0): bch2_fs_recovery(): error journal_shutdown
+bcachefs (loop0): bch2_fs_start(): error starting filesystem journal_shutdown
+bcachefs (loop0): shutting down
+bcachefs (loop0): shutdown complete
+bcachefs: bch2_fs_get_tree() error: journal_shutdown
 
 
 ---
@@ -192,6 +255,10 @@ https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
 If the report is already addressed, let syzbot know by replying with:
 #syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
 If you want to overwrite report's subsystems, reply with:
 #syz set subsystems: new-subsystem
