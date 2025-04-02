@@ -1,38 +1,36 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B4B2227B8E;
-	Wed,  2 Apr 2025 03:27:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6715E22D7BA
+	for <linux-bcachefs@vger.kernel.org>; Wed,  2 Apr 2025 03:30:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743564421; cv=none; b=GlUHA0cH/mnJc81IKsVRNf16gX7nWkNWPlqQbLw8+RqxHgemFSTXrdkSumTb/1hZAchpCwO+TWXpdpMBoohDeQWVZSLaT5saHTxnUMAvZPurH6w4MRZ4pGqu0tApGdLitRkuxvo6FX8gXMjxCAMySUDC4Cy+I1/UHr74ZtHKXk8=
+	t=1743564616; cv=none; b=r9lFTmBnPOhUyc6FV/rItmaztgFMOUWTWtB2ktkO71CMsd0TUIxUSLr9kpg7xst+tHpJOYd/nAD8/ak+RUlGDW73WFzmmoYWdBN5OIOyeF8YAlmMu6SfvtC/J1iOPP0lp0jCTAY32778bhftq1Flmnigk2fxZqZGhKKdLyn+5aY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743564421; c=relaxed/simple;
-	bh=vt5hmw1z6p3BkhBofk+q1jJoMY+sk9Nnoin03Tn/75o=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gz+EIvzaRjOKcW6ifQ1cvPeI9GwmacsM88seWA4cJwinWWf/AC3rLhYwSFzfiiBknxjVf8X8fsWPwWVVQsDD53ax840k3t51E1Z1vMks4E7DoHunlBU7jJ8UErvL/S8rMtd4sICryZABCc2lgCUCMeLlX5WLhREQTy23Hhw8DKc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m/ITZ3Oc; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1743564616; c=relaxed/simple;
+	bh=5k9cjnqq9w8titPEqW2BLiuUEcqYkLOebPeKbq+4FgA=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Pwf6d0YGwVZAV9qvp5QttZZYe4wvXDCmeWYbhxrfZniOVFfaA1CCGK1szrE4mICo0UfKxX06G1TGh1cpSne30OMcjCnqu/84QsKenpy7LbFoG2hn/tLW1B+x40XpoGjRvcLWBlGwymfiWMaBajmpiE9/fJZGmrfEdZx0kxa+xZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eT68wJdw; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m/ITZ3Oc"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 586C8C4CEDD;
-	Wed,  2 Apr 2025 03:27:00 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eT68wJdw"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE89EC4CEDD;
+	Wed,  2 Apr 2025 03:30:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743564420;
-	bh=vt5hmw1z6p3BkhBofk+q1jJoMY+sk9Nnoin03Tn/75o=;
-	h=From:To:Cc:Subject:Date:From;
-	b=m/ITZ3Oc9vJRgfknje++6RgyFcwCekv/Oe+lIMIu4eLpbec3KT1vFbNGTsTg6Bnje
-	 5estcdXvh3fD2abPrksCwODc0BfhGRG2xF90mrkOOXVGLg0igMxdWZHN43w9hWPUxv
-	 mEXHptvoeBDQakoh0PCno1RBTNYNgkvI4HO+QD4YnZh9/l1eSsKg+pzcEJ0/nvufaZ
-	 03wiPxuCgHCu3CyLTgnkp8FiThq1DqjWyUvwWQlDrc6kJChkk7BTGcrj4aY2HujB0+
-	 F7vcpsFUmVT00NPnATSpzhV8ogKwlY5h4895UgBZ6+1l7tWROPJeqBPOrWv1mKDL+e
-	 ywhsQtwDDDPxA==
+	s=k20201202; t=1743564614;
+	bh=5k9cjnqq9w8titPEqW2BLiuUEcqYkLOebPeKbq+4FgA=;
+	h=From:To:Subject:Date:From;
+	b=eT68wJdwJMvMa5Twa6u2hHOLpEpE/Gl3CfoWoO8EPOvzzmwTuBJsBYfuH2PNfU9jz
+	 3GwC7VXZNmbLEDvTYUDY3qdVLjV9/m72qdtNTk7GQyt4oahNH3+3bvpc7dxcwYDEA2
+	 G5ml+Vyyd1N5R7ZnTJAtmW8pEsmjKTu3QcRrSjb+Ix1YBhwihkfvIL1v/D/kAN0zSo
+	 MzRXlgv+/n/M+ogi7Z7kMdcedFu9YtdvS4VyzQlSC3S+SliOp0YqkLXKAKmvB7NQaW
+	 WDlk49GFrqtEp+KMS17vTQVhKRCwptnoqBizx8rJIq3lAId1jQ1oAsfsYF22uXens0
+	 NnKC/2diGJBUg==
 From: Eric Biggers <ebiggers@kernel.org>
 To: Kent Overstreet <kent.overstreet@linux.dev>,
 	linux-bcachefs@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH] bcachefs: add missing selection of XARRAY_MULTI
-Date: Tue,  1 Apr 2025 20:26:48 -0700
-Message-ID: <20250402032648.266034-1-ebiggers@kernel.org>
+Subject: [ktest PATCH] kconfig: stop requiring CONFIG_MCORE2
+Date: Tue,  1 Apr 2025 20:30:10 -0700
+Message-ID: <20250402033010.266607-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
@@ -44,39 +42,43 @@ Content-Transfer-Encoding: 8bit
 
 From: Eric Biggers <ebiggers@google.com>
 
-When CONFIG_XARRAY_MULTI is not set, reading from a bcachefs file hits
-the 'BUG_ON(order > 0);' in xas_set_order(), because it tries to insert
-a large folio in the page cache.  Fix this by making bcachefs select
-XARRAY_MULTI.
+This was removed upstream.
 
-Fixes: be212d86b19c ("bcachefs: bs > ps support")
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
+ tests/kconfig.sh | 2 --
+ 1 file changed, 2 deletions(-)
 
-I'm not entirely sure this is the correct fix; if it's not, please treat
-this as a bug report...
-
- fs/bcachefs/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/bcachefs/Kconfig b/fs/bcachefs/Kconfig
-index c9798750202d3..bf1c94e51dd06 100644
---- a/fs/bcachefs/Kconfig
-+++ b/fs/bcachefs/Kconfig
-@@ -24,10 +24,11 @@ config BCACHEFS_FS
- 	select XOR_BLOCKS
- 	select XXHASH
- 	select SRCU
- 	select SYMBOLIC_ERRNAME
- 	select MIN_HEAP
-+	select XARRAY_MULTI
- 	help
- 	The bcachefs filesystem - a modern, copy on write filesystem, with
- 	support for multiple devices, compression, checksumming, etc.
+diff --git a/tests/kconfig.sh b/tests/kconfig.sh
+index f3fb18f..5254530 100644
+--- a/tests/kconfig.sh
++++ b/tests/kconfig.sh
+@@ -5,11 +5,10 @@ have_virtio=0
+ have_suspend=0
  
- config BCACHEFS_QUOTA
+ case $ktest_arch in
+     x86)
+ 	require-kernel-config SMP
+-	require-kernel-config MCORE2	# optimize for core2
+ 	require-kernel-config IO_DELAY_0XED
+ 	require-kernel-config 64BIT=n
+ 	require-kernel-config ACPI	# way slower without it, do not know why
+ 	require-kernel-config UNWINDER_ORC
+ 	require-kernel-config HARDLOCKUP_DETECTOR
+@@ -21,11 +20,10 @@ case $ktest_arch in
+ 
+ 	require-kernel-append console=hvc0
+ 	;;
+     x86_64)
+ 	require-kernel-config SMP
+-	require-kernel-config MCORE2	# optimize for core2
+ 	require-kernel-config IO_DELAY_0XED
+ 	#require-kernel-config IA32_EMULATION
+ 	require-kernel-config 64BIT
+ 	require-kernel-config ACPI	# way slower without it, do not know why
+ 	require-kernel-config UNWINDER_ORC
 
-base-commit: 88eeda35f19bab3a247ca25d99bc82ac710bc09f
+base-commit: 53229b36f8c4df0690af64dedfce3e247334505e
 -- 
 2.49.0
 
