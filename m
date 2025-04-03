@@ -1,202 +1,235 @@
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F3938DE1
-	for <linux-bcachefs@vger.kernel.org>; Wed,  2 Apr 2025 18:49:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C477924EAB2
+	for <linux-bcachefs@vger.kernel.org>; Thu,  3 Apr 2025 14:42:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743619766; cv=none; b=kbieltleZ1cLxpPoDcqh+1xO2NmdlRaevA6NMqZZUAd1y6KCmBHxyw1Z4HXcJmINpxX4xtqUgOpBnuqQh9+onvS5u6zA9Iy3DEOTWUDbf2hy/OqCyN2uTi76xHExWE17QEDlOePTZjjZQVTi0OJdroUn/1WbmgipVJ+IGASOtN4=
+	t=1743691340; cv=none; b=bH3M1YWI7/eF5G0EcYqXuQUKhtWV/J3I4dFkFrgZtpF58gRX0+Tm/d9cIcyiBUXbeZXOFUVignUk6+ChOcxIDuAMohlmJIDyia7bTQrU2rmQ/2JBuS7JG+r1HF1lTRiH/evl3gfhg+GnQUOccR0GyIhminPEl9FDiqs2jp/pAZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743619766; c=relaxed/simple;
-	bh=DTgOX/151O8AkIoG0weYiwor68xFKUhgPCcZqlnQvkM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uR3wFTshW2KwVuLVkrLturpwOUdZMBhkhzHzJfed2ngTK20tigGR/8YIlQl66yY5rKDSpg/gyW7XlB/nXWhv3+gulJbBsUYpfAFHU4nxxiO21CRvh2gwp94pW1rJgwL5SX/r9lqxeT3RJZQ5p/s1dWF13AjqfAi3kAeHXk2CBY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GoFAAjPT; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GoFAAjPT"
-Date: Wed, 2 Apr 2025 14:49:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1743619761;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cl6AmJc4QSFewNJX9IUpcE3oBggxGDnS2myz9NtWjEs=;
-	b=GoFAAjPTdcU+aED178JtfBJmVkJnY4ZB3NybpI+ZgfAYshDEI4O1spjDmx6rW4ax+mkRq5
-	/Mwgshz4L18edmVwotEQf4QpVqVUUHNy6fJUDs91XQUcEdynrbs4RC0z4bktjzjtctFIvO
-	Gyi9XMbGgSq1lZB1z44AFZExwhtgQ2o=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: syzbot <syzbot+64fe47118b53a051c3d7@syzkaller.appspotmail.com>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bcachefs?] WARNING in bch2_opt_check_may_set
-Message-ID: <iviif2qfocn5yap7os2ddltfi6p7a3ogs3yxalw4sjupajh75s@zhmmu4ayc4qm>
-References: <67eb568b.050a0220.e5efe.0001.GAE@google.com>
+	s=arc-20240116; t=1743691340; c=relaxed/simple;
+	bh=UQAp4subuYPXvUm19rXETDbY1fbGgTFnynQF1DdG6Xk=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=IUr0HpbpR2ozcXCiMZmcgsgG1AvlCup5J0F/cSu5Ryt/PocHQqx3w8Er62bUkP5LqHMagJqZIjB3VkdomlpbrOJWvbQbBqAIOd+xfNJCPgm1O9Yd2tTkz1xbLiLE7gWrmoUOcjuaI1X4nsR4iBsIOjnitSDKaPkbjOLU8qA8Y9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-3d5da4fb5e0so11630185ab.2
+        for <linux-bcachefs@vger.kernel.org>; Thu, 03 Apr 2025 07:42:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743691338; x=1744296138;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZMLMkq3a7kDlEivFUizhdK1aaRuHbYaJPjcv3xcjwYw=;
+        b=qzlc5Ft99PBf2LD27spjTOozMKuLXYUX1BGrytUqCUGJlw4f7ie/tXdJsW3s9Xe/Yl
+         /+yWS4QuZfIZpU6Q0r2VLg1Wd+iFpy+TccZ8jujUWYuJNvUziV7j4hJyD6+0Ps0Huhrn
+         9tOwkZuZA0B8/Y4YXjgofQD3zDxzCd6UBDXzkMBrNlKO6cowM/h3KahFjLCw5nLTWhBE
+         0q4lAU7AGF3BInsafsBS+CSpjNm8Qaeu5gWL1pSAv7oCVXwUYExQrqeoga1m0ERKzmGL
+         +X37FZ2K70gl4p8W5HjliYP9uQLlI8e83W8bI72wga9M46cwC9ZUdn3RESKops3e0RlA
+         F1sg==
+X-Forwarded-Encrypted: i=1; AJvYcCU7pNHU0Wux5Vi5PnDDlzVOUd89r7oxmlqEZNVBjwsNpwK17Kn79nXkXS92SLq12uY0wJxkLrZQTQOJ+aXMFg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx9hxmIwTMn/QHX6HSxPDj7dLnW8mAmc+eGuT3xXZGLPBY3eLl7
+	AK8PvWnw+mF0wVmyWg8logEC2QQNCLKdSJSA2+kVSp3xncBUNfXZ6ZE0dl+rSQXMdXWCpdkEM3Z
+	WMS47Cc7YhVbH2ZLXt8tfc4Fv/CbDf7z+aQ3TJ0e138JlBeTxSVWvkQ0=
+X-Google-Smtp-Source: AGHT+IFHs9kqVaEqN/sB+YYux5WaBSDwZsw2w6HL86okt9tgQBqX7A6BYB+vwNXaMuV7P+9rligMqNMjtVaRJjiN+XUOGO/DYWHX
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <67eb568b.050a0220.e5efe.0001.GAE@google.com>
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6e02:1529:b0:3d4:3fbf:967d with SMTP id
+ e9e14a558f8ab-3d6dd781c22mr34839455ab.7.1743691337902; Thu, 03 Apr 2025
+ 07:42:17 -0700 (PDT)
+Date: Thu, 03 Apr 2025 07:42:17 -0700
+In-Reply-To: <67e234e0.050a0220.a7ebc.0037.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67ee9e49.050a0220.9040b.01d3.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] KASAN: slab-out-of-bounds Read in memscan (2)
+From: syzbot <syzbot+ca8a872d9fa7652522da@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-#syz fix bcachefs: Recovery no longer holds state_lock
+syzbot has found a reproducer for the following issue on:
 
-On Mon, Mar 31, 2025 at 07:59:23PM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    4fa118e5b79f Merge tag 'trace-tools-v6.15' of git://git.ke..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=101d3804580000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=dd14976ddc05593f
-> dashboard link: https://syzkaller.appspot.com/bug?extid=64fe47118b53a051c3d7
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> Downloadable assets:
-> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-4fa118e5.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/75d19710545a/vmlinux-4fa118e5.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/8e9456ff5bb7/bzImage-4fa118e5.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+64fe47118b53a051c3d7@syzkaller.appspotmail.com
-> 
->   u64s 8 type snapshot 0:4294967295:0 len 0 ver 0: is_subvol 1 deleted 0 parent          0 children          0          0 subvol 1 tree 0, fixing
-> snapshot points to missing/incorrect tree:
->   u64s 8 type snapshot 0:4294967295:0 len 0 ver 0: is_subvol 1 deleted 0 parent          0 children          0          0 subvol 1 tree 0, fixing
->  done
-> bcachefs (loop0): check_subvols... done
-> bcachefs (loop0): check_subvol_children... done
-> bcachefs (loop0): delete_dead_snapshots... done
-> bcachefs (loop0): check_inodes... done
-> bcachefs (loop0): check_extents... done
-> bcachefs (loop0): check_indirect_extents... done
-> bcachefs (loop0): check_dirents... done
-> bcachefs (loop0): check_xattrs... done
-> bcachefs (loop0): check_root... done
-> bcachefs (loop0): check_unreachable_inodes... done
-> bcachefs (loop0): check_subvolume_structure... done
-> bcachefs (loop0): check_directory_structure... done
-> bcachefs (loop0): check_nlinks... done
-> bcachefs (loop0): resume_logged_ops... done
-> bcachefs (loop0): delete_dead_inodes... done
-> bcachefs (loop0): set_fs_needs_rebalance... done
-> bcachefs (loop0): Fixed errors, running fsck a second time to verify fs is clean
-> bcachefs (loop0): check_alloc_info... done
-> bcachefs (loop0): check_lrus... done
-> bcachefs (loop0): check_btree_backpointers... done
-> bcachefs (loop0): check_backpointers_to_extents... done
-> bcachefs (loop0): check_extents_to_backpointers...
-> bcachefs (loop0): scanning for missing backpointers in 1/128 buckets
->  done
-> bcachefs (loop0): check_alloc_to_lru_refs... done
-> bcachefs (loop0): bucket_gens_init... done
-> bcachefs (loop0): check_snapshot_trees... done
-> bcachefs (loop0): check_snapshots... done
-> bcachefs (loop0): check_subvols... done
-> bcachefs (loop0): check_subvol_children... done
-> bcachefs (loop0): delete_dead_snapshots... done
-> bcachefs (loop0): check_inodes... done
-> bcachefs (loop0): check_extents... done
-> bcachefs (loop0): check_indirect_extents... done
-> bcachefs (loop0): check_dirents... done
-> bcachefs (loop0): check_xattrs... done
-> bcachefs (loop0): check_root... done
-> bcachefs (loop0): check_unreachable_inodes... done
-> bcachefs (loop0): check_subvolume_structure... done
-> bcachefs (loop0): check_directory_structure... done
-> bcachefs (loop0): check_nlinks... done
-> bcachefs (loop0): resume_logged_ops... done
-> bcachefs (loop0): delete_dead_inodes... done
-> bcachefs (loop0): set_fs_needs_rebalance... done
-> bcachefs (loop0): done starting filesystem
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 5325 at fs/bcachefs/opts.c:485 bch2_opt_check_may_set+0x189/0x1c0 fs/bcachefs/opts.c:485
-> Modules linked in:
-> CPU: 0 UID: 0 PID: 5325 Comm: syz.0.0 Not tainted 6.14.0-syzkaller-07318-g4fa118e5b79f #0 PREEMPT(full) 
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-> RIP: 0010:bch2_opt_check_may_set+0x189/0x1c0 fs/bcachefs/opts.c:485
-> Code: e8 fc a1 3f fd eb 0c e8 f5 a1 3f fd eb 05 e8 ee a1 3f fd 31 c0 5b 41 5c 41 5d 41 5e 41 5f 5d c3 cc cc cc cc e8 d8 a1 3f fd 90 <0f> 0b 90 e9 f3 fe ff ff 48 c7 c1 30 04 5e 90 80 e1 07 80 c1 03 38
-> RSP: 0018:ffffc9000d505e88 EFLAGS: 00010283
-> RAX: ffffffff8483e478 RBX: 0000000000000000 RCX: 0000000000100000
-> RDX: ffffc9000ea2a000 RSI: 0000000000007706 RDI: 0000000000007707
-> RBP: 0000000000000041 R08: ffffffff8483e360 R09: 1ffffffff20bbaae
-> R10: dffffc0000000000 R11: fffffbfff20bbaaf R12: ffff888053380000
-> R13: dffffc0000000000 R14: 0000000000000000 R15: 0000000000000000
-> FS:  00007efcdf4256c0(0000) GS:ffff88808c5f1000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000200000001240 CR3: 000000004348a000 CR4: 0000000000352ef0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  bch2_xattr_bcachefs_set+0x3a7/0xb10 fs/bcachefs/xattr.c:526
->  __vfs_setxattr+0x468/0x4a0 fs/xattr.c:200
->  __vfs_setxattr_noperm+0x12e/0x660 fs/xattr.c:234
->  vfs_setxattr+0x223/0x430 fs/xattr.c:321
->  ovl_do_setxattr fs/overlayfs/overlayfs.h:315 [inline]
->  ovl_copy_xattr+0x861/0xb60 fs/overlayfs/copy_up.c:156
->  ovl_copy_up_metadata+0x269/0xef0 fs/overlayfs/copy_up.c:668
->  ovl_copy_up_tmpfile fs/overlayfs/copy_up.c:893 [inline]
->  ovl_do_copy_up fs/overlayfs/copy_up.c:999 [inline]
->  ovl_copy_up_one fs/overlayfs/copy_up.c:1202 [inline]
->  ovl_copy_up_flags+0x20b2/0x47f0 fs/overlayfs/copy_up.c:1257
->  ovl_open+0x14f/0x320 fs/overlayfs/file.c:211
->  do_dentry_open+0xdec/0x1960 fs/open.c:956
->  vfs_open+0x3b/0x370 fs/open.c:1086
->  dentry_open+0x61/0xa0 fs/open.c:1109
->  ima_calc_file_hash+0x16a/0x1af0 security/integrity/ima/ima_crypto.c:553
->  ima_collect_measurement+0x52b/0xb20 security/integrity/ima/ima_api.c:293
->  process_measurement+0x1353/0x1fb0 security/integrity/ima/ima_main.c:375
->  ima_file_check+0xdb/0x130 security/integrity/ima/ima_main.c:603
->  security_file_post_open+0xb9/0x280 security/security.c:3130
->  do_open fs/namei.c:3847 [inline]
->  path_openat+0x2cf7/0x35d0 fs/namei.c:4004
->  do_filp_open+0x284/0x4e0 fs/namei.c:4031
->  do_sys_openat2+0x12b/0x1d0 fs/open.c:1429
->  do_sys_open fs/open.c:1444 [inline]
->  __do_sys_openat fs/open.c:1460 [inline]
->  __se_sys_openat fs/open.c:1455 [inline]
->  __x64_sys_openat+0x249/0x2a0 fs/open.c:1455
->  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
->  do_syscall_64+0xf3/0x230 arch/x86/entry/syscall_64.c:94
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> RIP: 0033:0x7efcde58d169
-> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007efcdf425038 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-> RAX: ffffffffffffffda RBX: 00007efcde7a5fa0 RCX: 00007efcde58d169
-> RDX: 0000000000000083 RSI: 0000200000000000 RDI: ffffffffffffff9c
-> RBP: 00007efcde60e2a0 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 0000000000000000 R14: 00007efcde7a5fa0 R15: 00007fffc7b7c218
->  </TASK>
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
+HEAD commit:    a1b5bd45d4ee Merge tag 'usb-6.15-rc1' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1524d404580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6fe3b5e6a2cb1cc2
+dashboard link: https://syzkaller.appspot.com/bug?extid=ca8a872d9fa7652522da
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1745f7b0580000
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-a1b5bd45.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/8b14e02f603d/vmlinux-a1b5bd45.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/cc06cac05b38/bzImage-a1b5bd45.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/f3f07afca2d8/mount_1.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ca8a872d9fa7652522da@syzkaller.appspotmail.com
+
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 0000000000000000 R14: 00007f14a1da5fa0 R15: 00007ffd3c658fa8
+ </TASK>
+==================================================================
+BUG: KASAN: slab-out-of-bounds in memscan+0x61/0x80 lib/string.c:728
+Read of size 1 at addr ffff8880370da18b by task syz.0.16/5514
+
+CPU: 0 UID: 0 PID: 5514 Comm: syz.0.16 Not tainted 6.14.0-syzkaller-12886-ga1b5bd45d4ee #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+ print_address_description mm/kasan/report.c:408 [inline]
+ print_report+0x16e/0x5b0 mm/kasan/report.c:521
+ kasan_report+0x143/0x180 mm/kasan/report.c:634
+ memscan+0x61/0x80 lib/string.c:728
+ _Z7memscanPvU25pass_dynamic_object_size0im include/linux/fortify-string.h:708 [inline]
+ __printbuf_do_indent fs/bcachefs/printbuf.c:101 [inline]
+ printbuf_do_indent+0x110/0xa10 fs/bcachefs/printbuf.c:155
+ bch2_prt_printf+0x55b/0x6d0 fs/bcachefs/printbuf.c:190
+ trace_bucket_alloc2+0x214/0xb90 fs/bcachefs/alloc_foreground.c:472
+ bch2_bucket_alloc_trans+0x2eaf/0x2ed0 fs/bcachefs/alloc_foreground.c:587
+ bch2_bucket_alloc_set_trans+0x532/0xd00 fs/bcachefs/alloc_foreground.c:713
+ __open_bucket_add_buckets+0x13fc/0x1e80 fs/bcachefs/alloc_foreground.c:956
+ open_bucket_add_buckets+0x343/0x410 fs/bcachefs/alloc_foreground.c:1000
+ bch2_alloc_sectors_start_trans+0xcf4/0x2050 fs/bcachefs/alloc_foreground.c:-1
+ __bch2_write+0x677/0x46c0 fs/bcachefs/io_write.c:1482
+ bch2_write+0x834/0x15d0 fs/bcachefs/io_write.c:1669
+ closure_queue include/linux/closure.h:270 [inline]
+ closure_call include/linux/closure.h:432 [inline]
+ bch2_dio_write_loop fs/bcachefs/fs-io-direct.c:545 [inline]
+ bch2_direct_write+0x1b0d/0x31a0 fs/bcachefs/fs-io-direct.c:668
+ bch2_write_iter+0x195/0x2cd0 fs/bcachefs/fs-io-buffered.c:1057
+ new_sync_write fs/read_write.c:591 [inline]
+ vfs_write+0x70f/0xd10 fs/read_write.c:684
+ ksys_write+0x19d/0x2d0 fs/read_write.c:736
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f14a1b8d169
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f14a2a23038 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f14a1da5fa0 RCX: 00007f14a1b8d169
+RDX: 000000000000f000 RSI: 0000200000000200 RDI: 0000000000000006
+RBP: 00007f14a2a23090 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 0000000000000000 R14: 00007f14a1da5fa0 R15: 00007ffd3c658fa8
+ </TASK>
+
+Allocated by task 5514:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
+ poison_kmalloc_redzone mm/kasan/common.c:377 [inline]
+ __kasan_kmalloc+0x9d/0xb0 mm/kasan/common.c:394
+ kasan_kmalloc include/linux/kasan.h:260 [inline]
+ __do_kmalloc_node mm/slub.c:4331 [inline]
+ __kmalloc_node_track_caller_noprof+0x295/0x4d0 mm/slub.c:4350
+ __do_krealloc mm/slub.c:4908 [inline]
+ krealloc_noprof+0x10f/0x300 mm/slub.c:4961
+ bch2_printbuf_make_room+0x1f1/0x350 fs/bcachefs/printbuf.c:59
+ bch2_prt_printf+0x269/0x6d0 fs/bcachefs/printbuf.c:186
+ trace_bucket_alloc2+0x1c6/0xb90 fs/bcachefs/alloc_foreground.c:470
+ bch2_bucket_alloc_trans+0x2eaf/0x2ed0 fs/bcachefs/alloc_foreground.c:587
+ bch2_bucket_alloc_set_trans+0x532/0xd00 fs/bcachefs/alloc_foreground.c:713
+ __open_bucket_add_buckets+0x13fc/0x1e80 fs/bcachefs/alloc_foreground.c:956
+ open_bucket_add_buckets+0x343/0x410 fs/bcachefs/alloc_foreground.c:1000
+ bch2_alloc_sectors_start_trans+0xcf4/0x2050 fs/bcachefs/alloc_foreground.c:-1
+ __bch2_write+0x677/0x46c0 fs/bcachefs/io_write.c:1482
+ bch2_write+0x834/0x15d0 fs/bcachefs/io_write.c:1669
+ closure_queue include/linux/closure.h:270 [inline]
+ closure_call include/linux/closure.h:432 [inline]
+ bch2_dio_write_loop fs/bcachefs/fs-io-direct.c:545 [inline]
+ bch2_direct_write+0x1b0d/0x31a0 fs/bcachefs/fs-io-direct.c:668
+ bch2_write_iter+0x195/0x2cd0 fs/bcachefs/fs-io-buffered.c:1057
+ new_sync_write fs/read_write.c:591 [inline]
+ vfs_write+0x70f/0xd10 fs/read_write.c:684
+ ksys_write+0x19d/0x2d0 fs/read_write.c:736
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+The buggy address belongs to the object at ffff8880370da100
+ which belongs to the cache kmalloc-128 of size 128
+The buggy address is located 11 bytes to the right of
+ allocated 128-byte region [ffff8880370da100, ffff8880370da180)
+
+The buggy address belongs to the physical page:
+page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x370da
+flags: 0x4fff00000000000(node=1|zone=1|lastcpupid=0x7ff)
+page_type: f5(slab)
+raw: 04fff00000000000 ffff88801b041a00 dead000000000122 0000000000000000
+raw: 0000000000000000 0000000080100010 00000000f5000000 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x52c40(GFP_NOFS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP), pid 5514, tgid 5513 (syz.0.16), ts 101748145234, free_ts 101731411139
+ set_page_owner include/linux/page_owner.h:32 [inline]
+ post_alloc_hook+0x1f4/0x240 mm/page_alloc.c:1717
+ prep_new_page mm/page_alloc.c:1725 [inline]
+ get_page_from_freelist+0x352b/0x36c0 mm/page_alloc.c:3652
+ __alloc_frozen_pages_noprof+0x211/0x5b0 mm/page_alloc.c:4934
+ alloc_pages_mpol+0x339/0x690 mm/mempolicy.c:2301
+ alloc_slab_page mm/slub.c:2459 [inline]
+ allocate_slab+0x8f/0x3a0 mm/slub.c:2623
+ new_slab mm/slub.c:2676 [inline]
+ ___slab_alloc+0xc3b/0x1500 mm/slub.c:3862
+ __slab_alloc+0x58/0xa0 mm/slub.c:3952
+ __slab_alloc_node mm/slub.c:4027 [inline]
+ slab_alloc_node mm/slub.c:4188 [inline]
+ __do_kmalloc_node mm/slub.c:4330 [inline]
+ __kmalloc_node_track_caller_noprof+0x2ef/0x4d0 mm/slub.c:4350
+ __do_krealloc mm/slub.c:4908 [inline]
+ krealloc_noprof+0x10f/0x300 mm/slub.c:4961
+ bch2_printbuf_make_room+0x1f1/0x350 fs/bcachefs/printbuf.c:59
+ bch2_prt_printf+0x269/0x6d0 fs/bcachefs/printbuf.c:186
+ bch2_btree_path_to_text_short+0x8a5/0xfb0 fs/bcachefs/btree_iter.c:1520
+ __bch2_trans_paths_to_text+0xe5/0x180 fs/bcachefs/btree_iter.c:1575
+ bch2_trans_update_max_paths+0x173/0x420 fs/bcachefs/btree_iter.c:1611
+ btree_path_alloc+0x8d9/0xad0 fs/bcachefs/btree_iter.c:1708
+ bch2_path_get+0xb77/0x1610 fs/bcachefs/btree_iter.c:1759
+page last free pid 5321 tgid 5321 stack trace:
+ reset_page_owner include/linux/page_owner.h:25 [inline]
+ free_pages_prepare mm/page_alloc.c:1262 [inline]
+ __free_frozen_pages+0xde8/0x10a0 mm/page_alloc.c:2680
+ discard_slab mm/slub.c:2720 [inline]
+ __put_partials+0x160/0x1c0 mm/slub.c:3189
+ put_cpu_partial+0x17e/0x250 mm/slub.c:3264
+ __slab_free+0x294/0x390 mm/slub.c:4516
+ qlink_free mm/kasan/quarantine.c:163 [inline]
+ qlist_free_all+0x9a/0x140 mm/kasan/quarantine.c:179
+ kasan_quarantine_reduce+0x14f/0x170 mm/kasan/quarantine.c:286
+ __kasan_slab_alloc+0x23/0x80 mm/kasan/common.c:329
+ kasan_slab_alloc include/linux/kasan.h:250 [inline]
+ slab_post_alloc_hook mm/slub.c:4151 [inline]
+ slab_alloc_node mm/slub.c:4200 [inline]
+ __do_kmalloc_node mm/slub.c:4330 [inline]
+ __kmalloc_noprof+0x238/0x4d0 mm/slub.c:4343
+ kmalloc_noprof include/linux/slab.h:909 [inline]
+ tomoyo_realpath_from_path+0xcf/0x5e0 security/tomoyo/realpath.c:251
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_path_number_perm+0x245/0x790 security/tomoyo/file.c:723
+ security_file_ioctl+0xc6/0x2a0 security/security.c:2913
+ __do_sys_ioctl fs/ioctl.c:900 [inline]
+ __se_sys_ioctl+0x46/0x160 fs/ioctl.c:892
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Memory state around the buggy address:
+ ffff8880370da080: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff8880370da100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff8880370da180: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+                      ^
+ ffff8880370da200: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff8880370da280: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
