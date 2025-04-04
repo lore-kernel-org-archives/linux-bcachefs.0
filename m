@@ -1,41 +1,46 @@
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E0461F3D21
-	for <linux-bcachefs@vger.kernel.org>; Fri,  4 Apr 2025 14:54:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DD4F1EF0AD
+	for <linux-bcachefs@vger.kernel.org>; Fri,  4 Apr 2025 15:36:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743778451; cv=none; b=SNFgzZpBmZkiyWD/tdNVWXbqpGha1YfoSngmGnbMEfsIwLxk2ea7emXU8FQQtge8qKNM0UYfZjFspOlJ5TGBgtuJkB1rg9L5N2vl1vv78B5GVGVbNr8uPALiahxzFSaccnK7L0xjNogoR6EgSdKy47d4LeurIlA11Qe068/MeBQ=
+	t=1743781010; cv=none; b=stw+4sJGk6YTF+Q0yTG1y+i0CpWRbWkBtJHa/RfO3vqoZZuGVr9aV5zkh64jZZz46rSemzQQz4TfGsBz8xVLc7Pyd96Ri3B6lgEfhdt0WqXNTSI8B9IxEyheMRF6qA9pu1lORtAlpQXJd1WbG5pm8EWenXkiUXo0Rvbtc9Pl0J8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743778451; c=relaxed/simple;
-	bh=OrWnd/AIVtyfUtf1QWN2C81czHbvbqvK7PUNeJ9GhF0=;
+	s=arc-20240116; t=1743781010; c=relaxed/simple;
+	bh=Wm0hlOk2KjnydJuWr4Tp+yAP5KMUtZGePGoHip7UhjQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gKYIBj+Naw7cTPnVfrr9YLe+1gCdkMj1lYjGerZnwFnjDkzeLUaJFTAo1Uttn9mhJ5vhxS1U9AeZVJO+3BD/0EtFiwnNsMEthRiIOn3EASDoqhedt2YV2cr579sSBHG3yr4gjFOZhKOPYY3LWNC0RsiKC7JVqZe6ybcqwrKji38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CwJ0rmQk; arc=none smtp.client-ip=91.218.175.174
+	 Content-Type:Content-Disposition:In-Reply-To; b=jeP8hcXCxZdqdk3zDQtnJ5Ms3sh3jLYNM8BpS2z+TxXUel7NKBP/i+dKLERCFKR3m2DyB3PJSSak9ThjT/+EjLdSUu2WH+eyQMvWlUvkJDF68LFtWWhCQ0Ps2qzAF3M9Yj0yxhRNsUmQ1xABZE7PBgYL8vh+9p5wb2pXEUiW+E8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Kozys/Ds; arc=none smtp.client-ip=91.218.175.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CwJ0rmQk"
-Date: Fri, 4 Apr 2025 10:53:53 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Kozys/Ds"
+Date: Fri, 4 Apr 2025 11:36:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1743778436;
+	t=1743780996;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OLg5PeIHaOFt5pMV3h7TuWebvpx5Qt/dpEM9TkWrbCE=;
-	b=CwJ0rmQkxjYRT553nTryoJSNAzsdF8H2gJNSaJR/gcpqWQ94BABcs5MT+REOCYDXlygGQS
-	yvcVVNZRGFvbzD8B0H0cihCjYmNC+tJ9GGtr/ucNRm/Gxpzdtrf7H/b+wWOAtACm0sa/wu
-	cpVjy01KufTkkqf+CDOk6BKFmL24H+s=
+	bh=s4sptiDS64TqakxXpUmcHXO8tnkrK0BIqcsdKGFEneU=;
+	b=Kozys/Ds7/cg6lJiuP9pxF9pevq4wb5QSquXowWNSK/3r/thjFBnegULAihzhspi5PSuJH
+	ryd9tEkOfDKiFseeiNb/uCMcURT7IlHxZIS/3NwP6TzCs2JLRjIIRypw87bfMuyOVGZSMw
+	bhWzTBj9OqnQLGrPoZTwTZHHJYTvWNA=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: linux-bcachefs@vger.kernel.org, vulab@iscas.ac.cn, 
-	stable@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] bcachefs: Add error handling for zlib_deflateInit2()
-Message-ID: <morzv5ulzvkdpkegs33bwdocnn3hftxviqmw4wkvlh2qnsfagd@trk7lpvqj37k>
-References: <xjtejtaya3znotupznz4eywstkjvucxwyo2gf4b6phcwq6a2i5@pqicczp3ty5g>
- <667bcd67-aac4-425c-b100-d25dc86eb6a9@web.de>
+To: Bharadwaj Raju <bharadwaj.raju777@gmail.com>
+Cc: linux-bcachefs@vger.kernel.org, shuah@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kernel-mentees@lists.linux.dev, 
+	syzbot+c82cd2906e2f192410bb@syzkaller.appspotmail.com
+Subject: Re: [PATCH] bcachefs: don't call sleeping funcs when handling
+ inconsistency errors
+Message-ID: <6jgqlz555qrn3l34e45nc6ubg53ydtzh6l7ghra7od2xjctugp@ztmjdn3cwt6h>
+References: <20250402161043.161795-1-bharadwaj.raju777@gmail.com>
+ <zjqewsg6ijvol3x3rdjfyjeji3wy24nw45yb6mkqj7vwsk7mrn@yxnvgpj4i24k>
+ <CAPZ5DTEGi8RXBMui823bwnt96PcqZSavH8AQ+LPhRs=sJ-Br1Q@mail.gmail.com>
+ <ciw5ocj6io5q5p2tsv3sqpga2ff73eqwhlrrug4el63ggolcho@iviprrqsaemj>
+ <CAPZ5DTGWC2Xemgby9E8EL61Vio0NYQrKBd5FNpvERwwBoEP8tg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -45,15 +50,42 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <667bcd67-aac4-425c-b100-d25dc86eb6a9@web.de>
+In-Reply-To: <CAPZ5DTGWC2Xemgby9E8EL61Vio0NYQrKBd5FNpvERwwBoEP8tg@mail.gmail.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Fri, Apr 04, 2025 at 04:20:18PM +0200, Markus Elfring wrote:
-> …
-> > > Add an error check and return 0 immediately if the initialzation fails.
+On Fri, Apr 04, 2025 at 12:22:45PM +0530, Bharadwaj Raju wrote:
+> On Wed, Apr 2, 2025 at 10:08 PM Kent Overstreet
+> <kent.overstreet@linux.dev> wrote:
 > >
-> > Applied
+> > On Wed, Apr 02, 2025 at 10:03:10PM +0530, Bharadwaj Raju wrote:
+> > > On Wed, Apr 2, 2025 at 9:47 PM Kent Overstreet
+> > > <kent.overstreet@linux.dev> wrote:
+> >
+> > If you're feeling particularly adventurous - print_string_as_lines() is
+> > a hack, I think we should be able to do something more robust by
+> > skipping printk (that's where the 1k limit comes from) and calling
+> > something lower level - that will require digging into the printk
+> > codepath and finding lower level we can call.
 > 
-> Did you try to avoid a typo in such a change description?
+> I tried looking into the printk codepath, namely vprintk_emit -> vprintk_store.
+> It doesn't seem like there's a convenient single lower-level
+> entrypoint we could
+> call which just avoids the 1k limit, rather there's a lot of internal
+> code mixed with
+> the truncation that we'd have to just copy if we want printk behavior.
+> I don't think that's a reasonable option for us.
 
-Typos add character :)
+Yeah that does look a bit messy - and it doesn't exactly explain where
+the 1k limit comes in.
+
+
+> > I also just noticed that print_string_as_lines() needs to check for
+> > being passed a NULL pointer - in case the printbuf memory allocation
+> > fails. Want to get that one too?
+> 
+> From what I'm seeing __bch2_print_string_as_lines already checks
+> for the lines pointer being NULL. The only unchecked pointer is prefix,
+> which I don't think needs to be checked since it will be something constant
+> from kern_levels.h, not something which could be NULL.
+
+Yep, I should've checked the code before I said that :)
