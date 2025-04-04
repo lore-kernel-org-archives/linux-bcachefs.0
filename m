@@ -1,79 +1,108 @@
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59754DF71
-	for <linux-bcachefs@vger.kernel.org>; Fri,  4 Apr 2025 01:34:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B999C944E;
+	Fri,  4 Apr 2025 06:53:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743730480; cv=none; b=umZ+6fElPIbU5BjocjxSPVQZoxO6SzuOO7wYZHJ3vWsM3brqDcoZ2kkwLZLafDcosE/EIR6mtrp0739rgPJCyrl/q8UUxfDE6ya2eECpsDbD5ptQFzSAwSZUaX/s93N2BryAgoutgKHZm9O320JAsk5DSLhrgRDIbk13WiFsI+w=
+	t=1743749594; cv=none; b=kZIwb5rDo2lwmqmQmWmQtXI12vW7Mg0OFJ9LcPB8VYMr/7Ogy7NleV1VhK2POYScxfAgYt/omduDG8e/9lyTk1cEPt7sm9BzLVmAC6uWUqT44+fEDwb+b7wu6tpcluCUPvUbsd7n7c5url3hbDOAii8KLYz4/zRx7DwDzSGSo4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743730480; c=relaxed/simple;
-	bh=WiAyzZ5WyRvsxdRTlCI9PbnPOpAWDexPfHUxCwCPsRY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eSwg3maQzjSKmuW5Hy7apDufI8zpdmvIj5zVhUdUrQEIjsL6Z9c7dEG7GXXUnzRUdj3CUyoAgB6UUPD8hbX8C2kewU1j03BKp3i+/j1iwU4RPtNbPx1cYktYV5qDmfMcgekZzMa62H507lF0tRVPxc1wTtPWcIzj+MJUu6R83gE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=j827AbAk; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1743749594; c=relaxed/simple;
+	bh=wagEcAUCHG05vNZLORykGW7a7L+MU7y4dAnfJ7Prwbk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UgH48o9VPUjqRal3FfKaW8EJpK+f2k90+ZFg0O+cj1LNK7hK6LKNBkVKmA243HAAz+XqJsSWzGuI56kBnK3+7ZneT8xt53x5QdQyZwJy+zdawJ+0QCfyvGsannzwn4LJbzye2sVDNDI1e2XkvewUoYLgigz8A9oDpKIGFqWNg5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DVFM/b/w; arc=none smtp.client-ip=209.85.216.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="j827AbAk"
-Date: Thu, 3 Apr 2025 21:34:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1743730466;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4PHvMjLr8KaJRptWmvWh7wch6EgDRZ+GW28ZL9pV5NE=;
-	b=j827AbAkCRxcmmfupJW1BaT6dEnAbOUYhBC/YCW+uzAKddO4pDJ2+SX/Gz9G8R1/Tpjeef
-	cHiMvLza9GDB1j59LiESoMwfYSaAPg/ML23IiMR+qAIJ8llJpAkGJsKxT+0oPPFfi5epo4
-	2p5Hn8Hn50VFjTFoeWIGt8czewtF/8M=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Gabriel Shahrouzi <gshahrouzi@gmail.com>
-Cc: linux-bcachefs@vger.kernel.org, shuah@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kernel-mentees@lists.linux.dev
-Subject: Re: [PATCH 0/3] This series addresses several minor issues found
- using sparse.
-Message-ID: <zzxxg3gfmd5vdywegv2x7wsw3xzpdryrtlkka47o4zurqmzgpc@z3vv7jzta5dj>
-References: <20250404012822.188485-1-gshahrouzi@gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DVFM/b/w"
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2ff6e91cff5so1644283a91.2;
+        Thu, 03 Apr 2025 23:53:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1743749592; x=1744354392; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wagEcAUCHG05vNZLORykGW7a7L+MU7y4dAnfJ7Prwbk=;
+        b=DVFM/b/w4Gow44KtWF7tUn1wsliiLxGWckarTDNCC9tsJur4uC1pY4O4peChFl/78G
+         UZzM74MBuhB3YJURovnWAy2xZu8Xg+Ep5G5KutC/NcNhf3C1vQA6G7QSDs+G5hOPghyv
+         c8b3ZNmquVC4XTp+au9wSIOQzF3ARXdPPMmpcPhvBiZT5PKxmfghlO4erf7C4DOIFMOO
+         hWMCAihfCPbYeivMcLDbW5rVdhG4BDzx2SiWY6u5aDjpQBe6waxy/YJaAOcIVyPXFOIw
+         6bxKhl922mvEI55rRnFNGov9q4AuN/0Zcd8J2sG62ewreywwPqYLhKWHjRbjyhqxY/6c
+         56Bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743749592; x=1744354392;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wagEcAUCHG05vNZLORykGW7a7L+MU7y4dAnfJ7Prwbk=;
+        b=ZQrnkj28D6uAGSirouBJXItWl9IIEaxP05q7iyJ+DGp4wA+MKNVqjiK4+7haEpIf90
+         E3rhLcRjoXzruXXQ3fR2bAfiV4lMaVPsRyj2eKgIsmBh31XexZXV0SdPSkGUqWkgChmA
+         iZlwg8gp1bg8RB9J3LdKdDmQcquatv4mwH12iu3gV4hF0qeD5yNNIxypkSW0Bk4gBeOq
+         ydl3y0o6E8JTB99pPvBuRwCJOBuKTrRcvHfQyyq91Efg/QdCOIGNlJGFtJVZnYhubmL+
+         QlU19a0OZtzyftRfk6FB8e0txGxlZXpjO+5WzGwI40vzAL3mwMnt0LDoXS7NSp17OhaD
+         Ax+w==
+X-Forwarded-Encrypted: i=1; AJvYcCWsjQnodGZI4XBqNHaEciahXX1as3Q0keIxqXvMVaCRFFEoNAclMs6O0pLhHxHxr4c9m64YwXeXtyeZJOo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxDhFw8Vpe6zt21OJ3eQp9y43L7+KIaKT/s/2/udalCafKXN0uu
+	tRUl+IBrSEUT+R3Ykorcu6FfDOhJBM6r6o+8qIZDazPTXOcut9ZwVQ2lKzx+9VDmjBwdrT1wOnz
+	9IT4qpqfgbwBn8XlIPYy5UqnmGxo=
+X-Gm-Gg: ASbGncuid5wvqpgESMlMxZ3KoG1H4pVgcUkm3Yr0zXe5bB1xlBzLnaTSLadWBind/xn
+	cgYxkiayJCDCel+svLGSdYrzvIufy+4OgInuLIw5AcgMdB2N8FGTA29kyMp34zS3tC+vHKcg6Hv
+	LgqgW/89dNZiNGGGN+QicZGo+c+EFeVlJIuP8B
+X-Google-Smtp-Source: AGHT+IEL7jgtpRh1nW1SS7zZ3z7a94wwMUS7u52cjNfkU3cMCpt/OhXhPeGtWWkv5f5GksecYqHZpamDGK2sAf61OpU=
+X-Received: by 2002:a17:90a:e18f:b0:2f1:2fa5:1924 with SMTP id
+ 98e67ed59e1d1-306a62138a0mr1822038a91.26.1743749591696; Thu, 03 Apr 2025
+ 23:53:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250404012822.188485-1-gshahrouzi@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+References: <20250402161043.161795-1-bharadwaj.raju777@gmail.com>
+ <zjqewsg6ijvol3x3rdjfyjeji3wy24nw45yb6mkqj7vwsk7mrn@yxnvgpj4i24k>
+ <CAPZ5DTEGi8RXBMui823bwnt96PcqZSavH8AQ+LPhRs=sJ-Br1Q@mail.gmail.com> <ciw5ocj6io5q5p2tsv3sqpga2ff73eqwhlrrug4el63ggolcho@iviprrqsaemj>
+In-Reply-To: <ciw5ocj6io5q5p2tsv3sqpga2ff73eqwhlrrug4el63ggolcho@iviprrqsaemj>
+From: Bharadwaj Raju <bharadwaj.raju777@gmail.com>
+Date: Fri, 4 Apr 2025 12:22:45 +0530
+X-Gm-Features: AQ5f1JqhQjzHwVi0_Dvyw6YFPjyd625XIAiKSOF-1GZqntHD3yyuAojBkP7y-AU
+Message-ID: <CAPZ5DTGWC2Xemgby9E8EL61Vio0NYQrKBd5FNpvERwwBoEP8tg@mail.gmail.com>
+Subject: Re: [PATCH] bcachefs: don't call sleeping funcs when handling
+ inconsistency errors
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, shuah@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kernel-mentees@lists.linux.dev, 
+	syzbot+c82cd2906e2f192410bb@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 03, 2025 at 09:28:19PM -0400, Gabriel Shahrouzi wrote:
-> The first patch fixes a typo ('\%u') in a format specifier within a print
-> statement. The incorrect sequence was replaced as it didn't appear
-> to be the author's intent.
-> 
-> The second patch corrects the type for a function argument to __le64,
-> which fixes two related sparse warnings. Although the argument data
-> is already little-endian, using the specific __le64 type improves
-> consistency and makes the expected data format explicit.
-> 
-> The third patch ensures cpu_to_le16() is used when preparing certain
-> on-disk data (directory entry lengths). This maintains correct byte
-> ordering for big-endian systems.
+On Wed, Apr 2, 2025 at 10:08=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+>
+> On Wed, Apr 02, 2025 at 10:03:10PM +0530, Bharadwaj Raju wrote:
+> > On Wed, Apr 2, 2025 at 9:47=E2=80=AFPM Kent Overstreet
+> > <kent.overstreet@linux.dev> wrote:
+>
+> If you're feeling particularly adventurous - print_string_as_lines() is
+> a hack, I think we should be able to do something more robust by
+> skipping printk (that's where the 1k limit comes from) and calling
+> something lower level - that will require digging into the printk
+> codepath and finding lower level we can call.
 
-Thanks, series is applied.
+I tried looking into the printk codepath, namely vprintk_emit -> vprintk_st=
+ore.
+It doesn't seem like there's a convenient single lower-level
+entrypoint we could
+call which just avoids the 1k limit, rather there's a lot of internal
+code mixed with
+the truncation that we'd have to just copy if we want printk behavior.
+I don't think that's a reasonable option for us.
 
-> 
-> Gabriel Shahrouzi (3):
->   bcachefs: Fix escape sequence in prt_printf
->   bcachefs: Fix type for parameter in
->     journal_advance_devs_to_next_bucket
->   bcachefs: Use cpu_to_le16 for dirent lengths
-> 
->  fs/bcachefs/data_update.c | 2 +-
->  fs/bcachefs/dirent.c      | 4 ++--
->  fs/bcachefs/journal_io.c  | 2 +-
->  3 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> -- 
-> 2.43.0
-> 
+> I also just noticed that print_string_as_lines() needs to check for
+> being passed a NULL pointer - in case the printbuf memory allocation
+> fails. Want to get that one too?
+
+From what I'm seeing __bch2_print_string_as_lines already checks
+for the lines pointer being NULL. The only unchecked pointer is prefix,
+which I don't think needs to be checked since it will be something constant
+from kern_levels.h, not something which could be NULL.
