@@ -1,61 +1,63 @@
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B44DB12E7E;
-	Fri,  4 Apr 2025 01:28:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0073E125DF;
+	Fri,  4 Apr 2025 01:28:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743730108; cv=none; b=X+mq+XXQVi2BSc6Bio2WKOIhNeKtFsIBz+jXzbeo9RBMh3QMyIUH95EGsCsZb7yC4TBocIiOJyHgNzjD/GFlAnMsTLJFBLAJ8Hm7Kp03KGKa51Cy4UhrFgLvjMQdr/xH3szxJ6klebhy7ES+7cEUZLK81QSclt34Szj6C2HLNL8=
+	t=1743730110; cv=none; b=kE+dUuT+QrdkTEuFBjNGZ84X28i3OLJw2zkkb6lbYaFkN90YTQVWgL3zNG35nymwlUEyQyNA7aKuok0jPQVwnFB/LPgBreXiNb7GWPRmq4S3raNGBM1iomG2CZt0KGqtuv3RLfJqca/eviwNFu7JgMjSYWmWJemUjqZKj8RJ5RM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743730108; c=relaxed/simple;
-	bh=5+Giy3MvQ8w3Ogn/b9n3+xZekKG1FsumBjZO5LtSWtQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Xe8GVqaFWuau3cY3/7Z4d3utafREbHC/67X8bxjTohZ9Qg3ZNS1oDo5quf/qyudqluY4dt7Br5TfpX8TabfTO6wX6q0QAJ5PiZVhbh/NXDSg654B3IhsplfL1WHZHgwsnhHowrMQnAxFmUC1S2FHwSTakC87ikfgmdj36jRAEgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OUufdWQ5; arc=none smtp.client-ip=209.85.222.176
+	s=arc-20240116; t=1743730110; c=relaxed/simple;
+	bh=+ResDCTvM23URDJCLa3ecYhjP+KuL5/bXpoaByzVOYg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ap8uUB8Sa+hSEaHSSuTVPcv33XYLK249eMF04MzCmAEvZmE2LCfBy7qbTx13W1SkVHB9VenlPtAHT0PV4aBj0b6jFrPGTY6uzoS/+zFnIRvGBeGEjVhzfEb2c44OCegcpa4Br4G1dP2HoLVp1HKpQ0qVN6s5e0TBlowbwmYAhp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UJSDEkst; arc=none smtp.client-ip=209.85.222.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OUufdWQ5"
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-7c53b9d66fdso196028585a.3;
-        Thu, 03 Apr 2025 18:28:26 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UJSDEkst"
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-7c592764e54so188015785a.3;
+        Thu, 03 Apr 2025 18:28:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743730105; x=1744334905; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z5KehqjscaqmbWM/FF2IgUe0rMAoDoCjxIkxHlSDOuQ=;
-        b=OUufdWQ5pMmoVvtEPUm/wBONWCbWAuZbbIlrKB5kTmd4wxobeRHIKeDa+puqX/2NL1
-         8ysiBRGQUULrWpWuNitnlNeQJZLtGMU5EBD034vJ4BB5yOBx1QuK3UA6DwrOstXI9Zrz
-         aEI3815uKJnXosCKSPan5TqOI9SgzETJUDWhQF7Jy+o/6uEwYtHiIEAmOUD2cAI8nGPV
-         o0Tc5/3rX3l98ZV+OXS3m8UOfsUeFt9BW0duM2pYXRLN6P5GVj6JTk2UfLCKV0DhC/eN
-         QmD/wNBC4/YlFzS5mj7In+l94Zs3TqoEvFeH3Bh/w5Z6KqWyK6Bb/VdRgb8b2Vl/7Z46
-         +cNA==
+        d=gmail.com; s=20230601; t=1743730108; x=1744334908; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1TdHSKPoc66HovlsYIHymAAPKNzysuy+s35fLRQ1k6k=;
+        b=UJSDEksttgjGglKZhxvYUDUwNa9PLufhX4c2qk3tf7IVfMNzhg9mYfH2eHh5+jcGqw
+         z4U1EvK961q3xmTMtkVo8S7/8O5sXyopsGe7NyLn4Rr5n7HtNBAFEz8iFzfQHEkZKmYV
+         HAxBOqvLxJ/4x4Vm3W993EtIYsvMGPV2x3Ma1sAOrBN4isiI74v5aQxW51p8DaHsyHWj
+         fAHBs7jcF0KbXjGM4oN+t1XMcxIq4lsppvibZevOSjLlwri3/ZdutSPNYWUqSUy2Nubm
+         Sj3yiGa//sgeOsmPtLUkOd9i7G+M4lAX+gd1Cho+y9eoBOIRN+bdDH5ijTKMaDa5Eu6W
+         Xtzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743730105; x=1744334905;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Z5KehqjscaqmbWM/FF2IgUe0rMAoDoCjxIkxHlSDOuQ=;
-        b=kCiXclKPzsGrnx7CJl1Zhfco/u0VUT50/c13OyKqLzCCn/S3rytlSJRyzF64c4q1qj
-         uzGC5k9R7woAvbnMoK2Lzo98OjiF7OY3AfDk+rbpoNWVkNpi0SWDacpxTbWhSQ30GxWD
-         hWNVdVrlQXv/CNczWwclDQWSNW5T7S5vFxT/O0D3fbzMBdbK8jjuBDZ08A/DZ/m+e/ax
-         uZzb/mel2yWPleDsg0SD7kmchYoK8bpA7FttUrsVqgjLtejjAFHQe3Tnyo8MLP1mJK5Y
-         apSqxaRnnpKr2Gr2+xNKiK6l2Nmn//p2QZw9yF4x6pzy/rpz8pvnJ6qfOP0D090bW2LT
-         EVFg==
-X-Forwarded-Encrypted: i=1; AJvYcCWLxbqOGTTamSoJNjrBr8y6jETrm/PxftgcdZjRU5rwXpiCAhu5xquLAkP9rtlbkohZTAxoQC+IeNt5m83U@vger.kernel.org, AJvYcCXYJLqkOBAmdPS9AG1bBsarlzcPSwh7vT3RFiggdf2ES359NslWKTIuex5OfnDF+Z/sr6UdnYUqXdkTF+Oi3A==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyv6NkLJlJib13Tn8087Y0tWxD83t3niuPHuZ1oATmn+CkP/1FJ
-	sWJn93owxojrX9q29qcjFYw4lLxP0WhJTYImPPDqhOWyYCaBzSZR
-X-Gm-Gg: ASbGncs0weDajeEN2WW9AKGKzUCFNlXVvzsE5LJoUKUZz4gQQxmtKLHZ5qWE9rya19g
-	G+I70BgLElvf7DIWlDChuuw0uNqqIuX8dSPkik0v2gHMaRRUDJTL396HD8O6Fk4NHRAOf5vzPJ+
-	iVV+2m5rM99rku5CDflLQdRs5AWfKkujXvtam96JeTZMB/1B2zSPOtIYZvVRG4SgEJLYvZgaUOD
-	YfYmsXJK1My4c7SywZ+CuSAjRkusk1Uw+nBqus2J9L7OAFSXSHGujKh1ict5Xn+XIczNcE4hVkk
-	Bp+fS4x8aKdGzhnajI+Nx5IhwoQMgtCHiNY/dwPQExXO33UOdzib9fGJXS+V9fu+aeTBq7yB9Ye
-	sqfmVIFfVcvJ/Lb/014T6Zv0=
-X-Google-Smtp-Source: AGHT+IH8rF5SgsSKXM0L1XV5g7fJdJDCNCo+lyIiVL3Oc0X593rI5DTIOdeNQczN1802u5TCgxIfvw==
-X-Received: by 2002:a05:620a:4484:b0:7c3:ca9d:210b with SMTP id af79cd13be357-7c774d277b8mr183533385a.6.1743730105428;
-        Thu, 03 Apr 2025 18:28:25 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1743730108; x=1744334908;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1TdHSKPoc66HovlsYIHymAAPKNzysuy+s35fLRQ1k6k=;
+        b=t7w7qdxRQ1nxPGwt6jEint8WiudOraD68qfiPwZPAMspRs1d+v9Noh792w6lr9ug1o
+         2IbnF3EOB+bl9mEb2J55TA3GjX+RqKWJCiIj1ooh8L5nGw97TCbIwWI7q15aFewXRBeY
+         TTGGHbuY4WTPDorUrnhUcyt1KFSyEkZxQqm/oyf2LVEWUgo8AU5wJgB/JGecq+eBVaCJ
+         gc/U0R/I/L10sY3GisGZVKRliGvcqP0ftqjWfbO3iBnKsQYoJz5ZPkAtuM6hEzTq9BXR
+         dAkqEAE7kadNSLQ02bvn/aaiNWD5pGrqKRPGx0eFRBaPbJ727BatgqoHnBxWponPafVi
+         MSrg==
+X-Forwarded-Encrypted: i=1; AJvYcCUA2HQBjgCnn5Eu0U2YDb5EzQqWq1EQtHPRE7MeyCcMTcE9d+mT+iSDqGkbM0eDlYbI1ect9bB3Jnu1hwnpNw==@vger.kernel.org, AJvYcCWa90TyvjpQKchGI/LXxkWn2URojheMw6GeYuKFDiHTM2Pkx/+Baf8vHgEFm2yF1ap6RkYSUI7jMBAjvgs6@vger.kernel.org
+X-Gm-Message-State: AOJu0YxCqPEuS8o0NZduTAeQrj6W+7dHL4MIDwM2+SGSKDaC2Pp3K44A
+	PZxHGXF6PH4ly7oOCYaKAbGBNq0aZFx3iPvH0186cqk1mvJ2eGhL
+X-Gm-Gg: ASbGnctkXYuJfXIIQOKAlXSswt2y9reBuqeU9rSEZ9WcFphClT7y3wJH9XB6rMyD/EQ
+	EH1OhoW8aleSwPxRUkciSPuURMd6bMl4eFEd3V75NsBOdR1Yism1BmE9p3ocX/WU/pRBea97/Rh
+	z88WIfjbe8u5cvqhrUsWum+mYWthur0aBI+tZsROpDRf8j/maczWBdheMyxQQOU0H8thWj3suJx
+	Hq+9JMZstRGZBDy7p/pd/iUczfKDg8b5lXkx5/hXS/DruAsib5ycqBuNx5sOfcGfya68Z31Yrob
+	BzectNFrEZdaB+/b+yeJBKbRmQJOHHIDIuv0RbFrk/A4nt9xu3lxqkUfFnsE2x2AaxrlEn79Eaf
+	KBhHdiUh36RE4FtSTomH9YYs=
+X-Google-Smtp-Source: AGHT+IFueRiiCJVMRgu+RUz7h9R7hW0yLQ2FkCH5TbKaoZr+99YUdDkzX5Qicx2G0NKcSCf8m5e4XQ==
+X-Received: by 2002:a05:620a:2903:b0:7c5:57e6:ee87 with SMTP id af79cd13be357-7c775ae04e7mr116877285a.41.1743730107913;
+        Thu, 03 Apr 2025 18:28:27 -0700 (PDT)
 Received: from theriatric.mshome.net (c-73-123-232-110.hsd1.ma.comcast.net. [73.123.232.110])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c76ea58f95sm147401185a.80.2025.04.03.18.28.24
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c76ea58f95sm147401185a.80.2025.04.03.18.28.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Apr 2025 18:28:25 -0700 (PDT)
+        Thu, 03 Apr 2025 18:28:27 -0700 (PDT)
 From: Gabriel Shahrouzi <gshahrouzi@gmail.com>
 To: kent.overstreet@linux.dev
 Cc: gshahrouzi@gmail.com,
@@ -63,10 +65,12 @@ Cc: gshahrouzi@gmail.com,
 	shuah@kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-kernel-mentees@lists.linux.dev
-Subject: [PATCH 0/3] This series addresses several minor issues found using sparse.
-Date: Thu,  3 Apr 2025 21:28:19 -0400
-Message-ID: <20250404012822.188485-1-gshahrouzi@gmail.com>
+Subject: [PATCH 1/3] bcachefs: Fix escape sequence in prt_printf
+Date: Thu,  3 Apr 2025 21:28:20 -0400
+Message-ID: <20250404012822.188485-2-gshahrouzi@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20250404012822.188485-1-gshahrouzi@gmail.com>
+References: <20250404012822.188485-1-gshahrouzi@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -75,30 +79,26 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The first patch fixes a typo ('\%u') in a format specifier within a print
-statement. The incorrect sequence was replaced as it didn't appear
-to be the author's intent.
+Remove backslash before format specifier. Ensure correct output.
 
-The second patch corrects the type for a function argument to __le64,
-which fixes two related sparse warnings. Although the argument data
-is already little-endian, using the specific __le64 type improves
-consistency and makes the expected data format explicit.
-
-The third patch ensures cpu_to_le16() is used when preparing certain
-on-disk data (directory entry lengths). This maintains correct byte
-ordering for big-endian systems.
-
-Gabriel Shahrouzi (3):
-  bcachefs: Fix escape sequence in prt_printf
-  bcachefs: Fix type for parameter in
-    journal_advance_devs_to_next_bucket
-  bcachefs: Use cpu_to_le16 for dirent lengths
-
+Signed-off-by: Gabriel Shahrouzi <gshahrouzi@gmail.com>
+---
  fs/bcachefs/data_update.c | 2 +-
- fs/bcachefs/dirent.c      | 4 ++--
- fs/bcachefs/journal_io.c  | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/fs/bcachefs/data_update.c b/fs/bcachefs/data_update.c
+index fe400dfc5d76..9fb020a58d86 100644
+--- a/fs/bcachefs/data_update.c
++++ b/fs/bcachefs/data_update.c
+@@ -607,7 +607,7 @@ void bch2_data_update_inflight_to_text(struct printbuf *out, struct data_update
+ 	prt_newline(out);
+ 	printbuf_indent_add(out, 2);
+ 	bch2_data_update_opts_to_text(out, m->op.c, &m->op.opts, &m->data_opts);
+-	prt_printf(out, "read_done:\t\%u\n", m->read_done);
++	prt_printf(out, "read_done:\t%u\n", m->read_done);
+ 	bch2_write_op_to_text(out, &m->op);
+ 	printbuf_indent_sub(out, 2);
+ }
 -- 
 2.43.0
 
