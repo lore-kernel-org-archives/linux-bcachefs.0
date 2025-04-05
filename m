@@ -1,70 +1,75 @@
-Received: from wiki.archlinuxcn.org (wiki.archlinuxcn.org [104.245.9.4])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23EC5C8E0
-	for <linux-bcachefs@vger.kernel.org>; Sat,  5 Apr 2025 12:37:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.245.9.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7CD14C74
+	for <linux-bcachefs@vger.kernel.org>; Sat,  5 Apr 2025 13:56:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743856664; cv=none; b=fSrdCX+yUHydpoNG9uBedLm61HpGqjgnREgskIRFGLjr2vsNEo22nH8DLvnNVGUMbOUnuWmU1A+alnSypYHjajhdD1KsEYvkIXl+UAm2CvCTXuB2X1Xu+3GUh3WCxIUGN5HGSVQoQBl6i0k5VmffigUucAFYmx5rdDhwFpLmLEA=
+	t=1743861389; cv=none; b=rjUlv4S+EpItJPwIpsdrragUAb+nUdTSKo2U857CHLwFFR2hbxErxGRcFav69KFihEIBe/QkAJoweILPajquhfHFttFuHs3Z39oTNmuvOCVZ4m6Gup1P9hbJdpuW0fn04rLzxTLaKFL5MAejHRp+9PXEqCZMu3BXZOMhJq/3N6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743856664; c=relaxed/simple;
-	bh=zt6n8TGYpCo1KsnGIxmN/UAmiDorPXMVQ57bRCpGZes=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Fn5HIBFxkherAFJe9FeJE1NrK/XhqmapJupbHHwG7sfcPxeulN7Bv4noJNE33Mw6jDob4gKwgRnF04ZgJuQUr99IrKlVX1nGISBXcUUlcHxRrLrbp97T9BS4IFZKuq36vxF0d87zbCg/kmuLxk502gGJ/5duoAEtMiPlAeMpwV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org; spf=pass smtp.mailfrom=archlinuxcn.org; dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b=LpVrJFSn; arc=none smtp.client-ip=104.245.9.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=archlinuxcn.org
+	s=arc-20240116; t=1743861389; c=relaxed/simple;
+	bh=sgZM81QTLPbxNJ34N4Otd6cllcNNjvL63DxZIxumDis=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PO/SR2YOzjsZvHxnKlh03FNZOEEAyokyXiLUgq5Iv5cP2jm4zlaF5ZTReQweTlnxelOCJRsd0HW9DEG0aVbKZctnL/r7SlLqP1Kf/uaAB1RN1fJNVr4XRlN2FDlYfc7PMvWmUbVQ1pA6OSDsrGEm/pJRmvjwV10utHBy85SO3MY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pUdab/BO; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b="LpVrJFSn"
-DKIM-Signature: a=rsa-sha256; bh=zuzHXUThsT+TaTkKVIDTq/Xv6rdKsYhb/UdTCZi41cM=;
- c=relaxed/relaxed; d=archlinuxcn.org;
- h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:Message-Id:Message-Id:References:Autocrypt:Openpgp;
- i=@archlinuxcn.org; s=default; t=1743856637; v=1; x=1744288637;
- b=LpVrJFSna3KQMZUeCPsZTjdSiuoNX/FIh4T45vrGIaVKpBYOHZWzV1UK5/Zz3Th8K4fzG5mQ
- tLcdZ2htXhLy98tfGa6z+YcnKW/pby+vQQYJqiHlY/gkKiCCwUMYKkLPcx4N8O2tayCP/erz7Jl
- LPeI81nlTPvb1OHZCxKTHgIjdD+DeBZsMwLG5/MBY+p9x6RyOkD+vY25SBZrGWDKVulSS/ZNhna
- pYPlA3jaHt3yV9Uza927YcD67w64SPFy6vBzMZRyW3EQiInbvDPmg/zjtjAqMUTdCUUlBTngC8l
- I0O7mybAotvMFSU0Q7tNe1guhVFH4wlNaOrYhRWf+3KCQ==
-Received: by wiki.archlinuxcn.org (envelope-sender
- <integral@archlinuxcn.org>) with ESMTPS id 7ecd8d82; Sat, 05 Apr 2025
- 20:37:17 +0800
-From: Integral <integral@archlinuxcn.org>
-To: Kent Overstreet <kent.overstreet@gmail.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Hongbo Li <lihongbo22@huawei.com>,
-	linux-bcachefs@vger.kernel.org,
-	Integral <integral@archlinuxcn.org>
-Subject: [PATCH resend] bcachefs-tools: add missing "fs top" command to manual
-Date: Sat,  5 Apr 2025 20:36:17 +0800
-Message-ID: <20250405123616.12182-2-integral@archlinuxcn.org>
-X-Mailer: git-send-email 2.49.0
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pUdab/BO"
+Date: Sat, 5 Apr 2025 09:56:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1743861384;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vDrzN2L7g329lp+mVpTXqY4dyPOkbcEc1bg0kNhDQEM=;
+	b=pUdab/BO0j+CQeJAL0K88wIEGl+uDbU9BE8OglPNfrkATviOqqS/I1gYKr+pretessiR3q
+	UDnfnyYoYOOY0FsPAQiHpcGgsujR0E2vTQxT0V8L9jBrUprusrg1M6sIj3mMM8LeUc+J22
+	CIS2qCwSC3WpYz0IRgx0JuT4vrMHfVs=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Integral <integral@archlinuxcn.org>
+Cc: Kent Overstreet <kent.overstreet@gmail.com>, 
+	Hongbo Li <lihongbo22@huawei.com>, linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH resend] bcachefs-tools: add missing "fs top" command to
+ manual
+Message-ID: <4ptz5m7os52pe3zf6qrkxnjuuawgte37ue2kpyhxph23czupzu@5wb6m23c7k7i>
+References: <20250405123616.12182-2-integral@archlinuxcn.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250405123616.12182-2-integral@archlinuxcn.org>
+X-Migadu-Flow: FLOW_OUT
 
-This patch adds the missing "fs top" command to manual.
+On Sat, Apr 05, 2025 at 08:36:17PM +0800, Integral wrote:
+> This patch adds the missing "fs top" command to manual.
+> 
+> Signed-off-by: Integral <integral@archlinuxcn.org>
 
-Signed-off-by: Integral <integral@archlinuxcn.org>
----
- bcachefs.8 | 2 ++
- 1 file changed, 2 insertions(+)
+Maybe we could add a lint for this? Applying
 
-diff --git a/bcachefs.8 b/bcachefs.8
-index 30cdd392..37cf0a8f 100644
---- a/bcachefs.8
-+++ b/bcachefs.8
-@@ -37,6 +37,8 @@ Check an existing filesystem for errors.
- .Bl -tag -width 18n -compact
- .It Ic fs usage
- Show disk usage
-+.It Ic fs top
-+Show runtime performance information
- .El
- .Ss Commands for managing devices within a running filesystem
- .Bl -tag -width 22n -compact
--- 
-2.49.0
-
+> ---
+>  bcachefs.8 | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/bcachefs.8 b/bcachefs.8
+> index 30cdd392..37cf0a8f 100644
+> --- a/bcachefs.8
+> +++ b/bcachefs.8
+> @@ -37,6 +37,8 @@ Check an existing filesystem for errors.
+>  .Bl -tag -width 18n -compact
+>  .It Ic fs usage
+>  Show disk usage
+> +.It Ic fs top
+> +Show runtime performance information
+>  .El
+>  .Ss Commands for managing devices within a running filesystem
+>  .Bl -tag -width 22n -compact
+> -- 
+> 2.49.0
+> 
