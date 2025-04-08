@@ -1,103 +1,157 @@
-Received: from wiki.archlinuxcn.org (wiki.archlinuxcn.org [104.245.9.4])
+Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70AA82206A2;
-	Tue,  8 Apr 2025 10:31:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.245.9.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E8C7267F5F
+	for <linux-bcachefs@vger.kernel.org>; Tue,  8 Apr 2025 11:53:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744108309; cv=none; b=ZOOXVsmvBP6M37MAtaPYRH0dRCvWIjuCN5+ckvk7RfLwnr+fznmwFarjujN8D3r7OXWj70kpHboP5QJIBt//CY644/vbsJw9QSWYgYMnWD/64oArrTiZ9BTRRjzqmynl1xdwFbynQj048gWz5300lZv+zpOm6vbxpZbEAZt0wKo=
+	t=1744113217; cv=none; b=Syb87w7I7sDe6ZCYJBOqOYTiwKyl2ifVTdHwN+kgCacH//TZ4TEzbN7LqJtXMpNexidOryo1HVT/pmgVRvnNVqqrmL2XOp/yHNBMh4hdPR1ORdHYJxn04MR6iKdzi4P6jmNSCvbx65ZyPhWSayNogD/BJwSm+VjJhSBxiUPDySA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744108309; c=relaxed/simple;
-	bh=PJ/j1iUqd0Rk3qLfk/yW/HjEuRuM5rVtIl+dWeNuOPA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=K2jmeYqoXHJWYNSwdZRr0piQcWtKAMmgpkIjXl5I7Uzp84FmP9vxiHMF/U0eJr7UqJh86yOL3QpbXc7hsftBpp+Fo8fvActlmubpf+hycXvqkOrq/PWzTSA9hgFNtpd92axIG+ahNCCOtE7tLEI+Joz7TWJL0a5Uc7A0DZDhJJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org; spf=pass smtp.mailfrom=archlinuxcn.org; dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b=vyftkwxj; arc=none smtp.client-ip=104.245.9.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=archlinuxcn.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b="vyftkwxj"
-DKIM-Signature: a=rsa-sha256; bh=fBUwH/TXDriRMaqhNspfOTIAoeBApUAl/ZQPgSW7+mU=;
- c=relaxed/relaxed; d=archlinuxcn.org;
- h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:In-Reply-To:Message-Id:Message-Id:References:References:Autocrypt:Openpgp;
- i=@archlinuxcn.org; s=default; t=1744108296; v=1; x=1744540296;
- b=vyftkwxjpX1Qlrdyh2TgaHRRPlUM6JtIvTwaeuo2de0v1LEvQE52ZONZjtwKAcFRUUX4tpqf
- xy+R9nB9fIou/qAi2rBoQryFDYyKN3qWfx9/pMxsW6w3wo4Z9326lJTfnJLhUZjMoL+vCtQ0WM8
- SyfiFBubjkMkB1+UpXGbaP7VC/3Y1kQVwKNyWwPJylXXO1J9d5bHOPdDfpmkFDUqoGvGmZX7/lS
- b8I1g6kpe3rfjwJRpaqjti+tkHmwfxQ4ziOmndjSxhjdEzPkzMoVUgJbeFpZ2aHHpuIOqM0EmYc
- 8va/Jf4gHS2+OISQehKjgJ32ITm2xAvUTpRQp0WFE5Stw==
-Received: by wiki.archlinuxcn.org (envelope-sender
- <integral@archlinuxcn.org>) with ESMTPS id b79ffc12; Tue, 08 Apr 2025
- 18:31:36 +0800
-From: Integral <integral@archlinuxcn.org>
-To: kent.overstreet@linux.dev
-Cc: integral@archlinuxcn.org,
-	linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] bcachefs: indent error messages of invalid compression
-Date: Tue,  8 Apr 2025 18:31:29 +0800
-Message-ID: <20250408103129.61829-1-integral@archlinuxcn.org>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <sd4nbvk24h5aiooqkzczyqfc33t7triwlsrp4neyd6wovmodak@lwvvuurcehbu>
-References: <sd4nbvk24h5aiooqkzczyqfc33t7triwlsrp4neyd6wovmodak@lwvvuurcehbu>
+	s=arc-20240116; t=1744113217; c=relaxed/simple;
+	bh=7hOinPgImX8WMe+TJO6lNzRnH5FkFhGMdHRt21qxEv0=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=DrmMe7yMzg9LVBMdMD/PmhBjA6QJgFLa5HqDd+Z0jWXi8Fo7FzWoWbhH5alXs6CEVSq5o0cxk5NjmORnzML42bDp2r/MIWr40ctdQk2RJREqu39OQrRvnRYwWssiov68TIvyR4jzNe58qzv8lWzcA0Bu4l0y+uVCQhr0/T022zY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3d5da4fd946so109295305ab.1
+        for <linux-bcachefs@vger.kernel.org>; Tue, 08 Apr 2025 04:53:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744113214; x=1744718014;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BRBfxxIWVER2OelCgMB5ckH55iW3hNOq0xALtqRN0Zo=;
+        b=aX3Mrf27w/iFxQA0R9IB7L6HLbNuiQqD5iGcrIYUJMTDYBqgZ5Vx+f/EY82YTEq/ZJ
+         MGaRD7nnZsuH15nd8h5lJUQc3DGTTPdLQh0sqBCI3KiD3oBsiq2nhB70hOZsefepa5KV
+         uakYTA+9nZfd04RvBfoOMDhMDPpouZiynbsmTRTMAa87SbfeF+vPXhIthDhXf52ZCcWj
+         Dfw6bFnLUWiiRtblYpXB5+Vl1CI4LUw6ZumpJNbHHe4dCHgI5r9FhZS3tL1AR4ptJuju
+         2hhVp/AduVGypVKEKtdtrHyNkDUmtXvB7l9oMEF/wi52A/ktah2XK1dmdb9cL/3pz7Aw
+         DddQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUrQ2248BRbFST6VvkQEBTnlj5w5PMylF52W9H6+w3Gejb/mMw1UH6OVQacFbc53e4+YXWBFTBNeZrnBfqzhg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YylyMn03rTw4tRJkW44NL0K0KGsSphDwGcWnpzxGZgVRy3akGIY
+	TuMsMlXPzg6XVdA0v8oxm8GW9iG1f/lOyREcEUhQRwugg8yTRh4EbFuJsuoogyQmaijpcYIPhsq
+	NXe07JaY6mSveS92VU9cbxn4QUPuzCNji0A6dr1ZBLRcLgmSkrBYs+QM=
+X-Google-Smtp-Source: AGHT+IHNu/ie94iiJFQUH7oyUr7nfmh1A2JhjCxzQlOMMMjD17BD9ciAjlNwGZt8s0UkMn/MH5eaDT7TDhuy/b/FNYrNGb2hs1vt
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:17c9:b0:3d4:6dcf:d8f5 with SMTP id
+ e9e14a558f8ab-3d6ec52d0c9mr110552915ab.1.1744113214671; Tue, 08 Apr 2025
+ 04:53:34 -0700 (PDT)
+Date: Tue, 08 Apr 2025 04:53:34 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67f50e3e.050a0220.396535.0560.GAE@google.com>
+Subject: [syzbot] [bcachefs?] WARNING in bch2_dev_free
+From: syzbot <syzbot+aec9606169fbc3a12ca6@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-This patch uses printbuf_indent_add_nextline() to set a consistent
-indentation level for error messages of invalid compression.
+Hello,
 
-In my previous patch [1], the newline is added by using '\n' in
-the argument of prt_str(). This patch replaces prt_str() with
-prt_printf() to make indentation level work correctly.
+syzbot found the following issue on:
 
-[1] Link: https://lore.kernel.org/20250406152659.205997-2-integral@archlinuxcn.org
+HEAD commit:    a4cda136f021 Add linux-next specific files for 20250404
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=12c3db4c580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8a257c454bb1afb7
+dashboard link: https://syzkaller.appspot.com/bug?extid=aec9606169fbc3a12ca6
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ca0c04580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11c3db4c580000
 
-Signed-off-by: Integral <integral@archlinuxcn.org>
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/59048bc9c206/disk-a4cda136.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ad2ba7306f20/vmlinux-a4cda136.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b3bef7acbf10/bzImage-a4cda136.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/110624be1513/mount_0.gz
+
+The issue was bisected to:
+
+commit dcffc3b1ae3251d796a25c673f614e3099ca83d3
+Author: Kent Overstreet <kent.overstreet@linux.dev>
+Date:   Sun Mar 30 03:11:08 2025 +0000
+
+    bcachefs: Split up bch_dev.io_ref
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13948c04580000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10548c04580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17948c04580000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+aec9606169fbc3a12ca6@syzkaller.appspotmail.com
+Fixes: dcffc3b1ae32 ("bcachefs: Split up bch_dev.io_ref")
+
+bcachefs (loop0): shutting down
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 5844 at fs/bcachefs/super.c:1229 bch2_dev_free+0x228/0x290 fs/bcachefs/super.c:1229
+Modules linked in:
+CPU: 0 UID: 0 PID: 5844 Comm: syz-executor121 Not tainted 6.14.0-next-20250404-syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
+RIP: 0010:bch2_dev_free+0x228/0x290 fs/bcachefs/super.c:1229
+Code: ff e8 4c cf 74 00 4c 89 ef e8 44 cf 74 00 48 89 df 48 83 c4 10 5b 41 5c 41 5d 41 5e 41 5f 5d e9 ee 53 96 07 e8 59 e9 32 fd 90 <0f> 0b 90 e9 09 fe ff ff e8 4b e9 32 fd 90 0f 0b 90 e9 15 fe ff ff
+RSP: 0018:ffffc9000406fb88 EFLAGS: 00010293
+RAX: ffffffff849073d7 RBX: ffff888035282000 RCX: ffff888034af9e00
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffff8880352820c0 R08: ffffffff850552f7 R09: 0000000000000000
+R10: ffff888035282208 R11: ffffed1006a5044a R12: ffff888075e003f0
+R13: ffff8880352820b0 R14: ffff888075e00000 R15: ffff888075e007b2
+FS:  000055558bb20380(0000) GS:ffff888124f8f000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000045bdd0 CR3: 00000000122a0000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ bch2_fs_free+0x2b0/0x400 fs/bcachefs/super.c:688
+ deactivate_locked_super+0xc4/0x130 fs/super.c:473
+ cleanup_mnt+0x422/0x4c0 fs/namespace.c:1435
+ task_work_run+0x251/0x310 kernel/task_work.c:227
+ ptrace_notify+0x2dc/0x390 kernel/signal.c:2520
+ ptrace_report_syscall include/linux/ptrace.h:415 [inline]
+ ptrace_report_syscall_exit include/linux/ptrace.h:477 [inline]
+ syscall_exit_work+0xc7/0x1d0 kernel/entry/common.c:173
+ syscall_exit_to_user_mode_prepare kernel/entry/common.c:200 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:205 [inline]
+ syscall_exit_to_user_mode+0x24a/0x340 kernel/entry/common.c:218
+ do_syscall_64+0x100/0x230 arch/x86/entry/syscall_64.c:100
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f49b0cec447
+Code: 07 00 48 83 c4 08 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b8 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007ffd94723978 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f49b0cec447
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffd94723a30
+RBP: 00007ffd94723a30 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000206 R12: 00007ffd94724aa0
+R13: 000055558bb216c0 R14: 0000000000000001 R15: 431bde82d7b634db
+ </TASK>
+
+
 ---
- fs/bcachefs/compress.c | 4 ++--
- fs/bcachefs/opts.c     | 1 +
- 2 files changed, 3 insertions(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/bcachefs/compress.c b/fs/bcachefs/compress.c
-index d68c3c7896a3..1bca61d17092 100644
---- a/fs/bcachefs/compress.c
-+++ b/fs/bcachefs/compress.c
-@@ -714,7 +714,7 @@ int bch2_opt_compression_parse(struct bch_fs *c, const char *_val, u64 *res,
- 
- 	ret = match_string(bch2_compression_opts, -1, type_str);
- 	if (ret < 0 && err)
--		prt_str(err, "invalid compression type\n");
-+		prt_printf(err, "invalid compression type\n");
- 	if (ret < 0)
- 		goto err;
- 
-@@ -729,7 +729,7 @@ int bch2_opt_compression_parse(struct bch_fs *c, const char *_val, u64 *res,
- 		if (!ret && level > 15)
- 			ret = -EINVAL;
- 		if (ret < 0 && err)
--			prt_str(err, "invalid compression level\n");
-+			prt_printf(err, "invalid compression level\n");
- 		if (ret < 0)
- 			goto err;
- 
-diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
-index cd7b0cd293c7..f35fde896253 100644
---- a/fs/bcachefs/opts.c
-+++ b/fs/bcachefs/opts.c
-@@ -365,6 +365,7 @@ int bch2_opt_parse(struct bch_fs *c,
- 		   struct printbuf *err)
- {
- 	ssize_t ret;
-+	printbuf_indent_add_nextline(err, 2);
- 
- 	switch (opt->type) {
- 	case BCH_OPT_BOOL:
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-base-commit: 4d37602fceff942694069cf33cc55863277bd1c2
--- 
-2.49.0
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
