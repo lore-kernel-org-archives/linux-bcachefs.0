@@ -1,147 +1,168 @@
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D305A17C219;
-	Wed,  9 Apr 2025 15:15:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B211A1D516C
+	for <linux-bcachefs@vger.kernel.org>; Wed,  9 Apr 2025 16:09:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744211761; cv=none; b=WjghopzTuEkZd6LZdocm3xp1cvqSU/lAzq9zZjdIjJEnYQUT9bzuIntfM1kFIJ6X3vpH0SnhQH7zk+UuzFFvZFl4MeivGuL8+wc/MpCAYGHJ6+I47/GQm5Fj3GPVW7KhgOQAZdW+XvH16wxK08Hw5F5SVZER6Kv+aFdVA4W6iYg=
+	t=1744214989; cv=none; b=CPdovobDVUbFmQtN5bBLN9B7s21Dk8Eg+xy0cpgR6GCHC9/g6xdgK5xCJm3c6K1eaNvMteUM2axP22Xu4luwis2Vzye1jraDekTwalHKiD/YWEUojoNyVsSZGTn8hYNecVKIHWYkW9SNq4N0x/bxLgRvolGeKF2kH52OhEDb+C4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744211761; c=relaxed/simple;
-	bh=JD3UCsEmPQ64i5dIKbrJePQ8znLynqiSwHlAm2gAgCc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=U69+aWzguGwIvadfz38H1wkqw0gTeziYYdESvydP17yTf8xUeJHFzevRK1X2DsWfo86XefRGIEDsXcYLfbOmseYnFVU9DzbzUHM1P6BKlHByTVLbNG+AqGmW/UbPm3HVMPS7sfenoQYYeJ54wX7j71MiTTsuKuvJBHfZQMkDN1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D77ojHRc; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1744214989; c=relaxed/simple;
+	bh=YAIk8YC+InUQBAT/tdz5r5BfPfHq2GwlGqV0TbjAmQI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=OOuQRgnEDDf/Vq1sVWTiUjPDbSvChGDfaabx7Dha2kfyI4OG+M9BCkPHqMPsIHd9IAR3y02wzmd6omMqx4VLHawX6NcGKBMpRavZZ1a7d7/9nXArlAN63+sCC1uB6s6yn57MImqjePxtLP5iKUpgLlbp5EkbIJOYBuFCqpLp9s0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=IFbtFwS7; arc=none smtp.client-ip=185.67.36.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D77ojHRc"
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-30f30200b51so26823751fa.3;
-        Wed, 09 Apr 2025 08:15:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744211758; x=1744816558; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B0/uW4jPxHZ/GoeUPgM6M/7DEGndKYYoe9YilYwKUUw=;
-        b=D77ojHRcAPC/+VwuhJBDFcYByjy75HJ9AABXFZ6gWGYBjoVjijMdGbV664GfG7NBAV
-         OI0Ogi9rqj6/j7ieAHFkhkb3CmG2ErDfyhuzkQccMddOe8H5b/S0XWY2sQCxw+iqVutd
-         pLu0Zo/G70ImbMSMY6hc0oz9l2ZG6vyJdeRgOaO6kiamXxihBNGn7cMVvViPh1JW8v2m
-         xUd3FERpeI3GWtrUDMdxB/jKT6Ybcv+KNe15qy6LmBQPLIBPWQ/7AmlXONKRfnK+EhF8
-         daYK9mhU+rQLJVod8rDYqjhBL18IAfZTJw9C3eA7RmoWDElp/ibb69+b7PcIF9fdo5vm
-         KMFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744211758; x=1744816558;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=B0/uW4jPxHZ/GoeUPgM6M/7DEGndKYYoe9YilYwKUUw=;
-        b=fF7zqbK9FQzJJFlSLk6I5JjTozJJHqTetcxe21fdcbOANlHuA5VN59yuGXL0H383ty
-         qh52AcOxL81tMVxOG8XAwaV2Ftw7F9B+1H0DGFNmGoHz+peyo+Y88rLVew91qP+kW2rM
-         qb9y20xhCxmtzlZXGa7MMApG+zhLg6DFHnPiD8VSCzzwoWbimSv9a4fBmaLryVhgXpzo
-         bv0A4ZONKriglJkG/Ics/aZzF2gk3fGAwO2gjTw6iqteNeyL8mNihU/A6+3nayeLq+mj
-         S8fumyUp4forkIN+02LQZvLyVEAEy5mHAs8aWsSRjHa/tadSTzELy72pYLwNNBRRtxNH
-         HE+w==
-X-Forwarded-Encrypted: i=1; AJvYcCUTNOMwholhzz/+L39W8sSlCUTgLSFH4ej7DFMtyxaIMqQ+AqUXVWroIKTBvU75Py6fXdlmDjFc1kojoP93@vger.kernel.org, AJvYcCVnvmYSEyAonjENSANy8Xp6I3RdQQxk8e51GLMsQivBRrHDwVTxWx3MKGUdQB+ppJ8xmXAkmpzVMYkB@vger.kernel.org, AJvYcCWgaRgUNinHx8FDoSNUaxPdhnW3YiE9/6x6g0zXSAM6LziPzS0waEtxiA21QPYqtkeWNZeSHyWHUdQHi/vEcGI=@vger.kernel.org, AJvYcCX1zFFgpwFgzCbSWkKyDbAM79CX3K2bR3u2HbrDH8h6z3eEjTuaq4qGDz28jSICEawivlElOYX+@vger.kernel.org
-X-Gm-Message-State: AOJu0YxxP4jmO2U0ybFTaIWrLk0eDQspuu04jjrWMlZAZMQA2GPYgtfp
-	+UUYeOJTCzTRJvvCsaaZRsu8xjdRUHwXTyqg8CliOY9w0hvjdG0RNuCQMDfQq0bxLv4XX5hfQeo
-	JShmwsblMg9QzirnqnKJLL/e3vcQ=
-X-Gm-Gg: ASbGncs4DhoibiclLIfL7PQIWVvLteWhgoWDM4hYA0GzL/El/sHESdOmFX9lGPI/2y+
-	KZZjLvKMvkMow0bN4zkfvmEzcNmHzD9ZdT1KlyVrl3XiZudD7e14li+o+anPXAeoKI13nf7z308
-	6xvkLqhMs6vDu8wKF577WmgA==
-X-Google-Smtp-Source: AGHT+IGNIwqxn5mFZL5/yjjNE/1+c0Q5XXczzTx4ISCw+fSAPDJR88uRUs5CfplseOFx7Y7BUJqkOOXlpJ/JHLnOpnI=
-X-Received: by 2002:a05:651c:1475:b0:308:e5e8:9d4c with SMTP id
- 38308e7fff4ca-30f43894d5cmr14376751fa.28.1744211757664; Wed, 09 Apr 2025
- 08:15:57 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="IFbtFwS7"
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout01.posteo.de (Postfix) with ESMTPS id C00F2240029
+	for <linux-bcachefs@vger.kernel.org>; Wed,  9 Apr 2025 18:09:43 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+	t=1744214983; bh=YAIk8YC+InUQBAT/tdz5r5BfPfHq2GwlGqV0TbjAmQI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type:
+	 From;
+	b=IFbtFwS790K5tuYYjRPD44RA9AmXRc51puUH/B63xn1+ej/vMAvmcRJd6Fk3lDraC
+	 MiFf1DFCsDX6wq1Of0XeqKAseg0JeHneqLQ/VmGJEzpMOqMIgTYollfFB4gOBKbM0C
+	 CLGqJhwbk+sBdBtyxblEvaEHVcHP6q3tJUblQhmbPvIukuWFw73lMKCd1KycIhLeV6
+	 AjQSKdIYYm7g9omb+1DlKdKeNAmR/y7hKl1Xc5g9PuN9b6jBbOtjF/ksl2wRvQuTd7
+	 BS7JK0asIx+OX+NiI+B4guL8ock3jcbLrooV3BhjUG+Hoh7wwtXfbN9gJRvDA0pgwH
+	 Qv3VJSKKCWkSg==
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4ZXnvp2VqPz9rxG;
+	Wed,  9 Apr 2025 18:09:42 +0200 (CEST)
+From: Charalampos Mitrodimas <charmitro@posteo.net>
+To: syzbot <syzbot+aec9606169fbc3a12ca6@syzkaller.appspotmail.com>
+Cc: kent.overstreet@linux.dev,  linux-bcachefs@vger.kernel.org,
+  linux-kernel@vger.kernel.org,  syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [bcachefs?] WARNING in bch2_dev_free
+In-Reply-To: <67f50e3e.050a0220.396535.0560.GAE@google.com> (syzbot's message
+	of "Tue, 08 Apr 2025 04:53:34 -0700")
+References: <67f50e3e.050a0220.396535.0560.GAE@google.com>
+Date: Wed, 09 Apr 2025 16:09:41 +0000
+Message-ID: <m25xjds4e2.fsf@posteo.net>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250127160709.80604-1-ubizjak@gmail.com> <20250127160709.80604-7-ubizjak@gmail.com>
- <66e54eb9-58b3-4559-af32-66a77fe1ea01@kernel.org> <CAFULd4YiYRhqu7mGWMN9pAsV-Nc6a97+EgiTCR34iaYDvXjDwQ@mail.gmail.com>
- <77B3F3ED-102D-4759-98F1-622629EBF9AF@zytor.com>
-In-Reply-To: <77B3F3ED-102D-4759-98F1-622629EBF9AF@zytor.com>
-From: Uros Bizjak <ubizjak@gmail.com>
-Date: Wed, 9 Apr 2025 17:15:45 +0200
-X-Gm-Features: ATxdqUFXaMouhTV-LvYcXiA_EezjmjAt_Olprrf1g0qki_J08Ltm70ceNO6A5E4
-Message-ID: <CAFULd4ahm3-r66eBJSHV4NfBpnFLUpK2hRak42whuJJeui+B+Q@mail.gmail.com>
-Subject: Re: [PATCH v4 6/6] percpu/x86: Enable strict percpu checks via named
- AS qualifiers
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Jiri Slaby <jirislaby@kernel.org>, x86@kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
-	linux-arch@vger.kernel.org, netdev@vger.kernel.org, 
-	Nadav Amit <nadav.amit@gmail.com>, Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>, 
-	Christoph Lameter <cl@linux.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Andy Lutomirski <luto@kernel.org>, 
-	Brian Gerst <brgerst@gmail.com>, Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Wed, Apr 9, 2025 at 5:09=E2=80=AFPM H. Peter Anvin <hpa@zytor.com> wrote=
-:
+syzbot <syzbot+aec9606169fbc3a12ca6@syzkaller.appspotmail.com> writes:
+
+> Hello,
 >
-> On April 9, 2025 4:43:27 AM PDT, Uros Bizjak <ubizjak@gmail.com> wrote:
-> >On Wed, Apr 9, 2025 at 1:07=E2=80=AFPM Jiri Slaby <jirislaby@kernel.org>=
- wrote:
-> >>
-> >> On 27. 01. 25, 17:05, Uros Bizjak wrote:
-> >> > This patch declares percpu variables in __seg_gs/__seg_fs named AS
-> >> > and keeps them named AS qualified until they are dereferenced with
-> >> > percpu accessor. This approach enables various compiler check
-> >> > for cross-namespace variable assignments.
-> >>
-> >> So this causes modpost to fail to version some symbols:
-> >>
-> >> > WARNING: modpost: EXPORT symbol "xen_vcpu_id" [vmlinux] version gene=
-ration failed, symbol will not be versioned.
-> >> > Is "xen_vcpu_id" prototyped in <asm/asm-prototypes.h>?
-> >> > WARNING: modpost: EXPORT symbol "irq_stat" [vmlinux] version generat=
-ion failed, symbol will not be versioned.
-> >> > Is "irq_stat" prototyped in <asm/asm-prototypes.h>?
-> >> > WARNING: modpost: EXPORT symbol "fred_rsp0" [vmlinux] version genera=
-tion failed, symbol will not be versioned.
-> >> > Is "fred_rsp0" prototyped in <asm/asm-prototypes.h>?
-> >> > WARNING: modpost: EXPORT symbol "cpu_dr7" [vmlinux] version generati=
-on failed, symbol will not be versioned.
-> >> > Is "cpu_dr7" prototyped in <asm/asm-prototypes.h>?
-> >> > WARNING: modpost: EXPORT symbol "cpu_tss_rw" [vmlinux] version gener=
-ation failed, symbol will not be versioned.
-> >> > Is "cpu_tss_rw" prototyped in <asm/asm-prototypes.h>?
-> >> > WARNING: modpost: EXPORT symbol "__tss_limit_invalid" [vmlinux] vers=
-ion generation failed, symbol will not be versioned.
-> >> > Is "__tss_limit_invalid" prototyped in <asm/asm-prototypes.h>?
-> >> > WARNING: modpost: EXPORT symbol "irq_fpu_usable" [vmlinux] version g=
-eneration failed, symbol will not be versioned.
-> >> > Is "irq_fpu_usable" prototyped in <asm/asm-prototypes.h>?
-> >> > WARNING: modpost: EXPORT symbol "cpu_info" [vmlinux] version generat=
-ion failed, symbol will not be versioned.
-> >> > Is "cpu_info" prototyped in <asm/asm-prototypes.h>?
-> >> > WARNING: modpost: EXPORT symbol "gdt_page" [vmlinux] version generat=
-ion failed, symbol will not be versioned.
-> >> > Is "gdt_page" prototyped in <asm/asm-prototypes.h>?
-> >>  > ...
-> >>
-> >> That happens both with 6.15-rc1 and today's -next. Ideas?
-> >
-> >https://lore.kernel.org/lkml/20250404102535.705090-1-ubizjak@gmail.com/
+> syzbot found the following issue on:
+>
+> HEAD commit:    a4cda136f021 Add linux-next specific files for 20250404
+> git tree:       linux-next
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=12c3db4c580000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=8a257c454bb1afb7
+> dashboard link: https://syzkaller.appspot.com/bug?extid=aec9606169fbc3a12ca6
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ca0c04580000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11c3db4c580000
+>
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/59048bc9c206/disk-a4cda136.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/ad2ba7306f20/vmlinux-a4cda136.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/b3bef7acbf10/bzImage-a4cda136.xz
+> mounted in repro: https://storage.googleapis.com/syzbot-assets/110624be1513/mount_0.gz
+>
+> The issue was bisected to:
+>
+> commit dcffc3b1ae3251d796a25c673f614e3099ca83d3
+> Author: Kent Overstreet <kent.overstreet@linux.dev>
+> Date:   Sun Mar 30 03:11:08 2025 +0000
+>
+>     bcachefs: Split up bch_dev.io_ref
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13948c04580000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=10548c04580000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17948c04580000
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+aec9606169fbc3a12ca6@syzkaller.appspotmail.com
+> Fixes: dcffc3b1ae32 ("bcachefs: Split up bch_dev.io_ref")
+>
+> bcachefs (loop0): shutting down
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 5844 at fs/bcachefs/super.c:1229 bch2_dev_free+0x228/0x290 fs/bcachefs/super.c:1229
+> Modules linked in:
+> CPU: 0 UID: 0 PID: 5844 Comm: syz-executor121 Not tainted 6.14.0-next-20250404-syzkaller #0 PREEMPT(full) 
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
+> RIP: 0010:bch2_dev_free+0x228/0x290 fs/bcachefs/super.c:1229
+> Code: ff e8 4c cf 74 00 4c 89 ef e8 44 cf 74 00 48 89 df 48 83 c4 10 5b 41 5c 41 5d 41 5e 41 5f 5d e9 ee 53 96 07 e8 59 e9 32 fd 90 <0f> 0b 90 e9 09 fe ff ff e8 4b e9 32 fd 90 0f 0b 90 e9 15 fe ff ff
+> RSP: 0018:ffffc9000406fb88 EFLAGS: 00010293
+> RAX: ffffffff849073d7 RBX: ffff888035282000 RCX: ffff888034af9e00
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> RBP: ffff8880352820c0 R08: ffffffff850552f7 R09: 0000000000000000
+> R10: ffff888035282208 R11: ffffed1006a5044a R12: ffff888075e003f0
+> R13: ffff8880352820b0 R14: ffff888075e00000 R15: ffff888075e007b2
+> FS:  000055558bb20380(0000) GS:ffff888124f8f000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000000000045bdd0 CR3: 00000000122a0000 CR4: 00000000003526f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  bch2_fs_free+0x2b0/0x400 fs/bcachefs/super.c:688
+>  deactivate_locked_super+0xc4/0x130 fs/super.c:473
+>  cleanup_mnt+0x422/0x4c0 fs/namespace.c:1435
+>  task_work_run+0x251/0x310 kernel/task_work.c:227
+>  ptrace_notify+0x2dc/0x390 kernel/signal.c:2520
+>  ptrace_report_syscall include/linux/ptrace.h:415 [inline]
+>  ptrace_report_syscall_exit include/linux/ptrace.h:477 [inline]
+>  syscall_exit_work+0xc7/0x1d0 kernel/entry/common.c:173
+>  syscall_exit_to_user_mode_prepare kernel/entry/common.c:200 [inline]
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:205 [inline]
+>  syscall_exit_to_user_mode+0x24a/0x340 kernel/entry/common.c:218
+>  do_syscall_64+0x100/0x230 arch/x86/entry/syscall_64.c:100
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> RIP: 0033:0x7f49b0cec447
+> Code: 07 00 48 83 c4 08 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b8 ff ff ff f7 d8 64 89 02 b8
+> RSP: 002b:00007ffd94723978 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
+> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f49b0cec447
+> RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffd94723a30
+> RBP: 00007ffd94723a30 R08: 0000000000000000 R09: 0000000000000000
+> R10: 00000000ffffffff R11: 0000000000000206 R12: 00007ffd94724aa0
+> R13: 000055558bb216c0 R14: 0000000000000001 R15: 431bde82d7b634db
+>  </TASK>
+>
+>
+> ---
 
-> A lot of those seem to be things that definitely shouldn't be expected...
+#syz test
 
-These symbols are just declared with an extra __seg_gs that genksyms
-doesn't understand, e.g.:
+From: Charalampos Mitrodimas <charmitro@posteo.net>
+Subject: [PATCH] bcachefs: Fix WARN_ON in bch2_dev_free
 
-extern __seg_gs __attribute__((section(".data..percpu" "..hot.."
-"this_cpu_off"))) __typeof__(unsigned long) this_cpu_off;
+After splitting bch_dev.io_ref into separate READ and WRITE refs, we
+need to ensure both refs are properly stopped before freeing a device.
+Add bch2_dev_io_ref_stop(ca, WRITE) to bch2_fs_free() to prevent the
+WARNING in bch2_dev_free().
 
-The workaround falls back when __GENKSYMS__ is defined to:
+Reported-by: syzbot+aec9606169fbc3a12ca6@syzkaller.appspotmail.com
+Fixes: dcffc3b1ae32 ("bcachefs: Split up bch_dev.io_ref")
+Signed-off-by: Charalampos Mitrodimas <charmitro@posteo.net>
+---
+ fs/bcachefs/super.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-extern __attribute__((section(".data..percpu" "..hot.."
-"this_cpu_off"))) __typeof__(unsigned long) this_cpu_off;
+diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
+index a58edde43bee..089b69b685d9 100644
+--- a/fs/bcachefs/super.c
++++ b/fs/bcachefs/super.c
+@@ -684,6 +684,7 @@ void bch2_fs_free(struct bch_fs *c)
+ 		if (ca) {
+ 			EBUG_ON(atomic_long_read(&ca->ref) != 1);
+ 			bch2_dev_io_ref_stop(ca, READ);
++			bch2_dev_io_ref_stop(ca, WRITE);
+ 			bch2_free_super(&ca->disk_sb);
+ 			bch2_dev_free(ca);
+ 		}
+-- 
+2.39.5
 
-which is what genksyms processes without problems.
-
-Uros.
