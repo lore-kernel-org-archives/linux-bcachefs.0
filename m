@@ -1,157 +1,186 @@
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E8C7267F5F
-	for <linux-bcachefs@vger.kernel.org>; Tue,  8 Apr 2025 11:53:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EAD1218AC7;
+	Wed,  9 Apr 2025 11:07:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744113217; cv=none; b=Syb87w7I7sDe6ZCYJBOqOYTiwKyl2ifVTdHwN+kgCacH//TZ4TEzbN7LqJtXMpNexidOryo1HVT/pmgVRvnNVqqrmL2XOp/yHNBMh4hdPR1ORdHYJxn04MR6iKdzi4P6jmNSCvbx65ZyPhWSayNogD/BJwSm+VjJhSBxiUPDySA=
+	t=1744196837; cv=none; b=Gkm4brOtk4rnIMzBjxBozfDwmvI6deIV3nqs1uYkpnANulszs6jN+3Kr8ffdiUmxpLDsqqeqH/ODDDGsfqzDx7zIUteN1tD0/XTyTUBNpfKWY/+FVF9+1YF06iSzao9GtcUXICeuvptCeLEYTjlBX0A1SR9mfwr1KCtlYpoLPTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744113217; c=relaxed/simple;
-	bh=7hOinPgImX8WMe+TJO6lNzRnH5FkFhGMdHRt21qxEv0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=DrmMe7yMzg9LVBMdMD/PmhBjA6QJgFLa5HqDd+Z0jWXi8Fo7FzWoWbhH5alXs6CEVSq5o0cxk5NjmORnzML42bDp2r/MIWr40ctdQk2RJREqu39OQrRvnRYwWssiov68TIvyR4jzNe58qzv8lWzcA0Bu4l0y+uVCQhr0/T022zY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3d5da4fd946so109295305ab.1
-        for <linux-bcachefs@vger.kernel.org>; Tue, 08 Apr 2025 04:53:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744113214; x=1744718014;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BRBfxxIWVER2OelCgMB5ckH55iW3hNOq0xALtqRN0Zo=;
-        b=aX3Mrf27w/iFxQA0R9IB7L6HLbNuiQqD5iGcrIYUJMTDYBqgZ5Vx+f/EY82YTEq/ZJ
-         MGaRD7nnZsuH15nd8h5lJUQc3DGTTPdLQh0sqBCI3KiD3oBsiq2nhB70hOZsefepa5KV
-         uakYTA+9nZfd04RvBfoOMDhMDPpouZiynbsmTRTMAa87SbfeF+vPXhIthDhXf52ZCcWj
-         Dfw6bFnLUWiiRtblYpXB5+Vl1CI4LUw6ZumpJNbHHe4dCHgI5r9FhZS3tL1AR4ptJuju
-         2hhVp/AduVGypVKEKtdtrHyNkDUmtXvB7l9oMEF/wi52A/ktah2XK1dmdb9cL/3pz7Aw
-         DddQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUrQ2248BRbFST6VvkQEBTnlj5w5PMylF52W9H6+w3Gejb/mMw1UH6OVQacFbc53e4+YXWBFTBNeZrnBfqzhg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YylyMn03rTw4tRJkW44NL0K0KGsSphDwGcWnpzxGZgVRy3akGIY
-	TuMsMlXPzg6XVdA0v8oxm8GW9iG1f/lOyREcEUhQRwugg8yTRh4EbFuJsuoogyQmaijpcYIPhsq
-	NXe07JaY6mSveS92VU9cbxn4QUPuzCNji0A6dr1ZBLRcLgmSkrBYs+QM=
-X-Google-Smtp-Source: AGHT+IHNu/ie94iiJFQUH7oyUr7nfmh1A2JhjCxzQlOMMMjD17BD9ciAjlNwGZt8s0UkMn/MH5eaDT7TDhuy/b/FNYrNGb2hs1vt
+	s=arc-20240116; t=1744196837; c=relaxed/simple;
+	bh=5WALcSlXLF4jOWGCUwqVjywh8RLohDbgqlLN686J2Co=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LwZcMY3fOyquGo1q1bAhZF1mz63fHUto9sDVqOQfXJP15xJixsPd1P0pwe0QGyKPyEEuyFL3kQhFOPYe890y0nvUzHxmA6lhH8x9s5m14qZ921qD8v5+IYC27z5DRSIiJeNfEyL4zGBkdT32YLY3hBX5J8JlBMSFyUw/kGuxkIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JMFcv85N; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JMFcv85N"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 282B0C4CEE3;
+	Wed,  9 Apr 2025 11:07:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744196837;
+	bh=5WALcSlXLF4jOWGCUwqVjywh8RLohDbgqlLN686J2Co=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=JMFcv85NoqIbs4DlNh1qTYARvZUZr7qnD6MYTCBnS1G1L2lbk2dErmODU1foLYFGu
+	 MOkY1q7D5/QVRHYEdCphs9+N/wYsulyW237bRmUNa42sKemo64gxVxZgfjFE2YQDwo
+	 oACNTULyMZXi1mLH3Q/VcGTwZp+URx76kspAgajXRw9G0tLGrqtyjO8gm4Slg9VDFv
+	 JnuH0ZRSfSgsB5hyo51dhOaJvObq5ZxGk4JSnhdRIAz2XFkws37ZJAWaTQ2KeePD0t
+	 V/7Ge0OCTeuIKR9WBwQ+3KUno9Ems9m5LJVHCUTPX5Ggn4Dc1OfE1sn8uKK7WLAPO2
+	 TQlyHB/vkq4NQ==
+Message-ID: <66e54eb9-58b3-4559-af32-66a77fe1ea01@kernel.org>
+Date: Wed, 9 Apr 2025 13:07:11 +0200
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:17c9:b0:3d4:6dcf:d8f5 with SMTP id
- e9e14a558f8ab-3d6ec52d0c9mr110552915ab.1.1744113214671; Tue, 08 Apr 2025
- 04:53:34 -0700 (PDT)
-Date: Tue, 08 Apr 2025 04:53:34 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67f50e3e.050a0220.396535.0560.GAE@google.com>
-Subject: [syzbot] [bcachefs?] WARNING in bch2_dev_free
-From: syzbot <syzbot+aec9606169fbc3a12ca6@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 6/6] percpu/x86: Enable strict percpu checks via named
+ AS qualifiers
+To: Uros Bizjak <ubizjak@gmail.com>, x86@kernel.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+ linux-arch@vger.kernel.org, netdev@vger.kernel.org
+Cc: Nadav Amit <nadav.amit@gmail.com>, Dennis Zhou <dennis@kernel.org>,
+ Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>,
+ Peter Zijlstra <peterz@infradead.org>
+References: <20250127160709.80604-1-ubizjak@gmail.com>
+ <20250127160709.80604-7-ubizjak@gmail.com>
+Content-Language: en-US
+From: Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <20250127160709.80604-7-ubizjak@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On 27. 01. 25, 17:05, Uros Bizjak wrote:
+> This patch declares percpu variables in __seg_gs/__seg_fs named AS
+> and keeps them named AS qualified until they are dereferenced with
+> percpu accessor. This approach enables various compiler check
+> for cross-namespace variable assignments.
 
-syzbot found the following issue on:
+So this causes modpost to fail to version some symbols:
 
-HEAD commit:    a4cda136f021 Add linux-next specific files for 20250404
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=12c3db4c580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8a257c454bb1afb7
-dashboard link: https://syzkaller.appspot.com/bug?extid=aec9606169fbc3a12ca6
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ca0c04580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11c3db4c580000
+> WARNING: modpost: EXPORT symbol "xen_vcpu_id" [vmlinux] version generation failed, symbol will not be versioned.
+> Is "xen_vcpu_id" prototyped in <asm/asm-prototypes.h>?
+> WARNING: modpost: EXPORT symbol "irq_stat" [vmlinux] version generation failed, symbol will not be versioned.
+> Is "irq_stat" prototyped in <asm/asm-prototypes.h>?
+> WARNING: modpost: EXPORT symbol "fred_rsp0" [vmlinux] version generation failed, symbol will not be versioned.
+> Is "fred_rsp0" prototyped in <asm/asm-prototypes.h>?
+> WARNING: modpost: EXPORT symbol "cpu_dr7" [vmlinux] version generation failed, symbol will not be versioned.
+> Is "cpu_dr7" prototyped in <asm/asm-prototypes.h>?
+> WARNING: modpost: EXPORT symbol "cpu_tss_rw" [vmlinux] version generation failed, symbol will not be versioned.
+> Is "cpu_tss_rw" prototyped in <asm/asm-prototypes.h>?
+> WARNING: modpost: EXPORT symbol "__tss_limit_invalid" [vmlinux] version generation failed, symbol will not be versioned.
+> Is "__tss_limit_invalid" prototyped in <asm/asm-prototypes.h>?
+> WARNING: modpost: EXPORT symbol "irq_fpu_usable" [vmlinux] version generation failed, symbol will not be versioned.
+> Is "irq_fpu_usable" prototyped in <asm/asm-prototypes.h>?
+> WARNING: modpost: EXPORT symbol "cpu_info" [vmlinux] version generation failed, symbol will not be versioned.
+> Is "cpu_info" prototyped in <asm/asm-prototypes.h>?
+> WARNING: modpost: EXPORT symbol "gdt_page" [vmlinux] version generation failed, symbol will not be versioned.
+> Is "gdt_page" prototyped in <asm/asm-prototypes.h>?
+ > ...
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/59048bc9c206/disk-a4cda136.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ad2ba7306f20/vmlinux-a4cda136.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/b3bef7acbf10/bzImage-a4cda136.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/110624be1513/mount_0.gz
+That happens both with 6.15-rc1 and today's -next. Ideas?
 
-The issue was bisected to:
+Config:
+https://github.com/SUSE/kernel-source/blob/master/config/x86_64/default
 
-commit dcffc3b1ae3251d796a25c673f614e3099ca83d3
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Sun Mar 30 03:11:08 2025 +0000
+It is enough to:
+   make CC='ccache gcc-14' O=../our -j160 vmlinux
+to see the above.
 
-    bcachefs: Split up bch_dev.io_ref
+> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+> Acked-by: Nadav Amit <nadav.amit@gmail.com>
+> Cc: Dennis Zhou <dennis@kernel.org>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Christoph Lameter <cl@linux.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Brian Gerst <brgerst@gmail.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> ---
+>   arch/x86/include/asm/percpu.h | 15 ++++++++++++---
+>   1 file changed, 12 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
+> index 27f668660abe..474d648bca9a 100644
+> --- a/arch/x86/include/asm/percpu.h
+> +++ b/arch/x86/include/asm/percpu.h
+> @@ -95,9 +95,18 @@
+>   
+>   #endif /* CONFIG_SMP */
+>   
+> -#define __my_cpu_type(var)	typeof(var) __percpu_seg_override
+> -#define __my_cpu_ptr(ptr)	(__my_cpu_type(*(ptr))*)(__force uintptr_t)(ptr)
+> -#define __my_cpu_var(var)	(*__my_cpu_ptr(&(var)))
+> +#if defined(CONFIG_USE_X86_SEG_SUPPORT) && defined(USE_TYPEOF_UNQUAL)
+> +# define __my_cpu_type(var)	typeof(var)
+> +# define __my_cpu_ptr(ptr)	(ptr)
+> +# define __my_cpu_var(var)	(var)
+> +
+> +# define __percpu_qual		__percpu_seg_override
+> +#else
+> +# define __my_cpu_type(var)	typeof(var) __percpu_seg_override
+> +# define __my_cpu_ptr(ptr)	(__my_cpu_type(*(ptr))*)(__force uintptr_t)(ptr)
+> +# define __my_cpu_var(var)	(*__my_cpu_ptr(&(var)))
+> +#endif
+> +
+>   #define __percpu_arg(x)		__percpu_prefix "%" #x
+>   #define __force_percpu_arg(x)	__force_percpu_prefix "%" #x
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13948c04580000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10548c04580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17948c04580000
+thanks,
+-- 
+js
+suse labs
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+aec9606169fbc3a12ca6@syzkaller.appspotmail.com
-Fixes: dcffc3b1ae32 ("bcachefs: Split up bch_dev.io_ref")
-
-bcachefs (loop0): shutting down
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5844 at fs/bcachefs/super.c:1229 bch2_dev_free+0x228/0x290 fs/bcachefs/super.c:1229
-Modules linked in:
-CPU: 0 UID: 0 PID: 5844 Comm: syz-executor121 Not tainted 6.14.0-next-20250404-syzkaller #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
-RIP: 0010:bch2_dev_free+0x228/0x290 fs/bcachefs/super.c:1229
-Code: ff e8 4c cf 74 00 4c 89 ef e8 44 cf 74 00 48 89 df 48 83 c4 10 5b 41 5c 41 5d 41 5e 41 5f 5d e9 ee 53 96 07 e8 59 e9 32 fd 90 <0f> 0b 90 e9 09 fe ff ff e8 4b e9 32 fd 90 0f 0b 90 e9 15 fe ff ff
-RSP: 0018:ffffc9000406fb88 EFLAGS: 00010293
-RAX: ffffffff849073d7 RBX: ffff888035282000 RCX: ffff888034af9e00
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffff8880352820c0 R08: ffffffff850552f7 R09: 0000000000000000
-R10: ffff888035282208 R11: ffffed1006a5044a R12: ffff888075e003f0
-R13: ffff8880352820b0 R14: ffff888075e00000 R15: ffff888075e007b2
-FS:  000055558bb20380(0000) GS:ffff888124f8f000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000045bdd0 CR3: 00000000122a0000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- bch2_fs_free+0x2b0/0x400 fs/bcachefs/super.c:688
- deactivate_locked_super+0xc4/0x130 fs/super.c:473
- cleanup_mnt+0x422/0x4c0 fs/namespace.c:1435
- task_work_run+0x251/0x310 kernel/task_work.c:227
- ptrace_notify+0x2dc/0x390 kernel/signal.c:2520
- ptrace_report_syscall include/linux/ptrace.h:415 [inline]
- ptrace_report_syscall_exit include/linux/ptrace.h:477 [inline]
- syscall_exit_work+0xc7/0x1d0 kernel/entry/common.c:173
- syscall_exit_to_user_mode_prepare kernel/entry/common.c:200 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:205 [inline]
- syscall_exit_to_user_mode+0x24a/0x340 kernel/entry/common.c:218
- do_syscall_64+0x100/0x230 arch/x86/entry/syscall_64.c:100
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f49b0cec447
-Code: 07 00 48 83 c4 08 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b8 ff ff ff f7 d8 64 89 02 b8
-RSP: 002b:00007ffd94723978 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f49b0cec447
-RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffd94723a30
-RBP: 00007ffd94723a30 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000206 R12: 00007ffd94724aa0
-R13: 000055558bb216c0 R14: 0000000000000001 R15: 431bde82d7b634db
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
