@@ -1,73 +1,98 @@
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46745148832
-	for <linux-bcachefs@vger.kernel.org>; Sat, 12 Apr 2025 07:18:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7EA919AD86
+	for <linux-bcachefs@vger.kernel.org>; Sat, 12 Apr 2025 10:20:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744442287; cv=none; b=c3qrZ7RHHG1WuKfbSYBZqtZCne7Qmhp3/Q3etrHCKmYd5UIMEU2FPBs2re8+OpPtmV4O+OleDgqD/FfMSqBaEcrKv22nlT53OUbr0QVndSjnTMFUthemryLlJ1hr+el5ubzlqzai1qxQ0AVb3vAxxfAGbyNKhUCyt43McMlPXqU=
+	t=1744453257; cv=none; b=tSgJlpzU5rcKJZ0Tq+giERnOs4hANITBN9iBvezYwPaoHwXtqHKTlCZOILssSXtIH/NRW8iVuQEnQFtbzmFEzfi/u5uNK+4ViDE/cITwuN1Q+vM2jshTnJpLqFp3MVoOhOaqQW27YBqFsjJ+OY/EV+Zs1vor1S0q4mc0vKT1O5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744442287; c=relaxed/simple;
-	bh=fh6d+QbbMlA8C6aEiXUD6erPFdsAcrS94snfGQ+OiJs=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=shjRXRM9j+YI1V2nk70Xi9d+NvxpDiXkyvXghcvvfvGxDCHE3CbkVVQ0k8qOrayiaxxAjE97PJp08T5nvmZ3u7pkN8YowbyVBdY+l9dcp3N20QR90k5dIhZkI/VbxWgaZybfRnKssuVD/IxT69q+xd9KqU8UW7BYtqtRsHFC5lI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3d43541a706so25505565ab.1
-        for <linux-bcachefs@vger.kernel.org>; Sat, 12 Apr 2025 00:18:06 -0700 (PDT)
+	s=arc-20240116; t=1744453257; c=relaxed/simple;
+	bh=TiVUR9/wWAUtJv8jZpgIKcuqXizZ/3hxExgNWrER5m4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CZxf0ipNQ1sLYh8eduwiOi1huzDDFFAPphsNwCq+qQtO+B1sGN5VWptNngYnsEKXcW2HWcl5mnV+QLkJg3zuAv2Ktte1qCdoux4lqA9xFOwftl3dW9/mqd7FeUBve/4uLgX8Lilm77NaDyk1F3jBvPV+kRaUj4ct4+qnTUKIl5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KfRG9fUC; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KfRG9fUC"
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-739be717eddso2177742b3a.2
+        for <linux-bcachefs@vger.kernel.org>; Sat, 12 Apr 2025 03:20:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744453255; x=1745058055; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gNYH4SZzHbZTF2ZrBaRDVyvEy1BtBa6/VZk8hi+ByJY=;
+        b=KfRG9fUCbwwNgYnFFznYxEuoc9+8mPMqbaqFCkBlq4mrXtxLP7zchTjvLYxTSV05OA
+         7BBFBvlBMyIOh0jngy/U7kT0xKJPVVZSeaIKdOPuAvHYUyskpzT7zKieJRSAkNThykpW
+         lowt5EcbbHybkN/s5UjGybB6Qk7YwxtWgQa/EILM2s6UrXhepPyOS+4bKZu9hdrIyX2T
+         XujUtpyyl6QTgMo6qKjy/egzECtQi4dSqIAcjUpyZbf0QL/94aOfVUFQywSVTVcwAKs0
+         qKmUlDgz8k/TRAUH41aWFRStg1GU28MiS8cbR+usNDFnc/Ie2oIEWiS36VVCeSpLkzHK
+         8sng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744442285; x=1745047085;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jJTs2Evevi85CfsGwYqFkVtn6aF1t27vAQasOUwnApI=;
-        b=Y3FMSTOu+5pIjfnhoPOw5QXPLZ3Je5urYAWjzY/jJ+hss8N5mBg4uMokvbn3qijHZ5
-         o1urphTQgxoEwM2Onfosztztaz73TQtJm/x6CgBTUCK4AATE2QE4krpxUq2ULZOFaxPB
-         zIvF60Wx+eFINvDb9G6ruC048bRO1XfyDwifMIIIolUThzJbPJ98RyZ+W2Le5DpliCDS
-         3ogc1G1WRVffVELeFxTUK3uChWAIxP5Obn9TdlrRnsenBSbr6eJUuhHCMHflBazUqQ9j
-         vgPU+1AJsFaPGoQ7304IBZjAk789m3pqPpE3uiAhyrvh9pKAEivptxrdG9V+jNpHUXWd
-         CzpA==
-X-Forwarded-Encrypted: i=1; AJvYcCVQdVbsdH9fMryThUbHFjBbitxeh1jKjf6RA7Q34lpjCDHA7tPOCQuXJsDBc3wQ+g9AI2HiIPUnbLFhuwooJA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxuXih6meUdJ/GAs7TgZr6amYXo7YmwfJfdKeskWAeoTlqrAqXF
-	+FT3O0I9qwswPdZc/VnpwhWLNUeojVTfRsuSsQC3O0x1jNMAC3Fyuhl331cxvnNk5miZAjmSVkd
-	cj7A6XyS9ZSbHudnQLor8V62fHv5dfsTJGDgjsWBEY74syjHf1C43jNk=
-X-Google-Smtp-Source: AGHT+IGwcBUw4yOCvXnylSAKDctqIEhA20+2bUYCAgQcHwriGE4YMthIF81B25/L5DDW5mtRw8cXLzu/B8+kj6JIeF/yYbxeKsSl
+        d=1e100.net; s=20230601; t=1744453255; x=1745058055;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gNYH4SZzHbZTF2ZrBaRDVyvEy1BtBa6/VZk8hi+ByJY=;
+        b=vLdqngB0Zg56w66wQzVuLcJvrL3p5mtBY72gti+EgJbUkh6KQuJ3GAsBj+r+lgageM
+         6L3G+g8MMPbiQTi8gqWwlHO9S18E366+OhKw56gpf4aCtYIRTnng2ut3mqsPM4ArIsjk
+         9fkbwZUvPPNOaafQisz6puuoM9shUshGGqiOWNpbZbLKR67M0quTbA+hMuec9AmL4zeD
+         E5SOGomkHT44VSfuG3d+s6dckztNmn//1YiTlyUKtRLqBpvie1xDwvbBh4ezh5LNeD7d
+         YBDxxF+pwHIO8isU2V+vzripUIkdcEeL14YCMtrtB8QJAUzWGvBZMeBHJCzcPAFvcGv+
+         vxaA==
+X-Gm-Message-State: AOJu0Yx+xENWgdlPjuWQkYG3sIGe/wcRQTES9qMygB2qeug5RGc/2RT+
+	aoiIrmVQ6dhrySsnRUFkh0xIo/bAwjwkxAXKpMEimV8yNmZuEh+q
+X-Gm-Gg: ASbGncvTIqeaYo9l7li5y6ds5kVfluj8l10eOfFvFD30FcE4/XRuajKm8HNt1LMG3wC
+	MyOger0ROHYfRO1vcglaBtlykflkIV2ZL+wzg79qkm4RZuV21g/Jd5dz+gLIbTsas9aVQ0LK6/2
+	orMI6ST82gx0Xx0dpuEz6gfRhghvkg5Xsdo4wseXERq2FhaT+MuNZTZhpOYmCUOQ7KNvmzEM2AU
+	EuVbdm3ahsTxv8EajTRNrRlEg737DPLN/4ksYNxrYYfRjQr4vXkjt4BajYa3vhqW6xa/zvk+fI9
+	ttYW4WV+bkC/rEA=
+X-Google-Smtp-Source: AGHT+IEz40sv9ZeAMSvcqXREHnjklXyJNPWhpmc2uyKnElRI1UhrNyQSEHyq4zfVjxtJBF4PlgTZbg==
+X-Received: by 2002:a05:6a00:1414:b0:736:51a6:78b1 with SMTP id d2e1a72fcca58-73bd1202fbbmr7201376b3a.11.1744453254558;
+        Sat, 12 Apr 2025 03:20:54 -0700 (PDT)
+Received: from localhost ([2402:d0c0:11:86::1])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73bd22f0fb7sm3180463b3a.109.2025.04.12.03.20.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Apr 2025 03:20:53 -0700 (PDT)
+From: Alan Huang <mmpgouride@gmail.com>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	Alan Huang <mmpgouride@gmail.com>,
+	syzbot+d10151bf01574a09a915@syzkaller.appspotmail.com
+Subject: [PATCH] bcachefs: Add missing error handling
+Date: Sat, 12 Apr 2025 18:20:49 +0800
+Message-ID: <20250412102049.19199-1-mmpgouride@gmail.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3c05:b0:3d5:81aa:4d0a with SMTP id
- e9e14a558f8ab-3d7ec2020e0mr51049645ab.6.1744442285083; Sat, 12 Apr 2025
- 00:18:05 -0700 (PDT)
-Date: Sat, 12 Apr 2025 00:18:05 -0700
-In-Reply-To: <B9F695AD-3447-4F18-AAB9-85E118ED2BE3@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67fa13ad.050a0220.379d84.0008.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] kernel BUG in bch2_fs_initialize
-From: syzbot <syzbot+d10151bf01574a09a915@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, mmpgouride@gmail.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+Reported-by: syzbot+d10151bf01574a09a915@syzkaller.appspotmail.com
+Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+---
+ fs/bcachefs/recovery.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-unregister_netdevice: waiting for DEV to become free
-
-unregister_netdevice: waiting for batadv0 to become free. Usage count = 3
-
-
-Tested on:
-
-commit:         01c6df60 Add linux-next specific files for 20250411
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=16c2f7e4580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=db03cefa26ecf825
-dashboard link: https://syzkaller.appspot.com/bug?extid=d10151bf01574a09a915
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=13ad00cc580000
+diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
+index d2b07f602da9..606d684e6f23 100644
+--- a/fs/bcachefs/recovery.c
++++ b/fs/bcachefs/recovery.c
+@@ -1125,7 +1125,10 @@ int bch2_fs_initialize(struct bch_fs *c)
+ 	 * journal_res_get() will crash if called before this has
+ 	 * set up the journal.pin FIFO and journal.cur pointer:
+ 	 */
+-	bch2_fs_journal_start(&c->journal, 1);
++	ret = bch2_fs_journal_start(&c->journal, 1);
++	if (ret)
++		goto err;
++
+ 	set_bit(BCH_FS_accounting_replay_done, &c->flags);
+ 	bch2_journal_set_replay_done(&c->journal);
+ 
+-- 
+2.48.1
 
