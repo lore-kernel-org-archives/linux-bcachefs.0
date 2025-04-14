@@ -1,119 +1,77 @@
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9838D134CF
-	for <linux-bcachefs@vger.kernel.org>; Sun, 13 Apr 2025 14:24:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8A301AF0AE
+	for <linux-bcachefs@vger.kernel.org>; Mon, 14 Apr 2025 19:22:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744554268; cv=none; b=EZQOMyhej+YW7bBZ1kVfLzCw4qtyzvHRaqlAeZBuhPU8UA/UzYBNKOhr9zRcf7rAX66Soor5D8A1E1y3TjbvkrfY/Ubo/TN4yB9TZCbuxhGi+sXmM6lZ6gHVVvNPZf1YcvgRavwxkwNlDubiQd3mzoUZhB9jXXjbRQ9PpzaDgvo=
+	t=1744658524; cv=none; b=gxTwcUhiPzY5MFitqPF23+8QmVEvL4CmQrhcCc1fc0trT4piiAuskkFJD1WKWX9DNXejVyJqbOvFPAdsPjy50daPwB8OBhW7aErIYtkptjDloY0rEo6HlkBAA6W7a1swUZ+fgCNjroqMOiE2H0NVKo0ZWXAq9M2yWufx4bMzRPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744554268; c=relaxed/simple;
-	bh=rV88xeEc9JbXDL+0dWIRfJBEmtr+ioOnO0fkhjZwBTg=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=S0aHuWG3GT8DA/DwLDq69+zbo8qw+eeG+gD4GALwLBQkAWPrHMIDXZD1DlbhT+6TP0mTwWetBWO3ijeA5HmvXtQuWCl83uJXyx/pPACrmJ5bBaco8B0xoRNMUFUR2C1+LDPGngpPsPaxYyJ7kkvuO9XVCP+fs2c2z/BNc8WVF5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mp1exYIR; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mp1exYIR"
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2241053582dso47062455ad.1
-        for <linux-bcachefs@vger.kernel.org>; Sun, 13 Apr 2025 07:24:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744554266; x=1745159066; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rV88xeEc9JbXDL+0dWIRfJBEmtr+ioOnO0fkhjZwBTg=;
-        b=Mp1exYIRPBFH///Da+7kTcgtBLgIk6l3D1myav8Sdr/OIhgICaaKwVV/pz06oA5+dn
-         dbZ19i7of1d4adLl7C7THsReyEcuWa31eDEmQpf8SFx8nq5HvRdsg3WyxIQeaLrYtO1Q
-         16ylR87fgAdshx6jSQ0qp/zFXPVCrt8KHowER9lIRZljFpORVrSjah28g2xT6yee5kyr
-         XjvOv6JPWbeU+7GZw9ofuhn3vM1/0T8QyNzeAPN6y5J45rgQS0yZ65WAsvEJ2S8ZzlUN
-         HOPko6aI7f8T60tppar63I1iHXARWPm67WZud7zlwBKw8+tkc3pUPmYU+IUc4hkdowTR
-         1oQw==
+	s=arc-20240116; t=1744658524; c=relaxed/simple;
+	bh=9xlzt8t5gZAIZhjWScRdd6YWLJYIILohHTFaHDvj5To=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=DKnwFj3eD1S7MFEDVueYrg7cMoLOf6jaxe/x3OiduNWsb7quSORXtpohdmw6qCCJc9zG8kgCmeSOT+k0DRMMFht4V5vN/cU8D8NmzN7zB3XFQdFwm3xPcJazb51FD0llTZ0dkD/GZ0R1/fFO3tpaf5A00OpqVbUOnXxLie3ty5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3d5da4fb5e0so45827505ab.2
+        for <linux-bcachefs@vger.kernel.org>; Mon, 14 Apr 2025 12:22:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744554266; x=1745159066;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rV88xeEc9JbXDL+0dWIRfJBEmtr+ioOnO0fkhjZwBTg=;
-        b=BJs/y12jNqp048GVKyXW+K/ADYsSjHDG2o35KhddjxGV58//F0m8TSTTPvt6AERlui
-         3kK6u2T/fMMdCHdgxalvWa8JHDJnYJsXFtdW7UtH06d0DDpQhaB2alVjmUjpiIKHd5d1
-         8X2GeG1vKetVJCXu3M7S3mcMCgozrlLp9OZJCL7tWKAQ7w9isB9loXxvYK9v1iQgRGu7
-         24Pk1RO4veitH77x9NUN06nmGLVAmJBlnb6KxP0HJwV52IceQtINZmVJOH6cBIsqK2aU
-         6ikpnAMl4AhkN5+r8zYrEpWE7qUA2yOoZ38Bhhk1Uk+6yaQ8tQjd5hOt8YkDydMRCtR3
-         pl1w==
-X-Gm-Message-State: AOJu0Yy2/NvH9OPa/t3fSc2RhoV8s4KRD66naLEyniOQaLBgOuWbr8ST
-	rJR+cg8/Cy7MjWmK4s6vSYN61QRh70gIzKxmB+LDkVZEKaw80ktN
-X-Gm-Gg: ASbGncvj17xUgKQbvc6iJrWe4Stc29vIy0dFLpDrZmt5jaYPGDMRDD1k+1H39k7C8nF
-	T34e+MrqU6pdIcz5C3bovL+gW92X8L7ZYZRmfjUDtkXHSmeOyTdOVrzOGe5fJYv7WNnKYN34hI8
-	0hU1ypFwNBElPsu1lI3NdUUHT43GwcD/e//ack1kStSIsZrjOEgPAIjPCZQ3tzNSxhar10Q881H
-	0cD7JOG62DQpgmBQt6TRUyOy+WF8N2KRMFC35xR6MISK1QL8P9GANGZNJivqoCERWtXgMH6n/Om
-	ymOQ0pffKatQQadwwmLBSVTNdANL4Z4l68U=
-X-Google-Smtp-Source: AGHT+IFuua+5BUhxOv+fihsh/NnJydJFaNH0prVtqGTdOQReQFzpGjj79ntwvnZnLjsoM3Vjr8PbEQ==
-X-Received: by 2002:a17:902:dac1:b0:224:255b:c92e with SMTP id d9443c01a7336-22bea4a1e96mr133469505ad.3.1744554265719;
-        Sun, 13 Apr 2025 07:24:25 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-306dd1717b2sm9562722a91.36.2025.04.13.07.24.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 13 Apr 2025 07:24:25 -0700 (PDT)
-Content-Type: text/plain;
-	charset=utf-8
+        d=1e100.net; s=20230601; t=1744658522; x=1745263322;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GOv5Jk3XoSN+D2KFShSde9xzzddc9ORjMDXmV9hyXBw=;
+        b=btm3HpIkCv5aQKSEhUbuVmHJ2xJHL2Y5Hw8SulWJ9+UasFgDdhgEH0mgKLDh/UZI9a
+         bOFRC54dwHmtG2QKOqKaSZuqQsIKqcIfknSdaHymQPl0t48KCqN5isTHVGu4fEdk9OhL
+         KqOuAJNJlfsUm/DE+4PrYV4ilSx3wCMFrJGurzmZWNl3v0dQvwRWDqMU7wiiQ29H4ia8
+         hCKjyMBQsM9yxVtkig43QiHBTWVfTQGU16kN0u0N0qNnb9uiCN45sygM9rPDJKnxZfVI
+         lzWlzbupkB6webou5cidCzAk9sdTEHOGulzhfQlHKT07gYkOuspA/PYprdSUb55WPGdX
+         ZtrA==
+X-Forwarded-Encrypted: i=1; AJvYcCU3MW3oiMWLkRhxRbmCLsVZGnFdGlW4aXQpr4yZhIjBOra50x4pqgEB2t0Sg+B4ZOOAa0jPboE3EiFK4eQMSw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyYqCnXavaE3rbp0d2C6+AXBgzmE7nx5OxHuNwQHHYdcN+s1I6U
+	OD+V3GZl+kQPBD4jCGP0+VkeYLz1y+79GptoMAriPhVeu9au/RQBCmbTWHcXNe64H/cOSZcnp6g
+	Qblfhb1DswdjoIP3SjBcG97Ja04ojoV+849sU1zAEL6UZ9cRN5/65H1g=
+X-Google-Smtp-Source: AGHT+IGEmCZcdWbXVW3Yowdl+fqoNrFiXUdx+Br9L+lc28touHs15V4APFkQfiEPqaQnMiuIzgUE1JifdY5R6RYkv3+LJiMpQ6LQ
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.400.131.1.6\))
-Subject: Re: [PATCH] bcachefs: Add missing error handling
-From: Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <tjbg7uavlujkxoijtfagmbl7sdewnzgsgo4jmlghoywwgd7vum@d7vbnrrm7dtq>
-Date: Sun, 13 Apr 2025 22:24:10 +0800
-Cc: linux-bcachefs@vger.kernel.org,
- syzbot+d10151bf01574a09a915@syzkaller.appspotmail.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <922FBCAC-0C64-4712-9017-BAE5F8E61FF8@gmail.com>
-References: <20250412102049.19199-1-mmpgouride@gmail.com>
- <tjbg7uavlujkxoijtfagmbl7sdewnzgsgo4jmlghoywwgd7vum@d7vbnrrm7dtq>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-X-Mailer: Apple Mail (2.3826.400.131.1.6)
+MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:2143:b0:3d5:eb14:8455 with SMTP id
+ e9e14a558f8ab-3d7ec276548mr118949035ab.17.1744658521895; Mon, 14 Apr 2025
+ 12:22:01 -0700 (PDT)
+Date: Mon, 14 Apr 2025 12:22:01 -0700
+In-Reply-To: <67b1f949.050a0220.173698.000c.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67fd6059.050a0220.3483fc.0031.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] possible deadlock in get_partial_node (2)
+From: syzbot <syzbot+725322cc4ff5c53abfac@syzkaller.appspotmail.com>
+To: anna-maria@linutronix.de, axboe@kernel.dk, frederic@kernel.org, 
+	kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	mmpgouride@gmail.com, syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 
-On Apr 13, 2025, at 17:59, Kent Overstreet <kent.overstreet@linux.dev> =
-wrote:
->=20
-> On Sat, Apr 12, 2025 at 06:20:49PM +0800, Alan Huang wrote:
->> Reported-by: syzbot+d10151bf01574a09a915@syzkaller.appspotmail.com
->> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
->=20
-> This was a silly mistake.
->=20
-> In the past I've thought about going through and marking huge swaths =
-of
-> functions as __must_check, maybe that would actually be worth doing?
+syzbot suspects this issue was fixed by commit:
 
-Yeah, that=E2=80=99s a good idea.
+commit 3a04334d6282d08fbdd6201e374db17d31927ba3
+Author: Alan Huang <mmpgouride@gmail.com>
+Date:   Fri Mar 7 16:58:27 2025 +0000
 
->=20
->> ---
->> fs/bcachefs/recovery.c | 5 ++++-
->> 1 file changed, 4 insertions(+), 1 deletion(-)
->>=20
->> diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
->> index d2b07f602da9..606d684e6f23 100644
->> --- a/fs/bcachefs/recovery.c
->> +++ b/fs/bcachefs/recovery.c
->> @@ -1125,7 +1125,10 @@ int bch2_fs_initialize(struct bch_fs *c)
->> * journal_res_get() will crash if called before this has
->> * set up the journal.pin FIFO and journal.cur pointer:
->> */
->> - bch2_fs_journal_start(&c->journal, 1);
->> + ret =3D bch2_fs_journal_start(&c->journal, 1);
->> + if (ret)
->> + goto err;
->> +
->> set_bit(BCH_FS_accounting_replay_done, &c->flags);
->> bch2_journal_set_replay_done(&c->journal);
->>=20
->> --=20
->> 2.48.1
->>=20
+    bcachefs: Fix b->written overflow
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17e4ea3f980000
+start commit:   b7c90e3e717a Merge tag 'x86-urgent-2025-03-08' of git://gi..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=523d3ff8e053340a
+dashboard link: https://syzkaller.appspot.com/bug?extid=725322cc4ff5c53abfac
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=137c1fa0580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12e0fa54580000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: bcachefs: Fix b->written overflow
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
