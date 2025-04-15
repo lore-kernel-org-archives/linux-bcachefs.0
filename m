@@ -1,40 +1,36 @@
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CC1F28BA93
-	for <linux-bcachefs@vger.kernel.org>; Tue, 15 Apr 2025 14:29:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B611198E9B
+	for <linux-bcachefs@vger.kernel.org>; Tue, 15 Apr 2025 14:29:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744727344; cv=none; b=OoDCYzvY2N/y9VdWG8MNbppDSZAfPYU9mkZCeC4c5FcKsPFyFF/VRohLZ/PReFV5TxM+W+EZOTCUDsg0rrrznk/KPxGxKmeWVH/YyX3+ZTcarP9VfjjRqhZcgV1PB/ep7yPWMeg8+43rIZT2JKzUotXTT0M6ZCazYEMYnbC9CHk=
+	t=1744727371; cv=none; b=dI7c7nPc59JcjUoR7G4/+avDYmZaBjrZnlVFbhnkhCbH5AvXMaAG5vyIGL/jFAINcOm8MkVMj9ckW97OLiVHAiL6fVG3gbIglxrZgaX1lqx884wDjci/Q35tfdBZpTSTsNpzQl+7m6BIClp5b1y6sqJKNBo9emxUStHONJ/bpis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744727344; c=relaxed/simple;
-	bh=NUQkhjeuWYaJcwcwAxBJxtasq7I8oJEUZe7Mm4gSs7o=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PTZ25sock+mRwWy/evywpkKO1qtlF+FwGNMckGFsvagw2m8sYC10zOWgsgjPke1VRlb+wMH/0yVkt4jwxeQ9HWrtlL/3cPodfvO8KLAHpsUmrOFFMv1fiY3oJdhRDgZFRPhvT4bDJitCl8li/h67mB8AB9b/s0zYMED37funn+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Jmt+G71d; arc=none smtp.client-ip=95.215.58.179
+	s=arc-20240116; t=1744727371; c=relaxed/simple;
+	bh=9+iXDBGx7GJVgsGCBR75V7HfOan8iM20BYMf5iIMEzI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ErSgIHZyp266Y87qxRxu73Dl2IGFH9k/W9MsCibqH3LGkFPvbg+L9vxbx9i95jsda6f95PX9EKIB0vUmmLPHoJUypbdPJmr7EC9Uw6ayF/cAL5XdOgIhvuVuBXFtacXWQXQ6Vsk6hpaICJV2i5kcnLd7aN8gi6YR/ldyzA9E0z8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=I+ohC5XB; arc=none smtp.client-ip=95.215.58.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Jmt+G71d"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="I+ohC5XB"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1744727339;
+	t=1744727366;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=t1Vm7ixy4qRt1deGKwYTocQ2+zvvZdj0oR3Oz6swYYI=;
-	b=Jmt+G71dJoojtNI7bXbxqplprxQuxz2stIWzhW0gQENL7EnDzUdJJgYgwGCy4uREDJ/gDp
-	0v/8O7scVROwpnyBXoztkOarPfBUuvRPzIv+R+sogI3tLZ7J0Hreel2dWUZlRiODFvQx6H
-	/NmGTKpeEm3Lw7pS5d0pdUdL59MNeuU=
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=29T8T+1np74bitsFgarWOMcK+5j4YVOYrK3TvqWPsT0=;
+	b=I+ohC5XBcyzwwcwpA8pz3bYGdAVneQdUaIexoyDUxLJugZZoO9lwNJIlWs1z4azS1DQHRb
+	ENjwVRbpDbVBpNRniWYjlR00tjEvfAgFjoVyDW5jfC4+KyXgpTQuC4KBegK/6i/ONZwzQp
+	LUcN799PwTIuhjBcEoO8hFiyo+bB0c8=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 2/2] bcachefs: Log message when incompat version requested but not enabled
-Date: Tue, 15 Apr 2025 10:28:53 -0400
-Message-ID: <20250415142853.2624553-2-kent.overstreet@linux.dev>
-In-Reply-To: <20250415142853.2624553-1-kent.overstreet@linux.dev>
-References: <20250415142853.2624553-1-kent.overstreet@linux.dev>
+Subject: [PATCH 1/3] bcachefs: bch2_copygc_wakeup()
+Date: Tue, 15 Apr 2025 10:29:19 -0400
+Message-ID: <20250415142921.2624601-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -46,87 +42,109 @@ X-Migadu-Flow: FLOW_OUT
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/bcachefs.h |  2 ++
- fs/bcachefs/fs-ioctl.c |  2 +-
- fs/bcachefs/super-io.c | 20 ++++++++++++++++++--
- fs/bcachefs/super.c    |  1 +
- 4 files changed, 22 insertions(+), 3 deletions(-)
+ fs/bcachefs/movinggc.h  | 9 +++++++++
+ fs/bcachefs/rebalance.c | 4 ++--
+ fs/bcachefs/rebalance.h | 2 +-
+ fs/bcachefs/super.c     | 4 ++--
+ fs/bcachefs/sysfs.c     | 7 +++----
+ 5 files changed, 17 insertions(+), 9 deletions(-)
 
-diff --git a/fs/bcachefs/bcachefs.h b/fs/bcachefs/bcachefs.h
-index 5cb0fc384ac0..75f7408da173 100644
---- a/fs/bcachefs/bcachefs.h
-+++ b/fs/bcachefs/bcachefs.h
-@@ -788,6 +788,8 @@ struct bch_fs {
- 		unsigned long	errors_silent[BITS_TO_LONGS(BCH_FSCK_ERR_MAX)];
- 		u64		btrees_lost_data;
- 	}			sb;
-+	DARRAY(enum bcachefs_metadata_version)
-+				incompat_versions_requested;
+diff --git a/fs/bcachefs/movinggc.h b/fs/bcachefs/movinggc.h
+index ea181fef5bc9..d1885cf67a45 100644
+--- a/fs/bcachefs/movinggc.h
++++ b/fs/bcachefs/movinggc.h
+@@ -5,6 +5,15 @@
+ unsigned long bch2_copygc_wait_amount(struct bch_fs *);
+ void bch2_copygc_wait_to_text(struct printbuf *, struct bch_fs *);
  
- #ifdef CONFIG_UNICODE
- 	struct unicode_map	*cf_encoding;
-diff --git a/fs/bcachefs/fs-ioctl.c b/fs/bcachefs/fs-ioctl.c
-index c1553e44e049..14886e1d4d6d 100644
---- a/fs/bcachefs/fs-ioctl.c
-+++ b/fs/bcachefs/fs-ioctl.c
-@@ -69,7 +69,7 @@ static int bch2_inode_flags_set(struct btree_trans *trans,
- 		if (ret < 0)
- 			return ret;
- 
--		ret = bch2_request_incompat_feature(c,bcachefs_metadata_version_casefolding);
-+		ret = bch2_request_incompat_feature(c, bcachefs_metadata_version_casefolding);
- 		if (ret)
- 			return ret;
- 
-diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
-index e27422b6d9c6..25b6bce05c3c 100644
---- a/fs/bcachefs/super-io.c
-+++ b/fs/bcachefs/super-io.c
-@@ -73,14 +73,30 @@ int bch2_set_version_incompat(struct bch_fs *c, enum bcachefs_metadata_version v
- 		? 0
- 		: -BCH_ERR_may_not_use_incompat_feature;
- 
-+	mutex_lock(&c->sb_lock);
- 	if (!ret) {
--		mutex_lock(&c->sb_lock);
- 		SET_BCH_SB_VERSION_INCOMPAT(c->disk_sb.sb,
- 			max(BCH_SB_VERSION_INCOMPAT(c->disk_sb.sb), version));
- 		bch2_write_super(c);
--		mutex_unlock(&c->sb_lock);
-+	} else {
-+		darray_for_each(c->incompat_versions_requested, i)
-+			if (version == *i)
-+				goto out;
++static inline void bch2_copygc_wakeup(struct bch_fs *c)
++{
++	rcu_read_lock();
++	struct task_struct *p = rcu_dereference(c->copygc_thread);
++	if (p)
++		wake_up_process(p);
++	rcu_read_unlock();
++}
 +
-+		darray_push(&c->incompat_versions_requested, version);
-+		struct printbuf buf = PRINTBUF;
-+		prt_str(&buf, "requested incompat feature ");
-+		bch2_version_to_text(&buf, version);
-+		prt_str(&buf, " currently not enabled");
-+		prt_printf(&buf, "\n  set version_upgrade=incompat to enable");
-+
-+		bch_notice(c, "%s", buf.buf);
-+		printbuf_exit(&buf);
- 	}
- 
-+out:
-+	mutex_unlock(&c->sb_lock);
-+
+ void bch2_copygc_stop(struct bch_fs *);
+ int bch2_copygc_start(struct bch_fs *);
+ void bch2_fs_copygc_init(struct bch_fs *);
+diff --git a/fs/bcachefs/rebalance.c b/fs/bcachefs/rebalance.c
+index 63f013496687..d63de50f6323 100644
+--- a/fs/bcachefs/rebalance.c
++++ b/fs/bcachefs/rebalance.c
+@@ -268,7 +268,7 @@ int bch2_set_rebalance_needs_scan(struct bch_fs *c, u64 inum)
+ 	int ret = bch2_trans_commit_do(c, NULL, NULL,
+ 				       BCH_TRANS_COMMIT_no_enospc,
+ 			    bch2_set_rebalance_needs_scan_trans(trans, inum));
+-	rebalance_wakeup(c);
++	bch2_rebalance_wakeup(c);
  	return ret;
  }
  
+@@ -670,7 +670,7 @@ void bch2_rebalance_stop(struct bch_fs *c)
+ 	c->rebalance.thread = NULL;
+ 
+ 	if (p) {
+-		/* for sychronizing with rebalance_wakeup() */
++		/* for sychronizing with bch2_rebalance_wakeup() */
+ 		synchronize_rcu();
+ 
+ 		kthread_stop(p);
+diff --git a/fs/bcachefs/rebalance.h b/fs/bcachefs/rebalance.h
+index 62a3859d3823..e5e8eb4a2dd1 100644
+--- a/fs/bcachefs/rebalance.h
++++ b/fs/bcachefs/rebalance.h
+@@ -37,7 +37,7 @@ int bch2_set_rebalance_needs_scan_trans(struct btree_trans *, u64);
+ int bch2_set_rebalance_needs_scan(struct bch_fs *, u64 inum);
+ int bch2_set_fs_needs_rebalance(struct bch_fs *);
+ 
+-static inline void rebalance_wakeup(struct bch_fs *c)
++static inline void bch2_rebalance_wakeup(struct bch_fs *c)
+ {
+ 	struct task_struct *p;
+ 
 diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
-index f1eef5e7698b..e8a17ed1615d 100644
+index 222b31f23799..72e001e4c151 100644
 --- a/fs/bcachefs/super.c
 +++ b/fs/bcachefs/super.c
-@@ -589,6 +589,7 @@ static void __bch2_fs_free(struct bch_fs *c)
- 		free_percpu(c->online_reserved);
- 	}
+@@ -1526,7 +1526,7 @@ static int bch2_dev_attach_bdev(struct bch_fs *c, struct bch_sb_handle *sb)
+ 	strscpy(ca->name, name.buf, sizeof(ca->name));
+ 	printbuf_exit(&name);
  
-+	darray_exit(&c->incompat_versions_requested);
- 	darray_exit(&c->btree_roots_extra);
- 	free_percpu(c->pcpu);
- 	free_percpu(c->usage);
+-	rebalance_wakeup(c);
++	bch2_rebalance_wakeup(c);
+ 	return 0;
+ }
+ 
+@@ -1672,7 +1672,7 @@ int __bch2_dev_set_state(struct bch_fs *c, struct bch_dev *ca,
+ 	if (new_state == BCH_MEMBER_STATE_rw)
+ 		__bch2_dev_read_write(c, ca);
+ 
+-	rebalance_wakeup(c);
++	bch2_rebalance_wakeup(c);
+ 
+ 	return ret;
+ }
+diff --git a/fs/bcachefs/sysfs.c b/fs/bcachefs/sysfs.c
+index fff675edef4e..00405372af5e 100644
+--- a/fs/bcachefs/sysfs.c
++++ b/fs/bcachefs/sysfs.c
+@@ -766,11 +766,10 @@ static ssize_t sysfs_opt_store(struct bch_fs *c,
+ 		bch2_set_rebalance_needs_scan(c, 0);
+ 
+ 	if (v && id == Opt_rebalance_enabled)
+-		rebalance_wakeup(c);
++		bch2_rebalance_wakeup(c);
+ 
+-	if (v && id == Opt_copygc_enabled &&
+-	    c->copygc_thread)
+-		wake_up_process(c->copygc_thread);
++	if (v && id == Opt_copygc_enabled)
++		bch2_copygc_wakeup(c);
+ 
+ 	if (id == Opt_discard && !ca) {
+ 		mutex_lock(&c->sb_lock);
 -- 
 2.49.0
 
