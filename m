@@ -1,38 +1,38 @@
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6693820469E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E982827B51D
 	for <linux-bcachefs@vger.kernel.org>; Tue, 15 Apr 2025 14:29:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744727371; cv=none; b=GZ7XdfV4sqyRUnO0YIApoUk8RJLl58ZZ0vGtOl96nnk+Z8K5am+mkWdcWez/nV5rJRQNH6CPPKiutkMkJ3YxYn4fhPh/jNhkBjwlLJgtwCg/84c7tpmmPVJ7YBgdzErJiipeZoMCDpez0R836cbrUwRR7MTSDVUxfiv44bCcss0=
+	t=1744727372; cv=none; b=KqDOL11L8KM7CHNQo6y+OF7u2SDWfX8brlInex07CWaM7lKd51AfJZMpgNX+snJ2XUjZLWSFKZ3FE1t+Ml/zH9Bp2lB8tWqhqM9esO25/s6cZNL4TmhxBVLM7WR3obwomNyTFK0+/6mMTiwI3eYjlJ+Kdn8ZaS6OeME4uqYEU6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744727371; c=relaxed/simple;
-	bh=Jm2Thnve3VH5N6KYrb7EckyV2TXEnymRPvXmAHN8fXM=;
+	s=arc-20240116; t=1744727372; c=relaxed/simple;
+	bh=pFqXPnXuaLulskROIsCuhboZRK6X+ItzUcfF2gEUH4o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sO6gISm4GhhD5VPEJup55C8FiLhFlY3ZvVxa2FV9BXqInW4jWh2oe0I9BgzYZgnQnZ8SLiRI5lCx3EmO7REitOUVZiQ1bHVTbN7J6kUW0DN6yLhqZhaSskjnb5lOllUnTtsDna4cVL5Ea7HiMG5Z3jGdXzzWDL4ceUnat1tZRBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EEsDcenn; arc=none smtp.client-ip=95.215.58.173
+	 MIME-Version; b=bZ9uA1E5SS7Ka8xB5NMWdj0qS0WL2D8pJCLJ8VZfKgIaKK/JN+MkcnUCxnzM4plR312Sy73R9Egs25isReGLC+knhkRZ+ph/mmdTqAY2TI5e63ds8ruIhg4sYt7Q0FNGKqbflJ1IucHGtfiQXCzY/E/LdN7YXVvWc4bJr5xDEbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=abi7dhYH; arc=none smtp.client-ip=95.215.58.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EEsDcenn"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="abi7dhYH"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1744727367;
+	t=1744727368;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KFsHgqNEq2fzTgRldz9xhnaE1Db//oQcQy3B++qG9+g=;
-	b=EEsDcennazl9kdrXNgCPUbEAwnucAXAP18Z9G8omWGj3b/fYDOD177muW4hAsDjijXSZfP
-	HurXy/jCy1LFTQTR4FWSkTDsoMuTubRm2t/hzbkyKIQYbRRHQxymnxzM1E3PDCYVMTChVE
-	DowovoYwnJJMMYj3Gm4tvNqnuVv1Rzk=
+	bh=/E6VxhqLqx2YBKbYMKUMnFIVJODNfLGjufKRoWaJdpc=;
+	b=abi7dhYHTAw23cr+i7vbKAhLSYDx3mBd4dpPdxfWK4fAHjzViWBLi7M8xKuRXM5wlbShko
+	m9WvVfC2kOJ8mzRTI48BE9J0CS9Voxr/yNL3BUWCJC1FtfyJ21yRUR//9qf78nMo2idd27
+	57GgF3HNugrYen1wgpprrx6olGAXqZ8=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 2/3] bcachefs: Clean up option pre/post hooks, small fixes
-Date: Tue, 15 Apr 2025 10:29:20 -0400
-Message-ID: <20250415142921.2624601-2-kent.overstreet@linux.dev>
+Subject: [PATCH 3/3] bcachefs: Incompatible features may now be enabled at runtime
+Date: Tue, 15 Apr 2025 10:29:21 -0400
+Message-ID: <20250415142921.2624601-3-kent.overstreet@linux.dev>
 In-Reply-To: <20250415142921.2624601-1-kent.overstreet@linux.dev>
 References: <20250415142921.2624601-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,293 +44,124 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-The helpers are now:
-- bch2_opt_hook_pre_set()
-- bch2_opts_hooks_pre_set()
-- bch2_opt_hook_post_set
+version_upgrade is now a runtime option.
 
-Fix a bug where the filesystem discard option would incorrectly be
-changed when setting the device option, and don't trigger rebalance
-scans unnecessarily (when options aren't changing).
+In the future we'll want to add compatible upgrades at runtime, and call
+the full check_version_upgrade() when the option changes, but we don't
+have compatible optional upgrades just yet.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/inode.h |  2 +-
- fs/bcachefs/opts.c  | 81 +++++++++++++++++++++++++++++++++++++++------
- fs/bcachefs/opts.h  | 11 +++---
- fs/bcachefs/super.c |  2 +-
- fs/bcachefs/sysfs.c | 29 ++++------------
- fs/bcachefs/xattr.c |  2 +-
- 6 files changed, 87 insertions(+), 40 deletions(-)
+ fs/bcachefs/opts.c     |  9 +++++++++
+ fs/bcachefs/opts.h     |  2 +-
+ fs/bcachefs/recovery.c |  4 ++--
+ fs/bcachefs/super-io.c | 25 +++++++++++++++++++++++++
+ fs/bcachefs/super-io.h |  1 +
+ 5 files changed, 38 insertions(+), 3 deletions(-)
 
-diff --git a/fs/bcachefs/inode.h b/fs/bcachefs/inode.h
-index f82cfbf460d0..1b2fc902af1c 100644
---- a/fs/bcachefs/inode.h
-+++ b/fs/bcachefs/inode.h
-@@ -284,7 +284,7 @@ static inline bool bch2_inode_should_have_single_bp(struct bch_inode_unpacked *i
- struct bch_opts bch2_inode_opts_to_opts(struct bch_inode_unpacked *);
- void bch2_inode_opts_get(struct bch_io_opts *, struct bch_fs *,
- 			 struct bch_inode_unpacked *);
--int bch2_inum_opts_get(struct btree_trans*, subvol_inum, struct bch_io_opts *);
-+int bch2_inum_opts_get(struct btree_trans *, subvol_inum, struct bch_io_opts *);
- 
- #include "rebalance.h"
- 
 diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
-index b3fcffc91d6f..386482ff8e7b 100644
+index 386482ff8e7b..b1cf88905b81 100644
 --- a/fs/bcachefs/opts.c
 +++ b/fs/bcachefs/opts.c
-@@ -7,7 +7,9 @@
- #include "compress.h"
- #include "disk_groups.h"
- #include "error.h"
-+#include "movinggc.h"
- #include "opts.h"
-+#include "rebalance.h"
- #include "recovery_passes.h"
- #include "super-io.h"
- #include "util.h"
-@@ -516,7 +518,7 @@ void bch2_opts_to_text(struct printbuf *out,
- 	}
- }
- 
--int bch2_opt_check_may_set(struct bch_fs *c, struct bch_dev *ca, int id, u64 v)
-+int bch2_opt_hook_pre_set(struct bch_fs *c, struct bch_dev *ca, enum bch_opt_id id, u64 v)
- {
- 	int ret = 0;
- 
-@@ -534,15 +536,17 @@ int bch2_opt_check_may_set(struct bch_fs *c, struct bch_dev *ca, int id, u64 v)
- 		if (v)
- 			bch2_check_set_feature(c, BCH_FEATURE_ec);
+@@ -595,6 +595,15 @@ void bch2_opt_hook_post_set(struct bch_fs *c, struct bch_dev *ca, u64 inum,
+ 			mutex_unlock(&c->sb_lock);
+ 		}
  		break;
-+	default:
++	case Opt_version_upgrade:
++		/*
++		 * XXX: in the future we'll likely want to do compatible
++		 * upgrades at runtime as well, but right now there's nothing
++		 * that does that:
++		 */
++		if (new_opts->version_upgrade == BCH_VERSION_UPGRADE_incompatible)
++			bch2_sb_upgrade_incompat(c);
 +		break;
+ 	default:
+ 		break;
  	}
- 
- 	return ret;
- }
- 
--int bch2_opts_check_may_set(struct bch_fs *c)
-+int bch2_opts_hooks_pre_set(struct bch_fs *c)
- {
- 	for (unsigned i = 0; i < bch2_opts_nr; i++) {
--		int ret = bch2_opt_check_may_set(c, NULL, i, bch2_opt_get_by_id(&c->opts, i));
-+		int ret = bch2_opt_hook_pre_set(c, NULL, i, bch2_opt_get_by_id(&c->opts, i));
- 		if (ret)
- 			return ret;
- 	}
-@@ -550,6 +554,52 @@ int bch2_opts_check_may_set(struct bch_fs *c)
- 	return 0;
- }
- 
-+void bch2_opt_hook_post_set(struct bch_fs *c, struct bch_dev *ca, u64 inum,
-+			    struct bch_opts *new_opts, enum bch_opt_id id)
-+{
-+	switch (id) {
-+	case Opt_foreground_target:
-+		if (new_opts->foreground_target &&
-+		    !new_opts->background_target)
-+			bch2_set_rebalance_needs_scan(c, inum);
-+		break;
-+	case Opt_compression:
-+		if (new_opts->compression &&
-+		    !new_opts->background_compression)
-+			bch2_set_rebalance_needs_scan(c, inum);
-+		break;
-+	case Opt_background_target:
-+		if (new_opts->background_target)
-+			bch2_set_rebalance_needs_scan(c, inum);
-+		break;
-+	case Opt_background_compression:
-+		if (new_opts->background_compression)
-+			bch2_set_rebalance_needs_scan(c, inum);
-+		break;
-+	case Opt_rebalance_enabled:
-+		bch2_rebalance_wakeup(c);
-+		break;
-+	case Opt_copygc_enabled:
-+		bch2_copygc_wakeup(c);
-+		break;
-+	case Opt_discard:
-+		if (!ca) {
-+			mutex_lock(&c->sb_lock);
-+			for_each_member_device(c, ca) {
-+				struct bch_member *m =
-+					bch2_members_v2_get_mut(ca->disk_sb.sb, ca->dev_idx);
-+				SET_BCH_MEMBER_DISCARD(m, c->opts.discard);
-+			}
-+
-+			bch2_write_super(c);
-+			mutex_unlock(&c->sb_lock);
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+
- int bch2_parse_one_mount_opt(struct bch_fs *c, struct bch_opts *opts,
- 			     struct printbuf *parse_later,
- 			     const char *name, const char *val)
-@@ -709,9 +759,11 @@ int bch2_opts_from_sb(struct bch_opts *opts, struct bch_sb *sb)
- 	return 0;
- }
- 
--void __bch2_opt_set_sb(struct bch_sb *sb, int dev_idx,
-+bool __bch2_opt_set_sb(struct bch_sb *sb, int dev_idx,
- 		       const struct bch_option *opt, u64 v)
- {
-+	bool changed = false;
-+
- 	if (opt->flags & OPT_SB_FIELD_SECTORS)
- 		v >>= 9;
- 
-@@ -721,26 +773,35 @@ void __bch2_opt_set_sb(struct bch_sb *sb, int dev_idx,
- 	if (opt->flags & OPT_SB_FIELD_ONE_BIAS)
- 		v++;
- 
--	if ((opt->flags & OPT_FS) && opt->set_sb && dev_idx < 0)
-+	if ((opt->flags & OPT_FS) && opt->set_sb && dev_idx < 0) {
-+		changed = v != opt->get_sb(sb);
-+
- 		opt->set_sb(sb, v);
-+	}
- 
- 	if ((opt->flags & OPT_DEVICE) && opt->set_member && dev_idx >= 0) {
- 		if (WARN(!bch2_member_exists(sb, dev_idx),
- 			 "tried to set device option %s on nonexistent device %i",
- 			 opt->attr.name, dev_idx))
--			return;
-+			return false;
- 
--		opt->set_member(bch2_members_v2_get_mut(sb, dev_idx), v);
-+		struct bch_member *m = bch2_members_v2_get_mut(sb, dev_idx);
-+		changed = v != opt->get_member(m);
-+		opt->set_member(m, v);
- 	}
-+
-+	return changed;
- }
- 
--void bch2_opt_set_sb(struct bch_fs *c, struct bch_dev *ca,
-+bool bch2_opt_set_sb(struct bch_fs *c, struct bch_dev *ca,
- 		     const struct bch_option *opt, u64 v)
- {
- 	mutex_lock(&c->sb_lock);
--	__bch2_opt_set_sb(c->disk_sb.sb, ca ? ca->dev_idx : -1, opt, v);
--	bch2_write_super(c);
-+	bool changed = __bch2_opt_set_sb(c->disk_sb.sb, ca ? ca->dev_idx : -1, opt, v);
-+	if (changed)
-+		bch2_write_super(c);
- 	mutex_unlock(&c->sb_lock);
-+	return changed;
- }
- 
- /* io opts: */
 diff --git a/fs/bcachefs/opts.h b/fs/bcachefs/opts.h
-index 4be0634eae80..f69ba5e63e15 100644
+index f69ba5e63e15..5cdb18802138 100644
 --- a/fs/bcachefs/opts.h
 +++ b/fs/bcachefs/opts.h
-@@ -607,10 +607,10 @@ void bch2_opt_set_by_id(struct bch_opts *, enum bch_opt_id, u64);
+@@ -445,7 +445,7 @@ enum fsck_err_opts {
+ 	  BCH2_NO_SB_OPT,		false,				\
+ 	  NULL,		"Reconstruct alloc btree")			\
+ 	x(version_upgrade,		u8,				\
+-	  OPT_FS|OPT_MOUNT,						\
++	  OPT_FS|OPT_MOUNT|OPT_RUNTIME,					\
+ 	  OPT_STR(bch2_version_upgrade_opts),				\
+ 	  BCH_SB_VERSION_UPGRADE,	BCH_VERSION_UPGRADE_compatible,	\
+ 	  NULL,		"Set superblock to latest version,\n"		\
+diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
+index 606d684e6f23..58ee1ebdcbaa 100644
+--- a/fs/bcachefs/recovery.c
++++ b/fs/bcachefs/recovery.c
+@@ -666,7 +666,7 @@ static bool check_version_upgrade(struct bch_fs *c)
+ 				     bch2_recovery_passes_from_stable(le64_to_cpu(passes)));
+ 		}
  
- u64 bch2_opt_from_sb(struct bch_sb *, enum bch_opt_id, int);
- int bch2_opts_from_sb(struct bch_opts *, struct bch_sb *);
--void __bch2_opt_set_sb(struct bch_sb *, int, const struct bch_option *, u64);
-+bool __bch2_opt_set_sb(struct bch_sb *, int, const struct bch_option *, u64);
+-		bch_info(c, "%s", buf.buf);
++		bch_notice(c, "%s", buf.buf);
+ 		printbuf_exit(&buf);
  
- struct bch_dev;
--void bch2_opt_set_sb(struct bch_fs *, struct bch_dev *, const struct bch_option *, u64);
-+bool bch2_opt_set_sb(struct bch_fs *, struct bch_dev *, const struct bch_option *, u64);
+ 		ret = true;
+@@ -682,7 +682,7 @@ static bool check_version_upgrade(struct bch_fs *c)
+ 		bch2_version_to_text(&buf, c->sb.version_incompat_allowed);
+ 		prt_newline(&buf);
  
- int bch2_opt_lookup(const char *);
- int bch2_opt_validate(const struct bch_option *, u64, struct printbuf *);
-@@ -627,8 +627,11 @@ void bch2_opts_to_text(struct printbuf *,
- 		       struct bch_fs *, struct bch_sb *,
- 		       unsigned, unsigned, unsigned);
+-		bch_info(c, "%s", buf.buf);
++		bch_notice(c, "%s", buf.buf);
+ 		printbuf_exit(&buf);
  
--int bch2_opt_check_may_set(struct bch_fs *, struct bch_dev *, int, u64);
--int bch2_opts_check_may_set(struct bch_fs *);
-+int bch2_opt_hook_pre_set(struct bch_fs *, struct bch_dev *, enum bch_opt_id, u64);
-+int bch2_opts_hooks_pre_set(struct bch_fs *);
-+void bch2_opt_hook_post_set(struct bch_fs *, struct bch_dev *, u64,
-+			    struct bch_opts *, enum bch_opt_id);
+ 		ret = true;
+diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
+index fa4d323ddada..791dee30f042 100644
+--- a/fs/bcachefs/super-io.c
++++ b/fs/bcachefs/super-io.c
+@@ -1273,6 +1273,31 @@ void bch2_sb_upgrade(struct bch_fs *c, unsigned new_version, bool incompat)
+ 	}
+ }
+ 
++void bch2_sb_upgrade_incompat(struct bch_fs *c)
++{
++	mutex_lock(&c->sb_lock);
++	if (c->sb.version == c->sb.version_incompat_allowed)
++		goto unlock;
 +
- int bch2_parse_one_mount_opt(struct bch_fs *, struct bch_opts *,
- 			     struct printbuf *, const char *, const char *);
- int bch2_parse_mount_opts(struct bch_fs *, struct bch_opts *, struct printbuf *,
-diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
-index 72e001e4c151..1d27a306938d 100644
---- a/fs/bcachefs/super.c
-+++ b/fs/bcachefs/super.c
-@@ -1099,7 +1099,7 @@ int bch2_fs_start(struct bch_fs *c)
- 	if (ret)
- 		goto err;
++	struct printbuf buf = PRINTBUF;
++
++	prt_str(&buf, "Now allowing incompatible features up to ");
++	bch2_version_to_text(&buf, c->sb.version);
++	prt_str(&buf, ", previously allowed up to ");
++	bch2_version_to_text(&buf, c->sb.version_incompat_allowed);
++	prt_newline(&buf);
++
++	bch_notice(c, "%s", buf.buf);
++	printbuf_exit(&buf);
++
++	c->disk_sb.sb->features[0] |= cpu_to_le64(BCH_SB_FEATURES_ALL);
++	SET_BCH_SB_VERSION_INCOMPAT_ALLOWED(c->disk_sb.sb,
++			max(BCH_SB_VERSION_INCOMPAT_ALLOWED(c->disk_sb.sb), c->sb.version));
++	bch2_write_super(c);
++unlock:
++	mutex_unlock(&c->sb_lock);
++}
++
+ static int bch2_sb_ext_validate(struct bch_sb *sb, struct bch_sb_field *f,
+ 				enum bch_validate_flags flags, struct printbuf *err)
+ {
+diff --git a/fs/bcachefs/super-io.h b/fs/bcachefs/super-io.h
+index 78f708a6fbcd..a3b7a90f2533 100644
+--- a/fs/bcachefs/super-io.h
++++ b/fs/bcachefs/super-io.h
+@@ -107,6 +107,7 @@ static inline void bch2_check_set_feature(struct bch_fs *c, unsigned feat)
  
--	ret = bch2_opts_check_may_set(c);
-+	ret = bch2_opts_hooks_pre_set(c);
- 	if (ret)
- 		goto err;
+ bool bch2_check_version_downgrade(struct bch_fs *);
+ void bch2_sb_upgrade(struct bch_fs *, unsigned, bool);
++void bch2_sb_upgrade_incompat(struct bch_fs *);
  
-diff --git a/fs/bcachefs/sysfs.c b/fs/bcachefs/sysfs.c
-index 00405372af5e..455c6ae9a494 100644
---- a/fs/bcachefs/sysfs.c
-+++ b/fs/bcachefs/sysfs.c
-@@ -749,36 +749,19 @@ static ssize_t sysfs_opt_store(struct bch_fs *c,
- 
- 	u64 v;
- 	ret =   bch2_opt_parse(c, opt, strim(tmp), &v, NULL) ?:
--		bch2_opt_check_may_set(c, ca, id, v);
-+		bch2_opt_hook_pre_set(c, ca, id, v);
- 	kfree(tmp);
- 
- 	if (ret < 0)
- 		goto err;
- 
--	bch2_opt_set_sb(c, ca, opt, v);
--	bch2_opt_set_by_id(&c->opts, id, v);
-+	bool changed = bch2_opt_set_sb(c, ca, opt, v);
- 
--	if (v &&
--	    (id == Opt_background_target ||
--	     (id == Opt_foreground_target && !c->opts.background_target) ||
--	     id == Opt_background_compression ||
--	     (id == Opt_compression && !c->opts.background_compression)))
--		bch2_set_rebalance_needs_scan(c, 0);
-+	if (!ca)
-+		bch2_opt_set_by_id(&c->opts, id, v);
- 
--	if (v && id == Opt_rebalance_enabled)
--		bch2_rebalance_wakeup(c);
--
--	if (v && id == Opt_copygc_enabled)
--		bch2_copygc_wakeup(c);
--
--	if (id == Opt_discard && !ca) {
--		mutex_lock(&c->sb_lock);
--		for_each_member_device(c, ca)
--			opt->set_member(bch2_members_v2_get_mut(ca->disk_sb.sb, ca->dev_idx), v);
--
--		bch2_write_super(c);
--		mutex_unlock(&c->sb_lock);
--	}
-+	if (changed)
-+		bch2_opt_hook_post_set(c, ca, 0, &c->opts, id);
- 
- 	ret = size;
- err:
-diff --git a/fs/bcachefs/xattr.c b/fs/bcachefs/xattr.c
-index 651da52b2cbc..3d324e485ee9 100644
---- a/fs/bcachefs/xattr.c
-+++ b/fs/bcachefs/xattr.c
-@@ -523,7 +523,7 @@ static int bch2_xattr_bcachefs_set(const struct xattr_handler *handler,
- 		if (ret < 0)
- 			goto err_class_exit;
- 
--		ret = bch2_opt_check_may_set(c, NULL, opt_id, v);
-+		ret = bch2_opt_hook_pre_set(c, NULL, opt_id, v);
- 		if (ret < 0)
- 			goto err_class_exit;
- 
+ void __bch2_sb_field_to_text(struct printbuf *, struct bch_sb *,
+ 			     struct bch_sb_field *);
 -- 
 2.49.0
 
