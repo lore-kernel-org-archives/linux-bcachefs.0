@@ -1,38 +1,38 @@
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEC7E1B6D06
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 299651F8728
 	for <linux-bcachefs@vger.kernel.org>; Wed, 16 Apr 2025 13:43:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744811041; cv=none; b=A8+HtiQs0kzIacp2hJNLEp04kXDgeZOLeLbCNchkVrNuoAXQnwJGsaXBQ2R72Hlii1xDbf3ijZKMFKlLpwCkvANvpchlGcTPJqi1TWuPyEyRqtIVdONwdLKBbti7bhEdgGMretP9Pl46rKaWdf6PgtOSnHtXRV4oM0WWy1igvAY=
+	t=1744811042; cv=none; b=IcgFPxgBN9VJPWXdNDIqnAu/CRHJ35vNy26vddpC2fGIaNAlkjJkjyOykBzhTThBdIXWSGozfD3OE5TVQGP+3lNrymdzGIglfmrTx7QkkpGWZLwtN1VKLwnWqSiD4qoPVI43ulmFqe7iNrUZ5fLA2IUOELE0qP1O8jDwjRo4+G4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744811041; c=relaxed/simple;
-	bh=i+xGGY65sl3DVdAixkytuHZh5DE/xPoIFZxu2BUYgXs=;
+	s=arc-20240116; t=1744811042; c=relaxed/simple;
+	bh=gizLG9JpxomjkNwqaO70bI8dWr+3GTtV/3DKfegxwVM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Q1WJcfaLTmk463DbJg1MSawK277eFwrANbSjCoiiXTVniJQaJAKrh5JkbwI1O958j9gNtLwzCO/uV8F5AKVOIdos6w6p/761ZSx3i/E7/pfehbA1jRImPeYywPAsVoQN044WFg86VRJasQBzJcNAgLoddXvCmW6p7ewdiCvS9DA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bnR4HfpM; arc=none smtp.client-ip=91.218.175.185
+	 MIME-Version; b=nmlBNIeoCKlpQrvuJWvygZznTM0AXAs/XQpaavS9wEKuUTh3cj3YGG/QhrpuFav6/rHG6MIcQoKqPROp3WZNra20tv9QIjehqTruz7gdrLjS2h1jNZ3rjNsvlJ6d4v3MBODskWMisFXiIjSHoGrPLrfvsyggVnLZNmW+fEA9op4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=g+O6kYys; arc=none smtp.client-ip=91.218.175.184
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bnR4HfpM"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="g+O6kYys"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1744811037;
+	t=1744811038;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vKu5vAiK0fSv3omb6b9rFu6iDQ6py0/ybwqZD7rBhlg=;
-	b=bnR4HfpMD5bnN0XCjKodZHu9G8u0A1j9HO0dZrihdmAQuurzps5ydRPKSd/iuXOUP8nBWB
-	LIiphOLHBhwEnp53wkGW1V/mU4fo5Chmm6H1vVnPF3Y1HcSxNC6w3VkDXj4WWIDRZSAKX/
-	W6CFxVS7JN6jD6ITrjBX0fRFb9njqlA=
+	bh=i+OyJrLE4HKw0y9JeTbCQszKWJ6qV8qYk+2cYMhBUA8=;
+	b=g+O6kYys9ed8qy17mx7Huk3ceyBS1VB2n34bMpoIkLpIyqqQJkNXXMmfbTdIalK692lOAU
+	s5m1nIJJnVjtbbmVgVTO5YxgHqghnHkn0uYcdPOO2KleFj0o41a/QpylYIDfvcuZpb77N9
+	N3/Q5Yi3vRpw26q08dRl5gS+YrYnMl0=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 2/4] bcachefs: plumb btree_id through move_pred_fd
-Date: Wed, 16 Apr 2025 09:43:47 -0400
-Message-ID: <20250416134352.3654545-3-kent.overstreet@linux.dev>
+Subject: [PATCH 3/4] bcachefs: bch2_move_data_btree() can move btree nodes
+Date: Wed, 16 Apr 2025 09:43:48 -0400
+Message-ID: <20250416134352.3654545-4-kent.overstreet@linux.dev>
 In-Reply-To: <20250416134352.3654545-1-kent.overstreet@linux.dev>
 References: <20250416134352.3654545-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -46,120 +46,94 @@ X-Migadu-Flow: FLOW_OUT
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/move.c      | 20 +++++++++++---------
- fs/bcachefs/move.h      |  2 +-
- fs/bcachefs/rebalance.c |  2 +-
- 3 files changed, 13 insertions(+), 11 deletions(-)
+ fs/bcachefs/move.c | 32 +++++++++++++++++++++-----------
+ fs/bcachefs/move.h |  2 ++
+ 2 files changed, 23 insertions(+), 11 deletions(-)
 
 diff --git a/fs/bcachefs/move.c b/fs/bcachefs/move.c
-index 983dbba2d3c4..f41913ea85e4 100644
+index f41913ea85e4..b594c9ed41f8 100644
 --- a/fs/bcachefs/move.c
 +++ b/fs/bcachefs/move.c
-@@ -667,7 +667,7 @@ static int bch2_move_data_btree(struct moving_context *ctxt,
- 			continue;
+@@ -423,6 +423,9 @@ static struct bch_io_opts *bch2_move_get_io_opts(struct btree_trans *trans,
+ 	struct bch_io_opts *opts_ret = &io_opts->fs_io_opts;
+ 	int ret = 0;
  
- 		memset(&data_opts, 0, sizeof(data_opts));
--		if (!pred(c, arg, k, io_opts, &data_opts))
-+		if (!pred(c, arg, extent_iter->btree_id, k, io_opts, &data_opts))
- 			goto next;
++	if (extent_iter->min_depth)
++		return opts_ret;
++
+ 	if (extent_k.k->type == KEY_TYPE_reflink_v)
+ 		goto out;
  
- 		/*
-@@ -850,7 +850,7 @@ static int __bch2_move_data_phys(struct moving_context *ctxt,
- 		}
- 
- 		struct data_update_opts data_opts = {};
--		if (!pred(c, arg, k, &io_opts, &data_opts)) {
-+		if (!pred(c, arg, bp.v->btree_id, k, &io_opts, &data_opts)) {
- 			bch2_trans_iter_exit(trans, &iter);
- 			goto next;
- 		}
-@@ -933,7 +933,8 @@ struct evacuate_bucket_arg {
- 	struct data_update_opts	data_opts;
- };
- 
--static bool evacuate_bucket_pred(struct bch_fs *c, void *_arg, struct bkey_s_c k,
-+static bool evacuate_bucket_pred(struct bch_fs *c, void *_arg,
-+				 enum btree_id btree, struct bkey_s_c k,
- 				 struct bch_io_opts *io_opts,
- 				 struct data_update_opts *data_opts)
- {
-@@ -1047,7 +1048,7 @@ static int bch2_move_btree(struct bch_fs *c,
+@@ -573,11 +576,11 @@ static struct bkey_s_c bch2_lookup_indirect_extent_for_move(struct btree_trans *
+ 	return k;
  }
  
- static bool rereplicate_pred(struct bch_fs *c, void *arg,
--			     struct bkey_s_c k,
-+			     enum btree_id btree, struct bkey_s_c k,
- 			     struct bch_io_opts *io_opts,
- 			     struct data_update_opts *data_opts)
+-static int bch2_move_data_btree(struct moving_context *ctxt,
+-				struct bpos start,
+-				struct bpos end,
+-				move_pred_fn pred, void *arg,
+-				enum btree_id btree_id)
++int bch2_move_data_btree(struct moving_context *ctxt,
++			 struct bpos start,
++			 struct bpos end,
++			 move_pred_fn pred, void *arg,
++			 enum btree_id btree_id, unsigned level)
  {
-@@ -1079,7 +1080,7 @@ static bool rereplicate_pred(struct bch_fs *c, void *arg,
- }
+ 	struct btree_trans *trans = ctxt->trans;
+ 	struct bch_fs *c = trans->c;
+@@ -604,10 +607,10 @@ static int bch2_move_data_btree(struct moving_context *ctxt,
+ 	}
  
- static bool migrate_pred(struct bch_fs *c, void *arg,
--			 struct bkey_s_c k,
-+			 enum btree_id btree, struct bkey_s_c k,
- 			 struct bch_io_opts *io_opts,
- 			 struct data_update_opts *data_opts)
- {
-@@ -1106,7 +1107,7 @@ static bool rereplicate_btree_pred(struct bch_fs *c, void *arg,
- 				   struct bch_io_opts *io_opts,
- 				   struct data_update_opts *data_opts)
- {
--	return rereplicate_pred(c, arg, bkey_i_to_s_c(&b->key), io_opts, data_opts);
-+	return rereplicate_pred(c, arg, b->c.btree_id, bkey_i_to_s_c(&b->key), io_opts, data_opts);
- }
+ 	bch2_trans_begin(trans);
+-	bch2_trans_iter_init(trans, &iter, btree_id, start,
+-			     BTREE_ITER_prefetch|
+-			     BTREE_ITER_not_extents|
+-			     BTREE_ITER_all_snapshots);
++	bch2_trans_node_iter_init(trans, &iter, btree_id, start, 0, level,
++				  BTREE_ITER_prefetch|
++				  BTREE_ITER_not_extents|
++				  BTREE_ITER_all_snapshots);
  
- /*
-@@ -1162,7 +1163,7 @@ int bch2_scan_old_btree_nodes(struct bch_fs *c, struct bch_move_stats *stats)
- }
+ 	if (ctxt->rate)
+ 		bch2_ratelimit_reset(ctxt->rate);
+@@ -677,7 +680,14 @@ static int bch2_move_data_btree(struct moving_context *ctxt,
+ 		bch2_bkey_buf_reassemble(&sk, c, k);
+ 		k = bkey_i_to_s_c(sk.k);
  
- static bool drop_extra_replicas_pred(struct bch_fs *c, void *arg,
--			     struct bkey_s_c k,
-+			     enum btree_id btree, struct bkey_s_c k,
- 			     struct bch_io_opts *io_opts,
- 			     struct data_update_opts *data_opts)
- {
-@@ -1195,11 +1196,12 @@ static bool drop_extra_replicas_btree_pred(struct bch_fs *c, void *arg,
- 				   struct bch_io_opts *io_opts,
- 				   struct data_update_opts *data_opts)
- {
--	return drop_extra_replicas_pred(c, arg, bkey_i_to_s_c(&b->key), io_opts, data_opts);
-+	return drop_extra_replicas_pred(c, arg, b->c.btree_id, bkey_i_to_s_c(&b->key),
-+					io_opts, data_opts);
- }
- 
- static bool scrub_pred(struct bch_fs *c, void *_arg,
--		       struct bkey_s_c k,
-+		       enum btree_id btree, struct bkey_s_c k,
- 		       struct bch_io_opts *io_opts,
- 		       struct data_update_opts *data_opts)
- {
+-		ret2 = bch2_move_extent(ctxt, NULL, extent_iter, k, *io_opts, data_opts);
++		if (!level)
++			ret2 = bch2_move_extent(ctxt, NULL, extent_iter, k, *io_opts, data_opts);
++		else if (!data_opts.scrub)
++			ret2 = bch2_btree_node_rewrite_pos(trans, btree_id, level,
++							  k.k->p, data_opts.target, 0);
++		else
++			ret2 = bch2_btree_node_scrub(trans, btree_id, level, k, data_opts.read_dev);
++
+ 		if (ret2) {
+ 			if (bch2_err_matches(ret2, BCH_ERR_transaction_restart))
+ 				continue;
+@@ -727,7 +737,7 @@ int __bch2_move_data(struct moving_context *ctxt,
+ 		ret = bch2_move_data_btree(ctxt,
+ 				       id == start.btree ? start.pos : POS_MIN,
+ 				       id == end.btree   ? end.pos   : POS_MAX,
+-				       pred, arg, id);
++				       pred, arg, id, 0);
+ 		if (ret)
+ 			break;
+ 	}
 diff --git a/fs/bcachefs/move.h b/fs/bcachefs/move.h
-index 1ab6dd4621d6..9c6c229e583e 100644
+index 9c6c229e583e..0c620a5f728d 100644
 --- a/fs/bcachefs/move.h
 +++ b/fs/bcachefs/move.h
-@@ -72,7 +72,7 @@ do {									\
- 		break;							\
- } while (1)
+@@ -122,6 +122,8 @@ int bch2_move_extent(struct moving_context *,
+ 		     struct bch_io_opts,
+ 		     struct data_update_opts);
  
--typedef bool (*move_pred_fn)(struct bch_fs *, void *, struct bkey_s_c,
-+typedef bool (*move_pred_fn)(struct bch_fs *, void *, enum btree_id, struct bkey_s_c,
- 			     struct bch_io_opts *, struct data_update_opts *);
- 
- extern const char * const bch2_data_ops_strs[];
-diff --git a/fs/bcachefs/rebalance.c b/fs/bcachefs/rebalance.c
-index d63de50f6323..2f0f8782105e 100644
---- a/fs/bcachefs/rebalance.c
-+++ b/fs/bcachefs/rebalance.c
-@@ -454,7 +454,7 @@ static int do_rebalance_extent(struct moving_context *ctxt,
- }
- 
- static bool rebalance_pred(struct bch_fs *c, void *arg,
--			   struct bkey_s_c k,
-+			   enum btree_id btree, struct bkey_s_c k,
- 			   struct bch_io_opts *io_opts,
- 			   struct data_update_opts *data_opts)
- {
++int bch2_move_data_btree(struct moving_context *, struct bpos, struct bpos,
++			 move_pred_fn, void *, enum btree_id, unsigned);
+ int __bch2_move_data(struct moving_context *,
+ 		     struct bbpos,
+ 		     struct bbpos,
 -- 
 2.49.0
 
