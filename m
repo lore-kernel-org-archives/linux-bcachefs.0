@@ -1,277 +1,166 @@
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5AC835962
-	for <linux-bcachefs@vger.kernel.org>; Wed, 16 Apr 2025 15:05:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93ED418C32C
+	for <linux-bcachefs@vger.kernel.org>; Wed, 16 Apr 2025 17:47:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744815936; cv=none; b=dIG9htrIg4W05MccgxWnoYxCr1PtClKa4BtBgnKmeq0bVLd+GFa1MZUUmlC1dUAythxRQj7R0EgZ1XXUvRPUgz0MfN+JuAxBzNwf6HhYjvsXcwmTfRIPfa4cu+h716fxOuTBwym3UAjJOWCUbFwNPk2r3uNRGGOgKoD8EC4E404=
+	t=1744825655; cv=none; b=SCw5rC8rUIXKIfESJ6cwaaXrBLIFWQqzriVIF8r3pK/rApV/Jgu5gQVQDQkf64TOvI7E0GK/9HKLcijaBOMFYWFvCtfvxMqD5yG5O6eiCXwIihrWjLj74yT0tBf7IXB+k46DU5b2T23Z0NYVdu1X6Zi6FZXCzfYauEE0flCzMKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744815936; c=relaxed/simple;
-	bh=ed8TXplqdq+HoC2g/2JYotgLa1SXRzPSJgJ1T4ty7BA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ITM0hibfvJVkexKdOSVb9TmKgThL3lta93PvBqw/GXVE/cbzllttvmH/hLDr0UJegfuQdFp8GgnfqRQO7uHnYS88+HEukpbii+3tQalcwbAH52y8XI1vBzxUm8ena26M4Hv1p2MhEJ4nHiuSLDIH6benvKCtFVTNzBWXrcgH9zE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZHHbf0NB; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZHHbf0NB"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1744815931;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=fjI1I7gqSNNhLQuCXUSAcz7z1Ihg9yF4Fz9RZAdaLRg=;
-	b=ZHHbf0NB75CfmyZ4bud4tS2L878yoZ+DJ07gWbCmLMvOM57ov2ZjfJZjklHt00CjSKlZft
-	JZc/i42U3QOR+fgRGUUPh205tG3uq7rjCv1Y2H+eqKoYw/VYbti64baRTcZyn4ieoH9fQi
-	0PVa5Bf1yj25mEsmAbfYFyLsr2GKRrM=
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH] docs: bcachefs: idle work scheduling design doc
-Date: Wed, 16 Apr 2025 11:05:26 -0400
-Message-ID: <20250416150526.3683518-1-kent.overstreet@linux.dev>
+	s=arc-20240116; t=1744825655; c=relaxed/simple;
+	bh=krYe/ACIl1WDWBGw7/244gTQLqinviWRZm+F/EAb3/E=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=hu9E0NK1Kg//zA1UCgVU2qoKsBMGgj9KNwI+U+KvaPJBdh05zKEQvJzMiBSoN0sO9Z4ZxtW7Xjjvuau+4+yPObkUjivh+6gNozKRJnlEmmnQMA+7IbS3GFTOCXUf+pMG1aLGIFq0BKCHRg5gwbKseURpJOYpA8tuY54/Irn0V1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-3d4578fbaf4so123968745ab.0
+        for <linux-bcachefs@vger.kernel.org>; Wed, 16 Apr 2025 10:47:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744825652; x=1745430452;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0rY6iI5XOo0w4pAoyldjWxA/FfsNm/1D7YvJpyzA5g8=;
+        b=OfhNCgUfj0lAVwCsgaMYzO/Yg79g+YcKtZRbLrNThVRImVu7ncCIx08EF9T+0J0OEn
+         IgFOFV4XSoqzzwFNI4ouhlUteL5q+2z8x98F93sT1fA69yjC/8cUEgzdx43nMxdEaykw
+         /fVJ4EL30cJdyyYQG1X1ivdZgEmBi/YcdTJrJB+7hRIhTSz59ObDAbbzkLNiup48wraC
+         h2bdCIRuximFS9edBDd/zM7WHNLCqSNdj9isXPcItT9vLV6FCbWisP9NGHYTmR/SRB6w
+         x3j1sB0i8ANj8o+4OQ4yjp4fAwuwxe8GGxnULAVeLeSK8oINX0mQVG1GxQxFQUjHnUSL
+         CLpg==
+X-Forwarded-Encrypted: i=1; AJvYcCXhQ5nDcnfckwOnLuQmYAoO85a984NtS0Cjoetjnm8nu0SlMHA8eFOMc3S8JvVk4XX17VWYNA+WF6BuCLWzOg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwWlLAWwl3LB0BBaJVHkrFOKk+ddsPOdyHSBal2yZExppMICMEE
+	UWMJMvTty/GVDqbo0aQyFT1iNibWD4TX5tP0ECD8OvKfqWkMbdr8xTz5zpjM1BVBodCHlyyNOfY
+	XdR0xsQsPvLciiD1AvijaItXyXJggb0zfUocGvxySgCQb8aX0XgksvWo=
+X-Google-Smtp-Source: AGHT+IHIVy19yEIWwoYMuLlDCf8L7Q2KSp0lzhVNmXerZqlYXtAyV1TgD2ycJ5rFb3groK+1M5jeILQEtSU0nboSAja8yObmu0xL
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6e02:470d:b0:3d5:8908:92d0 with SMTP id
+ e9e14a558f8ab-3d815af8368mr32715445ab.3.1744825652659; Wed, 16 Apr 2025
+ 10:47:32 -0700 (PDT)
+Date: Wed, 16 Apr 2025 10:47:32 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67ffed34.050a0220.5cdb3.0007.GAE@google.com>
+Subject: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_alloc_sectors_start_trans
+ (2)
+From: syzbot <syzbot+2caec1f3fc52004d4f3c@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-People have been asking to see the plan for this, so -
+Hello,
 
-bcachefs has various background tasks that need to be scheduled to
-balance efficiency, predictability of performance, etc.
+syzbot found the following issue on:
 
-The design and philosophy hasn't changed too much since bcache, which
-was primarily designed for server usage, with sustained load in mind.
+HEAD commit:    1a1d569a75f3 Merge tag 'edac_urgent_for_v6.15_rc3' of git:..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=157c6470580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e30b69a28cc940e1
+dashboard link: https://syzkaller.appspot.com/bug?extid=2caec1f3fc52004d4f3c
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-These days we're seeing more desktop usage - where we really want to let
-the system idle effictively, to reduce total power usage - while also
-still balancing previous concerns, we still want to let work accumulate
-to a degree.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-This lays out all the requirements and starts to sketch out the
-algorithm I have in mind.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/e7fecf1a4718/disk-1a1d569a.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7823b994817c/vmlinux-1a1d569a.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/7ce169c73b39/bzImage-1a1d569a.xz
 
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2caec1f3fc52004d4f3c@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in __writepoint_find include/linux/rcupdate.h:-1 [inline]
+BUG: KMSAN: uninit-value in writepoint_find fs/bcachefs/alloc_foreground.c:1248 [inline]
+BUG: KMSAN: uninit-value in bch2_alloc_sectors_start_trans+0x44a/0x32d0 fs/bcachefs/alloc_foreground.c:1348
+ __writepoint_find include/linux/rcupdate.h:-1 [inline]
+ writepoint_find fs/bcachefs/alloc_foreground.c:1248 [inline]
+ bch2_alloc_sectors_start_trans+0x44a/0x32d0 fs/bcachefs/alloc_foreground.c:1348
+ __bch2_write+0x7bd/0x6a10 fs/bcachefs/io_write.c:1494
+ bch2_write+0xdfe/0x1b30 fs/bcachefs/io_write.c:1681
+ closure_queue include/linux/closure.h:270 [inline]
+ closure_call include/linux/closure.h:432 [inline]
+ bch2_writepage_do_io fs/bcachefs/fs-io-buffered.c:494 [inline]
+ bch2_writepages+0x24a/0x3c0 fs/bcachefs/fs-io-buffered.c:677
+ do_writepages+0x427/0xc30 mm/page-writeback.c:2656
+ __writeback_single_inode+0x103/0x1290 fs/fs-writeback.c:1680
+ writeback_sb_inodes+0xac4/0x1c90 fs/fs-writeback.c:1976
+ wb_writeback+0x4df/0xcb0 fs/fs-writeback.c:2156
+ wb_do_writeback fs/fs-writeback.c:2303 [inline]
+ wb_workfn+0x40b/0x1970 fs/fs-writeback.c:2343
+ process_one_work kernel/workqueue.c:3238 [inline]
+ process_scheduled_works+0xc1d/0x1e80 kernel/workqueue.c:3319
+ worker_thread+0xea3/0x1500 kernel/workqueue.c:3400
+ kthread+0x6ce/0xf10 kernel/kthread.c:464
+ ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:153
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+
+Uninit was stored to memory at:
+ bch2_writepage_io_alloc fs/bcachefs/fs-io-buffered.c:522 [inline]
+ __bch2_writepage+0x3754/0x3ab0 fs/bcachefs/fs-io-buffered.c:644
+ write_cache_pages+0xc9/0x280 mm/page-writeback.c:2613
+ bch2_writepages+0x11f/0x3c0 fs/bcachefs/fs-io-buffered.c:675
+ do_writepages+0x427/0xc30 mm/page-writeback.c:2656
+ __writeback_single_inode+0x103/0x1290 fs/fs-writeback.c:1680
+ writeback_sb_inodes+0xac4/0x1c90 fs/fs-writeback.c:1976
+ wb_writeback+0x4df/0xcb0 fs/fs-writeback.c:2156
+ wb_do_writeback fs/fs-writeback.c:2303 [inline]
+ wb_workfn+0x40b/0x1970 fs/fs-writeback.c:2343
+ process_one_work kernel/workqueue.c:3238 [inline]
+ process_scheduled_works+0xc1d/0x1e80 kernel/workqueue.c:3319
+ worker_thread+0xea3/0x1500 kernel/workqueue.c:3400
+ kthread+0x6ce/0xf10 kernel/kthread.c:464
+ ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:153
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+
+Uninit was created at:
+ slab_post_alloc_hook mm/slub.c:4157 [inline]
+ slab_alloc_node mm/slub.c:4200 [inline]
+ kmem_cache_alloc_lru_noprof+0x92d/0xe30 mm/slub.c:4219
+ __bch2_new_inode+0x98/0x450 fs/bcachefs/fs.c:438
+ __bch2_create+0x284/0x1700 fs/bcachefs/fs.c:541
+ bch2_mknod fs/bcachefs/fs.c:728 [inline]
+ bch2_create+0xc0/0x1d0 fs/bcachefs/fs.c:742
+ lookup_open fs/namei.c:3666 [inline]
+ open_last_lookups fs/namei.c:3765 [inline]
+ path_openat+0x2efe/0x6280 fs/namei.c:4001
+ do_filp_open+0x26b/0x610 fs/namei.c:4031
+ do_sys_openat2+0x1ca/0x300 fs/open.c:1429
+ do_sys_open fs/open.c:1444 [inline]
+ __do_sys_openat fs/open.c:1460 [inline]
+ __se_sys_openat fs/open.c:1455 [inline]
+ __x64_sys_openat+0x2a1/0x310 fs/open.c:1455
+ x64_sys_call+0x1fe/0x3c80 arch/x86/include/generated/asm/syscalls_64.h:258
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xcd/0x1e0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+CPU: 1 UID: 0 PID: 3648 Comm: kworker/u8:11 Not tainted 6.15.0-rc2-syzkaller-00042-g1a1d569a75f3 #0 PREEMPT(undef) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
+Workqueue: writeback wb_workfn (flush-bcachefs-66)
+=====================================================
+
+
 ---
- .../filesystems/bcachefs/future/idle_work.rst | 77 ++++++++++++++++++
- Documentation/filesystems/bcachefs/index.rst  | 31 -------
- fs/bcachefs/idle.h                            | 80 +++++++++++++++++++
- 3 files changed, 157 insertions(+), 31 deletions(-)
- create mode 100644 Documentation/filesystems/bcachefs/future/idle_work.rst
- delete mode 100644 Documentation/filesystems/bcachefs/index.rst
- create mode 100644 fs/bcachefs/idle.h
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/Documentation/filesystems/bcachefs/future/idle_work.rst b/Documentation/filesystems/bcachefs/future/idle_work.rst
-new file mode 100644
-index 000000000000..e2afe45e9dc7
---- /dev/null
-+++ b/Documentation/filesystems/bcachefs/future/idle_work.rst
-@@ -0,0 +1,77 @@
-+Idle/background work classes design doc:
-+
-+Right now, our behaviour at idle isn't ideal, it was designed for servers that
-+would be under sustained load, to keep pending work at a "medium" level, to
-+let work build up so we can process it in more efficient batches, while also
-+giving headroom for bursts in load.
-+
-+But for desktops or mobile - scenarios where work is less sustained and power
-+usage is more important - we want to operate differently, with a "rush to
-+idle" so the system can go to sleep. We don't want to be dribbling out
-+background work while the system should be idle.
-+
-+The complicating factor is that there are a number of background tasks, which
-+form a heirarchy (or a digraph, depending on how you divide it up) - one
-+background task may generate work for another.
-+
-+Thus proper idle detection needs to model this heirarchy.
-+
-+- Foreground writes
-+- Page cache writeback
-+- Copygc, rebalance
-+- Journal reclaim
-+
-+When we implement idle detection and rush to idle, we need to be careful not
-+to disturb too much the existing behaviour that works reasonably well when the
-+system is under sustained load (or perhaps improve it in the case of
-+rebalance, which currently does not actively attempt to let work batch up).
-+
-+SUSTAINED LOAD REGIME
-+---------------------
-+
-+When the system is under continuous load, we want these jobs to run
-+continuously - this is perhaps best modelled with a P/D controller, where
-+they'll be trying to keep a target value (i.e. fragmented disk space,
-+available journal space) roughly in the middle of some range.
-+
-+The goal under sustained load is to balance our ability to handle load spikes
-+without running out of x resource (free disk space, free space in the
-+journal), while also letting some work accumululate to be batched (or become
-+unnecessary).
-+
-+For example, we don't want to run copygc too aggressively, because then it
-+will be evacuating buckets that would have become empty (been overwritten or
-+deleted) anyways, and we don't want to wait until we're almost out of free
-+space because then the system will behave unpredicably - suddenly we're doing
-+a lot more work to service each write and the system becomes much slower.
-+
-+IDLE REGIME
-+-----------
-+
-+When the system becomes idle, we should start flushing our pending work
-+quicker so the system can go to sleep.
-+
-+Note that the definition of "idle" depends on where in the heirarchy a task
-+is - a task should start flushing work more quickly when the task above it has
-+stopped generating new work.
-+
-+e.g. rebalance should start flushing more quickly when page cache writeback is
-+idle, and journal reclaim should only start flushing more quickly when both
-+copygc and rebalance are idle.
-+
-+It's important to let work accumulate when more work is still incoming and we
-+still have room, because flushing is always more efficient if we let it batch
-+up. New writes may overwrite data before rebalance moves it, and tasks may be
-+generating more updates for the btree nodes that journal reclaim needs to flush.
-+
-+On idle, how much work we do at each interval should be proportional to the
-+length of time we have been idle for. If we're idle only for a short duration,
-+we shouldn't flush everything right away; the system might wake up and start
-+generating new work soon, and flushing immediately might end up doing a lot of
-+work that would have been unnecessary if we'd allowed things to batch more.
-+ 
-+To summarize, we will need:
-+- A list of classes for background tasks that generate work, which will
-+  include one "foreground" class.
-+- Tracking for each class - "Am I doing work, or have I gone to sleep?"
-+- And each class should check the class above it when deciding how much work to issue.
-diff --git a/Documentation/filesystems/bcachefs/index.rst b/Documentation/filesystems/bcachefs/index.rst
-deleted file mode 100644
-index 3864d0ae89c1..000000000000
---- a/Documentation/filesystems/bcachefs/index.rst
-+++ /dev/null
-@@ -1,31 +0,0 @@
--.. SPDX-License-Identifier: GPL-2.0
--
--======================
--bcachefs Documentation
--======================
--
--Subsystem-specific development process notes
----------------------------------------------
--
--Development notes specific to bcachefs. These are intended to supplement
--:doc:`general kernel development handbook </process/index>`.
--
--.. toctree::
--   :maxdepth: 1
--   :numbered:
--
--   CodingStyle
--   SubmittingPatches
--
--Filesystem implementation
---------------------------
--
--Documentation for filesystem features and their implementation details.
--At this moment, only a few of these are described here.
--
--.. toctree::
--   :maxdepth: 1
--   :numbered:
--
--   casefolding
--   errorcodes
-diff --git a/fs/bcachefs/idle.h b/fs/bcachefs/idle.h
-new file mode 100644
-index 000000000000..eea49d879e3a
---- /dev/null
-+++ b/fs/bcachefs/idle.h
-@@ -0,0 +1,80 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _BCACHEFS_IDLE_H
-+#define _BCACHEFS_IDLE_H
-+
-+/*
-+ * Idle/background work classes:
-+ *
-+ * We have a number of background tasks (copygc, rebalance, journal reclaim).
-+ *
-+ * SUSTAINED LOAD REGIME
-+ * ---------------------
-+ *
-+ * When the system is under continuous load, we want these jobs to run
-+ * continuously - this is perhaps best modelled with a P/D controller, where
-+ * they'll be trying to keep a target value (i.e. fragmented disk space,
-+ * available journal space) roughly in the middle of some range.
-+ *
-+ * The goal under sustained load is to balance our ability to handle load spikes
-+ * without running out of x resource (free disk space, free space in the
-+ * journal), while also letting some work accumululate to be batched (or become
-+ * unnecessary).
-+ *
-+ * For example, we don't want to run copygc too aggressively, because then it
-+ * will be evacuating buckets that would have become empty (been overwritten or
-+ * deleted) anyways, and we don't want to wait until we're almost out of free
-+ * space because then the system will behave unpredicably - suddenly we're doing
-+ * a lot more work to service each write and the system becomes much slower.
-+ *
-+ * IDLE REGIME
-+ * -----------
-+ *
-+ * Many systems are however not under sustained load - they're idle most of the
-+ * time, and the goal is to let them idle as much as possible because power
-+ * useage is a prime consideration. Thus, we need to detect when we've been
-+ * idle - and the longer we've been idle, the more pending work we should do;
-+ * the goal being to complete all of our pending work as quickly as possible so
-+ * that the system can go back to sleep.
-+ *
-+ * But this does not mean that we should do _all_ our pending work immediately
-+ * when the system is idle; remember that if we allow work to build up, much
-+ * work will not need to be done.
-+ *
-+ * Therefore when we're idle we want to wake up and do some amount of pending
-+ * work in batches; increasing both the amount of work we do and the duration of
-+ * our sleeps proportional to how long we've been idle for.
-+ *
-+ * CLASSES OF IDLE WORK
-+ * --------------------
-+ *
-+ * There are levels of foreground and background tasks; a foreground operation
-+ * (generated from outsisde the system, i.e. userspace) will generate work for
-+ * the data move class and the journal reclaim class, and the data move class
-+ * will generate more work for the journal reclaim class.
-+ *
-+ * This complicates idle detection, because a given class wants to know if
-+ * everything above it has finished or is no longer running, and will want to
-+ * behave differently for work above it coming from outside the system (which we
-+ * cannot schedule and can only guess at based on past behaviour), versus work
-+ * above it but from inside the system (which we can schedule).
-+ *
-+ * That is
-+ * - data moves want to wake up when foreground operations have been quiet for
-+ *   a little while
-+ * - journal reclaim wants to wake up when foreground operations have been quiet
-+ *   for a little while, and immediately after background data moves have
-+ *   finished and gone back to sleep
-+ */
-+
-+#define BCACHEFS_IDLE_CLASSES()		\
-+	x(foreground)			\
-+	x(data_move)			\
-+	x(journal_reclaim)
-+
-+enum bch_idle_class {
-+#define x(n)	BCH_IDLE_##n,
-+	BCACHEFS_IDLE_CLASSES()
-+#undef x
-+};
-+
-+#endif /* _BCACHEFS_IDLE_H */
--- 
-2.49.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
