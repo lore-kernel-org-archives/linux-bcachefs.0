@@ -1,36 +1,36 @@
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35AFB179A7
-	for <linux-bcachefs@vger.kernel.org>; Wed, 16 Apr 2025 13:36:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 870E0179A7
+	for <linux-bcachefs@vger.kernel.org>; Wed, 16 Apr 2025 13:37:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744810602; cv=none; b=ijrv3mQlvzl6wPkK0LFy9l5kz4PNIzFakOwwvphEN1nR/Jzc0TLkyuUbvy3Iu9l7c4au7F3jhoJOHmayzV2ln6EJ5Wh4fF7odhAxa0RbSoKWumi4YqFarifrUOH+1LTXjBSKoRtJ+2F6DDugRaiQiHnD4ZwnH9bTRt3MFiyfYyw=
+	t=1744810627; cv=none; b=CW2pQsHSoRuxpXDJ0Ud0OaUGsyAln66IUYWC11p3gz41VTgmbZskH6kqGDEbr3w45oaptlZ3fEss+3FnEPtJlnpswM5tsMWGRb+Go0H11ewDyYxwQvkwTUPkt11iKIpSBi8yLF1BVbVXP9oSVSR0ou6//IGFzX1EagIfLQYZxxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744810602; c=relaxed/simple;
-	bh=r61ie0NzkY2JLAeYqKSgg46Zr9E3KWBa5fQXwAdcaRs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rJ2TuRftA0OPpipLkXAZQQ1sp/c7GK0oNw9/fRjisBm7erv9TOfFVOWpbsfkEZuCUrlzcK3XiVrweL4TjlPfBur3U/y90kQcP4WaHOBQouflYGj3SNOVq8mDxAxJnDC+ljZvI5odqnjNAF7EuU5U9JrCDlROiYp1BuMENw9RjBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pwLcJu+K; arc=none smtp.client-ip=91.218.175.178
+	s=arc-20240116; t=1744810627; c=relaxed/simple;
+	bh=Sr+fRIRHa+ZHkubWGFIem0SLgA/8ujnZ43BR4+xzZrQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=E5HolhPm+sfB7TTl4xtCZKqyf/2t9YhdKH9cDheSDVzz/87167dHU0zava1SYv+hCAK5VCkF/qsQkn7CZjqbnl05LvzRrkb+4pAHmOG+I+iZFgOCSOmL2ORuDAsHAQU/90vT/eTz0FBeyX/I+ObFgmz+nf//FyRlVH+tuP8iwvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xM0YWBmb; arc=none smtp.client-ip=91.218.175.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pwLcJu+K"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xM0YWBmb"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1744810595;
+	t=1744810621;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding;
-	bh=WdVKK0o/W2z+hBCSP2vmAdao9O+sQiBoc8jtGTFbYdY=;
-	b=pwLcJu+KC15BhwtgVHDm8e2rXKTPh8+IrwVGWXigJ3kp3H4h5pn5BZoVAlIQvGl0Df4aPN
-	InZnfb/Z3kJ9hEMWKT1dwjJKAJBTanL99O6jdW4OGMfTV1OCbh7jZB8VGOkrWRTqZaWnKM
-	EYQVoQhH9YuggfKa6O4wd2H+hEo4Ni8=
+	bh=VvBetXKp+pHAFLGzLzW75HMlaZODYkjbda5Aom+e8ww=;
+	b=xM0YWBmbhtrTgLT8Fb+vucYxKrxFbpK7k8NpraVzz0T328u/SylFqwg4z5UlyEHRmSQOD7
+	bSgcGh7I9IqTGCBGa316duq4tpRlXL9VgQyZGwbwHYbAxUoCtePlWZHmvE6G+Yej73yMeI
+	3MAQ+4CH9uDeO19sF2ArhV714hH+OrA=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH] bcachefs: Single device mode
-Date: Wed, 16 Apr 2025 09:36:31 -0400
-Message-ID: <20250416133631.3653533-1-kent.overstreet@linux.dev>
+Subject: [PATCH 1/3] bcachefs: bch2_copygc_wakeup()
+Date: Wed, 16 Apr 2025 09:36:55 -0400
+Message-ID: <20250416133657.3653568-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -40,221 +40,111 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Single device filesystems are now identified by the block device name,
-not the UUID - and single device filesystems with the same UUID can be
-mounted simultaneously, without any special options.
-
-This allocates a new bit in the superblock, BCH_SB_MULTI_DEVICE, which
-indicates whether a filesystem has ever been multi device.
-
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/bcachefs.h        |  1 +
- fs/bcachefs/bcachefs_format.h |  2 +-
- fs/bcachefs/debug.c           |  6 +++++-
- fs/bcachefs/errcode.h         |  1 +
- fs/bcachefs/fs.c              |  7 ++++++-
- fs/bcachefs/opts.h            |  4 ++--
- fs/bcachefs/super-io.c        |  4 ++++
- fs/bcachefs/super.c           | 30 ++++++++++++++++++++++++------
- 8 files changed, 44 insertions(+), 11 deletions(-)
+ fs/bcachefs/movinggc.h  | 9 +++++++++
+ fs/bcachefs/rebalance.c | 4 ++--
+ fs/bcachefs/rebalance.h | 2 +-
+ fs/bcachefs/super.c     | 4 ++--
+ fs/bcachefs/sysfs.c     | 7 +++----
+ 5 files changed, 17 insertions(+), 9 deletions(-)
 
-diff --git a/fs/bcachefs/bcachefs.h b/fs/bcachefs/bcachefs.h
-index 8518dcd059a8..4e5cc127ea93 100644
---- a/fs/bcachefs/bcachefs.h
-+++ b/fs/bcachefs/bcachefs.h
-@@ -780,6 +780,7 @@ struct bch_fs {
+diff --git a/fs/bcachefs/movinggc.h b/fs/bcachefs/movinggc.h
+index ea181fef5bc9..d1885cf67a45 100644
+--- a/fs/bcachefs/movinggc.h
++++ b/fs/bcachefs/movinggc.h
+@@ -5,6 +5,15 @@
+ unsigned long bch2_copygc_wait_amount(struct bch_fs *);
+ void bch2_copygc_wait_to_text(struct printbuf *, struct bch_fs *);
  
- 		u8		nr_devices;
- 		u8		clean;
-+		bool		multi_device; /* true if we've ever had more than one device */
- 
- 		u8		encryption_type;
- 
-diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
-index 0f6e3a661e55..e6203665f230 100644
---- a/fs/bcachefs/bcachefs_format.h
-+++ b/fs/bcachefs/bcachefs_format.h
-@@ -842,7 +842,7 @@ LE64_BITMASK(BCH_SB_SHARD_INUMS,	struct bch_sb, flags[3], 28, 29);
- LE64_BITMASK(BCH_SB_INODES_USE_KEY_CACHE,struct bch_sb, flags[3], 29, 30);
- LE64_BITMASK(BCH_SB_JOURNAL_FLUSH_DELAY,struct bch_sb, flags[3], 30, 62);
- LE64_BITMASK(BCH_SB_JOURNAL_FLUSH_DISABLED,struct bch_sb, flags[3], 62, 63);
--/* one free bit */
-+LE64_BITMASK(BCH_SB_MULTI_DEVICE,	struct bch_sb,	flags[3], 63, 64);
- LE64_BITMASK(BCH_SB_JOURNAL_RECLAIM_DELAY,struct bch_sb, flags[4], 0, 32);
- LE64_BITMASK(BCH_SB_JOURNAL_TRANSACTION_NAMES,struct bch_sb, flags[4], 32, 33);
- LE64_BITMASK(BCH_SB_NOCOW,		struct bch_sb, flags[4], 33, 34);
-diff --git a/fs/bcachefs/debug.c b/fs/bcachefs/debug.c
-index f4b7877c0843..8ad710bb5a43 100644
---- a/fs/bcachefs/debug.c
-+++ b/fs/bcachefs/debug.c
-@@ -933,7 +933,11 @@ void bch2_fs_debug_init(struct bch_fs *c)
- 	if (IS_ERR_OR_NULL(bch_debug))
- 		return;
- 
--	snprintf(name, sizeof(name), "%pU", c->sb.user_uuid.b);
-+	if (c->sb.multi_device)
-+		snprintf(name, sizeof(name), "%pU", c->sb.user_uuid.b);
-+	else
-+		strscpy(name, c->name, sizeof(name));
++static inline void bch2_copygc_wakeup(struct bch_fs *c)
++{
++	rcu_read_lock();
++	struct task_struct *p = rcu_dereference(c->copygc_thread);
++	if (p)
++		wake_up_process(p);
++	rcu_read_unlock();
++}
 +
- 	c->fs_debug_dir = debugfs_create_dir(name, bch_debug);
- 	if (IS_ERR_OR_NULL(c->fs_debug_dir))
- 		return;
-diff --git a/fs/bcachefs/errcode.h b/fs/bcachefs/errcode.h
-index cf1083ce243e..4a040085454c 100644
---- a/fs/bcachefs/errcode.h
-+++ b/fs/bcachefs/errcode.h
-@@ -201,6 +201,7 @@
- 	x(EINVAL,			device_has_been_removed)		\
- 	x(EINVAL,			device_splitbrain)			\
- 	x(EINVAL,			device_already_online)			\
-+	x(EINVAL,			filesystem_uuid_already_open)		\
- 	x(EINVAL,			insufficient_devices_to_start)		\
- 	x(EINVAL,			invalid)				\
- 	x(EINVAL,			internal_fsck_err)			\
-diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-index 5a41b1a8e54f..5b2f87439b48 100644
---- a/fs/bcachefs/fs.c
-+++ b/fs/bcachefs/fs.c
-@@ -2220,7 +2220,12 @@ static int bch2_fs_get_tree(struct fs_context *fc)
- 	sb->s_time_min		= div_s64(S64_MIN, c->sb.time_units_per_sec) + 1;
- 	sb->s_time_max		= div_s64(S64_MAX, c->sb.time_units_per_sec);
- 	super_set_uuid(sb, c->sb.user_uuid.b, sizeof(c->sb.user_uuid));
--	super_set_sysfs_name_uuid(sb);
-+
-+	if (c->sb.multi_device)
-+		super_set_sysfs_name_uuid(sb);
-+	else
-+		strscpy(sb->s_sysfs_name, c->name, sizeof(sb->s_sysfs_name));
-+
- 	sb->s_shrink->seeks	= 0;
- 	c->vfs_sb		= sb;
- 	strscpy(sb->s_id, c->name, sizeof(sb->s_id));
-diff --git a/fs/bcachefs/opts.h b/fs/bcachefs/opts.h
-index bed0c8c7a853..4be0634eae80 100644
---- a/fs/bcachefs/opts.h
-+++ b/fs/bcachefs/opts.h
-@@ -513,7 +513,7 @@ enum fsck_err_opts {
- 	  BCH_MEMBER_DATA_ALLOWED,	BIT(BCH_DATA_journal)|BIT(BCH_DATA_btree)|BIT(BCH_DATA_user),\
- 	  "types",	"Allowed data types for this device: journal, btree, and/or user")\
- 	x(discard,			u8,				\
--	  OPT_MOUNT|OPT_DEVICE|OPT_RUNTIME,				\
-+	  OPT_MOUNT|OPT_FS|OPT_DEVICE|OPT_RUNTIME,			\
- 	  OPT_BOOL(),							\
- 	  BCH_MEMBER_DISCARD,		true,				\
- 	  NULL,		"Enable discard/TRIM support")			\
-@@ -521,7 +521,7 @@ enum fsck_err_opts {
- 	  OPT_FS|OPT_MOUNT|OPT_RUNTIME,					\
- 	  OPT_BOOL(),							\
- 	  BCH2_NO_SB_OPT,		true,				\
--	  NULL,		"BTREE_ITER_prefetch casuse btree nodes to be\n"\
-+	  NULL,		"BTREE_ITER_prefetch causes btree nodes to be\n"\
- 	  " prefetched sequentially")
+ void bch2_copygc_stop(struct bch_fs *);
+ int bch2_copygc_start(struct bch_fs *);
+ void bch2_fs_copygc_init(struct bch_fs *);
+diff --git a/fs/bcachefs/rebalance.c b/fs/bcachefs/rebalance.c
+index 63f013496687..d63de50f6323 100644
+--- a/fs/bcachefs/rebalance.c
++++ b/fs/bcachefs/rebalance.c
+@@ -268,7 +268,7 @@ int bch2_set_rebalance_needs_scan(struct bch_fs *c, u64 inum)
+ 	int ret = bch2_trans_commit_do(c, NULL, NULL,
+ 				       BCH_TRANS_COMMIT_no_enospc,
+ 			    bch2_set_rebalance_needs_scan_trans(trans, inum));
+-	rebalance_wakeup(c);
++	bch2_rebalance_wakeup(c);
+ 	return ret;
+ }
  
- struct bch_opts {
-diff --git a/fs/bcachefs/super-io.c b/fs/bcachefs/super-io.c
-index f5897f75489a..fa4d323ddada 100644
---- a/fs/bcachefs/super-io.c
-+++ b/fs/bcachefs/super-io.c
-@@ -468,6 +468,9 @@ int bch2_sb_validate(struct bch_sb *sb, u64 read_offset,
- 			SET_BCH_SB_VERSION_INCOMPAT_ALLOWED(sb, BCH_SB_VERSION_INCOMPAT(sb));
- 	}
+@@ -670,7 +670,7 @@ void bch2_rebalance_stop(struct bch_fs *c)
+ 	c->rebalance.thread = NULL;
  
-+	if (sb->nr_devices > 1)
-+		SET_BCH_SB_MULTI_DEVICE(sb, true);
-+
- 	if (!flags) {
- 		/*
- 		 * Been seeing a bug where these are getting inexplicably
-@@ -612,6 +615,7 @@ static void bch2_sb_update(struct bch_fs *c)
+ 	if (p) {
+-		/* for sychronizing with rebalance_wakeup() */
++		/* for sychronizing with bch2_rebalance_wakeup() */
+ 		synchronize_rcu();
  
- 	c->sb.features		= le64_to_cpu(src->features[0]);
- 	c->sb.compat		= le64_to_cpu(src->compat[0]);
-+	c->sb.multi_device	= BCH_SB_MULTI_DEVICE(src);
+ 		kthread_stop(p);
+diff --git a/fs/bcachefs/rebalance.h b/fs/bcachefs/rebalance.h
+index 62a3859d3823..e5e8eb4a2dd1 100644
+--- a/fs/bcachefs/rebalance.h
++++ b/fs/bcachefs/rebalance.h
+@@ -37,7 +37,7 @@ int bch2_set_rebalance_needs_scan_trans(struct btree_trans *, u64);
+ int bch2_set_rebalance_needs_scan(struct bch_fs *, u64 inum);
+ int bch2_set_fs_needs_rebalance(struct bch_fs *);
  
- 	memset(c->sb.errors_silent, 0, sizeof(c->sb.errors_silent));
+-static inline void rebalance_wakeup(struct bch_fs *c)
++static inline void bch2_rebalance_wakeup(struct bch_fs *c)
+ {
+ 	struct task_struct *p;
  
 diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
-index 0c3f5d84d7a1..222b31f23799 100644
+index 222b31f23799..72e001e4c151 100644
 --- a/fs/bcachefs/super.c
 +++ b/fs/bcachefs/super.c
-@@ -709,9 +709,10 @@ static int bch2_fs_online(struct bch_fs *c)
+@@ -1526,7 +1526,7 @@ static int bch2_dev_attach_bdev(struct bch_fs *c, struct bch_sb_handle *sb)
+ 	strscpy(ca->name, name.buf, sizeof(ca->name));
+ 	printbuf_exit(&name);
  
- 	lockdep_assert_held(&bch_fs_list_lock);
+-	rebalance_wakeup(c);
++	bch2_rebalance_wakeup(c);
+ 	return 0;
+ }
  
--	if (__bch2_uuid_to_fs(c->sb.uuid)) {
-+	if (c->sb.multi_device &&
-+	    __bch2_uuid_to_fs(c->sb.uuid)) {
- 		bch_err(c, "filesystem UUID already open");
--		return -EINVAL;
-+		return -BCH_ERR_filesystem_uuid_already_open;
- 	}
+@@ -1672,7 +1672,7 @@ int __bch2_dev_set_state(struct bch_fs *c, struct bch_dev *ca,
+ 	if (new_state == BCH_MEMBER_STATE_rw)
+ 		__bch2_dev_read_write(c, ca);
  
- 	ret = bch2_fs_chardev_init(c);
-@@ -722,7 +723,9 @@ static int bch2_fs_online(struct bch_fs *c)
+-	rebalance_wakeup(c);
++	bch2_rebalance_wakeup(c);
  
- 	bch2_fs_debug_init(c);
+ 	return ret;
+ }
+diff --git a/fs/bcachefs/sysfs.c b/fs/bcachefs/sysfs.c
+index e5f003c29369..82ee333ddd21 100644
+--- a/fs/bcachefs/sysfs.c
++++ b/fs/bcachefs/sysfs.c
+@@ -654,11 +654,10 @@ static ssize_t sysfs_opt_store(struct bch_fs *c,
+ 		bch2_set_rebalance_needs_scan(c, 0);
  
--	ret = kobject_add(&c->kobj, NULL, "%pU", c->sb.user_uuid.b) ?:
-+	ret = (c->sb.multi_device
-+	       ? kobject_add(&c->kobj, NULL, "%pU", c->sb.user_uuid.b)
-+	       : kobject_add(&c->kobj, NULL, "%s", c->name)) ?:
- 	    kobject_add(&c->internal, &c->kobj, "internal") ?:
- 	    kobject_add(&c->opts_dir, &c->kobj, "options") ?:
- #ifndef CONFIG_BCACHEFS_NO_LATENCY_ACCT
-@@ -931,7 +934,7 @@ static struct bch_fs *bch2_fs_alloc(struct bch_sb *sb, struct bch_opts opts,
- 		goto err;
- 	}
+ 	if (v && id == Opt_rebalance_enabled)
+-		rebalance_wakeup(c);
++		bch2_rebalance_wakeup(c);
  
--	if (sbs->nr != 1)
-+	if (c->sb.multi_device)
- 		pr_uuid(&name, c->sb.user_uuid.b);
- 	else
- 		prt_bdevname(&name, sbs->data[0].bdev);
-@@ -1798,11 +1801,11 @@ int bch2_dev_remove(struct bch_fs *c, struct bch_dev *ca, int flags)
- int bch2_dev_add(struct bch_fs *c, const char *path)
- {
- 	struct bch_opts opts = bch2_opts_empty();
--	struct bch_sb_handle sb;
-+	struct bch_sb_handle sb = {};
- 	struct bch_dev *ca = NULL;
- 	struct printbuf errbuf = PRINTBUF;
- 	struct printbuf label = PRINTBUF;
--	int ret;
-+	int ret = 0;
+-	if (v && id == Opt_copygc_enabled &&
+-	    c->copygc_thread)
+-		wake_up_process(c->copygc_thread);
++	if (v && id == Opt_copygc_enabled)
++		bch2_copygc_wakeup(c);
  
- 	ret = bch2_read_super(path, &opts, &sb);
- 	bch_err_msg(c, ret, "reading super");
-@@ -1819,6 +1822,20 @@ int bch2_dev_add(struct bch_fs *c, const char *path)
- 		}
- 	}
- 
-+	if (list_empty(&c->list)) {
-+		mutex_lock(&bch_fs_list_lock);
-+		if (__bch2_uuid_to_fs(c->sb.uuid))
-+			ret = -BCH_ERR_filesystem_uuid_already_open;
-+		else
-+			list_add(&c->list, &bch_fs_list);
-+		mutex_unlock(&bch_fs_list_lock);
-+
-+		if (ret) {
-+			bch_err(c, "filesystem UUID already open");
-+			goto err;
-+		}
-+	}
-+
- 	ret = bch2_dev_may_add(sb.sb, c);
- 	if (ret)
- 		goto err;
-@@ -1835,6 +1852,7 @@ int bch2_dev_add(struct bch_fs *c, const char *path)
- 
- 	down_write(&c->state_lock);
- 	mutex_lock(&c->sb_lock);
-+	SET_BCH_SB_MULTI_DEVICE(c->disk_sb.sb, true);
- 
- 	ret = bch2_sb_from_fs(c, ca);
- 	bch_err_msg(c, ret, "setting up new superblock");
+ 	if (id == Opt_discard && !ca) {
+ 		mutex_lock(&c->sb_lock);
 -- 
 2.49.0
 
