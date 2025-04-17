@@ -1,41 +1,37 @@
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F6BE14B092
-	for <linux-bcachefs@vger.kernel.org>; Thu, 17 Apr 2025 19:07:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AF211D6AA
+	for <linux-bcachefs@vger.kernel.org>; Thu, 17 Apr 2025 20:20:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744916853; cv=none; b=gDzm+Kw2zprokaHP+XjbQ4yBQ0zRlQVpQAKtLJRA7PBvUFPKnbXfO/b2OXfbJKPpdQx6ncZUrKIkvlC2ok8YalE32tyZZlH1M5MBVD+GrHPN1WhyG07SgXyyqbC/Ws7nbTQ66xiulxeBJpD2OsOb6iwyba/eKaOh39hiYfrQ8kE=
+	t=1744921257; cv=none; b=GsjxXAapA1pMTmJvkwvGzAK9BCsGwl/JQ0Xse6FBAG2B2YC30GkauoArsWLIY+TGb3CAildwdT3koubdQguYajluUCMzmd1BbFCiy1We6amqriZHhtz5ciKkd7Ni4Ew3dXo+X4oGx9t+/Jr5iBrjeMbrru5O/XI3qseqZ5cXBbw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744916853; c=relaxed/simple;
-	bh=l89CVAgrf6NbjXmZn493UzIPoQWHNO4/bSGwMhKuVLE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tVcR2vdSKvKP/taadwI7vk+wuMtlYIJynR042a7hbRKQvE+LispixGx7U8jo8eLNlz1xxhiGwr4pUzzpbacP0O3t6sAtxn+2SuU3l4BZiZTJ4+v6xxK/37d4KMb1xwql0g1jaMBfg2QFnWBEmsjJc+RbX56/ZuyBPlAgOHUMbYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=K/+Fjgqw; arc=none smtp.client-ip=95.215.58.181
+	s=arc-20240116; t=1744921257; c=relaxed/simple;
+	bh=NOzKJ16Dq4ZzWO2366ebpR8ZvmkGK2bW/QsNdyRzKsU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=seKPji39UwOY1lIR8E1alkU1hYO6XYpfywgi1E2T7Ieg7GNM3Zw/SF0qFk4ruRTy4Um2z3QCNWgNND22pd3aqnW2jc0uSs86y5pLanpQeFa4lZnGMSPa/Do1vb4fn4NvmyoFZEj3BE0vvZouFNwi+PnmlyDIK+q+S1CGEFc5Vmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oMHKWQTf; arc=none smtp.client-ip=91.218.175.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="K/+Fjgqw"
-Date: Thu, 17 Apr 2025 15:07:14 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oMHKWQTf"
+Date: Thu, 17 Apr 2025 16:20:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1744916839;
+	t=1744921252;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8GprfIetrM71UV4LpfxlA9bNdKUkj0bUgUS9fchsWN8=;
-	b=K/+FjgqwT7RApRch1+XZLA1LElSsAzzbevpFTvvz9dnhgU45n3x98DigF6Uk8GcdbJzlAm
-	63ocMb/YbwSVXQWeHhslSVi9qNhc9nGsCcIn7unIUvNnPfGOc8kOFb9VLP681o9RAL3v8a
-	5m2qWH89HSGu4/DswQiGjTqH2MUucLY=
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=XVJNXXLirTbmQpT/jz5nyyTQmlMlCWPiIqciJgdTOKU=;
+	b=oMHKWQTfnLaHgzDK24CGujoLoSBSHtlbkIHeWjVx/OC0ptx+EkOKdhaOmmhLQS6aojS5Jl
+	kxz/+2KRfKMkHBkozgJNhF6r4xaxweF9XJquJkCsq8CXoZvX2VDF6kXEgZbtJR22GevKFA
+	qReimPq2HpCjq0tcpXQmGIjDGEfiAF0=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: syzbot <syzbot+7b8a2c442d5a4859b680@syzkaller.appspotmail.com>
-Cc: brauner@kernel.org, jack@suse.cz, linux-bcachefs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, mmpgouride@gmail.com, 
-	syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Subject: Re: [syzbot] [bcachefs?] kernel BUG in bch2_btree_node_iter_init
-Message-ID: <5ak2ca4mmahamjzapplnuwffuxp256dlfamn237vu5qrjq3uyf@qe62gpj5ffvb>
-References: <679ff200.050a0220.163cdc.0032.GAE@google.com>
- <680150de.050a0220.297747.0000.GAE@google.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vge.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] bcachefs fixes for 6.15-rc3
+Message-ID: <jnnywf5k3qydxwrh6ur6ap6wjr7fpb32af3frnqsfvntwrvuba@wpr4uofgwpu5>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -44,25 +40,59 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <680150de.050a0220.297747.0000.GAE@google.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Thu, Apr 17, 2025 at 12:05:02PM -0700, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 3a04334d6282d08fbdd6201e374db17d31927ba3
-> Author: Alan Huang <mmpgouride@gmail.com>
-> Date:   Fri Mar 7 16:58:27 2025 +0000
-> 
->     bcachefs: Fix b->written overflow
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=125aba3f980000
-> start commit:   6537cfb395f3 Merge tag 'sound-6.14-rc4' of git://git.kerne..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=6cc40dfe827ffb85
-> dashboard link: https://syzkaller.appspot.com/bug?extid=7b8a2c442d5a4859b680
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1055c7f8580000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
- 
-#syz fix: bcachefs: Fix b->written overflow
+6.15 is looking good here.
+
+The following changes since commit 55fd97fbc4744a43fb2d134908e481266cf33bda:
+
+  bcachefs: Use sort_nonatomic() instead of sort() (2025-04-06 19:33:53 -0400)
+
+are available in the Git repository at:
+
+  git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-04-17
+
+for you to fetch changes up to 261592ba06aa44001ab95fd47bafa4225bab25cf:
+
+  bcachefs: Fix snapshotting a subvolume, then renaming it (2025-04-17 14:17:16 -0400)
+
+----------------------------------------------------------------
+bcachefs fixes for 6.15-rc3
+
+Usual set of small fixes/logging improvements.
+
+One bigger user reported fix, for inode <-> dirent inconsistencies
+reported in fsck, after moving a subvolume that had been snapshotted.
+
+----------------------------------------------------------------
+Alan Huang (1):
+      bcachefs: Add missing error handling
+
+Gabriel Shahrouzi (1):
+      bcachefs: Prevent granting write refs when filesystem is read-only
+
+Kent Overstreet (9):
+      bcachefs: Don't print data read retry success on non-errors
+      bcachefs: fix bch2_dev_usage_full_read_fast()
+      bcachefs: btree_root_unreadable_and_scan_found_nothing now AUTOFIX
+      bcachefs: Silence extent_poisoned error messages
+      bcachefs: Print version_incompat_allowed on startup
+      bcachefs: Log message when incompat version requested but not enabled
+      bcachefs: snapshot_node_missing is now autofix
+      bcachefs: Add missing READ_ONCE() for metadata replicas
+      bcachefs: Fix snapshotting a subvolume, then renaming it
+
+ fs/bcachefs/bcachefs.h              |  2 ++
+ fs/bcachefs/btree_update_interior.c |  2 +-
+ fs/bcachefs/buckets.c               |  3 ++-
+ fs/bcachefs/buckets.h               |  5 -----
+ fs/bcachefs/errcode.h               |  2 +-
+ fs/bcachefs/extents.c               |  2 +-
+ fs/bcachefs/fs-ioctl.c              |  2 +-
+ fs/bcachefs/fsck.c                  | 44 ++++++++++++++++++++++++++++++++++++-
+ fs/bcachefs/io_read.c               | 24 ++++++++++++--------
+ fs/bcachefs/recovery.c              |  5 ++++-
+ fs/bcachefs/sb-errors_format.h      |  4 ++--
+ fs/bcachefs/super-io.c              | 20 +++++++++++++++--
+ fs/bcachefs/super.c                 |  9 +++++++-
+ 13 files changed, 98 insertions(+), 26 deletions(-)
