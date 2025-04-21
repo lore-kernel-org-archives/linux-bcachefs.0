@@ -1,40 +1,40 @@
 Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FCEC1E521E
-	for <linux-bcachefs@vger.kernel.org>; Mon, 21 Apr 2025 17:26:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E21C51E5B7E
+	for <linux-bcachefs@vger.kernel.org>; Mon, 21 Apr 2025 17:26:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745256377; cv=none; b=TcE4VV5aOh61+4eqmvgdPkTN1thUoUHJ+t6I8hxNpKEyYo15sIxJRvOOjfWrLSLqRI8/YRizwjCUfmZaTJq1YpdFfF7dzswyQ5BH3oJ6wZ3t8BNqpg2/bfv7W6kG1oMjmQrw/Byl1YGUtzq6EUp/3UR9+Nb2ymLKFGe05mn2PuA=
+	t=1745256379; cv=none; b=bybjwmpwxvVG/AdzlURfE1ibFdYb8gNkh1aKWdrbK5Jb0zNawByOUqxrZz9pLImHHJegZ6jroJMySs2oUBbR/Wm77JbKU6TtskQgIB8tAt54HxUzO2qtpQX8BNZSbYfRC/1aHACu6A4Ew+UBPN+qwi4jdMtkBtznfNeVOKSIH1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745256377; c=relaxed/simple;
-	bh=oVjVfL/XYQVPuOh5ZzLym+hSBZrkYlvdSbR7adYK1js=;
+	s=arc-20240116; t=1745256379; c=relaxed/simple;
+	bh=CrT5/NUZVrkSDW8mFK9kS/KVLdoTyITKWtqyutWB5ko=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dhRNwf5ShiK4o/raSsZFDrRkIMIfoZIimOutGYCd8SsmodncCXdRYtdjectRPskIGWizmVS4WHdaPkpWTh9k9G6zx20nY4FRVIo/7peEhlZsWKOQfUfv+5DeKHho/8ZGEvLqnbF+IJVJhQVlvUZWxIeMYilhtjv5nwtQ/aMYf5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wD6QM6v7; arc=none smtp.client-ip=91.218.175.180
+	 MIME-Version; b=FXBBWozNDJBap2C2yNBGWxC5I1VZjDgq1ZhLvTBaiVb7Xa6+AISAlHdnCwlr/1agH9RcQVno5dctAew5pfJ1xNswc/LApIMueUgBmaWxwMwJu6PevWd6C8UivhwW7JR7eBz+enbTBmWwSF8g9LeXwqH6uEFaPBGocqeEOBiqkuA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XFtAfaYV; arc=none smtp.client-ip=91.218.175.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wD6QM6v7"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XFtAfaYV"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745256373;
+	t=1745256374;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=paZOuvNCxBDv7oU35+7z0bqdgsQXsMgQRvQUhBeB8LE=;
-	b=wD6QM6v7WlsEFplTMU1Vnu5QrpbzK1aOOW5dwXps6jKizVHKLtn1IlZQ6uQjbC7NJBWJhG
-	yh5mZDyZubaf6F5A0z36jAaPpiMGOXQxLYwXO6pG7W2GxccKy/f9zeDTr0aoepcO6YUdCs
-	yGIoOLPlxqGRIDyFnJ5ljE/32bTRyx8=
+	bh=mbp5PLryAkwRfcRSXgpvdLZhOMfxBRNMEoTWjrj4MX0=;
+	b=XFtAfaYVFwVBeEw3Zv4oBNl78H2TjISsVgTETA3dHHCP0a3xti5QTKa7TYg6SP/7EiIlS6
+	I7P8gdOF21crzHj96P+UqNXlcuJecLr3M+JdLxF/PTwmcrmaqildsmD9gG/uzGK/h8muGN
+	Wvkwo/laVEAB83LFXUxJVU1r3oKmkio=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 2/5] bcachefs: bch2_read_bio_to_text
-Date: Mon, 21 Apr 2025 13:26:02 -0400
-Message-ID: <20250421172607.1781982-3-kent.overstreet@linux.dev>
+Subject: [PATCH 3/5] bcachefs: fast_list
+Date: Mon, 21 Apr 2025 13:26:03 -0400
+Message-ID: <20250421172607.1781982-4-kent.overstreet@linux.dev>
 In-Reply-To: <20250421172607.1781982-1-kent.overstreet@linux.dev>
 References: <20250421172607.1781982-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -46,110 +46,228 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Pretty printer for struct bch_read_bio.
+A fast "list" data structure, which is actually a radix tree, with an
+IDA for slot allocation and a percpu buffer on top of that.
+
+Items cannot be added or moved to the head or tail, only added at some
+(arbitrary) position and removed. The advantage is that adding, removing
+and iteration is generally lockless, only hitting the lock in ida when
+the percpu buffer is full or empty.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/data_update.c | 18 +++++++++++++++---
- fs/bcachefs/io_read.c     | 35 +++++++++++++++++++++++++++++++++++
- fs/bcachefs/io_read.h     |  2 ++
- 3 files changed, 52 insertions(+), 3 deletions(-)
+ fs/bcachefs/Makefile    |   1 +
+ fs/bcachefs/fast_list.c | 140 ++++++++++++++++++++++++++++++++++++++++
+ fs/bcachefs/fast_list.h |  41 ++++++++++++
+ 3 files changed, 182 insertions(+)
+ create mode 100644 fs/bcachefs/fast_list.c
+ create mode 100644 fs/bcachefs/fast_list.h
 
-diff --git a/fs/bcachefs/data_update.c b/fs/bcachefs/data_update.c
-index c3034338f9e4..9b44f11fb0d9 100644
---- a/fs/bcachefs/data_update.c
-+++ b/fs/bcachefs/data_update.c
-@@ -587,6 +587,10 @@ void bch2_data_update_opts_to_text(struct printbuf *out, struct bch_fs *c,
- 
- 	prt_str_indented(out, "extra replicas:\t");
- 	prt_u64(out, data_opts->extra_replicas);
-+	prt_newline(out);
+diff --git a/fs/bcachefs/Makefile b/fs/bcachefs/Makefile
+index d2b8aec6ed8c..3be39845e4f6 100644
+--- a/fs/bcachefs/Makefile
++++ b/fs/bcachefs/Makefile
+@@ -41,6 +41,7 @@ bcachefs-y		:=	\
+ 	extents.o		\
+ 	extent_update.o		\
+ 	eytzinger.o		\
++	fast_list.o		\
+ 	fs.o			\
+ 	fs-ioctl.o		\
+ 	fs-io.o			\
+diff --git a/fs/bcachefs/fast_list.c b/fs/bcachefs/fast_list.c
+new file mode 100644
+index 000000000000..2831cfeff6b6
+--- /dev/null
++++ b/fs/bcachefs/fast_list.c
+@@ -0,0 +1,140 @@
++// SPDX-License-Identifier: GPL-2.0
 +
-+	prt_str_indented(out, "scrub:\t");
-+	prt_u64(out, data_opts->scrub);
- }
- 
- void bch2_data_update_to_text(struct printbuf *out, struct data_update *m)
-@@ -607,9 +611,17 @@ void bch2_data_update_inflight_to_text(struct printbuf *out, struct data_update
- 	prt_newline(out);
- 	printbuf_indent_add(out, 2);
- 	bch2_data_update_opts_to_text(out, m->op.c, &m->op.opts, &m->data_opts);
--	prt_printf(out, "read_done:\t%u\n", m->read_done);
--	bch2_write_op_to_text(out, &m->op);
--	printbuf_indent_sub(out, 2);
++/*
++ * Fast, unordered lists
++ *
++ * Supports add, remove, and iterate
++ *
++ * Underneath, they're a radix tree and an IDA, with a percpu buffer for slot
++ * allocation and freeing.
++ *
++ * This means that adding, removing, and iterating over items is lockless,
++ * except when refilling/emptying the percpu slot buffers.
++ */
 +
-+	if (!m->read_done) {
-+		prt_printf(out, "read:\n");
-+		printbuf_indent_add(out, 2);
-+		bch2_read_bio_to_text(out, &m->rbio);
-+	} else {
-+		prt_printf(out, "write:\n");
-+		printbuf_indent_add(out, 2);
-+		bch2_write_op_to_text(out, &m->op);
-+	}
-+	printbuf_indent_sub(out, 4);
- }
- 
- int bch2_extent_drop_ptrs(struct btree_trans *trans,
-diff --git a/fs/bcachefs/io_read.c b/fs/bcachefs/io_read.c
-index 92952799961c..acec8ddf7081 100644
---- a/fs/bcachefs/io_read.c
-+++ b/fs/bcachefs/io_read.c
-@@ -1482,6 +1482,41 @@ int __bch2_read(struct btree_trans *trans, struct bch_read_bio *rbio,
- 	return ret;
- }
- 
-+static const char * const bch2_read_bio_flags[] = {
-+#define x(n)	#n,
-+	BCH_READ_FLAGS()
-+#undef x
-+	NULL
++#include "fast_list.h"
++
++struct fast_list_pcpu {
++	size_t			nr;
++	size_t			entries[31];
 +};
 +
-+void bch2_read_bio_to_text(struct printbuf *out, struct bch_read_bio *rbio)
++/**
++ * fast_list_get_idx - get a slot in a fast_list
++ * @l:		list to get slot in
++ *
++ * This allocates a slot in the radix tree without storing to it, so that we can
++ * take the potential memory allocation failure early and do the list add later
++ * when we can't take an allocation failure.
++ *
++ * Returns: positive integer on success, -ENOMEM on failure
++ */
++int fast_list_get_idx(struct fast_list *l)
 +{
-+	u64 now = local_clock();
-+	prt_printf(out, "start_time:\t%llu\n", rbio->start_time ? now - rbio->start_time : 0);
-+	prt_printf(out, "submit_time:\t%llu\n", rbio->submit_time ? now - rbio->submit_time : 0);
++	int idx;
 +
-+	if (!rbio->split)
-+		prt_printf(out, "end_io:\t%ps\n", rbio->end_io);
-+	else
-+		prt_printf(out, "parent:\t%px\n", rbio->parent);
++	preempt_disable();
++	struct fast_list_pcpu *lp = this_cpu_ptr(l->buffer);
 +
-+	prt_printf(out, "bi_end_io:\t%ps\n", rbio->bio.bi_end_io);
++	if (unlikely(!lp->nr))
++		while (lp->nr <= ARRAY_SIZE(lp->entries) / 2) {
++			idx = ida_alloc_range(&l->slots_allocated, 1, ~0, GFP_NOWAIT|__GFP_NOWARN);
++			if (unlikely(idx < 0)) {
++				preempt_enable();
++				idx = ida_alloc_range(&l->slots_allocated, 1, ~0, GFP_KERNEL);
++				if (unlikely(idx < 0))
++					return idx;
 +
-+	prt_printf(out, "promote:\t%u\n",	rbio->promote);
-+	prt_printf(out, "bounce:\t%u\n",	rbio->bounce);
-+	prt_printf(out, "split:\t%u\n",		rbio->split);
-+	prt_printf(out, "have_ioref:\t%u\n",	rbio->have_ioref);
-+	prt_printf(out, "narrow_crcs:\t%u\n",	rbio->narrow_crcs);
-+	prt_printf(out, "context:\t%u\n",	rbio->context);
-+	prt_printf(out, "ret:\t%s\n",		bch2_err_str(rbio->ret));
++				preempt_disable();
++				lp = this_cpu_ptr(l->buffer);
++			}
 +
-+	prt_printf(out, "flags:\t");
-+	bch2_prt_bitflags(out, bch2_read_bio_flags, rbio->flags);
-+	prt_newline(out);
++			if (unlikely(!genradix_ptr_alloc_inlined(&l->items, idx,
++							GFP_NOWAIT|__GFP_NOWARN))) {
++				preempt_enable();
++				if (!genradix_ptr_alloc(&l->items, idx, GFP_KERNEL)) {
++					ida_free(&l->slots_allocated, idx);
++					return -ENOMEM;
++				}
 +
-+	bch2_bio_to_text(out, &rbio->bio);
++				preempt_disable();
++				lp = this_cpu_ptr(l->buffer);
++			}
++
++			if (unlikely(lp->nr == ARRAY_SIZE(lp->entries)))
++				ida_free(&l->slots_allocated, idx);
++			else
++				lp->entries[lp->nr++] = idx;
++		}
++
++	idx = lp->entries[--lp->nr];
++	preempt_enable();
++
++	return idx;
 +}
 +
- void bch2_fs_io_read_exit(struct bch_fs *c)
- {
- 	if (c->promote_table.tbl)
-diff --git a/fs/bcachefs/io_read.h b/fs/bcachefs/io_read.h
-index 1a85b092fd1d..13bb68eb91c4 100644
---- a/fs/bcachefs/io_read.h
-+++ b/fs/bcachefs/io_read.h
-@@ -193,6 +193,8 @@ static inline struct bch_read_bio *rbio_init(struct bio *bio,
- 	return rbio;
- }
- 
-+void bch2_read_bio_to_text(struct printbuf *, struct bch_read_bio *);
++/**
++ * fast_list_add - add an item to a fast_list
++ * @l:		list
++ * @item:	item to add
++ *
++ * Allocates a slot in the radix tree and stores to it and then returns the
++ * slot index, which must be passed to fast_list_remove().
++ *
++ * Returns: positive integer on success, -ENOMEM on failure
++ */
++int fast_list_add(struct fast_list *l, void *item)
++{
++	int idx = fast_list_get_idx(l);
++	if (idx < 0)
++		return idx;
 +
- void bch2_fs_io_read_exit(struct bch_fs *);
- int bch2_fs_io_read_init(struct bch_fs *);
- 
++	*genradix_ptr_inlined(&l->items, idx) = item;
++	return idx;
++}
++
++/**
++ * fast_list_remove - remove an item from a fast_list
++ * @l:		list
++ * @idx:	item's slot index
++ *
++ * Zeroes out the slot in the radix tree and frees the slot for future
++ * fast_list_add() operations.
++ */
++void fast_list_remove(struct fast_list *l, unsigned idx)
++{
++	if (!idx)
++		return;
++
++	*genradix_ptr_inlined(&l->items, idx) = NULL;
++
++	preempt_disable();
++	struct fast_list_pcpu *lp = this_cpu_ptr(l->buffer);
++
++	if (unlikely(lp->nr == ARRAY_SIZE(lp->entries)))
++		while (lp->nr >= ARRAY_SIZE(lp->entries) / 2) {
++			ida_free(&l->slots_allocated, idx);
++			idx = lp->entries[--lp->nr];
++		}
++
++	lp->entries[lp->nr++] = idx;
++	preempt_enable();
++}
++
++void fast_list_exit(struct fast_list *l)
++{
++	/* XXX: warn if list isn't empty */
++	free_percpu(l->buffer);
++	ida_destroy(&l->slots_allocated);
++	genradix_free(&l->items);
++}
++
++int fast_list_init(struct fast_list *l)
++{
++	genradix_init(&l->items);
++	ida_init(&l->slots_allocated);
++	l->buffer = alloc_percpu(*l->buffer);
++	if (!l->buffer)
++		return -ENOMEM;
++	return 0;
++}
+diff --git a/fs/bcachefs/fast_list.h b/fs/bcachefs/fast_list.h
+new file mode 100644
+index 000000000000..73c9bf591fd6
+--- /dev/null
++++ b/fs/bcachefs/fast_list.h
+@@ -0,0 +1,41 @@
++#ifndef _LINUX_FAST_LIST_H
++#define _LINUX_FAST_LIST_H
++
++#include <linux/generic-radix-tree.h>
++#include <linux/idr.h>
++#include <linux/percpu.h>
++
++struct fast_list_pcpu;
++
++struct fast_list {
++	GENRADIX(void *)	items;
++	struct ida		slots_allocated;;
++	struct fast_list_pcpu __percpu
++				*buffer;
++};
++
++static inline void *fast_list_iter_peek(struct genradix_iter *iter,
++					struct fast_list *list)
++{
++	void **p;
++	while ((p = genradix_iter_peek(iter, &list->items)) && !*p)
++		genradix_iter_advance(iter, &list->items);
++
++	return p ? *p : NULL;
++}
++
++#define fast_list_for_each_from(_list, _iter, _i, _start)		\
++	for (_iter = genradix_iter_init(&(_list)->items, _start);	\
++	     (_i = fast_list_iter_peek(&(_iter), _list)) != NULL;	\
++	     genradix_iter_advance(&(_iter), &(_list)->items))
++
++#define fast_list_for_each(_list, _iter, _i)				\
++	fast_list_for_each_from(_list, _iter, _i, 0)
++
++int fast_list_get_idx(struct fast_list *l);
++int fast_list_add(struct fast_list *l, void *item);
++void fast_list_remove(struct fast_list *l, unsigned idx);
++void fast_list_exit(struct fast_list *l);
++int fast_list_init(struct fast_list *l);
++
++#endif /* _LINUX_FAST_LIST_H */
 -- 
 2.49.0
 
