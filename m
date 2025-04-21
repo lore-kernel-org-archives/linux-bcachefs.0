@@ -1,413 +1,166 @@
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72A471E835B
-	for <linux-bcachefs@vger.kernel.org>; Mon, 21 Apr 2025 17:26:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92C1B645
+	for <linux-bcachefs@vger.kernel.org>; Mon, 21 Apr 2025 23:44:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745256381; cv=none; b=Lo/kq5coa9p48+HiOIBgj7cgFtjUFGbMFk0V/36l3viX9iusY1lpoOTS4klyX21ZqEwIFSLXd1b4dovztv6uuWmYsihhUlURne5atc80WsGHERv+c2nlje00B6KCI1o2R5wVGYeBUb1/vKs6TCSD9woMPlCFkiuUAFFiQECeeM8=
+	t=1745279066; cv=none; b=OsqaPnB1DlLWPYmDEAKGqSHgWebuaKRZYVah24vEO6Js8REp6ytLThth+h9n3BpzxqcIsMwTlbIaP9JSm6AbC0FCuwUF2eQ0GtjG+YL50CnTulhK1dTfeuyJVLsF8wMrGa8/nBI2m6AQdZZO6fNfzPR9LcUc3to/IhBFrMQb6LA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745256381; c=relaxed/simple;
-	bh=0TtVprlHWGoalqy9t1tTXlsaPQheTRAc/MCHIKq6hq0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nbbtWli1qJsj9O4KZhUdHh3wVxtBxGNdiQBVev2JXhndBmqJqZEVdUcsvEqFbbSAD32H6GIf3mXlK+OawMmMfwsy3n8Mp+MW2jdsAHVX3fluEIkJaF4DJKNlPzqPU5hc2slWMmw/B6RpbEIU/8p/CrOM3a6V90aJnB+geeSnRLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nOA2RAWT; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nOA2RAWT"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745256376;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zVrl8pmMF1fR2zNf2WELl+8xyd1WOQmW3gOiuDtvlIY=;
-	b=nOA2RAWTiApFoel7zlY6sVfrtWi/A6I/glynTWMJzFAEKjo5Fwib0aVlVF2sTYqC6Nu0TR
-	mGhrXQe6Lug/4GurpZrSuq9EZnML31GvtwBhCExn/b08wWKyt+1mb6c+kJLLFIK3OybxE0
-	kMh2Qyx5q1+5I28cYzplmkZ3cTJ9OMA=
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 5/5] bcachefs: Make various async objs visible in debugfs
-Date: Mon, 21 Apr 2025 13:26:05 -0400
-Message-ID: <20250421172607.1781982-6-kent.overstreet@linux.dev>
-In-Reply-To: <20250421172607.1781982-1-kent.overstreet@linux.dev>
-References: <20250421172607.1781982-1-kent.overstreet@linux.dev>
+	s=arc-20240116; t=1745279066; c=relaxed/simple;
+	bh=P2wvXGX9RyxQutEvJeFwCF40d4EG5/gN3MFMUyo9dB4=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=bHxg4/ICPmjZ6tJLhtPslV88rpT8gvpYgX/rQJgCwOCEJdXFiKTbf8iLYuHb1mlcUvYFNIuwvXsk8Cc+9vNeppvBhJqRRK2gfDEXd+mSg00uPOD5He9J8/zHx+eqWOCF1a7Bbo+Kg7SW1+hMnEwOSNXNoi5QmbL6jc458CYyqq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-3d8dd0c9143so64410425ab.1
+        for <linux-bcachefs@vger.kernel.org>; Mon, 21 Apr 2025 16:44:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745279063; x=1745883863;
+        h=content-transfer-encoding:to:from:subject:message-id:in-reply-to
+         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bMntUzmFGHwHoKwsYH6vbLJWkFQPvQdgV4H9UXVOs6I=;
+        b=ORb67Q+PnjFRN+5uo33kHrfaaHr+uVslW9hl/zNlGm+KqK8sBCGAWpaSYWcDV62gcr
+         zDqMgvhAXbvdis0LiCEe7nOnfezU6937WA0HN9g9vU+K8qVDJ/qK7n/INtR2mzqsr/Bd
+         W8GqWnMAcXi3W/d5WApeRql3cZNQpHx+rlpUMKzfWLhrt4+BnLPXeXmnJ5SOvKe2kZZ1
+         w9a6RXw8hz5fVu0uNIseZlVVhGjVcd3oj2oVb6ZjMgN5BKQoMPT3/AR7xyfWpxolDrzF
+         U87jJC8ktcgtu92kM5qcbJEJobO96OlYOc/up6acW02+We62Ztr8/L9oQW51SPzUp3mf
+         ls/w==
+X-Forwarded-Encrypted: i=1; AJvYcCWwzAbGrxwTN0Xac5AlPLLjdXbtnl3Dv+DWRoWkzH5kzmOfuIDFow5XMQ89fSnxcazC6oYrdPuNu1mItzqFQw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxhuqkTw/vmiJCCjUi9roqvftkLbJVOWAJGXQb/dFhNmfGAQvt8
+	pzew5u7//X4s+3aKjp8E8Pbf+Qq29qOoQ/xy/fCDnv3WmHQhGMFt1c4jkZsAy+FcEFbCKMzD41L
+	v9hWLIBNAB4zd1+IqtCdETgGAbqNEMGZhL1khAG76ApBl9SpRxKxf54M=
+X-Google-Smtp-Source: AGHT+IH8cQG1EQ7OUlzuetCNZbpyTuGsGoCr+c/nny9NxYKIPrZNTZfMFNMyXuEGl4GQGJsE0y7pvMrV7UjjKiyGgkScu+4J0z/I
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6e02:b25:b0:3d4:6ff4:2608 with SMTP id
+ e9e14a558f8ab-3d88eda852bmr132763075ab.12.1745279063755; Mon, 21 Apr 2025
+ 16:44:23 -0700 (PDT)
+Date: Mon, 21 Apr 2025 16:44:23 -0700
+In-Reply-To: <67f76c11.050a0220.258fea.0029.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6806d857.050a0220.f25bb.07a8.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] kernel BUG in __bch2_str_hash_check_key
+From: syzbot <syzbot+843981bb836d699c07d1@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add async objs list for
-- promote_op
-- bch_read_bio
-- btree_read_bio
-- btree_write_bio
+syzbot has found a reproducer for the following issue on:
 
-This gets us introspection on in-flight async ops, and because under the
-hood it uses fast_lists (percpu slot buffer on top of a radix tree),
-it'll be fast enough to enable in production.
+HEAD commit:    9d7a0577c9db gcc-15: disable '-Wunterminated-string-initia.=
+.
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=3D15456c70580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3D45c3bf6fd4cb6a1=
+0
+dashboard link: https://syzkaller.appspot.com/bug?extid=3D843981bb836d699c0=
+7d1
+compiler:       Debian clang version 15.0.6, Debian LLD 15.0.6
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D100ca63f98000=
+0
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D138f0ccc580000
 
-This will be very helpful for debugging "something got stuck" issues,
-which have been cropping up from time to time (in the CI, especially
-with folio writeback).
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7fe=
+b34a89c2a/non_bootable_disk-9d7a0577.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/2451ac2169e6/vmlinux-=
+9d7a0577.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/14cc88d90db9/bzI=
+mage-9d7a0577.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/403f0024ed04=
+/mount_0.gz
 
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+IMPORTANT: if you fix the issue, please add the following tag to the commit=
+:
+Reported-by: syzbot+843981bb836d699c07d1@syzkaller.appspotmail.com
+
+bcachefs (loop0): hash table key at wrong offset: btree dirents inode 4096 =
+offset 6229884513039707068, hashed to 2263426191451115502
+  u64s 7 type dirent 4096:6229884513039707068:U32_MAX len 0 ver 0: =EF=BF=
+=BD=EF=BF=BDle2 -> 2165878814 -> 1056964609 type subvol, fixing
+------------[ cut here ]------------
+kernel BUG at fs/bcachefs/fsck.c:979!
+Oops: invalid opcode: 0000 [#1] SMP KASAN NOPTI
+CPU: 0 UID: 0 PID: 5314 Comm: syz-executor312 Not tainted 6.15.0-rc3-syzkal=
+ler-00001-g9d7a0577c9db #0 PREEMPT(full)=20
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16=
+.3-2~bpo12+1 04/01/2014
+RIP: 0010:bch2_fsck_update_backpointers+0x4ed/0x4f0 fs/bcachefs/fsck.c:979
+Code: e9 2b fc ff ff 89 d9 80 e1 07 38 c1 0f 8c 62 fc ff ff 48 89 df e8 63 =
+c6 b7 fd e9 55 fc ff ff e8 29 70 ba 07 e8 04 8d 4d fd 90 <0f> 0b 90 90 90 9=
+0 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e
+RSP: 0018:ffffc9000d426460 EFLAGS: 00010293
+RAX: ffffffff8475301c RBX: 0000000000000010 RCX: ffff88800081a440
+RDX: 0000000000000000 RSI: 0000000000000010 RDI: 0000000000000010
+RBP: ffffc9000d426600 R08: ffffffff84752c79 R09: 0000000000000000
+R10: ffffc9000d426530 R11: fffff52001a84caf R12: ffffc9000d427290
+R13: dffffc0000000000 R14: ffff888040e75f00 R15: ffff88803fdb0000
+FS:  000055557bb26380(0000) GS:ffff88808c59a000(0000) knlGS:000000000000000=
+0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055a385eda068 CR3: 0000000043706000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __bch2_str_hash_check_key+0x202c/0x3b50 fs/bcachefs/str_hash.c:257
+ bch2_str_hash_check_key fs/bcachefs/str_hash.h:415 [inline]
+ check_dirent fs/bcachefs/fsck.c:2177 [inline]
+ bch2_check_dirents+0x2d45/0x3b90 fs/bcachefs/fsck.c:2272
+ bch2_run_recovery_pass+0xf0/0x1e0 fs/bcachefs/recovery_passes.c:226
+ bch2_run_recovery_passes+0x2ad/0xa90 fs/bcachefs/recovery_passes.c:285
+ bch2_fs_recovery+0x292a/0x3e20 fs/bcachefs/recovery.c:936
+ bch2_fs_start+0x310/0x620 fs/bcachefs/super.c:1065
+ bch2_fs_get_tree+0x113e/0x18f0 fs/bcachefs/fs.c:2253
+ vfs_get_tree+0x90/0x2b0 fs/super.c:1759
+ do_new_mount+0x2cf/0xb70 fs/namespace.c:3881
+ do_mount fs/namespace.c:4221 [inline]
+ __do_sys_mount fs/namespace.c:4432 [inline]
+ __se_sys_mount+0x38c/0x400 fs/namespace.c:4409
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xf3/0x210 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f05363dcf6a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 =
+00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff f=
+f 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe48350348 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffe48350360 RCX: 00007f05363dcf6a
+RDX: 000020000000f640 RSI: 0000200000000200 RDI: 00007ffe48350360
+RBP: 0000200000000200 R08: 00007ffe483503a0 R09: 000000000000f64b
+R10: 0000000002a18414 R11: 0000000000000282 R12: 000020000000f640
+R13: 00007ffe483503a0 R14: 0000000000000003 R15: 0000000002a18414
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:bch2_fsck_update_backpointers+0x4ed/0x4f0 fs/bcachefs/fsck.c:979
+Code: e9 2b fc ff ff 89 d9 80 e1 07 38 c1 0f 8c 62 fc ff ff 48 89 df e8 63 =
+c6 b7 fd e9 55 fc ff ff e8 29 70 ba 07 e8 04 8d 4d fd 90 <0f> 0b 90 90 90 9=
+0 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e
+RSP: 0018:ffffc9000d426460 EFLAGS: 00010293
+RAX: ffffffff8475301c RBX: 0000000000000010 RCX: ffff88800081a440
+RDX: 0000000000000000 RSI: 0000000000000010 RDI: 0000000000000010
+RBP: ffffc9000d426600 R08: ffffffff84752c79 R09: 0000000000000000
+R10: ffffc9000d426530 R11: fffff52001a84caf R12: ffffc9000d427290
+R13: dffffc0000000000 R14: ffff888040e75f00 R15: ffff88803fdb0000
+FS:  000055557bb26380(0000) GS:ffff88808c59a000(0000) knlGS:000000000000000=
+0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055a385eda068 CR3: 0000000043706000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
 ---
- fs/bcachefs/async_objs.c       | 23 ++++++++++++++++++-
- fs/bcachefs/async_objs_types.h |  6 ++++-
- fs/bcachefs/btree_io.c         | 12 ++++++++++
- fs/bcachefs/btree_io.h         |  8 +++++++
- fs/bcachefs/data_update.h      | 15 +++++++++++++
- fs/bcachefs/io_read.c          | 41 +++++++++++++++++++++++-----------
- fs/bcachefs/io_read.h          | 12 ++++++++++
- 7 files changed, 102 insertions(+), 15 deletions(-)
-
-diff --git a/fs/bcachefs/async_objs.c b/fs/bcachefs/async_objs.c
-index 8d78f390a759..57e2fe421461 100644
---- a/fs/bcachefs/async_objs.c
-+++ b/fs/bcachefs/async_objs.c
-@@ -12,6 +12,28 @@
- 
- #include <linux/debugfs.h>
- 
-+static void promote_obj_to_text(struct printbuf *out, void *obj)
-+{
-+	bch2_promote_op_to_text(out, obj);
-+}
-+
-+static void rbio_obj_to_text(struct printbuf *out, void *obj)
-+{
-+	bch2_read_bio_to_text(out, obj);
-+}
-+
-+static void btree_read_bio_obj_to_text(struct printbuf *out, void *obj)
-+{
-+	struct btree_read_bio *rbio = obj;
-+	bch2_btree_read_bio_to_text(out, rbio);
-+}
-+
-+static void btree_write_bio_obj_to_text(struct printbuf *out, void *obj)
-+{
-+	struct btree_write_bio *wbio = obj;
-+	bch2_bio_to_text(out, &wbio->wbio.bio);
-+}
-+
- static int bch2_async_obj_list_open(struct inode *inode, struct file *file)
- {
- 	struct async_obj_list *list = inode->i_private;
-@@ -65,7 +87,6 @@ static ssize_t bch2_async_obj_list_read(struct file *file, char __user *buf,
- 	return ret ?: i->ret;
- }
- 
--__maybe_unused
- static const struct file_operations async_obj_ops = {
- 	.owner		= THIS_MODULE,
- 	.open		= bch2_async_obj_list_open,
-diff --git a/fs/bcachefs/async_objs_types.h b/fs/bcachefs/async_objs_types.h
-index 28cb73e3f56d..310a4f90f49b 100644
---- a/fs/bcachefs/async_objs_types.h
-+++ b/fs/bcachefs/async_objs_types.h
-@@ -2,7 +2,11 @@
- #ifndef _BCACHEFS_ASYNC_OBJS_TYPES_H
- #define _BCACHEFS_ASYNC_OBJS_TYPES_H
- 
--#define BCH_ASYNC_OBJ_LISTS()
-+#define BCH_ASYNC_OBJ_LISTS()						\
-+	x(promote)							\
-+	x(rbio)								\
-+	x(btree_read_bio)						\
-+	x(btree_write_bio)
- 
- enum bch_async_obj_lists {
- #define x(n)		BCH_ASYNC_OBJ_LIST_##n,
-diff --git a/fs/bcachefs/btree_io.c b/fs/bcachefs/btree_io.c
-index ee923e73fc7b..5cd27a9c35e1 100644
---- a/fs/bcachefs/btree_io.c
-+++ b/fs/bcachefs/btree_io.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- 
- #include "bcachefs.h"
-+#include "async_objs.h"
- #include "bkey_buf.h"
- #include "bkey_methods.h"
- #include "bkey_sort.h"
-@@ -1375,6 +1376,7 @@ static void btree_node_read_work(struct work_struct *work)
- 		}
- 	}
- 
-+	async_object_list_del(c, btree_read_bio, rb->list_idx);
- 	bch2_time_stats_update(&c->times[BCH_TIME_btree_node_read],
- 			       rb->start_time);
- 	bio_put(&rb->bio);
-@@ -1414,6 +1416,11 @@ static void btree_node_read_endio(struct bio *bio)
- 	queue_work(c->btree_read_complete_wq, &rb->work);
- }
- 
-+void bch2_btree_read_bio_to_text(struct printbuf *out, struct btree_read_bio *rbio)
-+{
-+	bch2_bio_to_text(out, &rbio->bio);
-+}
-+
- struct btree_node_read_all {
- 	struct closure		cl;
- 	struct bch_fs		*c;
-@@ -1744,6 +1751,8 @@ void bch2_btree_node_read(struct btree_trans *trans, struct btree *b,
- 	bio->bi_end_io		= btree_node_read_endio;
- 	bch2_bio_map(bio, b->data, btree_buf_bytes(b));
- 
-+	async_object_list_add(c, btree_read_bio, rb, &rb->list_idx);
-+
- 	if (rb->have_ioref) {
- 		this_cpu_add(ca->io_done->sectors[READ][BCH_DATA_btree],
- 			     bio_sectors(bio));
-@@ -2115,6 +2124,7 @@ static void btree_node_write_work(struct work_struct *work)
- 			goto err;
- 	}
- out:
-+	async_object_list_del(c, btree_write_bio, wbio->list_idx);
- 	bio_put(&wbio->wbio.bio);
- 	btree_node_write_done(c, b, start_time);
- 	return;
-@@ -2466,6 +2476,8 @@ void __bch2_btree_node_write(struct bch_fs *c, struct btree *b, unsigned flags)
- 	atomic64_inc(&c->btree_write_stats[type].nr);
- 	atomic64_add(bytes_to_write, &c->btree_write_stats[type].bytes);
- 
-+	async_object_list_add(c, btree_write_bio, wbio, &wbio->list_idx);
-+
- 	INIT_WORK(&wbio->work, btree_write_submit);
- 	queue_work(c->btree_write_submit_wq, &wbio->work);
- 	return;
-diff --git a/fs/bcachefs/btree_io.h b/fs/bcachefs/btree_io.h
-index dbf76d22c660..afdb11a9f71c 100644
---- a/fs/bcachefs/btree_io.h
-+++ b/fs/bcachefs/btree_io.h
-@@ -41,6 +41,9 @@ struct btree_read_bio {
- 	u64			start_time;
- 	unsigned		have_ioref:1;
- 	unsigned		idx:7;
-+#ifdef CONFIG_BCACHEFS_ASYNC_OBJECT_LISTS
-+	unsigned		list_idx;
-+#endif
- 	struct extent_ptr_decoded	pick;
- 	struct work_struct	work;
- 	struct bio		bio;
-@@ -53,6 +56,9 @@ struct btree_write_bio {
- 	unsigned		data_bytes;
- 	unsigned		sector_offset;
- 	u64			start_time;
-+#ifdef CONFIG_BCACHEFS_ASYNC_OBJECT_LISTS
-+	unsigned		list_idx;
-+#endif
- 	struct bch_write_bio	wbio;
- };
- 
-@@ -133,6 +139,8 @@ void bch2_btree_node_read(struct btree_trans *, struct btree *, bool);
- int bch2_btree_root_read(struct bch_fs *, enum btree_id,
- 			 const struct bkey_i *, unsigned);
- 
-+void bch2_btree_read_bio_to_text(struct printbuf *, struct btree_read_bio *);
-+
- int bch2_btree_node_scrub(struct btree_trans *, enum btree_id, unsigned,
- 			  struct bkey_s_c, unsigned);
- 
-diff --git a/fs/bcachefs/data_update.h b/fs/bcachefs/data_update.h
-index ed05125867da..5e14d13568de 100644
---- a/fs/bcachefs/data_update.h
-+++ b/fs/bcachefs/data_update.h
-@@ -50,6 +50,21 @@ struct data_update {
- 	struct bio_vec		*bvecs;
- };
- 
-+struct promote_op {
-+	struct rcu_head		rcu;
-+	u64			start_time;
-+#ifdef CONFIG_BCACHEFS_ASYNC_OBJECT_LISTS
-+	unsigned		list_idx;
-+#endif
-+
-+	struct rhash_head	hash;
-+	struct bpos		pos;
-+
-+	struct work_struct	work;
-+	struct data_update	write;
-+	struct bio_vec		bi_inline_vecs[]; /* must be last */
-+};
-+
- void bch2_data_update_to_text(struct printbuf *, struct data_update *);
- void bch2_data_update_inflight_to_text(struct printbuf *, struct data_update *);
- 
-diff --git a/fs/bcachefs/io_read.c b/fs/bcachefs/io_read.c
-index acec8ddf7081..f23c3bfe9145 100644
---- a/fs/bcachefs/io_read.c
-+++ b/fs/bcachefs/io_read.c
-@@ -9,6 +9,7 @@
- #include "bcachefs.h"
- #include "alloc_background.h"
- #include "alloc_foreground.h"
-+#include "async_objs.h"
- #include "btree_update.h"
- #include "buckets.h"
- #include "checksum.h"
-@@ -82,18 +83,6 @@ static bool bch2_target_congested(struct bch_fs *c, u16 target)
- 
- /* Cache promotion on read */
- 
--struct promote_op {
--	struct rcu_head		rcu;
--	u64			start_time;
--
--	struct rhash_head	hash;
--	struct bpos		pos;
--
--	struct work_struct	work;
--	struct data_update	write;
--	struct bio_vec		bi_inline_vecs[]; /* must be last */
--};
--
- static const struct rhashtable_params bch_promote_params = {
- 	.head_offset		= offsetof(struct promote_op, hash),
- 	.key_offset		= offsetof(struct promote_op, pos),
-@@ -171,6 +160,8 @@ static noinline void promote_free(struct bch_read_bio *rbio)
- 					 bch_promote_params);
- 	BUG_ON(ret);
- 
-+	async_object_list_del(c, promote, op->list_idx);
-+
- 	bch2_data_update_exit(&op->write);
- 
- 	enumerated_ref_put(&c->writes, BCH_WRITE_REF_promote);
-@@ -256,6 +247,10 @@ static struct bch_read_bio *__promote_alloc(struct btree_trans *trans,
- 		goto err;
- 	}
- 
-+	ret = async_object_list_add(c, promote, op, &op->list_idx);
-+	if (ret < 0)
-+		goto err_remove_hash;
-+
- 	ret = bch2_data_update_init(trans, NULL, NULL, &op->write,
- 			writepoint_hashed((unsigned long) current),
- 			&orig->opts,
-@@ -267,7 +262,7 @@ static struct bch_read_bio *__promote_alloc(struct btree_trans *trans,
- 	 * -BCH_ERR_ENOSPC_disk_reservation:
- 	 */
- 	if (ret)
--		goto err_remove_hash;
-+		goto err_remove_list;
- 
- 	rbio_init_fragment(&op->write.rbio.bio, orig);
- 	op->write.rbio.bounce	= true;
-@@ -275,6 +270,8 @@ static struct bch_read_bio *__promote_alloc(struct btree_trans *trans,
- 	op->write.op.end_io = promote_done;
- 
- 	return &op->write.rbio;
-+err_remove_list:
-+	async_object_list_del(c, promote, op->list_idx);
- err_remove_hash:
- 	BUG_ON(rhashtable_remove_fast(&c->promote_table, &op->hash,
- 				      bch_promote_params));
-@@ -347,6 +344,18 @@ static struct bch_read_bio *promote_alloc(struct btree_trans *trans,
- 	return NULL;
- }
- 
-+void bch2_promote_op_to_text(struct printbuf *out, struct promote_op *op)
-+{
-+	if (!op->write.read_done) {
-+		prt_printf(out, "parent read: %px\n", op->write.rbio.parent);
-+		printbuf_indent_add(out, 2);
-+		bch2_read_bio_to_text(out, op->write.rbio.parent);
-+		printbuf_indent_sub(out, 2);
-+	}
-+
-+	bch2_data_update_to_text(out, &op->write);
-+}
-+
- /* Read */
- 
- static int bch2_read_err_msg_trans(struct btree_trans *trans, struct printbuf *out,
-@@ -415,6 +424,8 @@ static inline struct bch_read_bio *bch2_rbio_free(struct bch_read_bio *rbio)
- 			else
- 				promote_free(rbio);
- 		} else {
-+			async_object_list_del(rbio->c, rbio, rbio->list_idx);
-+
- 			if (rbio->bounce)
- 				bch2_bio_free_pages_pool(rbio->c, &rbio->bio);
- 
-@@ -1194,6 +1205,8 @@ int __bch2_read_extent(struct btree_trans *trans, struct bch_read_bio *orig,
- 
- 		bch2_bio_alloc_pages_pool(c, &rbio->bio, sectors << 9);
- 		rbio->bounce	= true;
-+
-+		async_object_list_add(c, rbio, rbio, &rbio->list_idx);
- 	} else if (flags & BCH_READ_must_clone) {
- 		/*
- 		 * Have to clone if there were any splits, due to error
-@@ -1207,6 +1220,8 @@ int __bch2_read_extent(struct btree_trans *trans, struct bch_read_bio *orig,
- 						 &c->bio_read_split),
- 				 orig);
- 		rbio->bio.bi_iter = iter;
-+
-+		async_object_list_add(c, rbio, rbio, &rbio->list_idx);
- 	} else {
- 		rbio = orig;
- 		rbio->bio.bi_iter = iter;
-diff --git a/fs/bcachefs/io_read.h b/fs/bcachefs/io_read.h
-index 13bb68eb91c4..c08b9c047b3e 100644
---- a/fs/bcachefs/io_read.h
-+++ b/fs/bcachefs/io_read.h
-@@ -4,6 +4,7 @@
- 
- #include "bkey_buf.h"
- #include "btree_iter.h"
-+#include "extents_types.h"
- #include "reflink.h"
- 
- struct bch_read_bio {
-@@ -48,6 +49,9 @@ struct bch_read_bio {
- 	u16			_state;
- 	};
- 	s16			ret;
-+#ifdef CONFIG_BCACHEFS_ASYNC_OBJECT_LISTS
-+	unsigned		list_idx;
-+#endif
- 
- 	struct extent_ptr_decoded pick;
- 
-@@ -173,6 +177,9 @@ static inline struct bch_read_bio *rbio_init_fragment(struct bio *bio,
- 	rbio->split		= true;
- 	rbio->parent		= orig;
- 	rbio->opts		= orig->opts;
-+#ifdef CONFIG_BCACHEFS_ASYNC_OBJECT_LISTS
-+	rbio->list_idx	= 0;
-+#endif
- 	return rbio;
- }
- 
-@@ -190,9 +197,14 @@ static inline struct bch_read_bio *rbio_init(struct bio *bio,
- 	rbio->ret		= 0;
- 	rbio->opts		= opts;
- 	rbio->bio.bi_end_io	= end_io;
-+#ifdef CONFIG_BCACHEFS_ASYNC_OBJECT_LISTS
-+	rbio->list_idx	= 0;
-+#endif
- 	return rbio;
- }
- 
-+struct promote_op;
-+void bch2_promote_op_to_text(struct printbuf *, struct promote_op *);
- void bch2_read_bio_to_text(struct printbuf *, struct bch_read_bio *);
- 
- void bch2_fs_io_read_exit(struct bch_fs *);
--- 
-2.49.0
-
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
