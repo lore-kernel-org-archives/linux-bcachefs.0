@@ -1,107 +1,77 @@
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CA1F4A07;
-	Wed, 23 Apr 2025 21:35:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0E441E1DE7
+	for <linux-bcachefs@vger.kernel.org>; Thu, 24 Apr 2025 06:27:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745444122; cv=none; b=WagLZxc3m/o9lKzMwOzKj+8SojJtqUWkj815YlHmdbUcdACT0313o4b6ySR38jvnZ0HwKLyeEteZBHiOlrXRzjDRrIMa2MP0q6lXThfCEbV6w9FaY0kn99oCOjKiMCGcHOprEtgOr9cEwWOCeMJTr95e5EJ/VOVaSecVKyqkdSw=
+	t=1745476027; cv=none; b=kTsc3r/SX0st74UZKoaCup6mFMJrl+WhE8SF+B9c19PAMqpp2NTErINPol60hmwKA4r6uaGFHuTLLLg9kbmiJBMNlso4xd1kMsNpeL8/1JiOt6iDtsXyJK5Kz377YKxRbPBv9TvYuOO3nZcQOU3H7+f0TjvXz+EA2T5y6lXGkDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745444122; c=relaxed/simple;
-	bh=ZOMahnqwK2czE5+AzFT6MW14Dv/ZxeTxkD1jEiJ1lNc=;
-	h=From:In-Reply-To:References:MIME-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PWEigMzK1MLqxzPxAPT2EFX9cbjNPDgIGYbgNUaWoyAYej7QSXUQp+0Od9e0QEr9Ia0qfB+HhbFqA5rGYPiewAtTTmEO11DhEI8x0DMBL5d8HAjfsCWycWZF2ZM31MV4sPBVWTeFFB18ww2q0/qsXE3ENGOdky40kkpPNiNU65o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jfn3r4vW; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jfn3r4vW"
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-39c266c1389so203589f8f.1;
-        Wed, 23 Apr 2025 14:35:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745444119; x=1746048919; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=itX3NOYXWOyXJnbtbmqeBCVY1jsU6HXNt/e9Gv22P6g=;
-        b=Jfn3r4vWM5vt5+VRvRjeu4eOyyg8XAosTk2sGUEHjWl6v0SjVVB8sYRTi/0GEsEOYp
-         NJB4+MLMxwZK5+kfCW+lq8Fx/jp1Arvbpox1v9PV0tp3xAAO7yAsm+YOAp+LLg27cMnu
-         vza8cditKZaYrZ40+gVp8ZVTSlSs1I4ToYeje4voPrJ6ugW4R7mvqs6HNGGYWlt5JaB6
-         yxCVl70zwR8CrXN7+93uCLJzn1SbDFt0Kag1ngXcmTtOZkbBKty7yp7NHxY6R9CjG1P7
-         X6O5BPr8mzOeFdzQRbP0dGL9Gq48ENZXgKu8QVKlIlZ+GPVbPRjG1FT0gcCswcV+/rHN
-         D7Ow==
+	s=arc-20240116; t=1745476027; c=relaxed/simple;
+	bh=1CEUNaxsGYi+QBHFI7XRuBkvQhG1Q2jnC2EGOCsAxeU=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=tUaK837ouu+7Xoh/cBKnMMytFYcWzEbofZa2BrcHQmmOm5wuMngCYUxxk6t4236ni7t/Pj4JUMo9D2aPTMW6vTQzkrEJwHx5mSSl0/6lR+DqZwQgwUSkJzL+RZxA7xl9eQe8n749qLEVDGP+E/9jKKgCObsvj7CS60CNihfTyJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3d81bc9b763so10738685ab.0
+        for <linux-bcachefs@vger.kernel.org>; Wed, 23 Apr 2025 23:27:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745444119; x=1746048919;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=itX3NOYXWOyXJnbtbmqeBCVY1jsU6HXNt/e9Gv22P6g=;
-        b=Q0pKNgZOuIiqPJhK02YFlKVy/fuF+mss3Uq8lGjEEkJok/X959bsf9AXgsyNobuPfv
-         dvnxliVPDecdzZCGC1k32shS3whJqVhXzsWS/gOzII02IoNLqecH2ieDPBCVujNUOue0
-         hipwboAtpjFnIzTTabZJsBCTFKxMOoeYGBXx716i1uB893+FUnWTHgxz1/hO0sPlClPE
-         MOY350oOhp4sA7dVwOBMAAGjF+zaFCm9/lrO7z1fKS/nbv0QxbQzKah0K5xQYNTs2dzq
-         f062RWOimyEceKHLgh2s3ueIe6+1q/aowBa1ES9JpnBsv4KFzJGa4HZgopwdkiYrec3e
-         QJjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU08zAxH5NpCL1F6A2myjgUlG9sQJayZyhbByZdDZ+BCOCVIIeIh/q8vcovRuHJdu5ErIGAMRsWT2LTnlL9Qw==@vger.kernel.org, AJvYcCVQg30SjAtm6gIzOMNfP/MqJA+HD4ncanzZEO8pel+Lamv1hAv3uRvgYcAxuEcV3I3I1zk97rqKQ7kcyfjUpA==@vger.kernel.org, AJvYcCW7YIYJCmLsRGPoD4tC4rRgiBsosoC6aV9cnV0gIljfajsRypinPLfFwUqO/0Y2vttt9uaiI7Yc1QkF1kG8CFlo@vger.kernel.org, AJvYcCWKJeRUl6fXMiVWzDDlhFO+WtB8jloTvCt3du+tY5aT0XL6zPTnS/UQhT0swNbvxw/WxFW2Yxz2GChbEokV@vger.kernel.org
-X-Gm-Message-State: AOJu0YxhxXdlcchvUvyQ2Oz98uPtik1tJ+LsbWd0vEkpo9mzURaAPcCX
-	B4dhSWr8P8qS/DCc0evDxxUAsPewMYm37WvRfHk0WdXSCDAeDYkHu0xbiWvIjaSHzdjQ8/GWs2L
-	0tcpYj7bnnjTFLNNvG3mO5g5eFag=
-X-Gm-Gg: ASbGncsZsmfcHW2HPYuoefsxjFHjA8AupKowStZNAdCEeOP5/MIXRo7+SL1cS5kB/4P
-	1HbWYGSd01e0ve4D7PWY8Wpgku6XUz9DhvZCKLTJA8Dtf7oEINoUE/I/WDWDXjjICsHclbqAMTj
-	s+ZCy2yJ5eELqKTeVPS2fritc=
-X-Google-Smtp-Source: AGHT+IEk58+6+Z8AY7dKKKI99YvdIThZGBgtaiZlaQ0+clqFup0opkmpEozBJaew3HhxREGTabJMb/2OD7j1BlA4mfY=
-X-Received: by 2002:a05:6000:2486:b0:39e:cbca:7156 with SMTP id
- ffacd0b85a97d-3a06cf4f24amr55773f8f.1.1745444119284; Wed, 23 Apr 2025
- 14:35:19 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 23 Apr 2025 14:35:18 -0700
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 23 Apr 2025 14:35:18 -0700
-From: Kane York <kanepyork@gmail.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <202504202008.533326EF4@keescook>
-References: <202504202008.533326EF4@keescook>
+        d=1e100.net; s=20230601; t=1745476025; x=1746080825;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=abwTUHeE/uM/GG3wbgxZgYH14k44x/XKVziJanaRMJQ=;
+        b=i5jVtl5AASfDdtpqy2NyVfr83wN9R1lkyrQhorfXVKxAYjA5SgWE/6732yqXGeCvZn
+         3JvZjjeoCd3oF4CiRciLL86QG5hLjxBtwT3TxXqCf2NB8bamHkIuKqv9akLMfU57KV+y
+         PQ5p6YEkCw9beGfGTgEqMnEkxGgtUTDCGZPQBfSsRCCwiUfgJ/FWPNBizfKPuGRv9+gz
+         hIeHU6PdjfG3vPr0gbDK+ftlpGtgGNhsSRUF0+5GB1frA3yQSU1upbbo8WwlNirkwOG3
+         oOQMX1u1CzEfTNGSTCPUVoTKNNoNnQWqH140F3ORo9eaqOeleAY2NU8eKFXJgn3qOaxh
+         1v3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCX32sIMmCA/VqFjG70hdb+dQ9EP4Ng8hGlpfATnRbncSJnTspTFWHk/N1mbncVbSCdPPInLThSRWn29k4mL7A==@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywr7w/Gl0yy8Vs5OUFBif23VV/mUD5LK3iJA6FV/X7v08Tv2cb/
+	uwe9JjpLqE/G825TudQeH9chTP/gnbt4/JqtHlHkq3mVDyCDRfaP7aAz2E8O8SXgouE/aZUd1u/
+	swNWSNMAxj6ciqFoLyFecuLAhWOX0Hp42+FJgUzdEY13yXqgIzDysQfE=
+X-Google-Smtp-Source: AGHT+IFAG+7LNAPZtc1E5WJPuIr/o5oInRFOA+A/8lLUB47/WjeWDwH0OueyKOJzZl0O1FTB1Y/2Re9FjK7IGhotHKn+KtxGYm/U
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Wed, 23 Apr 2025 14:35:18 -0700
-X-Gm-Features: ATxdqUGGIPDI-VW9u9YHXcVHw682anBK-WlDW0KOLAEZB08mhUTLWij8yQDEYp0
-Message-ID: <CABeNrKWW6P0STsmxyL7yOASn63fKyLrCqv=ksomqOJP+ry8PPw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] enumarated refcounts, for debugging refcount issues
-To: kees@kernel.org
-Cc: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+X-Received: by 2002:a05:6e02:12c3:b0:3d3:f7ed:c903 with SMTP id
+ e9e14a558f8ab-3d930234869mr14493155ab.0.1745476024913; Wed, 23 Apr 2025
+ 23:27:04 -0700 (PDT)
+Date: Wed, 23 Apr 2025 23:27:04 -0700
+In-Reply-To: <67f76c11.050a0220.258fea.0029.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6809d9b8.050a0220.2c0118.0ac6.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] kernel BUG in __bch2_str_hash_check_key
+From: syzbot <syzbot+843981bb836d699c07d1@syzkaller.appspotmail.com>
+To: contact@arnaud-lcm.com, joshua@froggi.es, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-On Sun, 20 Apr 2025 20:09:50 -0700, Kees Cook wrote:
-> On Sun, Apr 20, 2025 at 09:27:26PM -0400, Kent Overstreet wrote:
-> > On Sun, Apr 20, 2025 at 06:08:41PM -0700, Kees Cook wrote:
-> > > On Sun, Apr 20, 2025 at 11:59:13AM -0400, Kent Overstreet wrote:
-> > > > Not sure we have a list for library code, but this might be of interest
-> > > > to anyone who's had to debug refcount issues on refs with lots of users
-> > > > (filesystem people), and I know the hardening folks deal with refcounts
-> > > > a lot.
-> > >
-> > > Why not use refcount_t instead of atomic_t?
-> > Out of curiousity, has overflow of an atomic_long_t refcount ever been
-> > observed?
->
-> Not to my knowledge. :)
+syzbot has bisected this issue to:
 
-Equivalent systems have observed it, but only in the presence of compiler
-optimizations that deduce they could increment the refcount multiple times.
+commit d37c14ac6f05ec98db9b3d9db424dc73a0f5b1cd
+Author: Joshua Ashton <joshua@froggi.es>
+Date:   Sun Aug 13 17:34:17 2023 +0000
 
-  NEVER_INLINE void naughty_ref_increment(ref* ref) {
-    long i;
-    for (i = 0; i < LONG_MAX/2; i++) {
-      ref_get(ref);
-    }
-  }
+    bcachefs: bcachefs_metadata_version_casefolding
 
-Running the above code 3 times will saturate the refcount, if it ever
-terminates in our lifetimes (due to being optimized into an
-atomic_fetch_add(LONG_MAX/2)).
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10718ecc580000
+start commit:   a79be02bba5c Fix mis-uses of 'cc-option' for warning disab..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=12718ecc580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14718ecc580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3bbffc3b5b4301e1
+dashboard link: https://syzkaller.appspot.com/bug?extid=843981bb836d699c07d1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11f8c1b3980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=177ce574580000
 
-So: don't write the above code!
+Reported-by: syzbot+843981bb836d699c07d1@syzkaller.appspotmail.com
+Fixes: d37c14ac6f05 ("bcachefs: bcachefs_metadata_version_casefolding")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
