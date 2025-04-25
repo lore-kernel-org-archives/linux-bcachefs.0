@@ -1,42 +1,35 @@
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D646322127B;
-	Fri, 25 Apr 2025 19:40:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D00151A5B92
+	for <linux-bcachefs@vger.kernel.org>; Fri, 25 Apr 2025 19:59:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745610041; cv=none; b=EcIJNdHGA7TVejdQRteCrg2QqllhlMsabEAStskGhWu2RQ1UfxepANDowDhJ7IUdMVKOh55BE7WecUQVAwKDaH6XAajkWczzAmy5jR7tI3WxKpA15RPKSasnGL/VRD3kHsXPz8xokVu8RGZrUI4iFcQZouPYAj3vYz6WGLNvx+A=
+	t=1745611170; cv=none; b=EdLHwliwbfB2NPJTIDQS0BtGfqwi6rXj9S2TU7x3eIeXJhCySvk+dD9o1gc7dLGhdGUGNb5LCTlumng6dvcz09UzlOPqcOo6apJF61t5aAFOW0IPwlOi1P80Rx+dglnas2I8RILOH8ctdwuoZrf5ny7l2oD4LavnM6Y/9CnQxbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745610041; c=relaxed/simple;
-	bh=VREBMwvCQDoCqN5IaoNLR4E6gOht5nf7Iss06swoSpI=;
+	s=arc-20240116; t=1745611170; c=relaxed/simple;
+	bh=dv5nrRDQ024hclXCIrsYeTX+noYKL7nkO+/IfBNfyUA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RAq7NRkNHrVC45cb2mVo1344TVgQRUVe0nBFxj473yrf2lFeJ7b548HGHeP3W/OteTm8W5HC7ZWocRuF2xdRkcKc++bkqxzItrYhFY7yBjuVjncknuQWWJIDT/kMjHDABMoY0PVRGSYkKFEtofZT5q+Nfgm5WOy0gQtomzo6exM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=sgZkY3nA; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sgZkY3nA"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=0IqPKkbdUdZ451fkPgHg1pO5T9dqWYEu1XP1uzcPCQM=; b=sgZkY3nAXGKtwBXBJpGhw1vyQo
-	bTv7jBF+rb1DEEL5o2mS0dEaUgetDPnVh+ZRpABvOBCk7CHlPCvIZ34/e3vzuJNGGF+j/1ILkrdFA
-	Fp2YJ7/Xpim/rQejdgx919L7WqBAlH+YLVGcjzmHhlVjM+POawrb8vuzBeXVL1QDe6+GIf8oUrKU1
-	n+dEgYFebNeGUhz10W7HWEpn3abHo2zX3pHK6o4t7Sb3ws+k5aeQjK/MjbM0EKvPte6UpECfMkGN7
-	2YM4R0dvokIG0uuxfKarPWcxD/rKYcTEO+P4hmLDHKn8PtwN5dctUF4zutNse14szoSgTD1Ll38mp
-	n+pCFj3w==;
-Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u8OuZ-0000000FNE7-3is7;
-	Fri, 25 Apr 2025 19:40:35 +0000
-Date: Fri, 25 Apr 2025 20:40:35 +0100
-From: Matthew Wilcox <willy@infradead.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=TyDtvpRXPQNkLpgRlh/MWt2rPYNNoFzdc5H6ISLZDu55T7rRPMHFPxAlhGskSzPIGa1hkaRmGwngRJmMes8Twjlx+bPWrXFOm66+F79QdplGhDjXBIf5qo+9F3mhG4UdJ0abcWdvRjy6G/j4CI5gOZXqrKV0WYKTlzBIlXsnOhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from macsyma.thunk.org ([76.232.5.185])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 53PJxBYU027224
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 25 Apr 2025 15:59:11 -0400
+Received: by macsyma.thunk.org (Postfix, from userid 15806)
+	id D43D0346177; Fri, 25 Apr 2025 14:59:10 -0500 (CDT)
+Date: Fri, 25 Apr 2025 14:59:10 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
 To: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
+        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Subject: Re: [GIT PULL] bcachefs fixes for 6.15-rc4
-Message-ID: <aAvlM1G1k94kvCs9@casper.infradead.org>
+Message-ID: <20250425195910.GA1018738@mit.edu>
 References: <l7pfaexlj6hs56znw754bwl2spconvhnmbnqxkju5vqxienp4w@h2eocgvgdlip>
  <CAHk-=wjajMJyoTv2KZdpVRoPn0LFZ94Loci37WLVXmMxDbLOjg@mail.gmail.com>
  <ivvkek4ykbdgktx5dimhfr5eniew4esmaz2wjowcggvc7ods4a@mlvoxz5bevqp>
@@ -51,32 +44,65 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <CAHk-=wg546GhBGFLWiuUCB7M1b3TuKqMEARCXhCkxXjZ56FMrg@mail.gmail.com>
 
-On Fri, Apr 25, 2025 at 09:35:27AM -0700, Linus Torvalds wrote:
-> Now, if filesystem people were to see the light, and have a proper and
-> well-designed case insensitivity, that might change. But I've never
-> seen even a *whiff* of that. I have only seen bad code that
-> understands neither how UTF-8 works, nor how unicode works (or rather:
-> how unicode does *not* work - code that uses the unicode comparison
-> functions without a deeper understanding of what the implications
-> are).
-> 
-> Your comments blaming unicode is only another sign of that.
-> 
-> Because no, the problem with bad case folding isn't in unicode.
-> 
-> It's in filesystem people who didn't understand - and still don't,
-> after decades - that you MUST NOT just blindly follow some external
-> case folding table that you don't understand and that can change over
-> time.
+The resaon why I pushed for case folding was because Android userspace
+needed it, for backwards compatibiliy with previous implementationsm
+(which did use FAT), and the alternative we were replacing was this
+horrific wrapfs implementation which Al refused to accept because it a
+mess from a locking perspective; I could trivially lock up the kernel
+or cause file system corruptions using fsstress when wrapfs was in the
+picture.
 
-I think this is something that NTFS actually got right.  Each filesystem
-carries with it a 128KiB table that maps each codepoint to its
-case-insensitive equivalent.  So there's no ambiguity about "which
-version of the unicode standard are we using", "Does the user care
-about Turkish language rules?", "Is Aachen a German or Danish word?".
-The sysadmin specified all that when they created the filesystem, and it
-doesn't matter what the Unicode standard changes in the future; if you
-need to change how the filesystem sorts things, you can update the table.
+Another use case was Valve who wanted to support Windows games that
+expcted case folding to work.  (Microsoft Windows; the gift that keeps
+on giving...)  In fact the engineer who worked on case folding was
+paid by Valve to do the work.
 
-It's not the perfect solution, but it might be the least-bad one I've
-seen.
+That being said, I completely agree with Linus that case insensitivity
+is a nightmare, and I don't really care about performance.  The use
+cases where people care about this don't have directories with a large
+number of entries, and we **really** don't want to encourage more use
+of case insensitive lookups.  There's a reason why spent much effort
+improving the CLI tools' support for case folding.  It's good enough
+that it works for Android and Valve, and that's fine.
+
+As far as Unicode changing over time, in practice, we don't really
+need to care.  Unicode has promised not to make backwards incompatible
+changes; they might add new characters, for some ancient Mesopotamian
+script that only some academic care about, or a new set of emoji's.
+Fortunately, either the case folding tables aren't getting extended
+(emoji's don't have case to be folded; the ancient sumarian script
+might note have the concept of case in teh first place) or we just
+don't care (even if said sumarian script did *have* case folding, it's
+unlikely that a cell phone user or a Valve gamer would likely to
+care).
+
+I will readily admit that Unicode is something we didn't completely
+understand; never in my worst nightmares that someone would be
+silly/insane enough to add the concept of zero-width characters,
+including zero-width characters that end up changing how the character
+is displayed (e.g., a red heart versus a black spade differs only by
+adding a zero-width selector/shift character.   Sigh....)
+
+Perhaps if we were going to do it all over, we might have only
+supported ASCII, or ISO Latin-1, and not used Unicode at all.  But
+then I'm sure Valve or Android mobile handset manufacturers would be
+unhappy that this might not be good enough for some country that they
+want to sell into, like, say, Japan or more generally, any country
+beyond US and Europe.
+
+What we probably could do is to create our own table that didn't
+support all Unicode scripts, but only the ones which are required by
+Valve and Android.  But that would require someone willing to do this
+work on a volunteer basis, or confinuce some company to pay to do this
+work.  We could probably reduce the kernel size by doing this, and it
+would probably make the code more maintainable.  I'm just not sure
+anyone thinks its worthwhile to invest more into it.  In fact, I'm a
+bit surprised Kent decided he wanted to add this feature into bcachefs.
+
+Sometimes, partitioning a feature which is only needed for backwards
+compatibiltiy with is in fact the right approach.  And throwing good
+money after bad is rarely worth it.
+
+Cheers,
+
+						- Ted
