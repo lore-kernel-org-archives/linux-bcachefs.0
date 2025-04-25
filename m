@@ -1,108 +1,130 @@
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D00151A5B92
-	for <linux-bcachefs@vger.kernel.org>; Fri, 25 Apr 2025 19:59:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAAA7186E20
+	for <linux-bcachefs@vger.kernel.org>; Fri, 25 Apr 2025 20:35:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745611170; cv=none; b=EdLHwliwbfB2NPJTIDQS0BtGfqwi6rXj9S2TU7x3eIeXJhCySvk+dD9o1gc7dLGhdGUGNb5LCTlumng6dvcz09UzlOPqcOo6apJF61t5aAFOW0IPwlOi1P80Rx+dglnas2I8RILOH8ctdwuoZrf5ny7l2oD4LavnM6Y/9CnQxbk=
+	t=1745613360; cv=none; b=tTIqAB+iAO1ztN/ezrOLZ2YpT+3qWz3Ox5sYI34tqID1lUfWmhtoTWWVG0qeP+Zr5RlExx/Ei+hzL5LXPvytygitIzA+1eMs/egMcFBe/30IxQ3/FSi+Cy+zDO+BJf6jmG/rZITKiXKhxF5VyPaHkhhAkcbNVs1jOqrycI0pMrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745611170; c=relaxed/simple;
-	bh=dv5nrRDQ024hclXCIrsYeTX+noYKL7nkO+/IfBNfyUA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TyDtvpRXPQNkLpgRlh/MWt2rPYNNoFzdc5H6ISLZDu55T7rRPMHFPxAlhGskSzPIGa1hkaRmGwngRJmMes8Twjlx+bPWrXFOm66+F79QdplGhDjXBIf5qo+9F3mhG4UdJ0abcWdvRjy6G/j4CI5gOZXqrKV0WYKTlzBIlXsnOhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from macsyma.thunk.org ([76.232.5.185])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 53PJxBYU027224
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 25 Apr 2025 15:59:11 -0400
-Received: by macsyma.thunk.org (Postfix, from userid 15806)
-	id D43D0346177; Fri, 25 Apr 2025 14:59:10 -0500 (CDT)
-Date: Fri, 25 Apr 2025 14:59:10 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs fixes for 6.15-rc4
-Message-ID: <20250425195910.GA1018738@mit.edu>
-References: <l7pfaexlj6hs56znw754bwl2spconvhnmbnqxkju5vqxienp4w@h2eocgvgdlip>
- <CAHk-=wjajMJyoTv2KZdpVRoPn0LFZ94Loci37WLVXmMxDbLOjg@mail.gmail.com>
- <ivvkek4ykbdgktx5dimhfr5eniew4esmaz2wjowcggvc7ods4a@mlvoxz5bevqp>
- <CAHk-=wg546GhBGFLWiuUCB7M1b3TuKqMEARCXhCkxXjZ56FMrg@mail.gmail.com>
+	s=arc-20240116; t=1745613360; c=relaxed/simple;
+	bh=SQExu4w4hPgGkdy5kCAct+RvK8+FjV4snNR+nLyJBNA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FyDRYm3Oh3bL34Prgnv5LaWzvP+bdVc9/Ev/ChzwKAzAy1Ztk8idgMPukV1DHkH4IizQuW0Dcq0UdyF24/vIZuizT5IgY7ZGhlAnL9tUDro3sdqrCiEemHcFeVuS8Lc2i4zLftIhctQSE/ktCGFot+iajCk+0LpKV1nu/h9lxmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=AcqdYf7s; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="AcqdYf7s"
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-ace333d5f7bso439420766b.3
+        for <linux-bcachefs@vger.kernel.org>; Fri, 25 Apr 2025 13:35:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1745613355; x=1746218155; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qHF1zPVwXD8IdJu/yf1YIr/T0XDnrM1CQwq7Bj5CPDw=;
+        b=AcqdYf7sEb5O+p7PVg+SZBBLgQsUwDcGRQTQc2JJgrlVDWdBnJNhSSZvwB9Y/uq95v
+         SFZOHoWJVu8NVIHqXNYAkdH/DMLXOVm+keHTgYF5b4Ka8r3hg0WEDUVNB49RjBh7Z12x
+         Jj5oHdUODbq4ly6ayEpYN6M10Qjlnt3VJEsL8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745613355; x=1746218155;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qHF1zPVwXD8IdJu/yf1YIr/T0XDnrM1CQwq7Bj5CPDw=;
+        b=FcUAryaV+m98xLscAodcXIHbGvscH8xriP017UsCUIlXTW6cKL+AGGR/CyYm1P7e7W
+         CsCzIR6hOapPGW8mrS9qeSSjsf0OG62kRSeUQcgNvw1i77RpD6qOVat7xxNOnaBcWs5M
+         souJ1Rui7RoRqv6mjJGM156m3sYJbmFkLZ2KyJ5TtaQvABr0W2qsi3uJxHS5IzFxRCR7
+         s73sdQSaVtgiV/0KxyZ7ZmfeDt8Qwi82/iquCxvhDIzcpzE2/aLo0fnmbGac1TQDAWIA
+         j0tJZgjttr3omkA01EWcxy8Xs+kPnPHhx0CuZyDvfv0HCo658itJykw/dfTV9g652VJn
+         vRhw==
+X-Forwarded-Encrypted: i=1; AJvYcCVITOgw2EJPZTGK4eYR7FaGBw1wT+XvAxJ+kytVbta+sDP5py3MMu7yUfPkCbqSs+GARFeepEFt1280g4x3Rw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwbbAdwdCbhWzjbp+9gXprbeeosLM7lwID3y1uXSlXGiuT2ODk+
+	aaPUu3iwhhNWmVZyHPigvbRsihzjXpp/nFXlF2ag2d5HTKLguC1o8SLrBDBDGVTJbWgLYWcy+hz
+	SWSs=
+X-Gm-Gg: ASbGncslVzWn1JuzNCM9FHp4u+BJvqZ/d2qcagNrbPBX2Kb8ymB/f5S7WTzZARp6saU
+	a3zsMeIay2NOG3ubkSQP741KkJJovoi5kibsLpOQZJqRbxBfqKXKfeBmen0+pbKH3u8GEy+9faW
+	Xseu38OHQa9mbGACyu0jDjhIKgbOoV9TyoMGEiWbMoncmjJXdqdCc8anlHwZIOlq3vnwtqBUlqX
+	TBCqvUHSie4zDMYVOPMNB7XeKJ4N6oZ6pIAhzRYqyW3X15ZwKESJLgV0pTCqaEJnJuFMkGq3lst
+	4FwuvDQ1+DeW6fEdnKYQR2R4xxE8AuWmJmlUhe6tvYKlpflXniHQmUo2Ex0USGGLIHGbyNiOs9t
+	eT48/gXSNIsB2wMk=
+X-Google-Smtp-Source: AGHT+IHYAsUq1SoxiGi7E6gsYxCXXb7S/paEkIUIvWTLr0Jx7ckTGACDgdWF8rPxP5UWPuRY4R3BOA==
+X-Received: by 2002:a17:907:7e95:b0:ac3:8895:2776 with SMTP id a640c23a62f3a-ace848c0439mr61941666b.5.1745613354855;
+        Fri, 25 Apr 2025 13:35:54 -0700 (PDT)
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com. [209.85.218.53])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ace6e41ac78sm185805666b.2.2025.04.25.13.35.53
+        for <linux-bcachefs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Apr 2025 13:35:54 -0700 (PDT)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-ac2c663a3daso511001066b.2
+        for <linux-bcachefs@vger.kernel.org>; Fri, 25 Apr 2025 13:35:53 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVD3Uk9q+TCqmlylq1SlX+4CcpEQpr0PGTv8mKEBoZT5tyLV/tIxk6wY+YaUTyz8KsowEPggMgRwRudNJaPuQ==@vger.kernel.org
+X-Received: by 2002:a17:907:7f24:b0:acb:107e:95af with SMTP id
+ a640c23a62f3a-ace84ad7774mr62978366b.39.1745613353476; Fri, 25 Apr 2025
+ 13:35:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wg546GhBGFLWiuUCB7M1b3TuKqMEARCXhCkxXjZ56FMrg@mail.gmail.com>
+References: <l7pfaexlj6hs56znw754bwl2spconvhnmbnqxkju5vqxienp4w@h2eocgvgdlip>
+ <CAHk-=wjajMJyoTv2KZdpVRoPn0LFZ94Loci37WLVXmMxDbLOjg@mail.gmail.com>
+ <ivvkek4ykbdgktx5dimhfr5eniew4esmaz2wjowcggvc7ods4a@mlvoxz5bevqp>
+ <CAHk-=wg546GhBGFLWiuUCB7M1b3TuKqMEARCXhCkxXjZ56FMrg@mail.gmail.com> <aAvlM1G1k94kvCs9@casper.infradead.org>
+In-Reply-To: <aAvlM1G1k94kvCs9@casper.infradead.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 25 Apr 2025 13:35:37 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiX-CVhm0S2Ba4+pLO2U=3dY0x56jcunMyOz2TEHAgnYg@mail.gmail.com>
+X-Gm-Features: ATxdqUGwKlTpu4bheZKrvcER-qlO-D6uY_4AgFPDdEUKnYAjfRZ_s0Tk9V5ZhUc
+Message-ID: <CAHk-=wiX-CVhm0S2Ba4+pLO2U=3dY0x56jcunMyOz2TEHAgnYg@mail.gmail.com>
+Subject: Re: [GIT PULL] bcachefs fixes for 6.15-rc4
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-The resaon why I pushed for case folding was because Android userspace
-needed it, for backwards compatibiliy with previous implementationsm
-(which did use FAT), and the alternative we were replacing was this
-horrific wrapfs implementation which Al refused to accept because it a
-mess from a locking perspective; I could trivially lock up the kernel
-or cause file system corruptions using fsstress when wrapfs was in the
-picture.
+On Fri, 25 Apr 2025 at 12:40, Matthew Wilcox <willy@infradead.org> wrote:
+>
+> I think this is something that NTFS actually got right.  Each filesystem
+> carries with it a 128KiB table that maps each codepoint to its
+> case-insensitive equivalent.
 
-Another use case was Valve who wanted to support Windows games that
-expcted case folding to work.  (Microsoft Windows; the gift that keeps
-on giving...)  In fact the engineer who worked on case folding was
-paid by Valve to do the work.
+I agree that that is indeed a technically correct way to deal with
+case sensitivity at least from a filesystem standpoint.
 
-That being said, I completely agree with Linus that case insensitivity
-is a nightmare, and I don't really care about performance.  The use
-cases where people care about this don't have directories with a large
-number of entries, and we **really** don't want to encourage more use
-of case insensitive lookups.  There's a reason why spent much effort
-improving the CLI tools' support for case folding.  It's good enough
-that it works for Android and Valve, and that's fine.
+It does have some usability issues - exactly because of that "fixed at
+filesystem creation time" - but since in *practice* nobody actually
+cares about the odd cases, that isn't really much of a real issue.
 
-As far as Unicode changing over time, in practice, we don't really
-need to care.  Unicode has promised not to make backwards incompatible
-changes; they might add new characters, for some ancient Mesopotamian
-script that only some academic care about, or a new set of emoji's.
-Fortunately, either the case folding tables aren't getting extended
-(emoji's don't have case to be folded; the ancient sumarian script
-might note have the concept of case in teh first place) or we just
-don't care (even if said sumarian script did *have* case folding, it's
-unlikely that a cell phone user or a Valve gamer would likely to
-care).
+And the fixed translation table means that it at least gets versioning
+right, and you hopefully filled the table up sanely and don't end up
+with the crazy cases (ie the nonprinting characters etc) so hopefully
+it contains only the completely unambiguous stuff.
 
-I will readily admit that Unicode is something we didn't completely
-understand; never in my worst nightmares that someone would be
-silly/insane enough to add the concept of zero-width characters,
-including zero-width characters that end up changing how the character
-is displayed (e.g., a red heart versus a black spade differs only by
-adding a zero-width selector/shift character.   Sigh....)
+That said, I really suspect that in practice, folding even just the
+7-bit ASCII subset would have been ok and would have obviated even
+that table. And I say that as somebody who grew up in an environment
+that used a bigger character set than that.
 
-Perhaps if we were going to do it all over, we might have only
-supported ASCII, or ISO Latin-1, and not used Unicode at all.  But
-then I'm sure Valve or Android mobile handset manufacturers would be
-unhappy that this might not be good enough for some country that they
-want to sell into, like, say, Japan or more generally, any country
-beyond US and Europe.
+Of course, the NTFS stuff came about because FAT had code pages for
+just the 8-bit cases - and people used them, and that then caused odd
+issues when moving data around.
 
-What we probably could do is to create our own table that didn't
-support all Unicode scripts, but only the ones which are required by
-Valve and Android.  But that would require someone willing to do this
-work on a volunteer basis, or confinuce some company to pay to do this
-work.  We could probably reduce the kernel size by doing this, and it
-would probably make the code more maintainable.  I'm just not sure
-anyone thinks its worthwhile to invest more into it.  In fact, I'm a
-bit surprised Kent decided he wanted to add this feature into bcachefs.
+Again - 8-bit tables were entirely sufficient in practice but actually
+caused more problems than not doing it at all would have. And then
+people go "we switched to 16-bit wide characters, so we need to expand
+on the code table too".
 
-Sometimes, partitioning a feature which is only needed for backwards
-compatibiltiy with is in fact the right approach.  And throwing good
-money after bad is rarely worth it.
+Which is obviously exactly how you end up with that 128kB table.
 
-Cheers,
+But you have to ask yourself: do you think that the people who made
+the incredibly bad choice to use a fixed 16-bit wide character set -
+which caused literally decades of trouble in Windows, and still shows
+up today - then made the perfect choice when dealing with case
+folding? Yeah, no.
 
-						- Ted
+Still, I very much agree it was a better choice than "let's call
+random unicode routines we don't really appreciate the complexity of".
+
+            Linus
