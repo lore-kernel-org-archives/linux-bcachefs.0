@@ -1,63 +1,82 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E22F4437C;
-	Fri, 25 Apr 2025 18:01:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D646322127B;
+	Fri, 25 Apr 2025 19:40:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745604060; cv=none; b=O8I76OOBydZbV90OVd8sjLWOUs3uS7iIuSqDAzsvhiexvsg//8HezK1iLd0kHhwYLfYLn0puA20NR64tccJxExqKtxGqoqy1edgUikYaFPE66LAipjEihmqz/TG5Er0caoFYYK2EVNxqdHIu3AFlIvKDssmm6yhaOxaNJKKDe3Y=
+	t=1745610041; cv=none; b=EcIJNdHGA7TVejdQRteCrg2QqllhlMsabEAStskGhWu2RQ1UfxepANDowDhJ7IUdMVKOh55BE7WecUQVAwKDaH6XAajkWczzAmy5jR7tI3WxKpA15RPKSasnGL/VRD3kHsXPz8xokVu8RGZrUI4iFcQZouPYAj3vYz6WGLNvx+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745604060; c=relaxed/simple;
-	bh=vcI8WNUoad1hd0OM0OQ67ho5I37txZfaD4ZXeXCfvgc=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=Qsbvv35zRmvotfsojacXJyVWAngNISrO75uWzjVx6i3NTmpApBjqPyCiJiVft3XuE1V+v85BHMS2mopY9qaxbagmvgRDr7PMrWgo1wL1z/mSPv5pJf6jNGcrq5lvx7XUUeD+EpATaExpqGF0eGXr02k+h/pjFTtpX8VgucpP6M0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V9oZHC/f; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1745610041; c=relaxed/simple;
+	bh=VREBMwvCQDoCqN5IaoNLR4E6gOht5nf7Iss06swoSpI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RAq7NRkNHrVC45cb2mVo1344TVgQRUVe0nBFxj473yrf2lFeJ7b548HGHeP3W/OteTm8W5HC7ZWocRuF2xdRkcKc++bkqxzItrYhFY7yBjuVjncknuQWWJIDT/kMjHDABMoY0PVRGSYkKFEtofZT5q+Nfgm5WOy0gQtomzo6exM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=sgZkY3nA; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V9oZHC/f"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E595C4CEE9;
-	Fri, 25 Apr 2025 18:01:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745604060;
-	bh=vcI8WNUoad1hd0OM0OQ67ho5I37txZfaD4ZXeXCfvgc=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=V9oZHC/f1sALYonUBSvQA+qlBABpnhGF57d9D2Kmi4E1TglDBFAtO0C6arx54kiIk
-	 kXZ5pzCZxQ3pItkuPUQyXw78CZ23i7GR5BaabqAytIeXM51LQnA0RTvJlW0ToCNQLn
-	 4aZyKLjU0ETgC+ozak825z6Y+f1oqi2/4E1WiKDbBXdK6e3lBDV9psZpw5+Yc2UJig
-	 JzFUgETzLnsqKKnudwtSxa+mZS/U/kjin9JmjclvaUiUQOZJRemziVbijC3LFUA3Hs
-	 bUtpsiqzmsGSDmf6cQLmmndoKG8Bw0+f0cLCfc8ZcrsiDFF6cGnThBK2SnPvEIhVRs
-	 kOpFkVb4pqLhQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 714AB380CFD7;
-	Fri, 25 Apr 2025 18:01:40 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sgZkY3nA"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=0IqPKkbdUdZ451fkPgHg1pO5T9dqWYEu1XP1uzcPCQM=; b=sgZkY3nAXGKtwBXBJpGhw1vyQo
+	bTv7jBF+rb1DEEL5o2mS0dEaUgetDPnVh+ZRpABvOBCk7CHlPCvIZ34/e3vzuJNGGF+j/1ILkrdFA
+	Fp2YJ7/Xpim/rQejdgx919L7WqBAlH+YLVGcjzmHhlVjM+POawrb8vuzBeXVL1QDe6+GIf8oUrKU1
+	n+dEgYFebNeGUhz10W7HWEpn3abHo2zX3pHK6o4t7Sb3ws+k5aeQjK/MjbM0EKvPte6UpECfMkGN7
+	2YM4R0dvokIG0uuxfKarPWcxD/rKYcTEO+P4hmLDHKn8PtwN5dctUF4zutNse14szoSgTD1Ll38mp
+	n+pCFj3w==;
+Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1u8OuZ-0000000FNE7-3is7;
+	Fri, 25 Apr 2025 19:40:35 +0000
+Date: Fri, 25 Apr 2025 20:40:35 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
 Subject: Re: [GIT PULL] bcachefs fixes for 6.15-rc4
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <l7pfaexlj6hs56znw754bwl2spconvhnmbnqxkju5vqxienp4w@h2eocgvgdlip>
+Message-ID: <aAvlM1G1k94kvCs9@casper.infradead.org>
 References: <l7pfaexlj6hs56znw754bwl2spconvhnmbnqxkju5vqxienp4w@h2eocgvgdlip>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <l7pfaexlj6hs56znw754bwl2spconvhnmbnqxkju5vqxienp4w@h2eocgvgdlip>
-X-PR-Tracked-Remote: git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-04-24
-X-PR-Tracked-Commit-Id: d1b0f9aa73fe50ee5276708e33d77c4e7054e555
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: eef0dc0bd432885b2bd4fc7f410ed039bf028e37
-Message-Id: <174560409892.3790119.15347620053687223498.pr-tracker-bot@kernel.org>
-Date: Fri, 25 Apr 2025 18:01:38 +0000
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+ <CAHk-=wjajMJyoTv2KZdpVRoPn0LFZ94Loci37WLVXmMxDbLOjg@mail.gmail.com>
+ <ivvkek4ykbdgktx5dimhfr5eniew4esmaz2wjowcggvc7ods4a@mlvoxz5bevqp>
+ <CAHk-=wg546GhBGFLWiuUCB7M1b3TuKqMEARCXhCkxXjZ56FMrg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wg546GhBGFLWiuUCB7M1b3TuKqMEARCXhCkxXjZ56FMrg@mail.gmail.com>
 
-The pull request you sent on Thu, 24 Apr 2025 22:46:40 -0400:
+On Fri, Apr 25, 2025 at 09:35:27AM -0700, Linus Torvalds wrote:
+> Now, if filesystem people were to see the light, and have a proper and
+> well-designed case insensitivity, that might change. But I've never
+> seen even a *whiff* of that. I have only seen bad code that
+> understands neither how UTF-8 works, nor how unicode works (or rather:
+> how unicode does *not* work - code that uses the unicode comparison
+> functions without a deeper understanding of what the implications
+> are).
+> 
+> Your comments blaming unicode is only another sign of that.
+> 
+> Because no, the problem with bad case folding isn't in unicode.
+> 
+> It's in filesystem people who didn't understand - and still don't,
+> after decades - that you MUST NOT just blindly follow some external
+> case folding table that you don't understand and that can change over
+> time.
 
-> git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-04-24
+I think this is something that NTFS actually got right.  Each filesystem
+carries with it a 128KiB table that maps each codepoint to its
+case-insensitive equivalent.  So there's no ambiguity about "which
+version of the unicode standard are we using", "Does the user care
+about Turkish language rules?", "Is Aachen a German or Danish word?".
+The sysadmin specified all that when they created the filesystem, and it
+doesn't matter what the Unicode standard changes in the future; if you
+need to change how the filesystem sorts things, you can update the table.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/eef0dc0bd432885b2bd4fc7f410ed039bf028e37
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+It's not the perfect solution, but it might be the least-bad one I've
+seen.
