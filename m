@@ -1,167 +1,228 @@
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 685C3247291
-	for <linux-bcachefs@vger.kernel.org>; Tue, 29 Apr 2025 16:49:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F57384E1C
+	for <linux-bcachefs@vger.kernel.org>; Tue, 29 Apr 2025 22:24:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745945343; cv=none; b=Hk217MHyb1w/t0dPCHg3S7V0Z0tO+zGaKaLeFbLmwkqEgUxJoA4mM/96Qs4G19m7XtbsLLKm8CNQcLUa+aFdoIbZa2oXzDK0zRphgdIinCKgx4tufrySuk9kHg2hBvZtV9FYFeL5DqUF0pFb/HcbMC3orho1um/ecTJjEoa7yvQ=
+	t=1745965469; cv=none; b=PftAMHxH2HwTu9w78lWffBq04hGOCmfOrx7NZmvQ06CdSD6oG2Tj/YBEr/Lo+fdoI+XazjEOOw/4EezM+wqrbmw5bN0Wg+G9Ee8s95dGuqSVf+y8gOelXPFIM6jwffd12ztBSLkb06t7yi1PvBfe2THI/NrvPTX1nLj6vO+FEIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745945343; c=relaxed/simple;
-	bh=9H0LsjNRrY5PWe85DqM1hJ/9El74OMvJBsmQ6l8DTN4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N2RZoQuwpW/NFyMJ8RZl81u0PKM+268U7rOZ0MW8ZROiSOrub6ySFroPBNK1uFnivGKF9NucCHVSDUCjVKEbtj/PbSjdP8bNfXsLvxdMnJHtCIH5h9kdZb+fY89oEHrcJU/3bdqIqnB4BiIdLgr0tZ9x2KGqifBm0I9JGfCsdI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=batbytes.com; spf=none smtp.mailfrom=batbytes.com; dkim=pass (2048-bit key) header.d=batbytes-com.20230601.gappssmtp.com header.i=@batbytes-com.20230601.gappssmtp.com header.b=t2AmHvQu; arc=none smtp.client-ip=209.85.215.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=batbytes.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=batbytes.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=batbytes-com.20230601.gappssmtp.com header.i=@batbytes-com.20230601.gappssmtp.com header.b="t2AmHvQu"
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-b0b2d0b2843so5276961a12.2
-        for <linux-bcachefs@vger.kernel.org>; Tue, 29 Apr 2025 09:49:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=batbytes-com.20230601.gappssmtp.com; s=20230601; t=1745945341; x=1746550141; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9H0LsjNRrY5PWe85DqM1hJ/9El74OMvJBsmQ6l8DTN4=;
-        b=t2AmHvQuuMrx3aDM4aIZrZJGcJw7Jxy6KQCSYM0NdYgomnF3qi93KY8m8OB7p6sRwd
-         S1H/x+4eierDFsAmYB2NddB6zKLr8zgVcNCHFIePiAt1f89X/uauAZqg3rNsFewrvvFs
-         /qXGQXd58OE84N83j9j9ZzG4wf+tNzEL/r8im1kfBs5DpTMa0VG51mvDfA/hztPz/jIX
-         zD/Vkfk1D9V9i8lozqyrAgFgcsVXIUfYEeZ0Orgyi8j9JhZEOB753uZsSEK0WxQulhH6
-         hYqm0MUGDLZm1yF/RPT34dWvxf14Bz+b7LIzG/9kALKMIW3If8cHvJqAbTBCRwYgDFSk
-         BInw==
+	s=arc-20240116; t=1745965469; c=relaxed/simple;
+	bh=ZxjSSO3zSdfQ+0uQV9kS+bFB1X651PDwoMLjLyWGzPI=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Si4pOORXZgPkeSxIRPUh/eu9b1Wcae/1mZ178Epkg6T3JTSQZUN5+a4kuzY2v4eUlmdCkWHlA0DUn0Bt0K3AJWrlEhwf2uE95TwTbdqK8MTN29L0rr/KlSp50X53pbdZ6zvCkK2xWwJutKm5OnvSEXup4fKIhc18R90OUTyRnZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-86176e300fdso621459439f.1
+        for <linux-bcachefs@vger.kernel.org>; Tue, 29 Apr 2025 15:24:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745945341; x=1746550141;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9H0LsjNRrY5PWe85DqM1hJ/9El74OMvJBsmQ6l8DTN4=;
-        b=iKR6sJe7rKON4Yn7SqsWLP0g36mtMQreijc1haccpTdW7pTftroIylC3v4sNj++Fh0
-         +mgWE/7C4YCtjL1zzOlSXJhs8pkhRXqR3WglzmpguoJxn2QRD9QzObHIq5XoG17n9jNW
-         EQu4oXLhE7U69BlbR9uW9Us8HHIOanxnhNfpaaS3K5lyYS0W/k60JGE9YGr/s/E3Eloy
-         Ih1WM8LNRv6YTEH1MeO+V9tns4Hvkdc2d6cNTRflj1qcp734L1bLbyG5ccqZPdKKaSr3
-         mSNAqZ4Ky3T/dQYiL7QCDsIkxhsgO6F/VZYrpGSoJtgamcctxiStrVReNJ4OVM271Xb8
-         wjiA==
-X-Forwarded-Encrypted: i=1; AJvYcCV2D+ElBCR9X2i58k42w/ZdkwKI8kH8BcWwW/Xdb7gUl6p5wfTya/Or6Rqqcq7hlqiUR7sjzEYUWtm7fsTqAQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxjf0bEg73lZHS6+oyuyIwdjICyHYpqWeH4fTemeLJAf3k++hT7
-	Dv31DwgDFd6IC1RpVaA6AbNfPFqQRZm1Nb2wMabGygSq7+TwiCWfAKd1/Q8T1EhDkC/rU7fbSLE
-	CrymzPEnH7m8MPo8YpZKxGfIrt4zsV1uz2Fre
-X-Gm-Gg: ASbGncvTabydHInge4OblnUXb16trxKZTCfvJXqqWpCAJR76DWtqaZLIa0W/QmfFZLn
-	v0cmSGxkXmxJYGnk3/WeF2LPCOIFVbJGlCAZVy3aidQ0qnhm0IDDuV5xB+U2kh6aUAz7tm5s2Se
-	Yyn6nahHDKL93lmCL14s6aGg==
-X-Google-Smtp-Source: AGHT+IFmYhxgBqdFTyeB6jtUKwq0NpwSO3n2aDEpxC1AlEnOModK21uopLYnylQAayMGSQAHm9dJ3k3XwfqUgH38qhw=
-X-Received: by 2002:a17:90b:4ec3:b0:2f6:dcc9:38e0 with SMTP id
- 98e67ed59e1d1-30a21fed8f3mr6814613a91.0.1745945340592; Tue, 29 Apr 2025
- 09:49:00 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1745965466; x=1746570266;
+        h=content-transfer-encoding:to:from:subject:message-id:date
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IdNXUZqQeuiW9B9XnKTAPLYvVVlrDQjOW3qEnnYK9gQ=;
+        b=B89h+sQ8MzN/+GcvbatWcutyV847k3Nad5whjepx73MA893gIEb8F3g9GbO+8Cu+xm
+         S+1vUd/yAxNIPIJ2U9BHRTQUrlu/NjbpNR2jR5ykq0IN8SaGxdnw8psG9QFYiNGelfN+
+         UAT8NBu3eXIqseOaBGUCtrzniEnyah7bmbLZMh3w5zLiTMlF9jwzolsFiWkRhCTlhO5/
+         VNqKofAlA+gwY04K+gbU1PpeunoKDcPybZAssgKkH6E/vhq15GDWuYxyC2FojS1eX6/z
+         LLmz+xedC9oARlg5Nf/UkVASPGTxVZckntsscL1rjYvfGGzwh2qz0zXntwqYIWxdw1h1
+         yKZA==
+X-Forwarded-Encrypted: i=1; AJvYcCVeLUIeG/i1MN0PMECt4fn1UWvY6fk6cIYwifvcnen4AumWPBsw/MRcxncTaOBhVMF3x08zpvv1CAFe/1amfg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwRM2CXucqcr3D4R6YsKIEHmSodsfNRdWsSQTrfPnJHGxjYgwu5
+	11IJxpl6spQB6syd2neO1jKGZeNcoAFPN0x3jBAHeDOnqAqXopuhW8vrwIVdTk3Z8voVLCSOOQ4
+	Ao7YKMsmpmcPc94V+NDS+84CnJzAh05IyyebwX32wSpAKr7r+kcoxTZg=
+X-Google-Smtp-Source: AGHT+IG3BV9QV3T1xpNWUZM+44RrpkkuPVTnvQP0+PP2B8noLWzU3V0Zb6ry2PiikVafiQM5UcCgqe0GikC6NRLq1VaLIVh1onl2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAHk-=wjajMJyoTv2KZdpVRoPn0LFZ94Loci37WLVXmMxDbLOjg@mail.gmail.com>
- <ivvkek4ykbdgktx5dimhfr5eniew4esmaz2wjowcggvc7ods4a@mlvoxz5bevqp>
- <CAHk-=wg546GhBGFLWiuUCB7M1b3TuKqMEARCXhCkxXjZ56FMrg@mail.gmail.com>
- <q3thzkbsq6bwur7baoxvxijnlvnobyt6cx4sckonhgdkviwz76@45b6xlzvrtkr>
- <CAHk-=wh09TvgFu3WKaeLu8jAxCmwZa24N7spAXi=jrVGW7X9ZA@mail.gmail.com>
- <mlsjl7qigswkjvvqg2bheyagebpm2eo66nyysztnrbpjau2czt@pdxzjedm5nqw>
- <CAHk-=wiSXnaqfv0+YkOkJOotWKW6w5oHFB5xU=0yJKUf8ZFb-Q@mail.gmail.com>
- <lmp73ynmvpl55lnfym3ry76ftegc6bu35akltfdwtwtjyyy46z@d3oygrswoiki>
- <CAHk-=wiZ=ZBZyKfg-pyA3wmEq+RkscKB1s68c7k=3GaT48e9Jg@mail.gmail.com>
- <CACh33FqQ_Ge6y0i0nRhGppftWdfMY=SpGsN0EFoy9B8VMgY-_Q@mail.gmail.com> <pkpzm6okfqchet42lhcebwaiuwrwil6wp76flnk3p3mgijtg2e@us7jkctbpsgc>
-In-Reply-To: <pkpzm6okfqchet42lhcebwaiuwrwil6wp76flnk3p3mgijtg2e@us7jkctbpsgc>
-From: Patrick Donnelly <batrick@batbytes.com>
-Date: Tue, 29 Apr 2025 12:48:49 -0400
-X-Gm-Features: ATxdqUGI6li0I9MiWlxbRa6mKpi0pyjVX_tYXFxi6p1GvM0SiC4YBXP4kZNxD8o
-Message-ID: <CACh33Fr4-53wOgciKSUTwsCwyb-L7A9fscQmLvbHynYX2j2brg@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs fixes for 6.15-rc4
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Received: by 2002:a05:6602:298b:b0:864:4a9b:f1f1 with SMTP id
+ ca18e2360f4ac-86495f33807mr136127039f.14.1745965466554; Tue, 29 Apr 2025
+ 15:24:26 -0700 (PDT)
+Date: Tue, 29 Apr 2025 15:24:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6811519a.050a0220.39e3a1.0c93.GAE@google.com>
+Subject: [syzbot] [bcachefs?] kernel BUG in bch2_fill_extent
+From: syzbot <syzbot+150f08265580ecb7c31f@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 29, 2025 at 12:21=E2=80=AFPM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
->
-> On Tue, Apr 29, 2025 at 11:36:44AM -0400, Patrick Donnelly wrote:
-> > I would not consider myself a kernel developer but I assume this
-> > terminology (dentry aliases) refers to multiple dentries in the dcache
-> > referring to the same physical dentry on the backing file system?
->
-> This issue turned out to be my own pebcak; I'd missed the
-> dentry_operations that do normalized lookups (to be fair, they were
-> rather hidden) and I'd just pulled a 14 hour day so was a tad bitchy
-> about it on the list.
->
-> > If so, I can't convince myself that's a real problem. Wouldn't this be
-> > beneficial because each application/process may utilize a different
-> > name for the backing file system dentry? This keeps the cache hot with
-> > relevant names without any need to do transformations on the dentry
-> > names. Happy to learn otherwise because I expected this situation to
-> > occur in practice with ceph-fuse. I just tested and the dcache entries
-> > (/proc/sys/fs/dentry-state) increases as expected when performing case
-> > permutations on a case-insensitive file name. I didn't observe any
-> > cache inconsistencies when editing/removing these dentries. The danger
-> > perhaps is cache pollution and some kind of DoS? That should be a
-> > solvable problem but perhaps I misunderstand some complexity.
->
-> Dentry aliases are fine when they're intended, they're properly
-> supported by the dcache.
->
-> The issue with caching an alias for the un-normalized lookup name is
-> (as you note) that by permuting the different combinations of upper and
-> lower case characters in a filename, userspace would be able to create
-> an unbounded (technically, exponential bound in the length of the
-> filename) number of aliases, and that's not what we want.
->
-> (e.g. d_prune_aliases processes the whole list of aliases for an inode
-> under a spinlock, so it's an easy way to produce unbounded latencies).
+Hello,
 
-Well, if aliases are "supported" by the dcache, that seems like a bug to me=
+syzbot found the following issue on:
+
+HEAD commit:    c3137514f1f1 Merge tag 'riscv-for-linus-6.15-rc4' of git:/.=
 .
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=3D10da10d4580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3D90837c100b88a63=
+6
+dashboard link: https://syzkaller.appspot.com/bug?extid=3D150f08265580ecb7c=
+31f
+compiler:       Debian clang version 20.1.2 (++20250402124445+58df0ef89dd6-=
+1~exp1~20250402004600.97), Debian LLD 20.1.2
 
-> So it sounds like you probably didn't find the dentry_operations for
-> normalized lookups, same as me.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-I didn't look to begin with. :)
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7fe=
+b34a89c2a/non_bootable_disk-c3137514.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/467c03afa53b/vmlinux-=
+c3137514.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ea8b6881765e/bzI=
+mage-c3137514.xz
 
-> Have a look at generic_set_sb_d_ops().
->
-> > > Also, originally this was all in the same core dcache lookup path. So
-> > > the whole "we have to check if the filesystem has its own hash
-> > > function" ended up slowing down the normal case. It's obviously been
-> > > massively modified since 1997 ("No, really?"), and now the code is
-> > > very much set up so that the straight-line normal case is all the
-> > > non-CI cases, and then case idnependence ends up out-of-line with its
-> > > own dcache hash lookup loops so that it doesn't affect the normal goo=
-d
-> > > case.
-> >
-> > It's seems to me this is a good argument for keeping case-sensitivity
-> > awareness out of the dcache. Let the fs do the namespace mapping and
-> > accept that you may have dentry aliases.
-> >
-> > FWIW, I also wish we didn't have to deal with case-sensitivity but we
-> > have users/protocols to support (as usual).
->
-> The next issue I'm looking at is that the "keep d_ops out of the
-> fastpath" only works if case sensitivity isn't enabled on the filesystem
-> as a whole - i.e. if case sensitivity is enabled on even a single
-> directory, we'll be flagging all the dentries to hit the d_ops methods.
->
-> dcache.c doesn't check IS_CASEFOLD(inode) - d_init can probably be used
-> for this, but we need to be careful when flipping casefolding on and off
-> on an (empty) directory, there might still be cached negative dentries.
->
-> ext4 has a filesystem wide flag for "case sensitive directories are
-> allowed", so that enables/disables that optimization. But bcachefs
-> doesn't have that kind of filesystem level flag, and I'm not going to
-> add one - that sort of "you have to enable this option to have access to
-> this other option" is a pita for end users.
+IMPORTANT: if you fix the issue, please add the following tag to the commit=
+:
+Reported-by: syzbot+150f08265580ecb7c31f@syzkaller.appspotmail.com
 
-In CephFS it's as simple as setting an extended attribute on a
-directory, by admins.
+bcachefs (loop0): Version upgrade required:
+Version upgrade from 0.24: unwritten_extents to 1.7: mi_btree_bitmap incomp=
+lete
+Doing incompatible version upgrade from 0.24: unwritten_extents to 1.25: ex=
+tent_flags
+  running recovery passes: check_allocations,check_alloc_info,check_lrus,ch=
+eck_btree_backpointers,check_backpointers_to_extents,check_extents_to_backp=
+ointers,check_alloc_to_lru_refs,bucket_gens_init,check_snapshot_trees,check=
+_snapshots,check_subvols,check_subvol_children,delete_dead_snapshots,check_=
+inodes,check_extents,check_indirect_extents,check_dirents,check_xattrs,chec=
+k_root,check_unreachable_inodes,check_subvolume_structure,check_directory_s=
+tructure,check_nlinks,set_fs_needs_rebalance
+bcachefs (loop0): dropping and reconstructing all alloc info
+bcachefs (loop0): accounting_read... done
+bcachefs (loop0): alloc_read... done
+bcachefs (loop0): snapshots_read... done
+bcachefs (loop0): check_allocations...
+bcachefs (loop0): pointer to nonexistent device 237
+ =20
+bcachefs (loop0): pointer to missing device 237
+  while marking u64s 7 type extent 536870913:24:U32_MAX len 24 ver 0: durab=
+ility: 0 crc: c_size 8 size 24 offset 0 nonce 0 csum none 0:0  compress lz4=
+ ptr: 237:893353206280 gen 0, fixing
+ done
+bcachefs (loop0): going read-write
+bcachefs (loop0): journal_replay... done
+bcachefs (loop0): check_alloc_info... done
+bcachefs (loop0): check_lrus... done
+bcachefs (loop0): check_btree_backpointers... done
+bcachefs (loop0): check_backpointers_to_extents... done
+bcachefs (loop0): check_extents_to_backpointers...
+bcachefs (loop0): scanning for missing backpointers in 9/128 buckets
+ done
+bcachefs (loop0): check_alloc_to_lru_refs... done
+bcachefs (loop0): bucket_gens_init... done
+bcachefs (loop0): check_snapshot_trees... done
+bcachefs (loop0): check_snapshots...
+bcachefs (loop0): snapshot points to missing/incorrect tree:
+  u64s 8 type snapshot 0:4294967295:0 len 0 ver 0: is_subvol 1 deleted 0 pa=
+rent          0 children          0          0 subvol 1 tree 0, fixing
+ done
+bcachefs (loop0): check_subvols... done
+bcachefs (loop0): check_subvol_children... done
+bcachefs (loop0): delete_dead_snapshots... done
+bcachefs (loop0): check_inodes... done
+bcachefs (loop0): check_extents... done
+bcachefs (loop0): check_indirect_extents... done
+bcachefs (loop0): check_dirents... done
+bcachefs (loop0): check_xattrs... done
+bcachefs (loop0): check_root... done
+bcachefs (loop0): check_unreachable_inodes... done
+bcachefs (loop0): check_subvolume_structure... done
+bcachefs (loop0): check_directory_structure... done
+bcachefs (loop0): check_nlinks...
+bcachefs (loop0): inode 536870914 type reg has wrong i_nlink (2780562353, s=
+hould be 1), fixing
+ done
+bcachefs (loop0): resume_logged_ops... done
+bcachefs (loop0): delete_dead_inodes... done
+bcachefs (loop0): set_fs_needs_rebalance... done
+bcachefs (loop0): done starting filesystem
+------------[ cut here ]------------
+kernel BUG at fs/bcachefs/fs.c:1327!
+Oops: invalid opcode: 0000 [#1] SMP KASAN NOPTI
+CPU: 0 UID: 0 PID: 5313 Comm: syz.0.0 Not tainted 6.15.0-rc3-syzkaller-0024=
+4-gc3137514f1f1 #0 PREEMPT(full)=20
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16=
+.3-2~bpo12+1 04/01/2014
+RIP: 0010:bch2_fill_extent+0x96e/0x970 fs/bcachefs/fs.c:1327
+Code: 0f 0b e8 d5 c2 8d fd 90 0f 0b e8 cd c2 8d fd e9 f7 fe ff ff e8 c3 c2 =
+8d fd 90 0f 0b e8 bb c2 8d fd 90 0f 0b e8 b3 c2 8d fd 90 <0f> 0b 90 90 90 9=
+0 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa
+RSP: 0018:ffffc9000d6c7420 EFLAGS: 00010287
+RAX: ffffffff8431fbed RBX: 0000000000000014 RCX: 0000000000100000
+RDX: ffffc9000e0f2000 RSI: 00000000000015b3 RDI: 00000000000015b4
+RBP: 0000000000000001 R08: ffff88801f690000 R09: 0000000000000004
+R10: 0000000000000012 R11: 0000000000000002 R12: 0000000000000000
+R13: ffffc9000d6c78a8 R14: 0000000000000002 R15: 0000000000000002
+FS:  00007fc1fa9426c0(0000) GS:ffff88808d6cd000(0000) knlGS:000000000000000=
+0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc1f9dae0a0 CR3: 000000003f77c000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ bch2_fiemap+0x2764/0x2970 fs/bcachefs/fs.c:1540
+ ioctl_fiemap fs/ioctl.c:220 [inline]
+ do_vfs_ioctl+0x1638/0x1eb0 fs/ioctl.c:840
+ __do_sys_ioctl fs/ioctl.c:904 [inline]
+ __se_sys_ioctl+0x82/0x170 fs/ioctl.c:892
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xf6/0x210 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fc1f9b8e969
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 =
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff f=
+f 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fc1fa942038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fc1f9db5fa0 RCX: 00007fc1f9b8e969
+RDX: 0000200000000100 RSI: 00000000c020660b RDI: 0000000000000004
+RBP: 00007fc1f9c10ab1 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fc1f9db5fa0 R15: 00007fff94ccddb8
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:bch2_fill_extent+0x96e/0x970 fs/bcachefs/fs.c:1327
+Code: 0f 0b e8 d5 c2 8d fd 90 0f 0b e8 cd c2 8d fd e9 f7 fe ff ff e8 c3 c2 =
+8d fd 90 0f 0b e8 bb c2 8d fd 90 0f 0b e8 b3 c2 8d fd 90 <0f> 0b 90 90 90 9=
+0 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa
+RSP: 0018:ffffc9000d6c7420 EFLAGS: 00010287
+RAX: ffffffff8431fbed RBX: 0000000000000014 RCX: 0000000000100000
+RDX: ffffc9000e0f2000 RSI: 00000000000015b3 RDI: 00000000000015b4
+RBP: 0000000000000001 R08: ffff88801f690000 R09: 0000000000000004
+R10: 0000000000000012 R11: 0000000000000002 R12: 0000000000000000
+R13: ffffc9000d6c78a8 R14: 0000000000000002 R15: 0000000000000002
+FS:  00007fc1fa9426c0(0000) GS:ffff88808d6cd000(0000) knlGS:000000000000000=
+0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc1f9dae0a0 CR3: 000000003f77c000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
---=20
-Patrick Donnelly
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
