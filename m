@@ -1,181 +1,108 @@
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7708821B9F2;
-	Thu,  1 May 2025 18:18:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DC6E26ADD;
+	Thu,  1 May 2025 18:41:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746123533; cv=none; b=Ui8KFm9CxGLlMdMCe6LOi45TJ3NDUVy9dkN/hmZasunXrBVML96gbkIDgnA3OWzS7Er4aqZ1i0+Ucp+iAtyzEHIc1HH9F5whH6nd1BBUu4/90QGqYlMypSGaav7KqEEdU1sdysOodLLVuINDxI4yzgBlCUd/JAWmD3ncvY6HGgs=
+	t=1746124917; cv=none; b=kw+QCDcZPixlrZH/0XFiBKYZLdEH1BzFeXAvYsiXsTqqa7S8AE9O0vYluHXNMd6mM4jqcehwTcboEDl5S5xA8xpJyrmDlq73AOBK9ACuUYBSR7jGD6tsw6UEB8FaQAZt6LEi7Phrrv6yS9H/E1IpqxDSZcHasCmeaFDqXYf9uvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746123533; c=relaxed/simple;
-	bh=8AJ5TYwtCJyFK7YoXPMcpOfVbXhPX9Uum8GFRy8zp9Q=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=PVNZSVXCb7HVxeHB+V94laqioAIvwri5Aa8DWIood0nTmJjynfquhuATpvAkc7x8+f+5J0AVrqfJHIfjiSreQtPV3pIujaKYa7i1SlyVJeMhlfDPu+rt5Orz5nd6mGNok64oGv0gKGPiAWxWVA/NWKBYawDKF4zk/SqUvOyw+xI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bHiZnqQa; arc=none smtp.client-ip=209.85.214.171
+	s=arc-20240116; t=1746124917; c=relaxed/simple;
+	bh=yShrmIa0hm4spkQmkFrPo0/Kk8dwsSmvCHWYMqRO/GM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YK5DcY9AWqXAV2JhPuN/8UZr1Ts+py/Ts4O6jD/m9qxY0PHAXUnLtJHgbCqLRq7Uhuu8FETr8gnqDyMiuMtG/Ps4FIqwRLdIMy9agmXEVQJwJE10PKYuDnI5IB9mythNzagt750Bjo4pi95VN/+JwhwwSDfnBFiTUralBHcsgQ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FFqYWLgS; arc=none smtp.client-ip=209.85.215.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bHiZnqQa"
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-225477548e1so14711625ad.0;
-        Thu, 01 May 2025 11:18:51 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FFqYWLgS"
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-af9925bbeb7so979803a12.3;
+        Thu, 01 May 2025 11:41:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746123530; x=1746728330; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=31M2a7MzQFnr+QMjJl1jAmf5oWz7cYiRof9uFBocW/c=;
-        b=bHiZnqQaMBIHcKek7LuB36Zyn3NeyyAkP8HdI1ox83zpTiQbtqlS0quQHGrwjOIbNk
-         3kCoWaHvSLmkoULw3EFMiNk1p4Wrr92qUQMlg0cjVyJcQLALjM0Q14emEaHXa4SgCHlW
-         CfHOpGX4qUYiHGdW6TSUaEsekAMMRBcNi4GCAiD+arWDcxrCKLtErY9ekH7x/nxXDe8s
-         zqNYMAzORzsuYzsXC3MGPnWrg+G+DKKSHNO/vdsMNfFQsedTg+9ITzony6sspYt6ZJXP
-         h9KiHTUI77HYvD/eo21opjvGWp1hP21vD60Sm603KYy+yZa/HFwpePS3OPVMc4DxHaRj
-         pImA==
+        d=gmail.com; s=20230601; t=1746124915; x=1746729715; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YhQT6dssDvXvtx3Tc+MsbRadwrkfsYHAfHw5r3hKG2I=;
+        b=FFqYWLgSfOgB0Pmzm1u+avYlZBS/Bnb3KdskD4ksRokdiZM3i0ZV/pXVvMzs7g3zB9
+         ZnR+VB6DEfZcFNHY46iCA6ill+LAa64jiOOUF0mIOB1VYeWb2BJCKuUneb8RmD8Zvf61
+         YPtSQG0e2u/RsEz0NXQzD9P433wusOy4q1aaSTqY8oVmAgWmaSdHoW2d2gVzCPCtLzyQ
+         VshtH9C0oYMUaS/i6ho5RP2airDgB+EvcQnG8N212j2R89Yw/6BsQJaBYlXDR8MGPq1f
+         ZD60Kte0VVdhdVd0g24iwNzonK/VagDOkvcW6/hHSwsILR6cbBLhOpKo5xBNXBdKshAy
+         02ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746123530; x=1746728330;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=31M2a7MzQFnr+QMjJl1jAmf5oWz7cYiRof9uFBocW/c=;
-        b=j16rXFKumE63QHNUx17KeTp6fG6iuERAzSP+Mls0rn5gLQRCWSrJ16vGdWrWH36VxW
-         pHrZIJSrwT3RQiVO+k0neF3OWVZiw1qz7lDQWuEh7xI+SWQuNAHIIj4STZa2mAfEgN4a
-         IaRyo9UhmhJfHuzgu9hb/PA0nQLng846cG93ILRM9w1PN43OPXSQnsdU58VGGdquYivH
-         JGXhIG/knjsgHiLLzQ+6+wjiYSlFOXWdm6hX4wZ2Ta+RMvN4hv/9O+FZ2dgQoDsmgRaE
-         t8EaT5caHJHzJK66zHTo2qOpuPxhw09/aD3wtuX4AykvMXZU3e44JV612We9Z0PKbd72
-         6p/g==
-X-Forwarded-Encrypted: i=1; AJvYcCUyAjPOk/jEP2VtIZgEY2pEeY9EaYMSz2kZJbuL2eU4u41KQcvTbUP1OQMW4yc6iN7C6EIO4V5fbCV4c3rlUA==@vger.kernel.org, AJvYcCXPhoXUu4cjteTrp7ltqmcfmCCB+QV4woDGrhlIp5j9d3uM0TNDumNk85x8tCgolFiVvpCFlDj0hpHhGV7v@vger.kernel.org, AJvYcCXtlK/6M/P+/FkPuCAFkBohh/SV+J9QDD2Gvyde8cxKSMoJpUgJqC3F6WbppQhx9OP9U7KLiraVThYdaypzpwVt@vger.kernel.org
-X-Gm-Message-State: AOJu0YzIymXWuh9iGvosMd8UUrptJ15Xsmu4q+RkqZNmijx1gXTO76WF
-	ZFAjrVpa+YXOEhU2p3v6z23SYm+ZErVw6RLXj6iAAZn3zDN2YrVsbMVo8A==
-X-Gm-Gg: ASbGncuLzIAXdpuyK3xx0WDMYf1nG7Sz41qz0CkKio8uVE0Eu52Xt4DtqzBnSDcB4jP
-	WKaPE4dxxB9J/O4VAsz/a874wRexpxIxr4TeAcErzwwXnpVReY+kaWJIntnYQhCZzHI1esRjuQa
-	vPPsRvFkrx+D7Edt5pZAs+x4+BnCYMgnCgcon9hVG5opebL66OIbYGHvZtSoorJ53E2ovd0jYPI
-	8XIiHU9GJoPyWJGWQC6IuZK+2Z3MG4jimOE940deVazVZ0YynVbpmnmY2pmmAGENbmkE0Em9xLv
-	RxOrnPF/0GSOwjXhWpfTYKLt
-X-Google-Smtp-Source: AGHT+IHy6Ll3Z23nZVuIrTV6UN983Ah2h/ki0XZ6sOPNNuE027Lh/hRUnu81RjOmmeyjewU+wWuOdA==
-X-Received: by 2002:a17:902:d482:b0:224:1ec0:8a16 with SMTP id d9443c01a7336-22e1033c89cmr654615ad.21.1746123530559;
-        Thu, 01 May 2025 11:18:50 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22e0bc7b0aasm9831765ad.169.2025.05.01.11.18.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 01 May 2025 11:18:49 -0700 (PDT)
-Content-Type: text/plain;
-	charset=utf-8
+        d=1e100.net; s=20230601; t=1746124915; x=1746729715;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YhQT6dssDvXvtx3Tc+MsbRadwrkfsYHAfHw5r3hKG2I=;
+        b=ZN3S2xK9rjcHF8PQsMAR8uuiQFqXqtVk2b16PZhlqmMBXoS+Uw0K1IEcsJITh3z7Ev
+         ozsSRVnwzCIpRUAkJa5sH3HUzg/MBubhlL8305fcvxPXwEEMyB3lb6OtaWNMDJn6Yp5E
+         0E1XDIigsqmv8woBQo/3HsFiu5U3OkTaxpQ5+h/7v3HgEl7j+VY304zzgktQHA3i9Dhc
+         2HSf9dtU0gvaRAXzDQd7l4xduMt8OoW3WO51xzXn8ZaSNpxyJW36w1X4cXkw93htHH7H
+         rn3JjLH+bauhZR82wjXPhZ0rr8Z1K3XlGzvnS8mfuP7yQtoQpV8ziKAKZ034g2HuEY/g
+         6lJg==
+X-Forwarded-Encrypted: i=1; AJvYcCU/4hX+VD1G5Q7X71tcPYzQtFOdr1NIaGi6KQS6GShAv/hLsCDyrhTxVYicEGh/1+J3YXeYkatdKWB3kru2Q7Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxFmvdfyY+P0kaWOybpHmVFAxvB2B1+TfPGY8cbrN+g0wGU10GE
+	RKIAvP/Q1geCdgOaOtykbciCW2p7XRuuFVd8F5okVmJsy8ZOINDSQYjIvw==
+X-Gm-Gg: ASbGncvq9aNUIUCZGpKtCvHeeyyIq5p6oDDRTCSB+noS0QzOegv4r0sgIJJo//uGoSA
+	NhTQIQDpysTJr5yv4vwzt6YJ8ISiaFoSLUJP0RNJlOe19dVBbrifuDc8K01ETzxolv0SGF5LbLy
+	UyE1M5kcsLdcMJJRMPRGqInirC9T+JLVQvOWa9l+nQTqOJbQL/ZEuIzAQVkyM9/5cI2+Fw85Mv2
+	HUmbHbacSyCUWNAUepxAd4sXmvd4xOXJ9PAyjT0GQUJQ3hJDThhjcW59A+rHCugGpU5H2a5fVKJ
+	2AlnDHrM0eb6ngc=
+X-Google-Smtp-Source: AGHT+IGTlS1o7cSVp0+NIb/lhgi5mNKQpabZD2ouBQky20YAwQp9hQAV5+WaA2iE+4cr/KiChEMmPQ==
+X-Received: by 2002:a05:6a20:12cd:b0:20a:4698:9d3 with SMTP id adf61e73a8af0-20cde56a5b2mr57919637.8.1746124915346;
+        Thu, 01 May 2025 11:41:55 -0700 (PDT)
+Received: from localhost ([2402:d0c0:11:86::1])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7404ef1933dsm1183487b3a.68.2025.05.01.11.41.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 May 2025 11:41:54 -0700 (PDT)
+From: Alan Huang <mmpgouride@gmail.com>
+To: kent.overstreet@linux.dev,
+	kees@kernel.org,
+	gustavoars@kernel.org,
+	thorsten.blum@toblux.com
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	Alan Huang <mmpgouride@gmail.com>
+Subject: [PATCH] Revert "bcachefs: Annotate struct bch_xattr with __counted_by()"
+Date: Fri,  2 May 2025 02:41:50 +0800
+Message-ID: <20250501184150.200319-1-mmpgouride@gmail.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.500.181.1.5\))
-Subject: Re: [REGRESSION][BISECTED] erroneous buffer overflow detected in
- bch2_xattr_validate
-From: Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <aBO2XVSisMXtU8nD@archlinux>
-Date: Fri, 2 May 2025 02:18:33 +0800
-Cc: kent.overstreet@linux.dev,
- Thorsten Blum <thorsten.blum@toblux.com>,
- Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
- Nathan Chancellor <nathan@kernel.org>,
- Bill Wendling <morbo@google.com>,
- Kees Cook <kees@kernel.org>,
- regressions@lists.linux.dev,
- linux-bcachefs@vger.kernel.org,
- linux-hardening@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>,
- ardb@kernel.org,
- ojeda@kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <DD12E746-2B59-4AF5-B396-4700C6D099F9@gmail.com>
-References: <20241017165522.GA370674@thelio-3990X>
- <ZxWvcAPHPaRxp9UE@archlinux> <20241021192557.GA2041610@thelio-3990X>
- <ZxpIwkfg9_mHO3lq@archlinux> <20241025011527.GA740745@thelio-3990X>
- <CANiq72nbyqrzGr3Uw_vx-+8DLiv6KbeULrxpyK8Lh4ma15cq8g@mail.gmail.com>
- <Zxu4yhmxohKEJVSg@archlinux> <775D7FF5-052B-42B9-A1B3-3E6C0C8296DA@gmail.com>
- <aBOtxplvvpgHed7o@archlinux> <D9967EB7-7F4D-4122-9470-DB14700FD906@gmail.com>
- <aBO2XVSisMXtU8nD@archlinux>
-To: Jan Hendrik Farr <kernel@jfarr.cc>
-X-Mailer: Apple Mail (2.3826.500.181.1.5)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-> On May 2, 2025, at 01:58, Jan Hendrik Farr <kernel@jfarr.cc> wrote:
->=20
-> On 02 01:28:28, Alan Huang wrote:
->>=20
->> Thanks,
->> Alan
->>=20
->>=20
->>=20
->>> On May 2, 2025, at 01:22, Jan Hendrik Farr <kernel@jfarr.cc> wrote:
->>>=20
->>>>=20
->>>> I wonder if the __counted_by(x_name_len) in struct bch_xattr is =
-needed, since there is also a value after x_name.
->>>=20
->>> Wait a minute. Are you saying that the value with length x_val_len
->>> is behind the name (of length x_name_len) at the end of the struct.
->>> So essentially the flexible array member x_name has a length of
->>> x_name_len + x_val_len and contains both the name and value?
->>=20
->> Yes.
->=20
-> I assume you can't easily change the struct such that there exists a =
-member
-> that contains the result of x_val_len + x_name_len, correct?
->=20
-> In that case the only available course of action at this time is to
-> remove the __counted_by, because it is incorrect.
->=20
-> In addition I would recommend changing the name of x_name to something
-> like x_name_and_val or similar. It's very misleading to call it x_name
-> when it also contains the value.
->=20
->>=20
->>>=20
->>> If that's the case:
->>>=20
->>> 1. that's not at all clear from the struct definition
->>> 2. __counted_by(x_name_len) is not correct in that case
->>>=20
->>=20
->> Both clang and gcc say:
->>=20
->>    =E2=80=A2 p->array has at least p->count number of elements =
-available all the time.=20
->>=20
->> Note the at least here. Though I think the counted_by is misleading =
-here.
->>=20
->=20
-> Here's how clang defines __bdos language extension [1]. Also note the
-> attribute reference for __counted_by [2]. It assumes that the flexible =
-array
-> member contains exactly the amount of elements that are specified.
->=20
-> I guess your quote from the gcc docs is misleading, as gcc's behavior
-> is like clang's.
->=20
-> The kernel uses the type & 2 =3D=3D 0 case.
->=20
-> So let's say you have a simple struct like so:
->=20
-> struct foo{
-> int val_len;
-> char val[] __counted_by(val_len);
-> }
->=20
-> If val_len is 10 then foo->val[10] will be considered out of bounds.
-> Even if you did a malloc for enough space.
+This reverts commit 86e92eeeb23741a072fe7532db663250ff2e726a.
 
-OK, thanks, I=E2=80=99ll revert that.
+After the x_name, there is a value. According to the disscussion[1],
+__counted_by assumes that the flexible array member contains exactly
+the amount of elements that are specified. Now there are users came across
+buffer overflow caused by the __counted_by here[2], so revert that.
 
->=20
-> [1] =
-https://github.com/llvm/llvm-project/blob/3b88805ca20018ae202afd3aea39f4fa=
-856a8c64/clang/docs/LanguageExtensions.rst?plain=3D1#L5502-L5507
-> [2] =
-https://clang.llvm.org/docs/AttributeReference.html#counted-by-counted-by-=
-or-null-sized-by-sized-by-or-null
->=20
->=20
-> Best Regards
-> Jan
+[1] https://lore.kernel.org/lkml/Zv8VDKWN1GzLRT-_@archlinux/T/#m0ce9541c5070146320efd4f928cc1ff8de69e9b2
+[2] https://privatebin.net/?a0d4e97d590d71e1#9bLmp2Kb5NU6X6cZEucchDcu88HzUQwHUah8okKPReEt
 
+Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+---
+ fs/bcachefs/xattr_format.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/bcachefs/xattr_format.h b/fs/bcachefs/xattr_format.h
+index c7916011ef34..e9f810539552 100644
+--- a/fs/bcachefs/xattr_format.h
++++ b/fs/bcachefs/xattr_format.h
+@@ -13,7 +13,7 @@ struct bch_xattr {
+ 	__u8			x_type;
+ 	__u8			x_name_len;
+ 	__le16			x_val_len;
+-	__u8			x_name[] __counted_by(x_name_len);
++	__u8			x_name[];
+ } __packed __aligned(8);
+ 
+ #endif /* _BCACHEFS_XATTR_FORMAT_H */
+-- 
+2.48.1
 
