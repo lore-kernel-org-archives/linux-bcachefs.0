@@ -1,77 +1,122 @@
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0CD4298CB2
-	for <linux-bcachefs@vger.kernel.org>; Wed, 30 Apr 2025 20:35:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD0A53365;
+	Thu,  1 May 2025 02:48:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746045307; cv=none; b=C09wj/S/+RzUw/WOaz3m0j6/0lXgQywqeKMhksfms0T8ezGrHcSrMGCSiivyeLLV8ZEko3Cq6bX5YVTMSKp/QpWcKlpM3pWZMkWqMJRjZdDcZJlz9jxVXhGU5ucUCK1ctgyxtZfQQhjcxfwg2BT4fK6vqN227/PAaAjCEvIhwm0=
+	t=1746067727; cv=none; b=iQFiQkayNNp6JFkZfd+UR8NvVIIv/l3YkTRdivGLiK+T2V/d816NCheYUbSal/n7UbqWRhWpzmVicIRdZrkSqUvR/TkFKs8+2cEu5km4hosNpmIG3FkJkN4UymxJNEUJEyeO9f1EfuFWqg1fPh1cs9tLY//iFfZfVhk5okInkRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746045307; c=relaxed/simple;
-	bh=4/XsuOC0IPr5wwJxQNqjW0/dFud1iOENDHvvrETODY4=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=hmK/1oL8PWyjdSsMbvWVlRNTDsLjoPO4G74vPlS5Ys4VayI/Ki3sabu/1PXzs6VFBCiIr55MXKj1HshZK5dksNBpA87dEECVhtkLWz10s3/M8wHyvfOaUbY/AXr+0+qbv6Mu4xXt6jD7ugafx6n2q+Z8c2gM1kRUqdH5dKKeTck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3d5da4fb5e0so2625035ab.2
-        for <linux-bcachefs@vger.kernel.org>; Wed, 30 Apr 2025 13:35:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746045305; x=1746650105;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=e32cUp/b3R++mkuBmGQFgYOpYmO4M0/4mpbcHu13CvM=;
-        b=R/kihkMXw26gkVWBJJEWUsN3TBzAGRTKRkJiEWA2fBpFv83xh6a2UWOM6qXZGaYE8J
-         SI1pnpxzHJFLS7FPK/z3knDMlfDxTRN0pBuz8FUJmeCE1s8I5drjCAJFWgY+k6BHbsfl
-         eWq5lwQU830K32H9kfN6DVgzB1Df5HdAPitgNPen7EjrvhDDole1zuItTgmXLu59Jlx7
-         BzFdday/LRsJQR8dFSdjzjaF8gFkieCj6vZdhEXcM0U6eZklslrdRQ38E3sCdt3dNWzY
-         p+a5LHKccwo0dlp8yR9MFHnu+jfyFvBsf40z99uet1iqZKNhbxSKXkLANLltm5XLxG0+
-         xuAA==
-X-Forwarded-Encrypted: i=1; AJvYcCUm1s+wTvraS0l6ERrYLamn4RgLRrS6xuu8u02RxCNCMUfa8TrpJwALTbsvDW2GVX3shAUtv5OyechTjAyqlg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyB4/yq6hQbXyAJ8JHy5s/zJmOrEEz73R6CLgZ/4bslUR58cfwj
-	dZd0cPVFm4BWPU0P4PLwbRjzOrGPEDlzoWnST6NG+ORWOAQx09gZnM3wIkR7eEteH5tEWhqwZNF
-	bVJ6dQy6NtzLeUiGjQoEbySW4dJQU1kGU0PrY005X99M2i+mE7gR/OIs=
-X-Google-Smtp-Source: AGHT+IEBSWGzoRlHuLR+qdi2Ai+Wn5WkkdIy2n2sXyISJxwgZlUJfE+Jc92i1axHYa26ZBE0+rhXJtskgAwVShWtbKXhIN+Iz6ix
+	s=arc-20240116; t=1746067727; c=relaxed/simple;
+	bh=SiR8qUZCHcaaM06puI2UAqKKAllCO1PPU9VZ+0A/yzo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HfeggEaW5XX3OZrLN7AJaRuF/38IY0fm78OLC9VA4YUtPC2PWH8ciabzOqJ53NqF1DW2VbOdbo0b/3D0TiZjzU0hKo5oa6QoxbbKSfa5YHO6Q2Lx+3ew7GmISXeGpGjyN7KzZA+W/SqV2YLYoY8e1idcjKn6OGigKBC1IW6BqFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=fail (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=Bj7ap4Jj reason="signature verification failed"; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="Bj7ap4Jj"
+Received: from [IPV6:2601:646:8081:9485:ffb5:969f:14f8:8aa9] ([IPv6:2601:646:8081:9485:ffb5:969f:14f8:8aa9])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 5412mQDW1193808
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Wed, 30 Apr 2025 19:48:26 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 5412mQDW1193808
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2025042001; t=1746067707;
+	bh=7PRkK9qqVbjo+7so5yHj1jsP+OQZAeYuOWlcUQa1x8A=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Bj7ap4JjvS2526GBrqy6wR3W7Q4NgXUX7C1Nii91CwwfCtDL2OK3p/Rns92gK8E2s
+	 TfuXIJPqMHYQeH2OfG+y3uoaNw740EaLDQWtMKLAkZV3hoIGb/3tnfDtmk1WjVBfjF
+	 Q8fQ5h7U2e/L5rv2db7SDC5YCA36m73dAj797nuftG5TjNdlRXwJcVmeKRN8kW+mZs
+	 /IoBdiwJDoOF3ap5kcCVIdBTUiaWg5uXOZLmvmIJKlEKfZn0l0mVCxkoBkiyZxAnTE
+	 HEHcQw78hBdFKzZDKeRsDRleHp/CPqQzz+6cAKUGeR5zfkDgaIfgyWHf5j2P9ZOpy8
+	 TyTFGrGY/uL6A==
+Message-ID: <d87f7b76-8a53-4023-81e2-5d257c90acc2@zytor.com>
+Date: Wed, 30 Apr 2025 19:48:20 -0700
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3309:b0:3d3:fdcc:8fb8 with SMTP id
- e9e14a558f8ab-3d967fad850mr45222025ab.10.1746045304833; Wed, 30 Apr 2025
- 13:35:04 -0700 (PDT)
-Date: Wed, 30 Apr 2025 13:35:04 -0700
-In-Reply-To: <0000000000003392c606179ddd1a@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68128978.050a0220.3a872c.0008.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs] KASAN: use-after-free Read in scatterwalk_copychunks
-From: syzbot <syzbot+8c4acf719c3fc41e8439@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, davem@davemloft.net, herbert@gondor.apana.org.au, 
-	kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [GIT PULL] bcachefs fixes for 6.15-rc4
+To: "Theodore Ts'o" <tytso@mit.edu>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <l7pfaexlj6hs56znw754bwl2spconvhnmbnqxkju5vqxienp4w@h2eocgvgdlip>
+ <CAHk-=wjajMJyoTv2KZdpVRoPn0LFZ94Loci37WLVXmMxDbLOjg@mail.gmail.com>
+ <ivvkek4ykbdgktx5dimhfr5eniew4esmaz2wjowcggvc7ods4a@mlvoxz5bevqp>
+ <CAHk-=wg546GhBGFLWiuUCB7M1b3TuKqMEARCXhCkxXjZ56FMrg@mail.gmail.com>
+ <20250425195910.GA1018738@mit.edu>
+Content-Language: en-US
+From: "H. Peter Anvin" <hpa@zytor.com>
+In-Reply-To: <20250425195910.GA1018738@mit.edu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-syzbot suspects this issue was fixed by commit:
+On 4/25/25 12:59, Theodore Ts'o wrote:
+> 
+> Another use case was Valve who wanted to support Windows games that
+> expcted case folding to work.  (Microsoft Windows; the gift that keeps
+> on giving...)  In fact the engineer who worked on case folding was
+> paid by Valve to do the work.
+> 
+> That being said, I completely agree with Linus that case insensitivity
+> is a nightmare, and I don't really care about performance.  The use
+> cases where people care about this don't have directories with a large
+> number of entries, and we **really** don't want to encourage more use
+> of case insensitive lookups.  There's a reason why spent much effort
+> improving the CLI tools' support for case folding.  It's good enough
+> that it works for Android and Valve, and that's fine.
+> 
+[...]
+> 
+> Perhaps if we were going to do it all over, we might have only
+> supported ASCII, or ISO Latin-1, and not used Unicode at all.  But
+> then I'm sure Valve or Android mobile handset manufacturers would be
+> unhappy that this might not be good enough for some country that they
+> want to sell into, like, say, Japan or more generally, any country
+> beyond US and Europe.
+> 
+> What we probably could do is to create our own table that didn't
+> support all Unicode scripts, but only the ones which are required by
+> Valve and Android.  But that would require someone willing to do this
+> work on a volunteer basis, or confinuce some company to pay to do this
+> work.  We could probably reduce the kernel size by doing this, and it
+> would probably make the code more maintainable.  I'm just not sure
+> anyone thinks its worthwhile to invest more into it.  In fact, I'm a
+> bit surprised Kent decided he wanted to add this feature into bcachefs.
+> 
+> Sometimes, partitioning a feature which is only needed for backwards
+> compatibiltiy with is in fact the right approach.  And throwing good
+> money after bad is rarely worth it.
+> 
 
-commit bcf77a05fb3d6210026483703bcacb22ed961c99
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Fri Nov 8 05:25:18 2024 +0000
+[Yes, I realize I'm really late to weigh in on this discussion]
 
-    bcachefs: Fix hidden btree errors when reading roots
+It is worth noting that Microsoft has basically declared their 
+"recommended" case folding (upcase) table to be permanently frozen (for 
+new filesystem instances in the case where they use an on-disk 
+translation table created at format time.)  As far as I know they have 
+never supported anything other than 1:1 conversion of BMP code points, 
+nor normalization.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10dab1b3980000
-start commit:   da4373fbcf00 Merge tag 'thermal-6.12-rc7' of git://git.ker..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=347f0ef7656eeb41
-dashboard link: https://syzkaller.appspot.com/bug?extid=8c4acf719c3fc41e8439
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1579235f980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1379235f980000
+The exFAT specification enumerates the full recommended upcase table, 
+although in a somewhat annoying format (basically a hex dump of 
+compressed data):
 
-If the result looks correct, please mark the issue as fixed by replying with:
+https://learn.microsoft.com/en-us/windows/win32/fileio/exfat-specification
 
-#syz fix: bcachefs: Fix hidden btree errors when reading roots
+This is basically an admission that the problems involved with case 
+folding are unsolvable, and just puts a tourniquet on the wound.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+It also means that "legacy OS compatibility" is really a totally 
+different problem than "proper Unicode normalization" and that the 
+former far more limited in scope.
+
+	-hpa
+
