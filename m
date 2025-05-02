@@ -1,219 +1,145 @@
-Received: from fhigh-a3-smtp.messagingengine.com (fhigh-a3-smtp.messagingengine.com [103.168.172.154])
+Received: from smtpbguseast2.qq.com (smtpbguseast2.qq.com [54.204.34.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E0861D554;
-	Fri,  2 May 2025 01:56:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E454F18FDBE;
+	Fri,  2 May 2025 03:22:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.204.34.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746151000; cv=none; b=aFRyXhAxFJc7Y+kiRlyquNwR999p4jlLFnqJ3+KeOLrb1bmTp27dAnBdSZRq+YqCYsRHVHbv96mL5Qh18Md9ROuJbyeezTwut+Km8MXD4mfZlLsK4+4xH4KK8u1DBgOCLpusmBGLAp4IQYvtGMDswTINLAv54vwNE7xP86x7c9I=
+	t=1746156184; cv=none; b=STNulmw62ug9hkxkZAK+F3fbj4hsccrWqp+NE+0hQLBFLsp5oHxrker3Cm+A8s1Hla537uSm6iEE/pQkvIhapNRo6umiskISasemq4xvp7IFCqms5wZi4C05ReYtQ2NDbjLBtz1X7XdwZHe9uhubzZL9WIzvReTvvYn+uexGMBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746151000; c=relaxed/simple;
-	bh=oIAA241I10bL+UcbexuTYjT4ifhRDzrM/O1Ae9pQ040=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AgYJK2pKcrsrBLvsHD7giV8n57J0LOGR1ADUl5AeqcyudmvUobRPd8vwb9mUPiR5IzE1PqocaTWjOgOJvUmWFsSeL8Ak1hYk1FooqbP6dtv23+ZJ/N98vBZgfIUGJroqQgnWCqetKHzVrxfobfte2vW5LiUstXEVeflOai/Vmrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc; spf=pass smtp.mailfrom=jfarr.cc; dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b=NiPfbSem; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=sjXWJkAt; arc=none smtp.client-ip=103.168.172.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jfarr.cc
+	s=arc-20240116; t=1746156184; c=relaxed/simple;
+	bh=ckYDWQwEPzMY+F4FVGR8/ZX72Uz3k8AqlwHf/u2+w40=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=XCc0GSPfnOJeNFTf7QsEhAWgLst0k1Mk5lOxUC6+co+RgOltXGs3VN94HAi9PEZrvElPStzfphi6LAT0jqnqDfw4eujxGIC3iDI002+85lCZkvn3MpRzOBelQUZmASlQCOE4PgLuBNSRxJ82bbVHSs2wv+2LY8tCN+01lxvQaFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=m.fudan.edu.cn; spf=pass smtp.mailfrom=m.fudan.edu.cn; dkim=pass (1024-bit key) header.d=m.fudan.edu.cn header.i=@m.fudan.edu.cn header.b=iW7cFQmH; arc=none smtp.client-ip=54.204.34.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=m.fudan.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=m.fudan.edu.cn
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b="NiPfbSem";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="sjXWJkAt"
-Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 1427A11401FB;
-	Thu,  1 May 2025 21:56:38 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-01.internal (MEProxy); Thu, 01 May 2025 21:56:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1746150998; x=1746237398; bh=CqPLmB/osf
-	3U7LXU6ml8lh57mZM1Snh5zBF/nbIIAeI=; b=NiPfbSemoq7mp0e31OWCFvEyJ5
-	UxtVqO48F5AHHJwEUV0YjrCrMprm0NS9pUzt/G3q6u5cJ3X8nrZt8RY0R8l7JPns
-	jU5v+uxD/fEnsaZQvVaZYYkSwOhbLv0rrEwHeA1GMcTC3Dj9wQP8DDtUlag6bDzV
-	qLeaMM+6FHqifl079Hl4TQsoh1+eiNdHRBfRayqcI4zI8I46VI2UjYnIAJTfdWFb
-	DAvpZ5MUNpe4bO9IZdmxuZvS7+2dGcvWzpSXw+QtSqUMxwKZctskQL7vrThbU2K2
-	enX9FvzEpeeIqplJkEWbMZsIBg7/gknenIukx6gXy3I7rXPQNV7ZphsAx8BQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1746150998; x=1746237398; bh=CqPLmB/osf3U7LXU6ml8lh57mZM1Snh5zBF
-	/nbIIAeI=; b=sjXWJkAtkN+VRgcQomaIcg5aDdDUvRPtjQGGtiA4xhuQlcEUXRf
-	QKy17qwbHc2D8/C1trHSti8phBfAmPvNLOygluAonBRdXmlWIzI/h0I/9C3jxNpZ
-	eieeMS2SI1X7vIK5l62H6pPou0um7ckOAxVfx8KEKLDqNrUPUAkTGaIQ6zIVYheO
-	qMNeZLzvAFCArdoepRWnLdMavAXZ0AG/RPMeyi2b2kIOzSX7Tv/rksTX6rhcN/jY
-	+CMn60mQsnD/HqWnceO+hnVm7qLig9ZrbRSECQSjafWppwP6y3URsjO6gsQ+JbRF
-	vFto1gUhb7xPJvcQitvQZ1xd4ooivwd4QNg==
-X-ME-Sender: <xms:VSYUaCWmR_7xh1Li7Q--snBH4rqU9eoY9_CBspHZZdhcGecEdF6apQ>
-    <xme:VSYUaOkX2SvEQw4MRly5W7t_vsft-q9myozf3cUrtrNsRAJuImrESd8Tm3i8RizWY
-    RU_ugUldm_EN5JNTu8>
-X-ME-Received: <xmr:VSYUaGbcFsdb8xC3odfuPSzg-l_80A_p9AKQRKDuiENYd00CyfPX87LAh7OtfJaVaBpJQWwZFOsnY1yFYurfFeLncGFl>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvjeduudelucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffuc
-    dlfedtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhm
-    peflrghnucfjvghnughrihhkucfhrghrrhcuoehkvghrnhgvlhesjhhfrghrrhdrtggtqe
-    enucggtffrrghtthgvrhhnpedukeegffdtfeeihfehteevvdeiueetteelgfefvdfhleeu
-    feegieduieduhfekieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehkvghrnhgvlhesjhhfrghrrhdrtggtpdhnsggprhgtphhtthhopeejpdhm
-    ohguvgepshhmthhpohhuthdprhgtphhtthhopehmmhhpghhouhhrihguvgesghhmrghilh
-    drtghomhdprhgtphhtthhopehkvghnthdrohhvvghrshhtrhgvvghtsehlihhnuhigrdgu
-    vghvpdhrtghpthhtohepkhgvvghssehkvghrnhgvlhdrohhrghdprhgtphhtthhopehguh
-    hsthgrvhhorghrsheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepthhhohhrshhtvghn
-    rdgslhhumhesthhosghluhigrdgtohhmpdhrtghpthhtoheplhhinhhugidqsggtrggthh
-    gvfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqhhgr
-    rhguvghnihhnghesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:VSYUaJXnqjWQ46tM2yh3u48vc83bJIO25Yj_fwWAlfqfVvh0gKGVEQ>
-    <xmx:VSYUaMk8dFWhjExSqq1Wjmsrle9XSwGk594_V9ST6vymdtM0HuCCjQ>
-    <xmx:VSYUaOcTTalJlKzH2miIKaBC3DNrGjiO4LSw6jQDy4BtoFjRtqFBSA>
-    <xmx:VSYUaOGURHOAAx-5jPs_oOAsboQWB7LYCvCFW6fj4LXEeCCIs6uTTg>
-    <xmx:ViYUaF3Rjjj311UZ3LaKZN9LSiH3bppdj2_IwKtHmotMmw2dGOlZtgnE>
-Feedback-ID: i01d149f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 1 May 2025 21:56:36 -0400 (EDT)
-Date: Fri, 2 May 2025 03:56:35 +0200
-From: Jan Hendrik Farr <kernel@jfarr.cc>
-To: Alan Huang <mmpgouride@gmail.com>
-Cc: kent.overstreet@linux.dev, kees@kernel.org, gustavoars@kernel.org,
-	thorsten.blum@toblux.com, linux-bcachefs@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 2/2] bcachefs: Rename x_name to x_name_and_value
-Message-ID: <aBQmU9xS0exdHoDk@archlinux>
-References: <20250501200132.216859-1-mmpgouride@gmail.com>
- <20250501200132.216859-2-mmpgouride@gmail.com>
+	dkim=pass (1024-bit key) header.d=m.fudan.edu.cn header.i=@m.fudan.edu.cn header.b="iW7cFQmH"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=m.fudan.edu.cn;
+	s=sorc2401; t=1746156140;
+	bh=ckYDWQwEPzMY+F4FVGR8/ZX72Uz3k8AqlwHf/u2+w40=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=iW7cFQmHsVFFQ/2ZiTPdlqWAp1b0lErWdFppEGRddczGcVCaUMfK4x4eor6d4VkHJ
+	 TlUuoptapO0cwpS8DKeMgOYzYEf3drHbGH05ghFUtvw1Ex3pzPSClkCPNDfGWuYKb9
+	 A7tBM7oh+PJQCnbPOODkKeqSDmq+NFoNxzH3Wx+0=
+X-QQ-mid: zesmtpip4t1746156135t5c301e7a
+X-QQ-Originating-IP: zKhRLbclV4BV+CKjip09tor4cB/qKGuZedKdI9w6FN0=
+Received: from TYSPR06MB7158.apcprd06.prod.out ( [localhost])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Fri, 02 May 2025 11:22:14 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 15003951076817169931
+EX-QQ-RecipientCnt: 6
+From: "huk23@m.fudan.edu.cn" <huk23@m.fudan.edu.cn>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+CC: "jjtan24@m.fudan.edu.cn" <jjtan24@m.fudan.edu.cn>,
+	=?utf-8?B?55m954OB5YaJ?= <baishuoran@hrbeu.edu.cn>, linux-bcachefs
+	<linux-bcachefs@vger.kernel.org>, "syzkaller@googlegroups.com"
+	<syzkaller@googlegroups.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: WARNING in bch2_fs_release
+Thread-Topic: WARNING in bch2_fs_release
+Thread-Index: AQHbuxC8lMGcXxXIU0uK+izgNGf1ng==
+X-MS-Exchange-MessageSentRepresentingType: 1
+Date: Fri, 2 May 2025 03:22:13 +0000
+Message-ID:
+	<TYSPR06MB715874368EFB5D2A09C527B1F68D2@TYSPR06MB7158.apcprd06.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-Exchange-Organization-SCL: -1
+X-MS-TNEF-Correlator:
+X-MS-Exchange-Organization-RecordReviewCfmType: 0
+msip_labels:
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250501200132.216859-2-mmpgouride@gmail.com>
+X-QQ-SENDSIZE: 520
+Feedback-ID: zesmtpip:m.fudan.edu.cn:qybglogicsvrgz:qybglogicsvrgz8a-1
+X-QQ-XMAILINFO: OZsapEVPoiO6rTDBM1jxg1PPAgKRd7XMi5vNPZROXionvXlGTg3UkS+y
+	7/Zi8Fb/3D/fMLNle7OBrO/9S4Y/8nKQSqzVoLRGaUJ84G19FGLIQeLYU4zRUln6QLIDju7
+	HADBuqUz8G3ACZiTH+JL36rDO684I7bz81QSvh5k2w+UCE5ijlYpo7zH9Ftwf4e9tm59xoJ
+	8XJoe2uRoOaqGpSl/HQ7NnjQScns/+JzRJUVqnXLKfXQjNnaXDNODnARANsWTaKYr0usK4o
+	avrN/mI/Em0fMGfQP+J7r5W0LEXVCaRmsP1w3Mzj2KoBaCmvneVccJ14g6SIZmdxVwl3imS
+	lkQYtun3BBb1LQT7R3kjopxee1Al77nlyX1XBVdqrSEs7VeczSwpQMcfNe8VgYVp97P8FB8
+	94Nr9mVwNwLV43hxuXZE6e92ovcnaJQlvKn72V8rA+fpUUU2KHBMEo3gIKCbIp8eBqtK4yK
+	8AoWqOro5KpEM9+lj1WKpPxv4qqnm+/PnaseVKV/c4Z/KNB7i8oyFpuyuOBmgQxG/AjNNVL
+	qEl/aHkbIbyCicJ+9VhRZvm2VF8fywIpcUWbsi8lteITw793vWl+f6tquxF/0GpyAb0HPnD
+	G9Z3xq5eLq2uwB78mVzkX8+Aw27d9/+DX/KTG7Z0gUBgQF9nZVuouihz3x3Y88IDatjysPy
+	EJddvjUL73w//ue1aoAF9dMwkn0zrS+jf8zKqG7pVbMlFvK+Tj6yVt+DAv35lw1v0pc6kSi
+	SHBIJgEO+DEokiuUc4TNq8ZhCfWrxQ77C6sY9v8IlSO7LRWi4j4iS0Fpj5bEAdlxKZNJP6N
+	Stw8/4OSQbEZSQuFHF5wlou8uSEbp0bEX4EJCNMvar5h6lbrh9CCe2bw4U/NQWhRtPscqKY
+	MrnBAyYQ4OVOzF5oK5TpxyUHpOAJ8LNGW9CgwWwpTHRy8uQhodroibmCsfkin0KuSMhG4Dy
+	93GL48px7+Sf3SQt91eDluQEn9dYMV4b34HNwHinQEj5RaUtazq24I+rbROJhBywhcblGmj
+	XC5BcQJ+YAVV1ygJoNyCEi7+Sz+qxtiB9yEmqqvWTPr0O9C+JFcrlAPqVBEz0=
+X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
+X-QQ-RECHKSPAM: 0
 
-On 02 04:01:32, Alan Huang wrote:
-> The flexible array contains name and value, the x_name is misleading.
-> 
-> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
-
-Reviewed-by: Jan Hendrik Farr <kernel@jfarr.cc>
-
-> ---
->  fs/bcachefs/xattr.c        | 16 ++++++++--------
->  fs/bcachefs/xattr.h        |  4 ++--
->  fs/bcachefs/xattr_format.h |  4 ++--
->  3 files changed, 12 insertions(+), 12 deletions(-)
-> 
-> diff --git a/fs/bcachefs/xattr.c b/fs/bcachefs/xattr.c
-> index 3d324e485ee9..b8bc2fb04f15 100644
-> --- a/fs/bcachefs/xattr.c
-> +++ b/fs/bcachefs/xattr.c
-> @@ -38,7 +38,7 @@ static u64 xattr_hash_bkey(const struct bch_hash_info *info, struct bkey_s_c k)
->  	struct bkey_s_c_xattr x = bkey_s_c_to_xattr(k);
->  
->  	return bch2_xattr_hash(info,
-> -		 &X_SEARCH(x.v->x_type, x.v->x_name, x.v->x_name_len));
-> +		 &X_SEARCH(x.v->x_type, x.v->x_name_and_value, x.v->x_name_len));
->  }
->  
->  static bool xattr_cmp_key(struct bkey_s_c _l, const void *_r)
-> @@ -48,7 +48,7 @@ static bool xattr_cmp_key(struct bkey_s_c _l, const void *_r)
->  
->  	return l.v->x_type != r->type ||
->  		l.v->x_name_len != r->name.len ||
-> -		memcmp(l.v->x_name, r->name.name, r->name.len);
-> +		memcmp(l.v->x_name_and_value, r->name.name, r->name.len);
->  }
->  
->  static bool xattr_cmp_bkey(struct bkey_s_c _l, struct bkey_s_c _r)
-> @@ -58,7 +58,7 @@ static bool xattr_cmp_bkey(struct bkey_s_c _l, struct bkey_s_c _r)
->  
->  	return l.v->x_type != r.v->x_type ||
->  		l.v->x_name_len != r.v->x_name_len ||
-> -		memcmp(l.v->x_name, r.v->x_name, r.v->x_name_len);
-> +		memcmp(l.v->x_name_and_value, r.v->x_name_and_value, r.v->x_name_len);
->  }
->  
->  const struct bch_hash_desc bch2_xattr_hash_desc = {
-> @@ -96,7 +96,7 @@ int bch2_xattr_validate(struct bch_fs *c, struct bkey_s_c k,
->  			 c, xattr_invalid_type,
->  			 "invalid type (%u)", xattr.v->x_type);
->  
-> -	bkey_fsck_err_on(memchr(xattr.v->x_name, '\0', xattr.v->x_name_len),
-> +	bkey_fsck_err_on(memchr(xattr.v->x_name_and_value, '\0', xattr.v->x_name_len),
->  			 c, xattr_name_invalid_chars,
->  			 "xattr name has invalid characters");
->  fsck_err:
-> @@ -120,13 +120,13 @@ void bch2_xattr_to_text(struct printbuf *out, struct bch_fs *c,
->  	unsigned name_len = xattr.v->x_name_len;
->  	unsigned val_len  = le16_to_cpu(xattr.v->x_val_len);
->  	unsigned max_name_val_bytes = bkey_val_bytes(xattr.k) -
-> -		offsetof(struct bch_xattr, x_name);
-> +		offsetof(struct bch_xattr, x_name_and_value);
->  
->  	val_len  = min_t(int, val_len, max_name_val_bytes - name_len);
->  	name_len = min(name_len, max_name_val_bytes);
->  
->  	prt_printf(out, "%.*s:%.*s",
-> -		   name_len, xattr.v->x_name,
-> +		   name_len, xattr.v->x_name_and_value,
->  		   val_len,  (char *) xattr_val(xattr.v));
->  
->  	if (xattr.v->x_type == KEY_TYPE_XATTR_INDEX_POSIX_ACL_ACCESS ||
-> @@ -202,7 +202,7 @@ int bch2_xattr_set(struct btree_trans *trans, subvol_inum inum,
->  		xattr->v.x_type		= type;
->  		xattr->v.x_name_len	= namelen;
->  		xattr->v.x_val_len	= cpu_to_le16(size);
-> -		memcpy(xattr->v.x_name, name, namelen);
-> +		memcpy(xattr->v.x_name_and_value, name, namelen);
->  		memcpy(xattr_val(&xattr->v), value, size);
->  
->  		ret = bch2_hash_set(trans, bch2_xattr_hash_desc, hash_info,
-> @@ -270,7 +270,7 @@ static int bch2_xattr_emit(struct dentry *dentry,
->  	if (!prefix)
->  		return 0;
->  
-> -	return __bch2_xattr_emit(prefix, xattr->x_name, xattr->x_name_len, buf);
-> +	return __bch2_xattr_emit(prefix, xattr->x_name_and_value, xattr->x_name_len, buf);
->  }
->  
->  static int bch2_xattr_list_bcachefs(struct bch_fs *c,
-> diff --git a/fs/bcachefs/xattr.h b/fs/bcachefs/xattr.h
-> index 132fbbd15a66..1139bf345f70 100644
-> --- a/fs/bcachefs/xattr.h
-> +++ b/fs/bcachefs/xattr.h
-> @@ -18,12 +18,12 @@ void bch2_xattr_to_text(struct printbuf *, struct bch_fs *, struct bkey_s_c);
->  
->  static inline unsigned xattr_val_u64s(unsigned name_len, unsigned val_len)
->  {
-> -	return DIV_ROUND_UP(offsetof(struct bch_xattr, x_name) +
-> +	return DIV_ROUND_UP(offsetof(struct bch_xattr, x_name_and_value) +
->  			    name_len + val_len, sizeof(u64));
->  }
->  
->  #define xattr_val(_xattr)					\
-> -	((void *) (_xattr)->x_name + (_xattr)->x_name_len)
-> +	((void *) (_xattr)->x_name_and_value + (_xattr)->x_name_len)
->  
->  struct xattr_search_key {
->  	u8		type;
-> diff --git a/fs/bcachefs/xattr_format.h b/fs/bcachefs/xattr_format.h
-> index 67426e33d04e..4121b78d9a92 100644
-> --- a/fs/bcachefs/xattr_format.h
-> +++ b/fs/bcachefs/xattr_format.h
-> @@ -16,10 +16,10 @@ struct bch_xattr {
->  	/*
->  	 * x_name contains the name and value counted by
->  	 * x_name_len + x_val_len. The introduction of
-> -	 * __counted_by(x_name_len) caused a false positive
-> +	 * __counted_by(x_name_len) previously caused a false positive
->  	 * detection of an out of bounds write.
->  	 */
-> -	__u8			x_name[];
-> +	__u8			x_name_and_value[];
->  } __packed __aligned(8);
->  
->  #endif /* _BCACHEFS_XATTR_FORMAT_H */
-> -- 
-> 2.48.1
-> 
+RGVhciBNYWludGFpbmVycywKCgoKCldoZW4gdXNpbmcgb3VyIGN1c3RvbWl6ZWQgU3l6a2FsbGVy
+IHRvIGZ1enogdGhlIGxhdGVzdCBMaW51eCBrZXJuZWwsIHRoZSBmb2xsb3dpbmcgY3Jhc2ggKDEx
+dGgpd2FzIHRyaWdnZXJlZC4KCgoKCgpIRUFEIGNvbW1pdDogNjUzN2NmYjM5NWYzNTI3ODI5MThk
+OGVlN2I3ZjEwYmEyY2MzY2JmMgpnaXQgdHJlZTogdXBzdHJlYW0KT3V0cHV0Omh0dHBzOmh0dHBz
+Oi8vZ2l0aHViLmNvbS9wZ2hrMTMvS2VybmVsLUJ1Zy9ibG9iL21haW4vMTIyMF82LjEzcmNfS0FT
+QU4vMi4lRTUlOUIlOUUlRTUlQkQlOTItMTEvMTEtS0FTQU5fJTIwc2xhYi11c2UtYWZ0ZXItZnJl
+ZSUyMFJlYWQlMjBpbiUyMG1vdmVfdG9fbmV3X2ZvbGlvLzExY2FsbF90cmFjZS50eHQKS2VybmVs
+IGNvbmZpZzpodHRwczovL2dpdGh1Yi5jb20vcGdoazEzL0tlcm5lbC1CdWcvYmxvYi9tYWluL2Nv
+bmZpZy50eHQKQyByZXByb2R1Y2VyOmh0dHBzOmh0dHBzOi8vZ2l0aHViLmNvbS9wZ2hrMTMvS2Vy
+bmVsLUJ1Zy9ibG9iL21haW4vMTIyMF82LjEzcmNfS0FTQU4vMi4lRTUlOUIlOUUlRTUlQkQlOTIt
+MTEvMTEtS0FTQU5fJTIwc2xhYi11c2UtYWZ0ZXItZnJlZSUyMFJlYWQlMjBpbiUyMG1vdmVfdG9f
+bmV3X2ZvbGlvLzExcmVwcm8uYwpTeXpsYW5nIHJlcHJvZHVjZXI6IGh0dHBzOi8vZ2l0aHViLmNv
+bS9wZ2hrMTMvS2VybmVsLUJ1Zy9ibG9iL21haW4vMTIyMF82LjEzcmNfS0FTQU4vMi4lRTUlOUIl
+OUUlRTUlQkQlOTItMTEvMTEtS0FTQU5fJTIwc2xhYi11c2UtYWZ0ZXItZnJlZSUyMFJlYWQlMjBp
+biUyMG1vdmVfdG9fbmV3X2ZvbGlvLzExcmVwcm8udHh0CgoKVGhlIGVycm9yIGlzIGxvY2F0ZWQg
+b24gbGluZSA1OTIgb2YgdGhlIGZzL2JjYWNoZWZzL3N1cGVyLmMgZmlsZSwgaW4gdGhlIGJjaDJf
+ZnNfcmVsZWFzZSBmdW5jdGlvbi4gQmFzZWQgb24gdGhlIGVycm9yIG1lc3NhZ2UgYW5kIHRoZSBj
+YWxsIHN0YWNrLCB0aGUgcHJvYmxlbSBpcyB0aGF0IGFsbCByZXNlcnZlZCByZXNvdXJjZXMgYXJl
+IG5vdCBwcm9wZXJseSByZWxlYXNlZCB3aGVuIHRoZSBiY2FjaGVmcyBmaWxlIHN5c3RlbSBpcyBk
+b3duLgpXZSBoYXZlIHJlcHJvZHVjZWQgdGhpcyBpc3N1ZSBzZXZlcmFsIHRpbWVzIG9uIDYuMTUt
+cmMxIGFnYWluLgoKCgoKCgpJZiB5b3UgZml4IHRoaXMgaXNzdWUsIHBsZWFzZSBhZGQgdGhlIGZv
+bGxvd2luZyB0YWcgdG8gdGhlIGNvbW1pdDoKUmVwb3J0ZWQtYnk6IEt1biBIdSA8aHVrMjNAbS5m
+dWRhbi5lZHUuY24+LCBKaWFqaSBRaW4gPGpqdGFuMjRAbS5mdWRhbi5lZHUuY24+LCBTaHVvcmFu
+IEJhaSA8YmFpc2h1b3JhbkBocmJldS5lZHUuY24+Cgo9PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KCm9ubGluZV9yZXNlcnZl
+ZCBub3QgMCBhdCBzaHV0ZG93bjogMQpXQVJOSU5HOiBDUFU6IDEgUElEOiAxMzM2NiBhdCBmcy9i
+Y2FjaGVmcy9zdXBlci5jOjU5MiBiY2gyX2ZzX3JlbGVhc2UrMHg3MzUvMHg4YjAKTW9kdWxlcyBs
+aW5rZWQgaW46CkNQVTogMSBVSUQ6IDAgUElEOiAxMzM2NiBDb21tOiBzeXouMS40NSBOb3QgdGFp
+bnRlZCA2LjE1LjAtcmMxICMxIFBSRUVNUFQoZnVsbCkKSGFyZHdhcmUgbmFtZTogUUVNVSBTdGFu
+ZGFyZCBQQyAoaTQ0MEZYICsgUElJWCwgMTk5NiksIEJJT1MgMS4xMy4wLTF1YnVudHUxLjEgMDQv
+MDEvMjAxNApSSVA6IDAwMTA6YmNoMl9mc19yZWxlYXNlKzB4NzM1LzB4OGIwCkNvZGU6IDg5IGVm
+IGU4IGJlIDRmIGQxIGZmIGU5IDg2IGZhIGZmIGZmIGU4IGU0IGFlIDU0IGZkIDkwIDBmIDBiIGU4
+IGRjIGFlIDU0IGZkIDkwIDQ4IGM3IGM3IGEwIDg3IGU2IDhiIDRjIDg5IGU2IGU4IGNjIDMxIDE0
+IGZkIDkwIDwwZj4gMGIgOTAgOTAgNDggYjggMDAgMDAgMDAgMDAgMDAgZmMgZmYgZGYgNDggOGIg
+NTQgMjQgMTAgNDggYzEgZWEKUlNQOiAwMDE4OmZmZmZjOTAwMDI2YzczNTggRUZMQUdTOiAwMDAx
+MDI4MgpSQVg6IDAwMDAwMDAwMDAwMDAwMDAgUkJYOiBmZmZmODg4MDc1ZTAwMDY4IFJDWDogZmZm
+ZmZmZmY4MTdhOTY2OQpSRFg6IDAwMDAwMDAwMDAwMDAwMDEgUlNJOiBmZmZmODg4MDFmYmE0OTAw
+IFJESTogMDAwMDAwMDAwMDAwMDAwMgpSQlA6IGZmZmY4ODgwNzVlMDAwMDAgUjA4OiBmZmZmZmJm
+ZmYxYzRiYjAwIFIwOTogZmZmZmVkMTAwZmRjNDdiYQpSMTA6IGZmZmZlZDEwMGZkYzQ3YjkgUjEx
+OiBmZmZmODg4MDdlZTIzZGNiIFIxMjogMDAwMDAwMDAwMDAwMDAwMQpSMTM6IDAwMDA2MDdmMTQ5
+MWUxNDggUjE0OiBkZmZmZmMwMDAwMDAwMDAwIFIxNTogMDAwMDAwMDAwMDAwMDAwMApGUzogwqAw
+MDAwN2ZjYjEwZWJmNzAwKDAwMDApIEdTOmZmZmY4ODgwZWIzNmIwMDAoMDAwMCkga25sR1M6MDAw
+MDAwMDAwMDAwMDAwMApDUzogwqAwMDEwIERTOiAwMDAwIEVTOiAwMDAwIENSMDogMDAwMDAwMDA4
+MDA1MDAzMwpDUjI6IDAwMDA3ZjkzYzVkNGMwMDAgQ1IzOiAwMDAwMDAwMDZjMmU2MDAwIENSNDog
+MDAwMDAwMDAwMDc1MGVmMApQS1JVOiAwMDAwMDAwMApDYWxsIFRyYWNlOgrCoDxUQVNLPgrCoGtv
+YmplY3RfcHV0KzB4MWIyLzB4NGMwCsKgYmNoMl9mc19hbGxvYysweGNmZS8weDI5YjAKwqBiY2gy
+X2ZzX29wZW4rMHg5NDUvMHgxMTYwCsKgYmNoMl9mc19nZXRfdHJlZSsweDNjOS8weDIwYzAKwqB2
+ZnNfZ2V0X3RyZWUrMHg5My8weDM0MArCoHBhdGhfbW91bnQrMHgxMjcwLzB4MWI5MArCoGRvX21v
+dW50KzB4YjMvMHgxMTAKwqBfX3g2NF9zeXNfbW91bnQrMHgxOTMvMHgyMzAKwqBkb19zeXNjYWxs
+XzY0KzB4Y2YvMHgyNjAKwqBlbnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUrMHg3Ny8weDdm
+ClJJUDogMDAzMzoweDdmY2IwZmZhZjUxZQpDb2RlOiBmZiBmZiBmZiA2NCBjNyAwMCAxNiAwMCAw
+MCAwMCBiOCBmZiBmZiBmZiBmZiBjMyA2NiAyZSAwZiAxZiA4NCAwMCAwMCAwMCAwMCAwMCA2NiA5
+MCBmMyAwZiAxZSBmYSA0OSA4OSBjYSBiOCBhNSAwMCAwMCAwMCAwZiAwNSA8NDg+IDNkIDAxIGYw
+IGZmIGZmIDczIDAxIGMzIDQ4IGM3IGMxIGIwIGZmIGZmIGZmIGY3IGQ4IDY0IDg5IDAxIDQ4ClJT
+UDogMDAyYjowMDAwN2ZjYjEwZWJlOWI4IEVGTEFHUzogMDAwMDAyNDYgT1JJR19SQVg6IDAwMDAw
+MDAwMDAwMDAwYTUKUkFYOiBmZmZmZmZmZmZmZmZmZmRhIFJCWDogMDAwMDAwMDAwMDAwNTkwNSBS
+Q1g6IDAwMDA3ZmNiMGZmYWY1MWUKUkRYOiAwMDAwMDAwMDIwMDA1OGMwIFJTSTogMDAwMDAwMDAy
+MDAwNTkwMCBSREk6IDAwMDA3ZmNiMTBlYmVhMTAKUkJQOiAwMDAwN2ZjYjEwZWJlYTUwIFIwODog
+MDAwMDdmY2IxMGViZWE1MCBSMDk6IDAwMDAwMDAwMDAwMDAwMDAKUjEwOiAwMDAwMDAwMDAwMDAw
+MDAwIFIxMTogMDAwMDAwMDAwMDAwMDI0NiBSMTI6IDAwMDAwMDAwMjAwMDU4YzAKUjEzOiAwMDAw
+MDAwMDIwMDA1OTAwIFIxNDogMDAwMDdmY2IxMGViZWExMCBSMTU6IDAwMDAwMDAwMjAwMDAxYzAK
+CgoKdGhhbmtzLApLdW4gSHU=
