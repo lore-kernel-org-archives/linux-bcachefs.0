@@ -1,41 +1,37 @@
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB16D20C026
-	for <linux-bcachefs@vger.kernel.org>; Fri,  2 May 2025 20:00:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1C9D20F09B
+	for <linux-bcachefs@vger.kernel.org>; Fri,  2 May 2025 20:00:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746216021; cv=none; b=BuAGm7aPI4NNnuiFGpSSp4MCMkdcu9cGnLaG+lKs1AGHWknpOCsbxbgQxvA0YafFTNdHAmF73hw2kDsaaHB2LI5JBBeLb3+/R8smGhDlz9BgLHcobN1ib/7KMfbZq4nskRBFdOvY2V2JTQdzbHV5y+ZxManYwGy8vECVJWltcTw=
+	t=1746216024; cv=none; b=CXzGj8iKymIK17WZrcnv98vIzJkAOUEmBPnHiVUJN9mPNtthSbm9TDoSYzvmpp/upwu/V+T5id7v283Gsm1o0pZkQMG8mFgl352D42ceKuvasSIXWV1uxwqLxCxdzx6cmC13BckT/n7Z9JVAuTfoc3J9f8wJIr0x4LN59ZvaOjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746216021; c=relaxed/simple;
-	bh=olfLATCqt7MYlXIiSukI3idO0XtyHFLFR+HrqBPxAOw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=I8PFhw0fy4BWcazGrV5NDr7fqfL6tPoLguxN5xSSCmr0eoGnRAwPh6HiLhJKZgW3KHTqDF/gnITFEVWRtig8K/P5EOGnQP1Hs5Zl+q2PjKDUNtvINmS6hoii+Zy6LQo0Oas25ly6wdIvPrr3ERMPxXn9P1U+XEDAAxVsnlYJ410=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=n53WbPyX; arc=none smtp.client-ip=91.218.175.173
+	s=arc-20240116; t=1746216024; c=relaxed/simple;
+	bh=I9SwFbrtRWKX2ZsYdPFL+nf7nKWVBpP+JglUGQIeJM4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ClTkxwdvDoUdskxX0wgnnrgqkU2xivNmX7TjWqE0JV5Spjvego1P9Tu1RG15Y9rRHCmwobmKYRG8A/Lhb4R4o93T3InXW+mLcfG7wW5TzUjswuOTJ525jDQLSAUSw4Kdovdcd/NQ9LiQzaXq19PboS8A65ennYQRLtGzfsXPDpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oe6MWpQK; arc=none smtp.client-ip=91.218.175.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="n53WbPyX"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oe6MWpQK"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1746216015;
+	t=1746216009;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Icd2jt5qAGvJ0P+TDlSTRon6g9asG4XriI8ehob+oLU=;
-	b=n53WbPyXqYfS7huHyfTbwHRzsquUPdee7TXk/TUeZGIyqj6zJkLtBXzeOoTte9mb1WyvCR
-	15CJUoMDJFx340f80+4TAKXdGwbTNIMFmmQiQbCwWO9gv4VfbaOP32CAn2+bKvHq3ZrJBN
-	oox1PAzJhbkMnoiMoxd4jcSFxvO0GCY=
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=XoEtgqo5bU+LrFpL4T5N4OMBk97KHcDuit0Dt9DEnrY=;
+	b=oe6MWpQKR4W4ZUf/4brbnpE8ePQ6lglCrkAXBjjq0ouJAdpfjlgfk/XHTn8PGfdVLBGqom
+	A4OG5oUhki+WIvVXKjXA8jSeGvJ/FlyFbGjdXaTBlyelIuASZmA0ukaNreztrq5MWa7uaK
+	9IX6Pj7XQW1tVa4PKbPSHj8TID06rTk=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 8/8] bcachefs: delete_dead_snapshot_keys_v2()
-Date: Fri,  2 May 2025 16:00:00 -0400
-Message-ID: <20250502200002.1309862-9-kent.overstreet@linux.dev>
-In-Reply-To: <20250502200002.1309862-1-kent.overstreet@linux.dev>
-References: <20250502200002.1309862-1-kent.overstreet@linux.dev>
+Subject: [PATCH 0/8] Snapshot deletion improvements
+Date: Fri,  2 May 2025 15:59:52 -0400
+Message-ID: <20250502200002.1309862-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -45,201 +41,63 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Since extents, dirents and xattrs require an inode with the
-corresponding snapshot ID to exists, we can avoid a lot of scanning by
-only scanning those trees for keys to process if the correspending inode
-exists.
+Snapshot deletion performance has been reported to be an issue, so this
+patch series should address that.
 
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
----
- fs/bcachefs/snapshot.c | 160 ++++++++++++++++++++++++++++++++++-------
- 1 file changed, 133 insertions(+), 27 deletions(-)
+The important optimization relies on the fact that if an
+extent/dirent/xattr exists, a version of that inode must exist in that
+specific snapshot. We can make use of that to avoid a lot of scanning.
 
-diff --git a/fs/bcachefs/snapshot.c b/fs/bcachefs/snapshot.c
-index f074b9de5024..83b95269d38d 100644
---- a/fs/bcachefs/snapshot.c
-+++ b/fs/bcachefs/snapshot.c
-@@ -1427,6 +1427,12 @@ static unsigned live_child(struct bch_fs *c, u32 id)
- 	return ret;
- }
- 
-+static bool snapshot_id_dying(struct snapshot_delete *d, unsigned id)
-+{
-+	return snapshot_list_has_id(&d->delete_leaves, id) ||
-+		interior_delete_has_id(&d->delete_interior, id) != 0;
-+}
-+
- static int delete_dead_snapshots_process_key(struct btree_trans *trans,
- 					     struct btree_iter *iter,
- 					     struct bkey_s_c k)
-@@ -1486,6 +1492,126 @@ static bool skip_unrelated_snapshot_tree(struct btree_trans *trans, struct btree
- 	return ret;
- }
- 
-+static int delete_dead_snapshot_keys_v1(struct btree_trans *trans)
-+{
-+	struct bch_fs *c = trans->c;
-+	struct snapshot_delete *d = &c->snapshot_delete;
-+
-+	for (d->pos.btree = 0; d->pos.btree < BTREE_ID_NR; d->pos.btree++) {
-+		struct disk_reservation res = { 0 };
-+
-+		d->pos.pos = POS_MIN;
-+
-+		if (!btree_type_has_snapshots(d->pos.btree))
-+			continue;
-+
-+		int ret = for_each_btree_key_commit(trans, iter,
-+				d->pos.btree, POS_MIN,
-+				BTREE_ITER_prefetch|BTREE_ITER_all_snapshots, k,
-+				&res, NULL, BCH_TRANS_COMMIT_no_enospc, ({
-+			d->pos.pos = iter.pos;
-+
-+			if (skip_unrelated_snapshot_tree(trans, &iter))
-+				continue;
-+
-+			delete_dead_snapshots_process_key(trans, &iter, k);
-+		}));
-+
-+		bch2_disk_reservation_put(c, &res);
-+
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int delete_dead_snapshot_keys_range(struct btree_trans *trans, enum btree_id btree,
-+					   struct bpos start, struct bpos end)
-+{
-+	struct bch_fs *c = trans->c;
-+	struct snapshot_delete *d = &c->snapshot_delete;
-+	struct disk_reservation res = { 0 };
-+
-+	d->pos.btree	= btree;
-+	d->pos.pos	= POS_MIN;
-+
-+	int ret = for_each_btree_key_max_commit(trans, iter,
-+			btree, start, end,
-+			BTREE_ITER_prefetch|BTREE_ITER_all_snapshots, k,
-+			&res, NULL, BCH_TRANS_COMMIT_no_enospc, ({
-+		d->pos.pos = iter.pos;
-+		delete_dead_snapshots_process_key(trans, &iter, k);
-+	}));
-+
-+	bch2_disk_reservation_put(c, &res);
-+	return ret;
-+}
-+
-+static int delete_dead_snapshot_keys_v2(struct btree_trans *trans)
-+{
-+	struct bch_fs *c = trans->c;
-+	struct snapshot_delete *d = &c->snapshot_delete;
-+	struct disk_reservation res = { 0 };
-+	int ret = 0;
-+
-+	struct btree_iter iter;
-+	bch2_trans_iter_init(trans, &iter, BTREE_ID_inodes, POS_MIN,
-+			     BTREE_ITER_prefetch|BTREE_ITER_all_snapshots);
-+
-+	while (1) {
-+		struct bkey_s_c k;
-+		ret = lockrestart_do(trans,
-+				bkey_err(k = bch2_btree_iter_peek(trans, &iter)));
-+		if (ret)
-+			break;
-+
-+		if (!k.k)
-+			break;
-+
-+		d->pos.btree	= iter.btree_id;
-+		d->pos.pos	= iter.pos;
-+
-+		if (skip_unrelated_snapshot_tree(trans, &iter))
-+			continue;
-+
-+		if (snapshot_id_dying(d, k.k->p.snapshot)) {
-+			struct bpos start	= POS(k.k->p.offset, 0);
-+			struct bpos end		= POS(k.k->p.offset, U64_MAX);
-+
-+			ret   = delete_dead_snapshot_keys_range(trans, BTREE_ID_extents, start, end) ?:
-+				delete_dead_snapshot_keys_range(trans, BTREE_ID_dirents, start, end) ?:
-+				delete_dead_snapshot_keys_range(trans, BTREE_ID_xattrs, start, end);
-+			if (ret)
-+				break;
-+
-+			bch2_btree_iter_set_pos(trans, &iter, POS(0, k.k->p.offset + 1));
-+		} else {
-+			bch2_btree_iter_advance(trans, &iter);
-+		}
-+	}
-+	bch2_trans_iter_exit(trans, &iter);
-+
-+	if (ret)
-+		goto err;
-+
-+	ret = for_each_btree_key_commit(trans, iter,
-+			BTREE_ID_inodes, POS_MIN,
-+			BTREE_ITER_prefetch|BTREE_ITER_all_snapshots, k,
-+			&res, NULL, BCH_TRANS_COMMIT_no_enospc, ({
-+		d->pos.btree	= iter.btree_id;
-+		d->pos.pos	= iter.pos;
-+
-+		if (skip_unrelated_snapshot_tree(trans, &iter))
-+			continue;
-+
-+		delete_dead_snapshots_process_key(trans, &iter, k);
-+	}));
-+err:
-+	bch2_disk_reservation_put(c, &res);
-+	return ret;
-+}
-+
- /*
-  * For a given snapshot, if it doesn't have a subvolume that points to it, and
-  * it doesn't have child snapshot nodes - it's now redundant and we can mark it
-@@ -1666,33 +1792,13 @@ int bch2_delete_dead_snapshots(struct bch_fs *c)
- 			goto err;
- 	}
- 
--	for (d->pos.btree = 0; d->pos.btree < BTREE_ID_NR; d->pos.btree++) {
--		struct disk_reservation res = { 0 };
--
--		d->pos.pos = POS_MIN;
--
--		if (!btree_type_has_snapshots(d->pos.btree))
--			continue;
--
--		ret = for_each_btree_key_commit(trans, iter,
--				d->pos.btree, POS_MIN,
--				BTREE_ITER_prefetch|BTREE_ITER_all_snapshots, k,
--				&res, NULL, BCH_TRANS_COMMIT_no_enospc, ({
--			d->pos.pos = iter.pos;
--
--			if (skip_unrelated_snapshot_tree(trans, &iter))
--				continue;
--
--			delete_dead_snapshots_process_key(trans, &iter, k);
--		}));
--
--		bch2_disk_reservation_put(c, &res);
--
--		if (!bch2_err_matches(ret, EROFS))
--			bch_err_msg(c, ret, "deleting keys from dying snapshots");
--		if (ret)
--			goto err;
--	}
-+	ret = !bch2_request_incompat_feature(c, bcachefs_metadata_version_snapshot_deletion_v2)
-+		? delete_dead_snapshot_keys_v2(trans)
-+		: delete_dead_snapshot_keys_v1(trans);
-+	if (!bch2_err_matches(ret, EROFS))
-+		bch_err_msg(c, ret, "deleting keys from dying snapshots");
-+	if (ret)
-+		goto err;
- 
- 	darray_for_each(d->delete_leaves, i) {
- 		ret = commit_do(trans, NULL, NULL, 0,
+Previously only fsck relied on this, so it would spit out a warning and
+correct the issue in its in memory data structures if this occurred.
+Now, it's turned into a proper fsck_err() with on-disk repair if
+detected.
+
+We also want some additional safety with this: if snapshot deletion ever
+screws up and doesn't delete all the keys it was supposed to, we want to
+be able to automatically repair.
+
+So there's a new on disk format version with an incompatible (i.e. must
+be expliticly enabled) feature, where we never delete snapshot keys - we
+just mark them as deleted.
+
+This allows fsck to differentiate between "key for deleted snapshot, I
+know how to repair this" vs. "key for missing snapshot, we're not sure
+what happened and someone should probably take a look".
+
+And snapshot deletion status is now present in sysfs, currently with
+btree and position in that btree. We do have per-snapshot-id accounting,
+so it might be possible to turn that into a proper progress indicator
+later.
+
+Kent Overstreet (8):
+  bcachefs: snapshot delete progress indicator
+  bcachefs: Add comments for inode snapshot requirements
+  bcachefs: kill inode_walker_entry.snapshot
+  bcachefs: BCH_FSCK_ERR_snapshot_key_missing_inode_snapshot
+  bcachefs: Skip unrelated snapshot trees in snapshot deletion
+  bcachefs: BCH_SNAPSHOT_DELETED -> BCH_SNAPSHOT_WILL_DELETE
+  bcachefs: bcachefs_metadata_version_snapshot_deletion_v2
+  bcachefs: delete_dead_snapshot_keys_v2()
+
+ fs/bcachefs/bcachefs.h         |   3 +-
+ fs/bcachefs/bcachefs_format.h  |   3 +-
+ fs/bcachefs/fsck.c             |  78 ++++---
+ fs/bcachefs/io_write.c         |   6 +
+ fs/bcachefs/sb-errors_format.h |   4 +-
+ fs/bcachefs/snapshot.c         | 389 +++++++++++++++++++++++++--------
+ fs/bcachefs/snapshot.h         |  32 ++-
+ fs/bcachefs/snapshot_format.h  |   4 +-
+ fs/bcachefs/snapshot_types.h   |  56 +++++
+ fs/bcachefs/subvolume.c        |   2 -
+ fs/bcachefs/subvolume.h        |   3 -
+ fs/bcachefs/subvolume_types.h  |  27 ---
+ fs/bcachefs/super.c            |   1 +
+ fs/bcachefs/sysfs.c            |   5 +
+ fs/bcachefs/xattr.c            |   5 +
+ 15 files changed, 445 insertions(+), 173 deletions(-)
+ create mode 100644 fs/bcachefs/snapshot_types.h
+
 -- 
 2.49.0
 
