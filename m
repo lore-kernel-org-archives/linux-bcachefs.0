@@ -1,37 +1,86 @@
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from fout-a1-smtp.messagingengine.com (fout-a1-smtp.messagingengine.com [103.168.172.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 524E68635D
-	for <linux-bcachefs@vger.kernel.org>; Fri,  2 May 2025 01:34:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F92B1D554;
+	Fri,  2 May 2025 01:55:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746149647; cv=none; b=YWKqH/wntXjLNE3FLl67wdyYqSelxQd9HCEfhN7wg7aE0P7dRBpSBjFj9RKAUNitUCw8zgfrdeiOTF+ynT0LOJhi3gTj23ovBdlc2K7DBlglOPzsz8kMqz596KtZxvfMJkwYNEf3ZzCkhnEGgkLrkHZoJspAgV6wInV7DlM20sc=
+	t=1746150956; cv=none; b=MYbS/aGKg0NxXF30TYcf7xqrKGXc3fnRsYbn2GBxcy/j8wGPwVzgCsy7Tv4b7D9pu3JuQ9EkVXPJY0/J5rZrTUS8xVrldrsF5Z1crQ/866JcCF7WUU4GPlICb1fKiUDTNp7mbtRSU5BYhLA07V7mfIR/ARoWEjs9qg+E45Tx1NY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746149647; c=relaxed/simple;
-	bh=VFjD3rX9Q7nIanEsWLWsYCBzpSANUb1jB6SFhJ8JD70=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=IMmDl43AxLTV60s2XB8SdIIyApau4zePa3t14PHynFE4juUEf1yHbzRTcix5DcZssL1H/IVDzEDZcrLAgj7texHapNU0hLTHiHJIrvuAi0H2lpyFyLQebrg5+p0vOljjGLPWKOE/HXfSUQpC1LUpjmxsEta3bXIFCWcHIdzMxwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PT1uvR4E; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1746150956; c=relaxed/simple;
+	bh=z3rdCUvpte8A7S4AviTyKEtkjzCDVLldKOS5YgSi2Dc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X2IjPANa7bo9L4v2+dQbH2EiiYZdSEhBsLnIGki2H8KwPl3CXi5rpg/I1XhC1XQlvKMoL0qo+QNfftfQ6YuRlDlLTwFDcCap6bGZDkNxfWcU9Sq4cGwPPaIyQxUTWOVZzz8nC4SFhNt6GeAHzu5W/EJSsdvSCbsZm5HBhI8mxEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc; spf=pass smtp.mailfrom=jfarr.cc; dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b=LCqVvfRv; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=W596VzjR; arc=none smtp.client-ip=103.168.172.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jfarr.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jfarr.cc
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PT1uvR4E"
-Date: Thu, 1 May 2025 21:33:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1746149631;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=KC+mXqTnHbJi8iH4wCBFRFB5qghJEho5DX6blQUzrxc=;
-	b=PT1uvR4EjRmouoTxItV+lh4PXW7hPBZjZcwBY/IkdPOJnyAeDnfTLi7PJZVvrjAs+8EORo
-	cvzdImNSjJM3BIWeiCauNanWtkElANOXjjG0rovOCZ2m0gUaqXCiePt7k+oGXizms+DYEb
-	v1w26vGW4EWIlsz2FrH9D/lVp/jbhhU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] bcachefs fixes for rc5
-Message-ID: <avyfprbtjpphuhxjqekretgco6xs5r23efrlpkqx6uc5lhec7v@igrgjqacgb7i>
+	dkim=pass (2048-bit key) header.d=jfarr.cc header.i=@jfarr.cc header.b="LCqVvfRv";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="W596VzjR"
+Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
+	by mailfout.phl.internal (Postfix) with ESMTP id 06B541380FA2;
+	Thu,  1 May 2025 21:55:52 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-04.internal (MEProxy); Thu, 01 May 2025 21:55:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1746150952; x=1746237352; bh=2ZvaVB/aFJ
+	pZ0cfeauWW5J7RW8vTa4RcSV8JmZ3BCRk=; b=LCqVvfRv9YOwUEcQBiuJYJ22MF
+	s/FjpN9vDzqjLpyCrdS2c97SAQ4PnmpQ8IQ5nR++fY/51/puE/cBRdbXf8PGjn3s
+	gCgfXRYXiES+opuosVZTSqKIVMOTphTWNK0gk+cLrhk6ZrMj+M98ozD88lD/UbT1
+	Nji37ImQXOfZFick1/408vvnby7xqGJSKELo45qPnwy/D0dG27/m7tWzF0kI9laX
+	2ePDppiCFS0j2JyWyvIjmoyg6TWROM1LxsvSev6sWY+rKonACR4apW7l7xnezRRi
+	DXuTMTgdlj5tN2RGn8l0NbTdFqr05/21E1mZsDruvtp4ZX0DJ6ko3KnpqRiQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1746150952; x=1746237352; bh=2ZvaVB/aFJpZ0cfeauWW5J7RW8vTa4RcSV8
+	JmZ3BCRk=; b=W596VzjRVa+LY6Q4HCtwtIxaAvRHidR/4OmNxZyP28Z5aCTmSr+
+	GyznZlTSkztnzieqDYmHrh+w49kbvWwFFMSerP5LpbFh/G4qmfzYKY7D7vMjVV4+
+	DYRx8mm1yXVjzswHBHdBR3xyqrNojA1LEDWz5ZEzZv63v8kTimBD7+kqIO2dRw6Z
+	3JhjJsRqcMqVhOj+d9/G6hxDoqlQh95jSJ3OWn3ey7/P/xQlDNgIIPRLfRG9zSst
+	wO7xTHtCDJ6PrMWjSDhx2PTi78yz044M3H7RDUBGxTJZ0o8gWk+g4/RaD3JEdziT
+	/Uv5NdzqH6wZkkYRLQVRkXEG0vfHgkcgYOA==
+X-ME-Sender: <xms:JyYUaJubht81BeADGEWbwJZ-nKDGC3428bkhnRBgrig1-3t0O81TnQ>
+    <xme:JyYUaCef90BP8KaUbE9DCvvf2QEZDm7kkXaaz2X2zjjuY7JVIJ1jR5q36Ui0ZhxmH
+    liCAksy3vRZl4nQBLo>
+X-ME-Received: <xmr:JyYUaMwlwKPWHpCt9diPDs4BqzhsISYvYXTt0Vhr3BT7-_byHzEUjpPZvC6DIAyYCFIjDeDP2pNpGXUtPvPSh_TnJTFV>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvjeduudelucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
+    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffuc
+    dluddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhm
+    peflrghnucfjvghnughrihhkucfhrghrrhcuoehkvghrnhgvlhesjhhfrghrrhdrtggtqe
+    enucggtffrrghtthgvrhhnpeegveffgfelkeeludejtedujeetuddtveetieevleelleef
+    kefhkeetkeefkeefffenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdhprhhivhgrth
+    gvsghinhdrnhgvthdpghhouggsohhlthdrohhrghenucevlhhushhtvghrufhiiigvpedt
+    necurfgrrhgrmhepmhgrihhlfhhrohhmpehkvghrnhgvlhesjhhfrghrrhdrtggtpdhnsg
+    gprhgtphhtthhopeejpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehmmhhpghho
+    uhhrihguvgesghhmrghilhdrtghomhdprhgtphhtthhopehkvghnthdrohhvvghrshhtrh
+    gvvghtsehlihhnuhigrdguvghvpdhrtghpthhtohepkhgvvghssehkvghrnhgvlhdrohhr
+    ghdprhgtphhtthhopehguhhsthgrvhhorghrsheskhgvrhhnvghlrdhorhhgpdhrtghpth
+    htohepthhhohhrshhtvghnrdgslhhumhesthhosghluhigrdgtohhmpdhrtghpthhtohep
+    lhhinhhugidqsggtrggthhgvfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpth
+    htoheplhhinhhugidqhhgrrhguvghnihhnghesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:JyYUaAPMuF_bBnSl17HY4aF_MhGv-muGp7jPho1J3-l655zXQ3c-hg>
+    <xmx:JyYUaJ9TAbJt_xIzUm2SVvzErcCPHWuo6D0ek2CRJkZD0JFgZNVNpA>
+    <xmx:JyYUaAURLHU5rZ48l1oWb426dNFHk0_UNA-CjAlX5bu6TuPPK7fTFQ>
+    <xmx:JyYUaKdOR_S8RgTAzoOt0U-PYbxrucOd3oZBcnLDTR6w1guxsW9N9w>
+    <xmx:JyYUaGtmJPVXkcxpKLCqC20H-gkWSQjfmUJgPu_7nm55VfO_OphSjg4N>
+Feedback-ID: i01d149f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 1 May 2025 21:55:50 -0400 (EDT)
+Date: Fri, 2 May 2025 03:55:48 +0200
+From: Jan Hendrik Farr <kernel@jfarr.cc>
+To: Alan Huang <mmpgouride@gmail.com>
+Cc: kent.overstreet@linux.dev, kees@kernel.org, gustavoars@kernel.org,
+	thorsten.blum@toblux.com, linux-bcachefs@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 1/2] bcachefs: Remove incorrect __counted_by annotation
+Message-ID: <aBQmJIXygwIwj5Yy@archlinux>
+References: <20250501200132.216859-1-mmpgouride@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -40,107 +89,64 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20250501200132.216859-1-mmpgouride@gmail.com>
 
-Every week I keep telling myself "boy, that was a busy week of
-bugfixing, but next week is sure to finally slow down a bit".
+On 02 04:01:31, Alan Huang wrote:
+> This actually reverts 86e92eeeb237 ("bcachefs: Annotate struct bch_xattr
+> with __counted_by()").
+> 
+> After the x_name, there is a value. According to the disscussion[1],
+> __counted_by assumes that the flexible array member contains exactly
+> the amount of elements that are specified. Now there are users came across
+> a false positive detection of an out of bounds write caused by
+> the __counted_by here[2], so revert that.
+> 
+> [1] https://lore.kernel.org/lkml/Zv8VDKWN1GzLRT-_@archlinux/T/#m0ce9541c5070146320efd4f928cc1ff8de69e9b2
+> [2] https://privatebin.net/?a0d4e97d590d71e1#9bLmp2Kb5NU6X6cZEucchDcu88HzUQwHUah8okKPReEt
+> 
+> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
 
-Hah.
+Reviewed-by: Jan Hendrik Farr <kernel@jfarr.cc>
 
-But it's all pretty small and boring.
+> ---
+>  fs/bcachefs/xattr_format.h | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/bcachefs/xattr_format.h b/fs/bcachefs/xattr_format.h
+> index c7916011ef34..67426e33d04e 100644
+> --- a/fs/bcachefs/xattr_format.h
+> +++ b/fs/bcachefs/xattr_format.h
+> @@ -13,7 +13,13 @@ struct bch_xattr {
+>  	__u8			x_type;
+>  	__u8			x_name_len;
+>  	__le16			x_val_len;
+> -	__u8			x_name[] __counted_by(x_name_len);
+> +	/*
+> +	 * x_name contains the name and value counted by
+> +	 * x_name_len + x_val_len. The introduction of
+> +	 * __counted_by(x_name_len) caused a false positive
+> +	 * detection of an out of bounds write.
+> +	 */
 
-A note on repair to users:
---------------------------
+In my estimation the comment isn't strictly needed with the name
+change in Patch 2/2, but it can also stay.
 
-We're continuing to steadily improve on self healing/automatic repair;
-we want to automatically repair and mount no matter what filesystem
-damage has occurred (and I've been seeing some fun ones, we had one this
-week that was from pcie power savings mode gone haywire).
+> +	__u8			x_name[];
+>  } __packed __aligned(8);
+>  
+>  #endif /* _BCACHEFS_XATTR_FORMAT_H */
+> -- 
+> 2.48.1
+> 
 
-But we aren't doing this all at once, because repair code is among the
-most fiddly and least well tested: we're steadily adding error paths to
-the whitelist for automatic repair as they come up.
+I was able to reproduce this issue with gcc 15.1.1 and bcachefs as
+rootfs (and verify that this fixes it), but wasn't able to reproduce
+using clang 19.1.7. Turns out there is one more difference in how
+gcc and clang do __bdos. clang apparantly doesn't handle pointer
+arithmetic done using + symbol instead of [] for the __counted_by
+case. Here's a reproducer:
+https://godbolt.org/z/136T98Wdz
 
-So if you ever run into something where a manual fsck is required, do
-drop me a note and include the output of 'bcachefs show-super -f errors'
-- that'll tell me what to add to the whitelist.
+Best Regards
+Jan
 
-The following changes since commit b4432656b36e5cc1d50a1f2dc15357543add530e:
-
-  Linux 6.15-rc4 (2025-04-27 15:19:23 -0700)
-
-are available in the Git repository at:
-
-  git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-05-01
-
-for you to fetch changes up to 6846100b00d97d3d6f05766ae86a0d821d849e78:
-
-  bcachefs: Remove incorrect __counted_by annotation (2025-05-01 16:38:58 -0400)
-
-----------------------------------------------------------------
-bcachefs fixes for 6.15-rc5
-
-Lots of assorted small fixes...
-
-- Some repair path fixes, a fix for -ENOMEM when reconstructing lots of
-  alloc info on large filesystems, upgrade for ancient 0.14 filesystems,
-  etc.
-
-- Various assert tweaks; assert -> ERO, ERO -> log the error in the
-  superblock and continue
-
-- casefolding now uses d_ops like on other casefolding filesystems
-
-- fix device label create on device add, fix bucket array resize on
-  filesystem resize
-
-- fix xattrs with FORTIFY_SOURCE builds with gcc-15/clang
-
-----------------------------------------------------------------
-Alan Huang (1):
-      bcachefs: Remove incorrect __counted_by annotation
-
-Kent Overstreet (21):
-      bcachefs: Fix losing return code in next_fiemap_extent()
-      bcachefs: Use generic_set_sb_d_ops for standard casefolding d_ops
-      bcachefs: Emit unicode version message on startup
-      bcachefs: Add missing utf8_unload()
-      bcachefs: Run BCH_RECOVERY_PASS_reconstruct_snapshots on missing subvol -> snapshot
-      bcachefs: Add upgrade table entry from 0.14
-      bcachefs: fix bch2_dev_buckets_resize()
-      bcachefs: Improve bch2_dev_bucket_missing()
-      bcachefs: Don't generate alloc updates to invalid buckets
-      bcachefs: btree_node_data_missing is now autofix
-      bcachefs: btree_root_unreadable_and_scan_found_nothing autofix for non data btrees
-      bcachefs: More informative error message when shutting down due to error
-      bcachefs: Use bch2_kvmalloc() for journal keys array
-      bcachefs: Topology error after insert is now an ERO
-      bcachefs: improve missing journal write device error message
-      bcachefs: readdir fixes
-      bcachefs: Kill ERO in __bch2_i_sectors_acct()
-      bcachefs: check for inode.bi_sectors underflow
-      bcachefs: Kill ERO for i_blocks check in truncate
-      bcachefs: Fix __bch2_dev_group_set()
-      bcachefs: add missing sched_annotate_sleep()
-
- fs/bcachefs/btree_gc.c              | 27 ++++++++++++++++++--
- fs/bcachefs/btree_journal_iter.c    |  2 +-
- fs/bcachefs/btree_update_interior.c | 49 ++++++++++++++++++++++++-------------
- fs/bcachefs/buckets.c               | 15 ++++++++----
- fs/bcachefs/dirent.c                |  4 +--
- fs/bcachefs/disk_groups.c           | 25 +++++++++----------
- fs/bcachefs/ec.c                    |  4 +--
- fs/bcachefs/error.c                 |  4 ++-
- fs/bcachefs/fs-io.c                 | 44 ++++++++++++++++++++++++++-------
- fs/bcachefs/fs.c                    | 15 ++++++++----
- fs/bcachefs/io_write.c              | 21 ++++++++++++++++
- fs/bcachefs/journal_io.c            |  2 +-
- fs/bcachefs/namei.c                 |  3 +++
- fs/bcachefs/sb-downgrade.c          |  4 +++
- fs/bcachefs/sb-errors_format.h      | 13 +++++++---
- fs/bcachefs/sb-members.c            |  6 +++--
- fs/bcachefs/sb-members.h            | 13 ++++++----
- fs/bcachefs/subvolume.c             |  5 ++--
- fs/bcachefs/super.c                 | 46 ++++++++++++++++++++--------------
- fs/bcachefs/xattr_format.h          |  8 +++++-
- 20 files changed, 219 insertions(+), 91 deletions(-)
