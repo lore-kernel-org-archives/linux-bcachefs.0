@@ -1,103 +1,68 @@
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1C9D20F09B
-	for <linux-bcachefs@vger.kernel.org>; Fri,  2 May 2025 20:00:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5F482904
+	for <linux-bcachefs@vger.kernel.org>; Sat,  3 May 2025 01:12:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746216024; cv=none; b=CXzGj8iKymIK17WZrcnv98vIzJkAOUEmBPnHiVUJN9mPNtthSbm9TDoSYzvmpp/upwu/V+T5id7v283Gsm1o0pZkQMG8mFgl352D42ceKuvasSIXWV1uxwqLxCxdzx6cmC13BckT/n7Z9JVAuTfoc3J9f8wJIr0x4LN59ZvaOjE=
+	t=1746234749; cv=none; b=YB8kZ2IVOFVfs6eJkznPb2B56fw9vdp7vdFm2C8pAFbE9hXVhGi6sLo0WA5+Vphz+2d3bPdwilZG3G7GT4R/9IUN+Vpt+3T58uNqAbrKfxNA35FpC0y2Azh8BFP/+AUXXV3AfdmnYxhE6r2yA0Lc9AKXlpkf1JT8HXeKZ8yIlco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746216024; c=relaxed/simple;
-	bh=I9SwFbrtRWKX2ZsYdPFL+nf7nKWVBpP+JglUGQIeJM4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ClTkxwdvDoUdskxX0wgnnrgqkU2xivNmX7TjWqE0JV5Spjvego1P9Tu1RG15Y9rRHCmwobmKYRG8A/Lhb4R4o93T3InXW+mLcfG7wW5TzUjswuOTJ525jDQLSAUSw4Kdovdcd/NQ9LiQzaXq19PboS8A65ennYQRLtGzfsXPDpk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oe6MWpQK; arc=none smtp.client-ip=91.218.175.177
+	s=arc-20240116; t=1746234749; c=relaxed/simple;
+	bh=dfbwFsUCNatpDIObCeb8tpjWZ9p3Is2m2zwxaW2Isds=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=A6Z4Wpv1neF00T4OrXwZILrnWoKUzZzvniMStUHviANlQHqwrHSW43Vn5BJXYKM3nf4yZi52vUwRPHMExNmzXAGtjI5tVGKJdqUaE+SC89FVii9d6ZvyzofRbIDc3RAERXtaJDha3dNA3ghOghiUxgUa/oEs+ZXM7l+UBfUvWyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gBgSgzZW; arc=none smtp.client-ip=91.218.175.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oe6MWpQK"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gBgSgzZW"
+Date: Fri, 2 May 2025 21:12:22 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1746216009;
+	t=1746234745;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=XoEtgqo5bU+LrFpL4T5N4OMBk97KHcDuit0Dt9DEnrY=;
-	b=oe6MWpQKR4W4ZUf/4brbnpE8ePQ6lglCrkAXBjjq0ouJAdpfjlgfk/XHTn8PGfdVLBGqom
-	A4OG5oUhki+WIvVXKjXA8jSeGvJ/FlyFbGjdXaTBlyelIuASZmA0ukaNreztrq5MWa7uaK
-	9IX6Pj7XQW1tVa4PKbPSHj8TID06rTk=
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=QGtUv1KSboYeJiacmqu8UL8Tmt+POSgJ1W5tjoVxpkY=;
+	b=gBgSgzZWDR2t6OEoj3h15ZEgfBIC5bH5OC8+yDAAhNTnu959GwQUQ90qJSxkycjUzHGPKS
+	LVf4ITyuxLWBNkXJqBi1bWMCb3r3PnKUQnBNlTDUCyr5hWMuaiOthm081e8dui8rABQIXj
+	3YzFxn+2ZAMeDtD40QkKAGRljxcR8Zw=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 0/8] Snapshot deletion improvements
-Date: Fri,  2 May 2025 15:59:52 -0400
-Message-ID: <20250502200002.1309862-1-kent.overstreet@linux.dev>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-bcachefs@vger.kernel.org, stable@vger.kernel.org
+Subject: [GIT PULL] bcachefs fixes for 6.14.y
+Message-ID: <hbrzmt73aol6f2fmqpsdtcevhb2sme6lz2otdn73vqpsmlstzt@egrywwkbtpfm>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Migadu-Flow: FLOW_OUT
 
-Snapshot deletion performance has been reported to be an issue, so this
-patch series should address that.
 
-The important optimization relies on the fact that if an
-extent/dirent/xattr exists, a version of that inode must exist in that
-specific snapshot. We can make use of that to avoid a lot of scanning.
+The following changes since commit 02a22be3c0003af08df510cba3d79d00c6495b74:
 
-Previously only fsck relied on this, so it would spit out a warning and
-correct the issue in its in memory data structures if this occurred.
-Now, it's turned into a proper fsck_err() with on-disk repair if
-detected.
+  bcachefs: bch2_ioctl_subvolume_destroy() fixes (2025-04-03 16:13:53 -0400)
 
-We also want some additional safety with this: if snapshot deletion ever
-screws up and doesn't delete all the keys it was supposed to, we want to
-be able to automatically repair.
+are available in the Git repository at:
 
-So there's a new on disk format version with an incompatible (i.e. must
-be expliticly enabled) feature, where we never delete snapshot keys - we
-just mark them as deleted.
+  git://evilpiepirate.org/bcachefs.git tags/bcachefs-for-6.14-2025-05-02
 
-This allows fsck to differentiate between "key for deleted snapshot, I
-know how to repair this" vs. "key for missing snapshot, we're not sure
-what happened and someone should probably take a look".
+for you to fetch changes up to 52b17bca7b20663e5df6dbfc24cc2030259b64b6:
 
-And snapshot deletion status is now present in sysfs, currently with
-btree and position in that btree. We do have per-snapshot-id accounting,
-so it might be possible to turn that into a proper progress indicator
-later.
+  bcachefs: Remove incorrect __counted_by annotation (2025-05-02 21:09:51 -0400)
 
-Kent Overstreet (8):
-  bcachefs: snapshot delete progress indicator
-  bcachefs: Add comments for inode snapshot requirements
-  bcachefs: kill inode_walker_entry.snapshot
-  bcachefs: BCH_FSCK_ERR_snapshot_key_missing_inode_snapshot
-  bcachefs: Skip unrelated snapshot trees in snapshot deletion
-  bcachefs: BCH_SNAPSHOT_DELETED -> BCH_SNAPSHOT_WILL_DELETE
-  bcachefs: bcachefs_metadata_version_snapshot_deletion_v2
-  bcachefs: delete_dead_snapshot_keys_v2()
+----------------------------------------------------------------
+bcachefs fixes for 6.15
 
- fs/bcachefs/bcachefs.h         |   3 +-
- fs/bcachefs/bcachefs_format.h  |   3 +-
- fs/bcachefs/fsck.c             |  78 ++++---
- fs/bcachefs/io_write.c         |   6 +
- fs/bcachefs/sb-errors_format.h |   4 +-
- fs/bcachefs/snapshot.c         | 389 +++++++++++++++++++++++++--------
- fs/bcachefs/snapshot.h         |  32 ++-
- fs/bcachefs/snapshot_format.h  |   4 +-
- fs/bcachefs/snapshot_types.h   |  56 +++++
- fs/bcachefs/subvolume.c        |   2 -
- fs/bcachefs/subvolume.h        |   3 -
- fs/bcachefs/subvolume_types.h  |  27 ---
- fs/bcachefs/super.c            |   1 +
- fs/bcachefs/sysfs.c            |   5 +
- fs/bcachefs/xattr.c            |   5 +
- 15 files changed, 445 insertions(+), 173 deletions(-)
- create mode 100644 fs/bcachefs/snapshot_types.h
+remove incorrect counted_by annotation, fixing FORTIFY_SOURCE crashes
+that have been hitting arch users
 
--- 
-2.49.0
+----------------------------------------------------------------
+Alan Huang (1):
+      bcachefs: Remove incorrect __counted_by annotation
 
+ fs/bcachefs/xattr_format.h | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
