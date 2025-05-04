@@ -1,38 +1,38 @@
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 236C31DE4C2
-	for <linux-bcachefs@vger.kernel.org>; Sun,  4 May 2025 19:52:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F1951D9A79
+	for <linux-bcachefs@vger.kernel.org>; Sun,  4 May 2025 19:52:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746388336; cv=none; b=OlUNoZxMfeEfpgsOdvEN7wY5xLf0a1wj9UWz58EoLJ3z8edhVNA31ODmScRd8oJ5B+mXwJtvd083HpYfFD3tlaZb6PIJa4njfn6dSrGltaiX6V+S2X3RvRoXuGrJQBwILTzteAfXZWX7oMPpj7eF5EiJx0BZ6zb3MFZC4cVTMJs=
+	t=1746388336; cv=none; b=AvnHyScEyugEl+yWwMu4WwB8/K7MaH8RRWMnUxvvN1z9BdjgNVCijejqdJbS/ksLQWh0bgU57plKDU74FagO5AyEp38bbF3/tHIujjOIfE33xKiBXd+XmvHfGuBogf5+zCD8YBCyuvRbte3qxv8JU/CBpGYzHza0b2IgDEOlPok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1746388336; c=relaxed/simple;
-	bh=VL8lrTqQKRVTljqIaFWdEPsUBl/Ug0p20X8upqyB5dQ=;
+	bh=mIfKpJsh+4J65+m3dH51Nx9vf97Euf9KxtqW7mm4hPk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kQIjqx5qjN/cpWkk5w6lN0wCcrkXPjG/DcgjpKPed6oFHIQiV9Q6+qZXQwWug3Cna7eZaTyBYPNNS/EunAUOK7qwioUlHj1c+1wB0jN7fVuE2ldey5fg2BcbnKyvQEjUM3r1VDYAZVkUBbC8ZJ2wAmuqNv2Ef1blTWNG/0YynkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NgiklYPx; arc=none smtp.client-ip=91.218.175.173
+	 MIME-Version; b=Jn1eNT3v2y/8ejTjcuhaqHvO3vBy+PEafBM/7yiBOVlN35axChrOlXGt20atDTjIw+ziRpuYz3cCZmGmZnB5M5asqtnIEU+Lbaz47D8dLOE1J2J2fZ+q6dqmY35XgXzkUb1d/GIu0DYv4kZj7BxMeW5TrEvuogPj1ECb7uf2a7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iE29vh/M; arc=none smtp.client-ip=91.218.175.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NgiklYPx"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iE29vh/M"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1746388331;
+	t=1746388330;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=q4nBcchKC4kmZxT7+7TCnp3bOMkLBqs1/DSfgv1i6Q4=;
-	b=NgiklYPx9tjVJYcllwbR0mrmIMGQJfZwBS3BN69X7eztzBv/kMjefr6wbN/CCdXRInriuq
-	OdXgkxiWF0TKw+fIUaZKVamt/pVYa86decqq08t7WlPod63uM/lqNYTZEY114Bu0BtsyTB
-	qOFWd7rZSJxOvRxTalCU6lV1l6g1jsQ=
+	bh=L06YYM37qAsmv+sz8lv6TnAcf8TcaD/ar1OKLxnr2u8=;
+	b=iE29vh/M4E/oqMUlVXJph4s3GqSMUaRfZO24u72Sire7qq1/Qopb54r1D5WPW9QgJzeRI6
+	Bkaz3bzrKFgR7ZL0sBIi4RiqL7/ErF1NMjPpA0ZZ1iNCBxHn6yLLNPNHNbIlxMaP4gSoAx
+	A96DQe5QP5Ma6oWO087PSkzNkIT1Y5Q=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 2/3] bcachefs: bch2_dev_data_drop_by_backpointers()
-Date: Sun,  4 May 2025 15:51:58 -0400
-Message-ID: <20250504195202.2073437-3-kent.overstreet@linux.dev>
+Subject: [PATCH 1/3] bcachefs: BCH_SB_MEMBER_DELETED_UUID
+Date: Sun,  4 May 2025 15:51:57 -0400
+Message-ID: <20250504195202.2073437-2-kent.overstreet@linux.dev>
 In-Reply-To: <20250504195202.2073437-1-kent.overstreet@linux.dev>
 References: <20250504195202.2073437-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,206 +44,126 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Currently, device removal has to scan all metadata for pointers to the
-device being removed.
-
-Add a new method, with the same interface as bch2_dev_data_drop(), that
-scans by backpointers instead - this will drastically speed up device
-removal.
+Add a sentinal value for devices that have been removed, but don't want
+to reuse their index until a fsck has completed.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/migrate.c | 107 ++++++++++++++++++++++++++++++++++++------
- fs/bcachefs/migrate.h |   3 +-
- 2 files changed, 95 insertions(+), 15 deletions(-)
+ fs/bcachefs/btree_gc.c          |  4 ++++
+ fs/bcachefs/sb-members.c        | 29 ++++++++++++++++++++++++++++-
+ fs/bcachefs/sb-members.h        |  4 +++-
+ fs/bcachefs/sb-members_format.h |  4 ++++
+ 4 files changed, 39 insertions(+), 2 deletions(-)
 
-diff --git a/fs/bcachefs/migrate.c b/fs/bcachefs/migrate.c
-index 90dcf80bd64a..f431586a971f 100644
---- a/fs/bcachefs/migrate.c
-+++ b/fs/bcachefs/migrate.c
-@@ -4,9 +4,11 @@
-  */
- 
- #include "bcachefs.h"
-+#include "backpointers.h"
- #include "bkey_buf.h"
- #include "btree_update.h"
- #include "btree_update_interior.h"
-+#include "btree_write_buffer.h"
- #include "buckets.h"
- #include "errcode.h"
- #include "extents.h"
-@@ -20,7 +22,7 @@
- #include "super-io.h"
- 
- static int drop_dev_ptrs(struct bch_fs *c, struct bkey_s k,
--			 unsigned dev_idx, int flags, bool metadata)
-+			 unsigned dev_idx, unsigned flags, bool metadata)
- {
- 	unsigned replicas = metadata ? c->opts.metadata_replicas : c->opts.data_replicas;
- 	unsigned lost = metadata ? BCH_FORCE_IF_METADATA_LOST : BCH_FORCE_IF_DATA_LOST;
-@@ -37,11 +39,28 @@ static int drop_dev_ptrs(struct bch_fs *c, struct bkey_s k,
- 	return 0;
- }
- 
-+static int drop_btree_ptrs(struct btree_trans *trans, struct btree_iter *iter,
-+			   struct btree *b, unsigned dev_idx, unsigned flags)
-+{
-+	struct bch_fs *c = trans->c;
-+	struct bkey_buf k;
+diff --git a/fs/bcachefs/btree_gc.c b/fs/bcachefs/btree_gc.c
+index 92ae31737a24..dd08ec080313 100644
+--- a/fs/bcachefs/btree_gc.c
++++ b/fs/bcachefs/btree_gc.c
+@@ -1079,6 +1079,10 @@ int bch2_check_allocations(struct bch_fs *c)
+ 	 * allocator thread - issue wakeup in case they blocked on gc_lock:
+ 	 */
+ 	closure_wake_up(&c->freelist_wait);
 +
-+	bch2_bkey_buf_init(&k);
-+	bch2_bkey_buf_copy(&k, c, &b->key);
++	if (!ret && !test_bit(BCH_FS_errors_not_fixed, &c->flags))
++		bch2_sb_members_clean_deleted(c);
 +
-+	int ret = drop_dev_ptrs(c, bkey_i_to_s(k.k), dev_idx, flags, true) ?:
-+		bch2_btree_node_update_key(trans, iter, b, k.k, 0, false);
-+
-+	bch_err_fn(c, ret);
-+	bch2_bkey_buf_exit(&k, c);
-+	return ret;
-+}
-+
- static int bch2_dev_usrdata_drop_key(struct btree_trans *trans,
- 				     struct btree_iter *iter,
- 				     struct bkey_s_c k,
- 				     unsigned dev_idx,
--				     int flags)
-+				     unsigned flags)
- {
- 	struct bch_fs *c = trans->c;
- 	struct bkey_i *n;
-@@ -77,9 +96,27 @@ static int bch2_dev_usrdata_drop_key(struct btree_trans *trans,
- 	return 0;
- }
- 
-+static int bch2_dev_btree_drop_key(struct btree_trans *trans,
-+				   struct bkey_s_c_backpointer bp,
-+				   unsigned dev_idx,
-+				   struct bkey_buf *last_flushed,
-+				   unsigned flags)
-+{
-+	struct btree_iter iter;
-+	struct btree *b = bch2_backpointer_get_node(trans, bp, &iter, last_flushed);
-+	int ret = PTR_ERR_OR_ZERO(b);
-+	if (ret)
-+		return ret == -BCH_ERR_backpointer_to_overwritten_btree_node ? 0 : ret;
-+
-+	ret = drop_btree_ptrs(trans, &iter, b, dev_idx, flags);
-+
-+	bch2_trans_iter_exit(trans, &iter);
-+	return ret;
-+}
-+
- static int bch2_dev_usrdata_drop(struct bch_fs *c,
- 				 struct progress_indicator_state *progress,
--				 unsigned dev_idx, int flags)
-+				 unsigned dev_idx, unsigned flags)
- {
- 	struct btree_trans *trans = bch2_trans_get(c);
- 	enum btree_id id;
-@@ -106,7 +143,7 @@ static int bch2_dev_usrdata_drop(struct bch_fs *c,
- 
- static int bch2_dev_metadata_drop(struct bch_fs *c,
- 				  struct progress_indicator_state *progress,
--				  unsigned dev_idx, int flags)
-+				  unsigned dev_idx, unsigned flags)
- {
- 	struct btree_trans *trans;
- 	struct btree_iter iter;
-@@ -137,20 +174,12 @@ static int bch2_dev_metadata_drop(struct bch_fs *c,
- 			if (!bch2_bkey_has_device_c(bkey_i_to_s_c(&b->key), dev_idx))
- 				goto next;
- 
--			bch2_bkey_buf_copy(&k, c, &b->key);
--
--			ret = drop_dev_ptrs(c, bkey_i_to_s(k.k),
--					    dev_idx, flags, true);
--			if (ret)
--				break;
--
--			ret = bch2_btree_node_update_key(trans, &iter, b, k.k, 0, false);
-+			ret = drop_btree_ptrs(trans, &iter, b, dev_idx, flags);
- 			if (bch2_err_matches(ret, BCH_ERR_transaction_restart)) {
- 				ret = 0;
- 				continue;
- 			}
- 
--			bch_err_msg(c, ret, "updating btree node key");
- 			if (ret)
- 				break;
- next:
-@@ -176,7 +205,57 @@ static int bch2_dev_metadata_drop(struct bch_fs *c,
+ 	bch_err_fn(c, ret);
  	return ret;
  }
+diff --git a/fs/bcachefs/sb-members.c b/fs/bcachefs/sb-members.c
+index 9c383d9a5f4d..e5c68c2f1655 100644
+--- a/fs/bcachefs/sb-members.c
++++ b/fs/bcachefs/sb-members.c
+@@ -525,6 +525,7 @@ int bch2_sb_member_alloc(struct bch_fs *c)
+ 	unsigned u64s;
+ 	int best = -1;
+ 	u64 best_last_mount = 0;
++	unsigned nr_deleted = 0;
  
--int bch2_dev_data_drop(struct bch_fs *c, unsigned dev_idx, int flags)
-+static int data_drop_bp(struct btree_trans *trans, unsigned dev_idx,
-+			struct bkey_s_c_backpointer bp, struct bkey_buf *last_flushed,
-+			unsigned flags)
+ 	if (dev_idx < BCH_SB_MEMBERS_MAX)
+ 		goto have_slot;
+@@ -535,7 +536,10 @@ int bch2_sb_member_alloc(struct bch_fs *c)
+ 			continue;
+ 
+ 		struct bch_member m = bch2_sb_member_get(c->disk_sb.sb, dev_idx);
+-		if (bch2_member_alive(&m))
++
++		nr_deleted += uuid_equal(&m.uuid, &BCH_SB_MEMBER_DELETED_UUID);
++
++		if (!bch2_is_zero(&m.uuid, sizeof(m.uuid)))
+ 			continue;
+ 
+ 		u64 last_mount = le64_to_cpu(m.last_mount);
+@@ -549,6 +553,10 @@ int bch2_sb_member_alloc(struct bch_fs *c)
+ 		goto have_slot;
+ 	}
+ 
++	if (nr_deleted)
++		bch_err(c, "unable to allocate new member, but have %u deleted: run fsck",
++			nr_deleted);
++
+ 	return -BCH_ERR_ENOSPC_sb_members;
+ have_slot:
+ 	nr_devices = max_t(unsigned, dev_idx + 1, c->sb.nr_devices);
+@@ -564,3 +572,22 @@ int bch2_sb_member_alloc(struct bch_fs *c)
+ 	c->disk_sb.sb->nr_devices = nr_devices;
+ 	return dev_idx;
+ }
++
++void bch2_sb_members_clean_deleted(struct bch_fs *c)
 +{
-+	struct btree_iter iter;
-+	struct bkey_s_c k = bch2_backpointer_get_key(trans, bp, &iter, 0, last_flushed);
-+	int ret = bkey_err(k);
-+	if (ret == -BCH_ERR_backpointer_to_overwritten_btree_node)
-+		return 0;
-+	if (ret)
-+		return ret;
++	mutex_lock(&c->sb_lock);
++	bool write_sb = false;
 +
-+	if (!bch2_bkey_has_device_c(k, dev_idx))
-+		goto out;
++	for (unsigned i = 0; i < c->sb.nr_devices; i++) {
++		struct bch_member *m = bch2_members_v2_get_mut(c->disk_sb.sb, i);
 +
-+	ret = bkey_is_btree_ptr(k.k)
-+		? bch2_dev_btree_drop_key(trans, bp, dev_idx, last_flushed, flags)
-+		: bch2_dev_usrdata_drop_key(trans, &iter, k, dev_idx, flags);
-+out:
-+	bch2_trans_iter_exit(trans, &iter);
-+	return ret;
++		if (uuid_equal(&m->uuid, &BCH_SB_MEMBER_DELETED_UUID)) {
++			memset(&m->uuid, 0, sizeof(m->uuid));
++			write_sb = true;
++		}
++	}
++
++	if (write_sb)
++		bch2_write_super(c);
++	mutex_unlock(&c->sb_lock);
 +}
-+
-+int bch2_dev_data_drop_by_backpointers(struct bch_fs *c, unsigned dev_idx, unsigned flags)
-+{
-+	struct btree_trans *trans = bch2_trans_get(c);
-+
-+	struct bkey_buf last_flushed;
-+	bch2_bkey_buf_init(&last_flushed);
-+	bkey_init(&last_flushed.k->k);
-+
-+	int ret = bch2_btree_write_buffer_flush_sync(trans) ?:
-+		for_each_btree_key_max_commit(trans, iter, BTREE_ID_backpointers,
-+				POS(dev_idx, 0),
-+				POS(dev_idx, U64_MAX), 0, k,
-+				NULL, NULL, BCH_TRANS_COMMIT_no_enospc, ({
-+			if (k.k->type != KEY_TYPE_backpointer)
-+				continue;
-+
-+			data_drop_bp(trans, dev_idx, bkey_s_c_to_backpointer(k),
-+				     &last_flushed, flags);
-+
-+	}));
-+
-+	bch2_bkey_buf_exit(&last_flushed, trans->c);
-+	bch2_trans_put(trans);
-+	bch_err_fn(c, ret);
-+	return ret;
-+}
-+
-+int bch2_dev_data_drop(struct bch_fs *c, unsigned dev_idx, unsigned flags)
+diff --git a/fs/bcachefs/sb-members.h b/fs/bcachefs/sb-members.h
+index c9cb8f7657b0..6bd9b86aee5b 100644
+--- a/fs/bcachefs/sb-members.h
++++ b/fs/bcachefs/sb-members.h
+@@ -320,7 +320,8 @@ extern const struct bch_sb_field_ops bch_sb_field_ops_members_v2;
+ 
+ static inline bool bch2_member_alive(struct bch_member *m)
  {
- 	struct progress_indicator_state progress;
- 	bch2_progress_init(&progress, c,
-diff --git a/fs/bcachefs/migrate.h b/fs/bcachefs/migrate.h
-index 027efaa0d575..30018140711b 100644
---- a/fs/bcachefs/migrate.h
-+++ b/fs/bcachefs/migrate.h
-@@ -2,6 +2,7 @@
- #ifndef _BCACHEFS_MIGRATE_H
- #define _BCACHEFS_MIGRATE_H
+-	return !bch2_is_zero(&m->uuid, sizeof(m->uuid));
++	return  !bch2_is_zero(&m->uuid, sizeof(m->uuid)) &&
++		!uuid_equal(&m->uuid, &BCH_SB_MEMBER_DELETED_UUID);
+ }
  
--int bch2_dev_data_drop(struct bch_fs *, unsigned, int);
-+int bch2_dev_data_drop_by_backpointers(struct bch_fs *, unsigned, unsigned);
-+int bch2_dev_data_drop(struct bch_fs *, unsigned, unsigned);
+ static inline bool bch2_member_exists(struct bch_sb *sb, unsigned dev)
+@@ -381,5 +382,6 @@ bool bch2_dev_btree_bitmap_marked(struct bch_fs *, struct bkey_s_c);
+ void bch2_dev_btree_bitmap_mark(struct bch_fs *, struct bkey_s_c);
  
- #endif /* _BCACHEFS_MIGRATE_H */
+ int bch2_sb_member_alloc(struct bch_fs *);
++void bch2_sb_members_clean_deleted(struct bch_fs *);
+ 
+ #endif /* _BCACHEFS_SB_MEMBERS_H */
+diff --git a/fs/bcachefs/sb-members_format.h b/fs/bcachefs/sb-members_format.h
+index 472218a59102..fb72ad730518 100644
+--- a/fs/bcachefs/sb-members_format.h
++++ b/fs/bcachefs/sb-members_format.h
+@@ -13,6 +13,10 @@
+  */
+ #define BCH_SB_MEMBER_INVALID		255
+ 
++#define BCH_SB_MEMBER_DELETED_UUID					\
++	UUID_INIT(0xffffffff, 0xffff, 0xffff,				\
++		  0xd9, 0x6a, 0x60, 0xcf, 0x80, 0x3d, 0xf7, 0xef)
++
+ #define BCH_MIN_NR_NBUCKETS	(1 << 6)
+ 
+ #define BCH_IOPS_MEASUREMENTS()			\
 -- 
 2.49.0
 
