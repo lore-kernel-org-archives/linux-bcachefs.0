@@ -1,48 +1,36 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33BE92701C9;
-	Mon,  5 May 2025 18:19:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F9CC30C922
+	for <linux-bcachefs@vger.kernel.org>; Tue,  6 May 2025 02:36:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746469166; cv=none; b=ehCmW45Y3DS3hn1n6/Y//hEfjGR0OIrHW/ZmOlm+cMddBCqC2FKOxD0FuR0toAf73+pW1GdTbsksO4DdWMeG0ixu3BtmDwip8GsanFunltWNtrpG0/sABVHTXuLM1YrYsMDfAP0T9neFUgalV2cxuDJJrA96e/zybghAoKnWqrU=
+	t=1746498983; cv=none; b=CIVlmuIcKsSf/Nw1MsDqIIEo4GeeXI/ZUKEYkvMB7K4zazspEu11MO8B+Gz+AnYjLaATvzwvrGEE9zDcQZXowjem9YpxmdFbeX9cqOtBb3KsB3w2Ouo7b84SMpmRW2wilcO+YmJLYsKX0EuvOR8ZUkyxsmKvyn1rRJNoLXw9wOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746469166; c=relaxed/simple;
-	bh=uslrcW8Rjh8Vtp1jwkYS+gns1NocaM1ysr80C17p+10=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pEPv8byS10PIOTLiXhNxV42YstkyOUn+jyXvUACFDYmBFKPVUFXSumU/KtRTy7l3Fy2TlYnQWPKJxgxzbt+bMch7HmBl6H/nisBPuZSGHcrFupynaMyPXu73hHbqGjROkHIpS+1qViyCPkzeaUnnqOQpCgy+gu6Le8bgkUYMoRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qjLazIDP; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1746498983; c=relaxed/simple;
+	bh=tCi+OfHwlBOfMaNXGxckbaez1eMEyxPYBK7MlqauRuY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=C1c7KGTiSRr0rfebcgdIaPoDhisk4/f2UEUv21TjZ0x4e8CXAzZlYOsQ9URaGS3gCVjojMU0xN++pWWrzkDhfnXcwA4rcp6qyew1a7sfIDjtd1gTaBBR+qq3qSWM5j/3acZXPxeSRqloH8PBv9gTHZYoGPDPBioUKVEQrEWlVG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=X8nexD8U; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qjLazIDP"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6333BC4CEEF;
-	Mon,  5 May 2025 18:19:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746469164;
-	bh=uslrcW8Rjh8Vtp1jwkYS+gns1NocaM1ysr80C17p+10=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qjLazIDPDkm/C095UjRbYZiH2s5N7gpqYt3hMK3JSviK+dnBWkx8DT34stTwvRWa1
-	 uUtdO0i0UEOfXdoCL9knyjf2nfgVeTT2W+a8+QuZeFSaGqfhUQssF3B+Zu2avSGq67
-	 xd9zRgby65l75mxRUMgJ8mIB34uhHYW9XqvipSYtBOSCKEkOTEuzevxNKHxZbkUy8c
-	 kr0qCDllV/5OLtzYqjvDqCzj+9Le6N5jMBFbPAIGwstCX3DSTeBpVC8eixdn3W1XoB
-	 9UB09lQN5DAc8rMGmN5uWYfVcXSoWJTv53n9I1Z2RSVh3pov8ByWjjIvVLik3+NFBX
-	 foUo9yue0AqVg==
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org,
-	"Jason A . Donenfeld " <Jason@zx2c4.com>,
-	Theodore Ts'o <tytso@mit.edu>
-Subject: [PATCH 4/4] crypto: lib/chacha - add array bounds to function prototypes
-Date: Mon,  5 May 2025 11:18:24 -0700
-Message-ID: <20250505181824.647138-5-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250505181824.647138-1-ebiggers@kernel.org>
-References: <20250505181824.647138-1-ebiggers@kernel.org>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="X8nexD8U"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1746498974;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=PFIiin1hMaBGIL4UFg7D+vMMQ6i7PTD1D6IG3u5VG8w=;
+	b=X8nexD8Uq8nmEs6q7WG1Bkfnf/aFux+f/nn5qjKPzrF1HWnCMWwz51woLXaUwEo93LcEb1
+	DO8QL4oqSlmr3IirCkdXXYiLgxSshBnoggae5z8ARrJTBCls9YtvQz1yuLDGGlH37Ae/mZ
+	rXi4mjCrI/xhoyWxtmtyzdOvggpT1K4=
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: linux-bcachefs@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Subject: [PATCH] bcachefs: opts.rebalance_on_ac_only
+Date: Mon,  5 May 2025 22:36:09 -0400
+Message-ID: <20250506023609.2587987-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -50,418 +38,181 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-From: Eric Biggers <ebiggers@google.com>
+Add an option for setting rebalance to only run when connected to mains
+power.
 
-Add explicit array bounds to the function prototypes for the parameters
-that didn't already get handled by the conversion to use chacha_state:
-
-- chacha_block_*():
-  Change 'u8 *out' or 'u8 *stream' to u8 out[CHACHA_BLOCK_SIZE].
-
-- hchacha_block_*():
-  Change 'u32 *out' or 'u32 *stream' to u32 out[HCHACHA_OUT_WORDS].
-
-- chacha_init():
-  Change 'const u32 *key' to 'const u32 key[CHACHA_KEY_WORDS]'.
-  Change 'const u8 *iv' to 'const u8 iv[CHACHA_IV_SIZE]'.
-
-No functional changes.  This just makes it clear when fixed-size arrays
-are expected.
-
-Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- arch/arm/lib/crypto/chacha-glue.c           | 12 ++++-----
- arch/arm/lib/crypto/chacha-scalar-core.S    |  2 +-
- arch/arm64/lib/crypto/chacha-neon-glue.c    | 10 ++++----
- arch/mips/lib/crypto/chacha-glue.c          |  2 +-
- arch/powerpc/lib/crypto/chacha-p10-glue.c   |  4 +--
- arch/riscv/lib/crypto/chacha-riscv64-glue.c |  3 ++-
- arch/s390/lib/crypto/chacha-glue.c          |  4 +--
- arch/x86/lib/crypto/chacha_glue.c           |  8 +++---
- crypto/chacha.c                             |  4 +--
- include/crypto/chacha.h                     | 27 ++++++++++++---------
- lib/crypto/chacha.c                         | 15 ++++++------
- lib/crypto/chacha20poly1305.c               |  2 --
- 12 files changed, 49 insertions(+), 44 deletions(-)
+ fs/bcachefs/bcachefs_format.h |  1 +
+ fs/bcachefs/opts.h            |  5 ++++
+ fs/bcachefs/rebalance.c       | 48 ++++++++++++++++++++++++++++++++---
+ fs/bcachefs/rebalance.h       |  4 ++-
+ fs/bcachefs/rebalance_types.h |  3 +++
+ fs/bcachefs/super.c           |  3 ++-
+ 6 files changed, 58 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm/lib/crypto/chacha-glue.c b/arch/arm/lib/crypto/chacha-glue.c
-index 0c2b4c62d484..88ec96415283 100644
---- a/arch/arm/lib/crypto/chacha-glue.c
-+++ b/arch/arm/lib/crypto/chacha-glue.c
-@@ -21,13 +21,13 @@ asmlinkage void chacha_block_xor_neon(const struct chacha_state *state,
- 				      u8 *dst, const u8 *src, int nrounds);
- asmlinkage void chacha_4block_xor_neon(const struct chacha_state *state,
- 				       u8 *dst, const u8 *src,
- 				       int nrounds, unsigned int nbytes);
- asmlinkage void hchacha_block_arm(const struct chacha_state *state,
--				  u32 *out, int nrounds);
-+				  u32 out[HCHACHA_OUT_WORDS], int nrounds);
- asmlinkage void hchacha_block_neon(const struct chacha_state *state,
--				   u32 *out, int nrounds);
-+				   u32 out[HCHACHA_OUT_WORDS], int nrounds);
+diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
+index baaf9786238b..a483d440fa39 100644
+--- a/fs/bcachefs/bcachefs_format.h
++++ b/fs/bcachefs/bcachefs_format.h
+@@ -871,6 +871,7 @@ LE64_BITMASK(BCH_SB_WRITE_ERROR_TIMEOUT,struct bch_sb, flags[6],  4, 14);
+ LE64_BITMASK(BCH_SB_CSUM_ERR_RETRY_NR,	struct bch_sb, flags[6], 14, 20);
+ LE64_BITMASK(BCH_SB_DEGRADED_ACTION,	struct bch_sb, flags[6], 20, 22);
+ LE64_BITMASK(BCH_SB_CASEFOLD,		struct bch_sb, flags[6], 22, 23);
++LE64_BITMASK(BCH_SB_REBALANCE_AC_ONLY,	struct bch_sb, flags[6], 23, 24);
  
- asmlinkage void chacha_doarm(u8 *dst, const u8 *src, unsigned int bytes,
- 			     const struct chacha_state *state, int nrounds);
- 
- static __ro_after_init DEFINE_STATIC_KEY_FALSE(use_neon);
-@@ -62,18 +62,18 @@ static void chacha_doneon(struct chacha_state *state, u8 *dst, const u8 *src,
- 			memcpy(dst, buf, bytes);
- 		state->x[12]++;
- 	}
- }
- 
--void hchacha_block_arch(const struct chacha_state *state, u32 *stream,
--			int nrounds)
-+void hchacha_block_arch(const struct chacha_state *state,
-+			u32 out[HCHACHA_OUT_WORDS], int nrounds)
+ static inline __u64 BCH_SB_COMPRESSION_TYPE(const struct bch_sb *sb)
  {
- 	if (!IS_ENABLED(CONFIG_KERNEL_MODE_NEON) || !neon_usable()) {
--		hchacha_block_arm(state, stream, nrounds);
-+		hchacha_block_arm(state, out, nrounds);
- 	} else {
- 		kernel_neon_begin();
--		hchacha_block_neon(state, stream, nrounds);
-+		hchacha_block_neon(state, out, nrounds);
- 		kernel_neon_end();
- 	}
- }
- EXPORT_SYMBOL(hchacha_block_arch);
- 
-diff --git a/arch/arm/lib/crypto/chacha-scalar-core.S b/arch/arm/lib/crypto/chacha-scalar-core.S
-index d20b5de755cc..4951df05c158 100644
---- a/arch/arm/lib/crypto/chacha-scalar-core.S
-+++ b/arch/arm/lib/crypto/chacha-scalar-core.S
-@@ -406,11 +406,11 @@ ENTRY(chacha_doarm)
- 	b		0b
- ENDPROC(chacha_doarm)
- 
- /*
-  * void hchacha_block_arm(const struct chacha_state *state,
-- *			  u32 out[8], int nrounds);
-+ *			  u32 out[HCHACHA_OUT_WORDS], int nrounds);
-  */
- ENTRY(hchacha_block_arm)
- 	push		{r1,r4-r11,lr}
- 
- 	cmp		r2, #12			// ChaCha12 ?
-diff --git a/arch/arm64/lib/crypto/chacha-neon-glue.c b/arch/arm64/lib/crypto/chacha-neon-glue.c
-index 7b451b3c7240..d0188f974ca5 100644
---- a/arch/arm64/lib/crypto/chacha-neon-glue.c
-+++ b/arch/arm64/lib/crypto/chacha-neon-glue.c
-@@ -32,11 +32,11 @@ asmlinkage void chacha_block_xor_neon(const struct chacha_state *state,
- 				      u8 *dst, const u8 *src, int nrounds);
- asmlinkage void chacha_4block_xor_neon(const struct chacha_state *state,
- 				       u8 *dst, const u8 *src,
- 				       int nrounds, int bytes);
- asmlinkage void hchacha_block_neon(const struct chacha_state *state,
--				   u32 *out, int nrounds);
-+				   u32 out[HCHACHA_OUT_WORDS], int nrounds);
- 
- static __ro_after_init DEFINE_STATIC_KEY_FALSE(have_neon);
- 
- static void chacha_doneon(struct chacha_state *state, u8 *dst, const u8 *src,
- 			  int bytes, int nrounds)
-@@ -59,18 +59,18 @@ static void chacha_doneon(struct chacha_state *state, u8 *dst, const u8 *src,
- 		dst += l;
- 		state->x[12] += DIV_ROUND_UP(l, CHACHA_BLOCK_SIZE);
- 	}
+diff --git a/fs/bcachefs/opts.h b/fs/bcachefs/opts.h
+index b8cd0b04e62a..f4c014ad43c1 100644
+--- a/fs/bcachefs/opts.h
++++ b/fs/bcachefs/opts.h
+@@ -490,6 +490,11 @@ enum fsck_err_opts {
+ 	  BCH2_NO_SB_OPT,			true,			\
+ 	  NULL,		"Enable rebalance: disable for debugging, or to\n"\
+ 			"quiet the system when doing performance testing\n")\
++	x(rebalance_on_ac_only,		u8,				\
++	  OPT_FS|OPT_MOUNT|OPT_RUNTIME,					\
++	  OPT_BOOL(),							\
++	  BCH_SB_REBALANCE_AC_ONLY,		false,			\
++	  NULL,		"Enable rebalance while on mains power only\n")	\
+ 	x(no_data_io,			u8,				\
+ 	  OPT_MOUNT,							\
+ 	  OPT_BOOL(),							\
+diff --git a/fs/bcachefs/rebalance.c b/fs/bcachefs/rebalance.c
+index a94f66ff4c59..0546ed35666d 100644
+--- a/fs/bcachefs/rebalance.c
++++ b/fs/bcachefs/rebalance.c
+@@ -518,6 +518,13 @@ static void rebalance_wait(struct bch_fs *c)
+ 	bch2_kthread_io_clock_wait(clock, r->wait_iotime_end, MAX_SCHEDULE_TIMEOUT);
  }
  
--void hchacha_block_arch(const struct chacha_state *state, u32 *stream,
--			int nrounds)
-+void hchacha_block_arch(const struct chacha_state *state,
-+			u32 out[HCHACHA_OUT_WORDS], int nrounds)
++static bool bch2_rebalance_enabled(struct bch_fs *c)
++{
++	return c->opts.rebalance_enabled &&
++		!(c->opts.rebalance_on_ac_only &&
++		  c->rebalance.on_battery);
++}
++
+ static int do_rebalance(struct moving_context *ctxt)
  {
- 	if (!static_branch_likely(&have_neon) || !crypto_simd_usable()) {
--		hchacha_block_generic(state, stream, nrounds);
-+		hchacha_block_generic(state, out, nrounds);
- 	} else {
- 		kernel_neon_begin();
--		hchacha_block_neon(state, stream, nrounds);
-+		hchacha_block_neon(state, out, nrounds);
- 		kernel_neon_end();
- 	}
+ 	struct btree_trans *trans = ctxt->trans;
+@@ -537,9 +544,9 @@ static int do_rebalance(struct moving_context *ctxt)
+ 			     BTREE_ITER_all_snapshots);
+ 
+ 	while (!bch2_move_ratelimit(ctxt)) {
+-		if (!c->opts.rebalance_enabled) {
++		if (!bch2_rebalance_enabled(c)) {
+ 			bch2_moving_ctxt_flush_all(ctxt);
+-			kthread_wait_freezable(c->opts.rebalance_enabled ||
++			kthread_wait_freezable(bch2_rebalance_enabled(c) ||
+ 					       kthread_should_stop());
+ 		}
+ 
+@@ -714,9 +721,42 @@ int bch2_rebalance_start(struct bch_fs *c)
+ 	return 0;
  }
- EXPORT_SYMBOL(hchacha_block_arch);
  
-diff --git a/arch/mips/lib/crypto/chacha-glue.c b/arch/mips/lib/crypto/chacha-glue.c
-index 75df4040cded..88c097594eb0 100644
---- a/arch/mips/lib/crypto/chacha-glue.c
-+++ b/arch/mips/lib/crypto/chacha-glue.c
-@@ -13,11 +13,11 @@ asmlinkage void chacha_crypt_arch(struct chacha_state *state,
- 				  u8 *dst, const u8 *src,
- 				  unsigned int bytes, int nrounds);
- EXPORT_SYMBOL(chacha_crypt_arch);
- 
- asmlinkage void hchacha_block_arch(const struct chacha_state *state,
--				   u32 *stream, int nrounds);
-+				   u32 out[HCHACHA_OUT_WORDS], int nrounds);
- EXPORT_SYMBOL(hchacha_block_arch);
- 
- bool chacha_is_arch_optimized(void)
+-void bch2_fs_rebalance_init(struct bch_fs *c)
++#ifdef CONFIG_POWER_SUPPLY
++#include <linux/power_supply.h>
++
++static int bch2_rebalance_power_notifier(struct notifier_block *nb,
++					 unsigned long event, void *data)
++{
++	struct bch_fs *c = container_of(nb, struct bch_fs, rebalance.power_notifier);
++
++	c->rebalance.on_battery = !power_supply_is_system_supplied();
++	bch2_rebalance_wakeup(c);
++	return NOTIFY_OK;
++}
++#endif
++
++void bch2_fs_rebalance_exit(struct bch_fs *c)
  {
- 	return true;
-diff --git a/arch/powerpc/lib/crypto/chacha-p10-glue.c b/arch/powerpc/lib/crypto/chacha-p10-glue.c
-index a6e6a8da1b8b..fcd23c6f1590 100644
---- a/arch/powerpc/lib/crypto/chacha-p10-glue.c
-+++ b/arch/powerpc/lib/crypto/chacha-p10-glue.c
-@@ -47,13 +47,13 @@ static void chacha_p10_do_8x(struct chacha_state *state, u8 *dst, const u8 *src,
- 	if (bytes > 0)
- 		chacha_crypt_generic(state, dst, src, bytes, nrounds);
+-	bch2_pd_controller_init(&c->rebalance.pd);
++#ifdef CONFIG_POWER_SUPPLY
++	power_supply_unreg_notifier(&c->rebalance.power_notifier);
++#endif
++}
++
++int bch2_fs_rebalance_init(struct bch_fs *c)
++{
++	struct bch_fs_rebalance *r = &c->rebalance;
++
++	bch2_pd_controller_init(&r->pd);
++
++#ifdef CONFIG_POWER_SUPPLY
++	r->power_notifier.notifier_call = bch2_rebalance_power_notifier;
++	int ret = power_supply_reg_notifier(&r->power_notifier);
++	if (ret)
++		return ret;
++
++	r->on_battery = !power_supply_is_system_supplied();
++#endif
++	return 0;
  }
  
- void hchacha_block_arch(const struct chacha_state *state,
--			u32 *stream, int nrounds)
-+			u32 out[HCHACHA_OUT_WORDS], int nrounds)
- {
--	hchacha_block_generic(state, stream, nrounds);
-+	hchacha_block_generic(state, out, nrounds);
- }
- EXPORT_SYMBOL(hchacha_block_arch);
+ static int check_rebalance_work_one(struct btree_trans *trans,
+diff --git a/fs/bcachefs/rebalance.h b/fs/bcachefs/rebalance.h
+index b7c8c0652ad6..5d9214fe1a22 100644
+--- a/fs/bcachefs/rebalance.h
++++ b/fs/bcachefs/rebalance.h
+@@ -52,7 +52,9 @@ void bch2_rebalance_status_to_text(struct printbuf *, struct bch_fs *);
  
- void chacha_crypt_arch(struct chacha_state *state, u8 *dst, const u8 *src,
- 		       unsigned int bytes, int nrounds)
-diff --git a/arch/riscv/lib/crypto/chacha-riscv64-glue.c b/arch/riscv/lib/crypto/chacha-riscv64-glue.c
-index 57541621981e..8c3f11d79be3 100644
---- a/arch/riscv/lib/crypto/chacha-riscv64-glue.c
-+++ b/arch/riscv/lib/crypto/chacha-riscv64-glue.c
-@@ -16,11 +16,12 @@
- static __ro_after_init DEFINE_STATIC_KEY_FALSE(use_zvkb);
+ void bch2_rebalance_stop(struct bch_fs *);
+ int bch2_rebalance_start(struct bch_fs *);
+-void bch2_fs_rebalance_init(struct bch_fs *);
++
++void bch2_fs_rebalance_exit(struct bch_fs *);
++int bch2_fs_rebalance_init(struct bch_fs *);
  
- asmlinkage void chacha_zvkb(struct chacha_state *state, const u8 *in, u8 *out,
- 			    size_t nblocks, int nrounds);
+ int bch2_check_rebalance_work(struct bch_fs *);
  
--void hchacha_block_arch(const struct chacha_state *state, u32 *out, int nrounds)
-+void hchacha_block_arch(const struct chacha_state *state,
-+			u32 out[HCHACHA_OUT_WORDS], int nrounds)
- {
- 	hchacha_block_generic(state, out, nrounds);
- }
- EXPORT_SYMBOL(hchacha_block_arch);
- 
-diff --git a/arch/s390/lib/crypto/chacha-glue.c b/arch/s390/lib/crypto/chacha-glue.c
-index 0a9fd50c1bd8..f95ba3483bbc 100644
---- a/arch/s390/lib/crypto/chacha-glue.c
-+++ b/arch/s390/lib/crypto/chacha-glue.c
-@@ -15,14 +15,14 @@
- #include <linux/sizes.h>
- #include <asm/fpu.h>
- #include "chacha-s390.h"
- 
- void hchacha_block_arch(const struct chacha_state *state,
--			u32 *stream, int nrounds)
-+			u32 out[HCHACHA_OUT_WORDS], int nrounds)
- {
- 	/* TODO: implement hchacha_block_arch() in assembly */
--	hchacha_block_generic(state, stream, nrounds);
-+	hchacha_block_generic(state, out, nrounds);
- }
- EXPORT_SYMBOL(hchacha_block_arch);
- 
- void chacha_crypt_arch(struct chacha_state *state, u8 *dst, const u8 *src,
- 		       unsigned int bytes, int nrounds)
-diff --git a/arch/x86/lib/crypto/chacha_glue.c b/arch/x86/lib/crypto/chacha_glue.c
-index 6f00a56e3e9a..10b2c945f541 100644
---- a/arch/x86/lib/crypto/chacha_glue.c
-+++ b/arch/x86/lib/crypto/chacha_glue.c
-@@ -17,11 +17,11 @@ asmlinkage void chacha_block_xor_ssse3(const struct chacha_state *state,
- 				       unsigned int len, int nrounds);
- asmlinkage void chacha_4block_xor_ssse3(const struct chacha_state *state,
- 					u8 *dst, const u8 *src,
- 					unsigned int len, int nrounds);
- asmlinkage void hchacha_block_ssse3(const struct chacha_state *state,
--				    u32 *out, int nrounds);
-+				    u32 out[HCHACHA_OUT_WORDS], int nrounds);
- 
- asmlinkage void chacha_2block_xor_avx2(const struct chacha_state *state,
- 				       u8 *dst, const u8 *src,
- 				       unsigned int len, int nrounds);
- asmlinkage void chacha_4block_xor_avx2(const struct chacha_state *state,
-@@ -125,17 +125,17 @@ static void chacha_dosimd(struct chacha_state *state, u8 *dst, const u8 *src,
- 		state->x[12]++;
- 	}
- }
- 
- void hchacha_block_arch(const struct chacha_state *state,
--			u32 *stream, int nrounds)
-+			u32 out[HCHACHA_OUT_WORDS], int nrounds)
- {
- 	if (!static_branch_likely(&chacha_use_simd)) {
--		hchacha_block_generic(state, stream, nrounds);
-+		hchacha_block_generic(state, out, nrounds);
- 	} else {
- 		kernel_fpu_begin();
--		hchacha_block_ssse3(state, stream, nrounds);
-+		hchacha_block_ssse3(state, out, nrounds);
- 		kernel_fpu_end();
- 	}
- }
- EXPORT_SYMBOL(hchacha_block_arch);
- 
-diff --git a/crypto/chacha.c b/crypto/chacha.c
-index 73ce62a9ac22..c3a11f4e2d13 100644
---- a/crypto/chacha.c
-+++ b/crypto/chacha.c
-@@ -44,12 +44,12 @@ static int chacha12_setkey(struct crypto_skcipher *tfm,
- {
- 	return chacha_setkey(tfm, key, keysize, 12);
- }
- 
- static int chacha_stream_xor(struct skcipher_request *req,
--			     const struct chacha_ctx *ctx, const u8 *iv,
--			     bool arch)
-+			     const struct chacha_ctx *ctx,
-+			     const u8 iv[CHACHA_IV_SIZE], bool arch)
- {
- 	struct skcipher_walk walk;
- 	struct chacha_state state;
- 	int err;
- 
-diff --git a/include/crypto/chacha.h b/include/crypto/chacha.h
-index 7c2e6c68919b..91f6b4cf561c 100644
---- a/include/crypto/chacha.h
-+++ b/include/crypto/chacha.h
-@@ -24,32 +24,36 @@
- 
- #define CHACHA_KEY_SIZE		32
- #define CHACHA_BLOCK_SIZE	64
- #define CHACHAPOLY_IV_SIZE	12
- 
--#define CHACHA_STATE_WORDS	(CHACHA_BLOCK_SIZE / sizeof(u32))
-+#define CHACHA_KEY_WORDS	8
-+#define CHACHA_STATE_WORDS	16
-+#define HCHACHA_OUT_WORDS	8
- 
- /* 192-bit nonce, then 64-bit stream position */
- #define XCHACHA_IV_SIZE		32
- 
- struct chacha_state {
- 	u32 x[CHACHA_STATE_WORDS];
+diff --git a/fs/bcachefs/rebalance_types.h b/fs/bcachefs/rebalance_types.h
+index fe5098c17dfc..76187c6572ea 100644
+--- a/fs/bcachefs/rebalance_types.h
++++ b/fs/bcachefs/rebalance_types.h
+@@ -30,6 +30,9 @@ struct bch_fs_rebalance {
+ 	struct bbpos			scan_start;
+ 	struct bbpos			scan_end;
+ 	struct bch_move_stats		scan_stats;
++
++	bool				on_battery;
++	struct notifier_block		power_notifier;
  };
  
--void chacha_block_generic(struct chacha_state *state, u8 *stream, int nrounds);
--static inline void chacha20_block(struct chacha_state *state, u8 *stream)
-+void chacha_block_generic(struct chacha_state *state,
-+			  u8 out[CHACHA_BLOCK_SIZE], int nrounds);
-+static inline void chacha20_block(struct chacha_state *state,
-+				  u8 out[CHACHA_BLOCK_SIZE])
- {
--	chacha_block_generic(state, stream, 20);
-+	chacha_block_generic(state, out, 20);
- }
- 
--void hchacha_block_arch(const struct chacha_state *state, u32 *out,
--			int nrounds);
--void hchacha_block_generic(const struct chacha_state *state, u32 *out,
--			   int nrounds);
-+void hchacha_block_arch(const struct chacha_state *state,
-+			u32 out[HCHACHA_OUT_WORDS], int nrounds);
-+void hchacha_block_generic(const struct chacha_state *state,
-+			   u32 out[HCHACHA_OUT_WORDS], int nrounds);
- 
--static inline void hchacha_block(const struct chacha_state *state, u32 *out,
--				 int nrounds)
-+static inline void hchacha_block(const struct chacha_state *state,
-+				 u32 out[HCHACHA_OUT_WORDS], int nrounds)
- {
- 	if (IS_ENABLED(CONFIG_CRYPTO_ARCH_HAVE_LIB_CHACHA))
- 		hchacha_block_arch(state, out, nrounds);
- 	else
- 		hchacha_block_generic(state, out, nrounds);
-@@ -69,11 +73,12 @@ static inline void chacha_init_consts(struct chacha_state *state)
- 	state->x[2]  = CHACHA_CONSTANT_2_BY;
- 	state->x[3]  = CHACHA_CONSTANT_TE_K;
- }
- 
- static inline void chacha_init(struct chacha_state *state,
--			       const u32 *key, const u8 *iv)
-+			       const u32 key[CHACHA_KEY_WORDS],
-+			       const u8 iv[CHACHA_IV_SIZE])
- {
- 	chacha_init_consts(state);
- 	state->x[4]  = key[0];
- 	state->x[5]  = key[1];
- 	state->x[6]  = key[2];
-diff --git a/lib/crypto/chacha.c b/lib/crypto/chacha.c
-index ae50e441f9fb..ced87dd31a97 100644
---- a/lib/crypto/chacha.c
-+++ b/lib/crypto/chacha.c
-@@ -65,49 +65,50 @@ static void chacha_permute(struct chacha_state *state, int nrounds)
- }
- 
- /**
-  * chacha_block_generic - generate one keystream block and increment block counter
-  * @state: input state matrix
-- * @stream: output keystream block (64 bytes)
-+ * @out: output keystream block
-  * @nrounds: number of rounds (20 or 12; 20 is recommended)
-  *
-  * This is the ChaCha core, a function from 64-byte strings to 64-byte strings.
-  * The caller has already converted the endianness of the input.  This function
-  * also handles incrementing the block counter in the input matrix.
-  */
--void chacha_block_generic(struct chacha_state *state, u8 *stream, int nrounds)
-+void chacha_block_generic(struct chacha_state *state,
-+			  u8 out[CHACHA_BLOCK_SIZE], int nrounds)
- {
- 	struct chacha_state permuted_state = *state;
- 	int i;
- 
- 	chacha_permute(&permuted_state, nrounds);
- 
- 	for (i = 0; i < ARRAY_SIZE(state->x); i++)
- 		put_unaligned_le32(permuted_state.x[i] + state->x[i],
--				   &stream[i * sizeof(u32)]);
-+				   &out[i * sizeof(u32)]);
- 
- 	state->x[12]++;
- }
- EXPORT_SYMBOL(chacha_block_generic);
- 
- /**
-  * hchacha_block_generic - abbreviated ChaCha core, for XChaCha
-  * @state: input state matrix
-- * @stream: output (8 32-bit words)
-+ * @out: the output words
-  * @nrounds: number of rounds (20 or 12; 20 is recommended)
-  *
-  * HChaCha is the ChaCha equivalent of HSalsa and is an intermediate step
-  * towards XChaCha (see https://cr.yp.to/snuffle/xsalsa-20081128.pdf).  HChaCha
-  * skips the final addition of the initial state, and outputs only certain words
-  * of the state.  It should not be used for streaming directly.
-  */
- void hchacha_block_generic(const struct chacha_state *state,
--			   u32 *stream, int nrounds)
-+			   u32 out[HCHACHA_OUT_WORDS], int nrounds)
- {
- 	struct chacha_state permuted_state = *state;
- 
- 	chacha_permute(&permuted_state, nrounds);
- 
--	memcpy(&stream[0], &permuted_state.x[0], 16);
--	memcpy(&stream[4], &permuted_state.x[12], 16);
-+	memcpy(&out[0], &permuted_state.x[0], 16);
-+	memcpy(&out[4], &permuted_state.x[12], 16);
- }
- EXPORT_SYMBOL(hchacha_block_generic);
-diff --git a/lib/crypto/chacha20poly1305.c b/lib/crypto/chacha20poly1305.c
-index 2e7bbc1a67ea..fbd3690e2531 100644
---- a/lib/crypto/chacha20poly1305.c
-+++ b/lib/crypto/chacha20poly1305.c
-@@ -16,12 +16,10 @@
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/mm.h>
- #include <linux/module.h>
- 
--#define CHACHA_KEY_WORDS	(CHACHA_KEY_SIZE / sizeof(u32))
--
- static void chacha_load_key(u32 *k, const u8 *in)
- {
- 	k[0] = get_unaligned_le32(in);
- 	k[1] = get_unaligned_le32(in + 4);
- 	k[2] = get_unaligned_le32(in + 8);
+ #endif /* _BCACHEFS_REBALANCE_TYPES_H */
+diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
+index a33872d0172c..c6c63ae0ae97 100644
+--- a/fs/bcachefs/super.c
++++ b/fs/bcachefs/super.c
+@@ -578,6 +578,7 @@ static void __bch2_fs_free(struct bch_fs *c)
+ 	bch2_fs_snapshots_exit(c);
+ 	bch2_fs_sb_errors_exit(c);
+ 	bch2_fs_replicas_exit(c);
++	bch2_fs_rebalance_exit(c);
+ 	bch2_fs_quota_exit(c);
+ 	bch2_fs_nocow_locking_exit(c);
+ 	bch2_fs_journal_exit(&c->journal);
+@@ -862,7 +863,6 @@ static struct bch_fs *bch2_fs_alloc(struct bch_sb *sb, struct bch_opts *opts,
+ 	bch2_fs_move_init(c);
+ 	bch2_fs_nocow_locking_init_early(c);
+ 	bch2_fs_quota_init(c);
+-	bch2_fs_rebalance_init(c);
+ 	bch2_fs_sb_errors_init_early(c);
+ 	bch2_fs_snapshots_init_early(c);
+ 	bch2_fs_subvolumes_init_early(c);
+@@ -984,6 +984,7 @@ static struct bch_fs *bch2_fs_alloc(struct bch_sb *sb, struct bch_opts *opts,
+ 	    bch2_fs_fsio_init(c) ?:
+ 	    bch2_fs_fs_io_direct_init(c) ?:
+ 	    bch2_fs_io_read_init(c) ?:
++	    bch2_fs_rebalance_init(c) ?:
+ 	    bch2_fs_sb_errors_init(c) ?:
+ 	    bch2_fs_vfs_init(c);
+ 	if (ret)
 -- 
 2.49.0
 
