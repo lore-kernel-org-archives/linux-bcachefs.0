@@ -1,108 +1,63 @@
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEDA828B4EF
-	for <linux-bcachefs@vger.kernel.org>; Thu,  8 May 2025 19:58:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60FC622331E;
+	Thu,  8 May 2025 21:41:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746734317; cv=none; b=M6Jt9Wg/EjZnDdSdv6ALu9GoJBFbVAHp0b0c9rYUxCR+Gmm8jhPUskpEGq1K5AZPFyHuCqTkbikz9bVL2iXGbx+n3rtWUT1DzxApawQMwuAraowagTcB4+Y/VRMfTBZ2BK8ZiQ4j2mVYki4FN9Ho3TiZy5Fn4pS0b4RNcY6qcrY=
+	t=1746740465; cv=none; b=KOCItBetW1eGB48lC5fXlA1mxDRARkutD8zqWy47ch9eEDpRDfTMSscPKS3ZBxxmf61EeZY4lKaGZr57Xg3Puag58uvqpPD/BinKRNf+kQu5Re9gxpcwTHf9Cd4aH/O/uueluUeho4CysWMSQdQrGIUoS+RY8HWRFIeIZbWYfsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746734317; c=relaxed/simple;
-	bh=J3cKKOH7s7U79ixbNkjgk4QebBIXp0UsdbtkJVytPIU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=vFN9Cg65BdLUSsk9/dpkurSjBBK3jO7vqzpa5ZXv1J5l92xNL5nBys57IbQOgIB225bAasmCd9EmUVUuNVPVk7sJOfS8xa/lYgPBssLAGRIT3PbMZWENgFkWxC9FLVjaSMvsBSG0VPOduFV9UUuS72Q5G7szAlercEGQ3NCN+UQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=okVQq+H4; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1746740465; c=relaxed/simple;
+	bh=eWLDivHb/Zs+9pB7oUXg8LbBxLoPvxtOqcSg0bj0akQ=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=LDVKZcNHv1F5OemIIwJ7/z6geZCFoalx2czGMmVaPnjSW/2XSzukoEgIzME8rWu7Cu5cnnqN94qY5SSXK970Vo/Uk0wKTRKLEj//Oa06xEyjGbqU/3gPO2fIKwMyxE5sE95QKWy1zajmUV+RAxMEvqEr6QnCU3hgJP8crSfnq/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Amp97yM9; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="okVQq+H4"
-Date: Thu, 8 May 2025 15:58:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1746734302;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=dT6RVuiifS8Rip44Q88vbxcm6+1Lj1H0/0sdfRyNf0s=;
-	b=okVQq+H46tP1gC21BTyPNa64Eu0BA1dN4Ov2yvXgRF+aPmKWi0jUTpaIM136Nqu+8KZ7rE
-	fuJ6XFy3m1lBo+wp895CrH/R7amKCtgeS+nts3BQGnOf2RecfFHJ4h9xs1zjd1POrjFqsV
-	Fuws3Q1dOUf1BJb6VreLJ6uZ/6ns7gA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] bcachefs fixes for 6.15-rc6
-Message-ID: <pdixxswan4bhmajjvnczxa2nxh5tm52itlttopnuk3w6lzv3ms@inq7k7aws2rg>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Amp97yM9"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC3C2C4CEE7;
+	Thu,  8 May 2025 21:41:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1746740464;
+	bh=eWLDivHb/Zs+9pB7oUXg8LbBxLoPvxtOqcSg0bj0akQ=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=Amp97yM98EcKIJtug5LfW9weVRAZBgbS7ff8v6KVUVAypNuQhxEWbbz9spIGM24iI
+	 4WKpcR02nsis0Ls2i3ZUN7JnHEqJoKuXyAlgL2TuG/dCuOrCQLOcMOZ9mTccShU9nA
+	 iirYXv9JKPy+SmXlhXK9wEPVgWHdBlYgX30nBREwTyso5dCdcIPkL/oA7jGcGF27zY
+	 KCbEVTulxKkHsYWlCgFsImUJUTfNGHSgWQeBveSUH4PifUs0MSkYFXkgg9mnDvPVqO
+	 g/zws+2MR8jXhmdOi8httkWFgF9gHMQFRj62JoSi1Ibaf13PK3/HhHODcAROlWbNC6
+	 3aLG4ApShPOeQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADE95380AA70;
+	Thu,  8 May 2025 21:41:44 +0000 (UTC)
+Subject: Re: [GIT PULL] bcachefs fixes for 6.15-rc6
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <pdixxswan4bhmajjvnczxa2nxh5tm52itlttopnuk3w6lzv3ms@inq7k7aws2rg>
+References: <pdixxswan4bhmajjvnczxa2nxh5tm52itlttopnuk3w6lzv3ms@inq7k7aws2rg>
+X-PR-Tracked-List-Id: <linux-bcachefs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <pdixxswan4bhmajjvnczxa2nxh5tm52itlttopnuk3w6lzv3ms@inq7k7aws2rg>
+X-PR-Tracked-Remote: git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-05-08
+X-PR-Tracked-Commit-Id: 8e4d28036c293241b312b1fceafb32b994f80fcc
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 9c69f88849045499e8ad114e5e13dbb3c85f4443
+Message-Id: <174674050327.3050618.15775685558013664884.pr-tracker-bot@kernel.org>
+Date: Thu, 08 May 2025 21:41:43 +0000
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
 
-The following changes since commit 6846100b00d97d3d6f05766ae86a0d821d849e78:
+The pull request you sent on Thu, 8 May 2025 15:58:00 -0400:
 
-  bcachefs: Remove incorrect __counted_by annotation (2025-05-01 16:38:58 -0400)
+> git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-05-08
 
-are available in the Git repository at:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/9c69f88849045499e8ad114e5e13dbb3c85f4443
 
-  git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-05-08
+Thank you!
 
-for you to fetch changes up to 8e4d28036c293241b312b1fceafb32b994f80fcc:
-
-  bcachefs: Don't aggressively discard the journal (2025-05-07 17:10:10 -0400)
-
-----------------------------------------------------------------
-bcachefs fixes for 6.15-rc6
-
-- Some fixes to help with filesystem analysis: ensure superblock error
-  count gets written if we go ERO, don't discard the journal
-  aggressively (so it's available for list_journal -a).
-
-- Fix lost wakeup on arm causing us to get stuck when reading btree
-  nodes.
-
-- Fix fsck failing to exit on ctrl-c.
-
-- An additional fix for filesystems with misaligned bucket sizes: we now
-  ensure that allocations are properly aligned.
-
-- Setting background target but not promote target will now leave that
-  data cached on the foreground target, as it used to.
-
-- Revert a change to when we allocate the VFS superblock, this was done
-  for implementing blk_holder_ops but ended up not being needed, and
-  allocating a superblock and not setting SB_BORN while we do recovery
-  caused sync() calls and other things to hang.
-
-- Assorted fixes for harmless error messages that caused concern to
-  users.
-
-----------------------------------------------------------------
-Kent Overstreet (10):
-      bcachefs: thread_with_stdio: fix spinning instead of exiting
-      bcachefs: Improve want_cached_ptr()
-      bcachefs: Ensure proper write alignment
-      bcachefs: Add missing barriers before wake_up_bit()
-      bcachefs: fix hung task timeout in journal read
-      bcachefs: Call bch2_fs_start before getting vfs superblock
-      bcachefs: journal_shutdown is EROFS, not EIO
-      bcachefs: Filter out harmless EROFS error messages
-      bcachefs: Ensure superblock gets written when we go ERO
-      bcachefs: Don't aggressively discard the journal
-
- fs/bcachefs/alloc_foreground.c | 22 +++++++++++++++++++++-
- fs/bcachefs/btree_io.c         |  9 ++++++++-
- fs/bcachefs/buckets.h          |  1 +
- fs/bcachefs/ec.h               |  1 +
- fs/bcachefs/errcode.h          |  2 +-
- fs/bcachefs/extents.c          |  5 +++--
- fs/bcachefs/fs.c               | 11 +++--------
- fs/bcachefs/journal_io.c       |  4 +++-
- fs/bcachefs/journal_reclaim.c  |  7 ++++---
- fs/bcachefs/move.c             |  3 ++-
- fs/bcachefs/super.c            |  5 +++++
- fs/bcachefs/thread_with_file.c |  4 +++-
- 12 files changed, 55 insertions(+), 19 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
