@@ -1,96 +1,108 @@
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49DCC22D4FA
-	for <linux-bcachefs@vger.kernel.org>; Thu,  8 May 2025 13:44:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEDA828B4EF
+	for <linux-bcachefs@vger.kernel.org>; Thu,  8 May 2025 19:58:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746711897; cv=none; b=cK3Tt8gIpHPa0MdghmMOtC5EbkEnUy/spVAYFMyYUxc2frfsZqMrClJgzapq90iFgdWw+5qwxGB0wZ3OV3uDL93rHEfh62u3iBAlxGBw8gkBkmlaWzHXX2Y8UZBIbVhJE9kR4i0H2DDyidpMDilr8M+ZvAr4M4DwByFjj4/zT9g=
+	t=1746734317; cv=none; b=M6Jt9Wg/EjZnDdSdv6ALu9GoJBFbVAHp0b0c9rYUxCR+Gmm8jhPUskpEGq1K5AZPFyHuCqTkbikz9bVL2iXGbx+n3rtWUT1DzxApawQMwuAraowagTcB4+Y/VRMfTBZ2BK8ZiQ4j2mVYki4FN9Ho3TiZy5Fn4pS0b4RNcY6qcrY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746711897; c=relaxed/simple;
-	bh=hgcMlNSdmigLkEILuLr+cZXLHGXLHg9IsWpEPKMEq4g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hvANWuEjDP+lPS4q2awGt+izNitKsHqk14Em0fWH+VYwUMrINI58zKisp2eqn4pebs3VpS2gVnZvmhM6H7Y7XQa0KWkXuoFUE4yv2SFRpuWMT3OOYnu91fn0dl9mKHAx12KZF8JWRQG+7FKQenYEZPedYo0UA/uF40vbS8pcmMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pV6dq2lh; arc=none smtp.client-ip=91.218.175.183
+	s=arc-20240116; t=1746734317; c=relaxed/simple;
+	bh=J3cKKOH7s7U79ixbNkjgk4QebBIXp0UsdbtkJVytPIU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=vFN9Cg65BdLUSsk9/dpkurSjBBK3jO7vqzpa5ZXv1J5l92xNL5nBys57IbQOgIB225bAasmCd9EmUVUuNVPVk7sJOfS8xa/lYgPBssLAGRIT3PbMZWENgFkWxC9FLVjaSMvsBSG0VPOduFV9UUuS72Q5G7szAlercEGQ3NCN+UQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=okVQq+H4; arc=none smtp.client-ip=95.215.58.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pV6dq2lh"
-Date: Thu, 8 May 2025 09:44:48 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="okVQq+H4"
+Date: Thu, 8 May 2025 15:58:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1746711891;
+	t=1746734302;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7Hp85b8hIDolOowRMwcAnw25ZKnQfOPpBI9KtOoWVJ4=;
-	b=pV6dq2lhKtYqERlUyN92rawE9h6L8oyQZCsVtJRyYtcuLo28POjkvGHMpjT/Qw0pWc3Lp8
-	lJXYYgVxAyI2hp67O7qN77hdzvdIIZGBKD6XYmQIC6gYscEoQrkp+RbHrPSgbx2wJqyEyw
-	mh88S+AhE0GvC85TL9QP0OJWCK/DfxI=
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=dT6RVuiifS8Rip44Q88vbxcm6+1Lj1H0/0sdfRyNf0s=;
+	b=okVQq+H46tP1gC21BTyPNa64Eu0BA1dN4Ov2yvXgRF+aPmKWi0jUTpaIM136Nqu+8KZ7rE
+	fuJ6XFy3m1lBo+wp895CrH/R7amKCtgeS+nts3BQGnOf2RecfFHJ4h9xs1zjd1POrjFqsV
+	Fuws3Q1dOUf1BJb6VreLJ6uZ/6ns7gA=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Jamie McClymont <jamie@kwiius.com>
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: Sanity check request: reduced replication of alloc btrees
-Message-ID: <mc6ewehvde6ylkrzvd3x5bhkpitxkdxgg7li2kfcdq5luqorvu@oh5s2moiuian>
-References: <9C75AB03-4EC9-4482-AA6C-539626A28244@kwiius.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] bcachefs fixes for 6.15-rc6
+Message-ID: <pdixxswan4bhmajjvnczxa2nxh5tm52itlttopnuk3w6lzv3ms@inq7k7aws2rg>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9C75AB03-4EC9-4482-AA6C-539626A28244@kwiius.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Thu, May 08, 2025 at 07:02:34PM +1000, Jamie McClymont wrote:
-> Hello,
-> 
-> Would it be a sane idea to support a reduced metadata_replicas value
-> for the types of btrees that fall under btree_id_is_alloc, and could
-> thus be recreated by `-o reconstruct_alloc` (or, I think,
-> automatically via bch2_btree_lost_data) if lost?
+The following changes since commit 6846100b00d97d3d6f05766ae86a0d821d849e78:
 
-Backpointers, perhaps. I wouldn't recommend doing that for the main alloc
-btree, reconstructing that one from scratch will fail if your filesystem
-is big enough because currently we have to do it before going RW, so the
-whole thing has to fit in memory (in the journal_keys array).
+  bcachefs: Remove incorrect __counted_by annotation (2025-05-01 16:38:58 -0400)
 
-Once we have check_allocations working online that will be easier.
+are available in the Git repository at:
 
-> 
-> For context, my filesystem (2x280GB SSDs for metadata + caching,
-> 4x16TB hard drives for data, all types of replicas=2), reports around
-> 220GB of Btree usage:
-> 
-> extents:             104 GiB
-> inodes:             8.11 GiB
-> dirents:            1.78 GiB
-> xattrs:              512 KiB
-> alloc:              26.5 GiB
-> quotas:              512 KiB
-> stripes:             512 KiB
-> reflink:            12.0 MiB
-> subvolumes:          512 KiB
-> snapshots:           512 KiB
-> lru:                 763 MiB
-> freespace:          6.50 MiB
-> need_discard:        389 MiB
-> backpointers:       86.6 GiB
-> bucket_gens:         299 MiB
-> snapshot_trees:      512 KiB
-> deleted_inodes:      512 KiB
-> logged_ops:         1.00 MiB
-> rebalance_work:      855 MiB
-> subvolume_children:  512 KiB
-> accounting:         1.00 MiB
-> 
-> I figure reducing alloc replicas to 1 would save 55GiB of btree space on the fast SSDs, which could be better used for user-data caching, without sacrificing any durability – just a one-off recovery-pass penalty in the event of an SSD failure (or a one-off read/checksum error, but I have thankfully had none of those from these drives).
-> 
-> Am I missing a situation where this could lead to data loss? If not, I might look at implementing it.
-> 
-> Thanks,
-> - Jamie McClymont
+  git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-05-08
+
+for you to fetch changes up to 8e4d28036c293241b312b1fceafb32b994f80fcc:
+
+  bcachefs: Don't aggressively discard the journal (2025-05-07 17:10:10 -0400)
+
+----------------------------------------------------------------
+bcachefs fixes for 6.15-rc6
+
+- Some fixes to help with filesystem analysis: ensure superblock error
+  count gets written if we go ERO, don't discard the journal
+  aggressively (so it's available for list_journal -a).
+
+- Fix lost wakeup on arm causing us to get stuck when reading btree
+  nodes.
+
+- Fix fsck failing to exit on ctrl-c.
+
+- An additional fix for filesystems with misaligned bucket sizes: we now
+  ensure that allocations are properly aligned.
+
+- Setting background target but not promote target will now leave that
+  data cached on the foreground target, as it used to.
+
+- Revert a change to when we allocate the VFS superblock, this was done
+  for implementing blk_holder_ops but ended up not being needed, and
+  allocating a superblock and not setting SB_BORN while we do recovery
+  caused sync() calls and other things to hang.
+
+- Assorted fixes for harmless error messages that caused concern to
+  users.
+
+----------------------------------------------------------------
+Kent Overstreet (10):
+      bcachefs: thread_with_stdio: fix spinning instead of exiting
+      bcachefs: Improve want_cached_ptr()
+      bcachefs: Ensure proper write alignment
+      bcachefs: Add missing barriers before wake_up_bit()
+      bcachefs: fix hung task timeout in journal read
+      bcachefs: Call bch2_fs_start before getting vfs superblock
+      bcachefs: journal_shutdown is EROFS, not EIO
+      bcachefs: Filter out harmless EROFS error messages
+      bcachefs: Ensure superblock gets written when we go ERO
+      bcachefs: Don't aggressively discard the journal
+
+ fs/bcachefs/alloc_foreground.c | 22 +++++++++++++++++++++-
+ fs/bcachefs/btree_io.c         |  9 ++++++++-
+ fs/bcachefs/buckets.h          |  1 +
+ fs/bcachefs/ec.h               |  1 +
+ fs/bcachefs/errcode.h          |  2 +-
+ fs/bcachefs/extents.c          |  5 +++--
+ fs/bcachefs/fs.c               | 11 +++--------
+ fs/bcachefs/journal_io.c       |  4 +++-
+ fs/bcachefs/journal_reclaim.c  |  7 ++++---
+ fs/bcachefs/move.c             |  3 ++-
+ fs/bcachefs/super.c            |  5 +++++
+ fs/bcachefs/thread_with_file.c |  4 +++-
+ 12 files changed, 55 insertions(+), 19 deletions(-)
