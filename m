@@ -1,63 +1,75 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60FC622331E;
-	Thu,  8 May 2025 21:41:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9989D4B1E5D
+	for <linux-bcachefs@vger.kernel.org>; Fri,  9 May 2025 11:46:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746740465; cv=none; b=KOCItBetW1eGB48lC5fXlA1mxDRARkutD8zqWy47ch9eEDpRDfTMSscPKS3ZBxxmf61EeZY4lKaGZr57Xg3Puag58uvqpPD/BinKRNf+kQu5Re9gxpcwTHf9Cd4aH/O/uueluUeho4CysWMSQdQrGIUoS+RY8HWRFIeIZbWYfsY=
+	t=1746791165; cv=none; b=k2kZZSKwEN3bgX2jBK13EhhcxSXCzeFypTpdT+aDf5gE0BBigWgetsM89ImnmTe9OSD2qcCU8QPqhtMSufZh5Dee9pbUhdP3UfBc4njsI4Y3AFNP/I0+EAyLLcYvd9dqAN14KPoDLWckRK3Dr8f8LjkPLbdUrEkM/aERoPy7ibI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746740465; c=relaxed/simple;
-	bh=eWLDivHb/Zs+9pB7oUXg8LbBxLoPvxtOqcSg0bj0akQ=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=LDVKZcNHv1F5OemIIwJ7/z6geZCFoalx2czGMmVaPnjSW/2XSzukoEgIzME8rWu7Cu5cnnqN94qY5SSXK970Vo/Uk0wKTRKLEj//Oa06xEyjGbqU/3gPO2fIKwMyxE5sE95QKWy1zajmUV+RAxMEvqEr6QnCU3hgJP8crSfnq/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Amp97yM9; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Amp97yM9"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC3C2C4CEE7;
-	Thu,  8 May 2025 21:41:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746740464;
-	bh=eWLDivHb/Zs+9pB7oUXg8LbBxLoPvxtOqcSg0bj0akQ=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=Amp97yM98EcKIJtug5LfW9weVRAZBgbS7ff8v6KVUVAypNuQhxEWbbz9spIGM24iI
-	 4WKpcR02nsis0Ls2i3ZUN7JnHEqJoKuXyAlgL2TuG/dCuOrCQLOcMOZ9mTccShU9nA
-	 iirYXv9JKPy+SmXlhXK9wEPVgWHdBlYgX30nBREwTyso5dCdcIPkL/oA7jGcGF27zY
-	 KCbEVTulxKkHsYWlCgFsImUJUTfNGHSgWQeBveSUH4PifUs0MSkYFXkgg9mnDvPVqO
-	 g/zws+2MR8jXhmdOi8httkWFgF9gHMQFRj62JoSi1Ibaf13PK3/HhHODcAROlWbNC6
-	 3aLG4ApShPOeQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADE95380AA70;
-	Thu,  8 May 2025 21:41:44 +0000 (UTC)
-Subject: Re: [GIT PULL] bcachefs fixes for 6.15-rc6
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <pdixxswan4bhmajjvnczxa2nxh5tm52itlttopnuk3w6lzv3ms@inq7k7aws2rg>
-References: <pdixxswan4bhmajjvnczxa2nxh5tm52itlttopnuk3w6lzv3ms@inq7k7aws2rg>
-X-PR-Tracked-List-Id: <linux-bcachefs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <pdixxswan4bhmajjvnczxa2nxh5tm52itlttopnuk3w6lzv3ms@inq7k7aws2rg>
-X-PR-Tracked-Remote: git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-05-08
-X-PR-Tracked-Commit-Id: 8e4d28036c293241b312b1fceafb32b994f80fcc
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9c69f88849045499e8ad114e5e13dbb3c85f4443
-Message-Id: <174674050327.3050618.15775685558013664884.pr-tracker-bot@kernel.org>
-Date: Thu, 08 May 2025 21:41:43 +0000
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1746791165; c=relaxed/simple;
+	bh=CJzrH6ju8yp+ugu249WDLTxhqHJhhqxodVFJeINsAd0=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=nxm1qJScUHGeZ3GQc+XD1oRPDxenvmluGvRf7mC9X3xMZTfcwdLwNxerQ8jCa86OjKodTktl7u+dQG/LPq/zpyzYFel6Ay+8kVkQgeRScISbhnJrPTfvIK8c/Tj960mGBfJmaN/T1qpvYW2dpMFc47Muj05OVjl3Lrn37T5xA40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3d922570570so23643295ab.3
+        for <linux-bcachefs@vger.kernel.org>; Fri, 09 May 2025 04:46:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746791162; x=1747395962;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=05HVGIk+v9zX6nTdbO/Nmu/sJr2wsL1zhuQLEm963g0=;
+        b=RJ3EvRCAXKyrFCYPvGgb/b9HP2XP9PE6cnJ0UDZIRhShaj3LBvCcuLLXVq0H+LrDKj
+         vc7AtC1s2wtas4IVqYljbNKhDDJFkbngMOJD5EG0EG2C3E+hiVsU5rhGAO/B1X0+cg0y
+         rQd3vGw3k+sEC3mT145v8vwi7QT0z8TbyzYyohG8Al5ZnoAmB7b+r3W5yxiwNaSmyIq7
+         ZnZm8RxlgR8EZLpE9CJzy1gAT5HU8fMb/eBGZYHnPDWd+pCffshNwEPJ9pHBU//5zVY2
+         H40QcAa8fqGnnl6tfVUtcoIx2r8K003a1QCABSIsh+lDAcVBj1cFVs2iYwbY9A/0q/LV
+         gHZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVG22XH32MWB8NLObqj3ckzHr10tfyxDD39h4mFdEMkNzpHOWcdR9LMFtH6r1yvDQB7sUEnuSwpsziOMubMFg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxEKKeIzYSXOCVdNaP7I8x60Sa2P0sS0ojF+GDCSHMdCu8cx19Q
+	7E9a1zBvH/H5IB0NYLQTy4i4wQO6vvABftm24boXn/R4YLJ9EStEm9jDxvsw+foxNUubohwmqBF
+	ohJua3vu6bwS4XNETliRNah1uQhTR7ifpAzAHYaeeUZFZuc/covxj4E8=
+X-Google-Smtp-Source: AGHT+IHgQ297aSznzBoXurVc4ahrJUr9qjBunxOwM+QaDAAumBGhyzPzXFQThUARwVKDxuJmE9RWQu/dU0y4NjzxiJOycTGkAu+V
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:b2a:b0:3d6:d162:be12 with SMTP id
+ e9e14a558f8ab-3da7e213504mr41483895ab.21.1746791162743; Fri, 09 May 2025
+ 04:46:02 -0700 (PDT)
+Date: Fri, 09 May 2025 04:46:02 -0700
+In-Reply-To: <66f01abe.050a0220.3195df.009d.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <681deafa.050a0220.a19a9.012e.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] WARNING in bch2_fs_release
+From: syzbot <syzbot+08d08d52c3a09bfc70f7@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-The pull request you sent on Thu, 8 May 2025 15:58:00 -0400:
+syzbot suspects this issue was fixed by commit:
 
-> git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-05-08
+commit 04e90891be26a240e41d51d1770de56e810fda5e
+Author: Kent Overstreet <kent.overstreet@linux.dev>
+Date:   Thu Mar 20 15:41:07 2025 +0000
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9c69f88849045499e8ad114e5e13dbb3c85f4443
+    bcachefs: Run bch2_check_dirent_target() at lookup time
 
-Thank you!
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=115ed8f4580000
+start commit:   a7f2e10ecd8f Merge tag 'hwmon-fixes-for-v6.14-rc8/6.14' of..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=620facf12ff15d10
+dashboard link: https://syzkaller.appspot.com/bug?extid=08d08d52c3a09bfc70f7
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10d11e98580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=114b1004580000
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: bcachefs: Run bch2_check_dirent_target() at lookup time
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
