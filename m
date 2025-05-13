@@ -1,52 +1,51 @@
-Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
+Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6C0F29993E
-	for <linux-bcachefs@vger.kernel.org>; Mon, 12 May 2025 20:55:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3069118C933
+	for <linux-bcachefs@vger.kernel.org>; Tue, 13 May 2025 02:14:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747083332; cv=none; b=AvjSYhgfNSkB0iYsjRgimLMe71oWgQOjmqofSNX2r+iufFjSN25bYaEPX0PJNvXnTwuT72UsmZMm7JXd2XZ9mZRRZrJpKiEQj/o46OH6s19ztMjmefbNWtYe1X4Jj7dKHheQPf5RDip66UdFiQJA1rOfhTSu+HVqwzZfh6DruyY=
+	t=1747102469; cv=none; b=bKTHf2S0j8hBN5eds/6l4pp0TKDfDEgrSxSlWwHvX5n/Xm78nfKk1+OSP0pnKotHS+jKOra9UHmN+2R477YG+hZvR/n4nzsKCw/nxlVU+baAhJuMxMna7VpquXCgKC1MJpyBrA/DE3wzNEKY9RpLLIqUmPhkR0Yco7Ddb7xrEKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747083332; c=relaxed/simple;
-	bh=pqJbaLjgQnRiwaboHM/aTnZwIq7DmB5rNttCV0+tin4=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Z+XfXgtHTsZNd2AjXuk7HgM+9mDLUL23p7hVxYJJyxjmxCae1BF/VQsVc9uTJS7Zg6NGwP06Atd5gEf/wpKpD/vkM4WzymgZMtzqPGlWtXFuSw0+kXODWPSZLCKW9Cjjid8BrZsJ1PhXr4tTAAwxa0eraSxtj3hwMn0HutDUKEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.78
+	s=arc-20240116; t=1747102469; c=relaxed/simple;
+	bh=ieor3tLUVFxTnjlpkxp2nBfoSp2nUKu7NDxY9Ou46E4=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=uaTFpqVnOYhsRYwXEp8O9wZYDHU4d2Xux81p2Mu4Rvw39138y76yON0fWbAd98tVHm0GuajZw/f+qjOxMmb4+yLcIkJCHurTTI3ryDX2f0dF46FIgK84p6n8btjSy3+EDlvMYtKb8m3hvour8ScWq5a1xYhtQpPkAjaubFQNVoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-85b5875e250so488634039f.0
-        for <linux-bcachefs@vger.kernel.org>; Mon, 12 May 2025 13:55:30 -0700 (PDT)
+Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3da720ff4a0so59273685ab.3
+        for <linux-bcachefs@vger.kernel.org>; Mon, 12 May 2025 19:14:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747083330; x=1747688130;
+        d=1e100.net; s=20230601; t=1747102466; x=1747707266;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=xRCuNfqzh47nkMPckKjPNSykBAeA7pWOWECUUlhtnEk=;
-        b=HbPvY3GHDSXLKoNo9SlcFmylAMKaiPLe1tCJasnQtHHDl+b29C3f86IhP9YB9EDc4e
-         +n2NxsojmlaHtrCoTZSjN/dEcM4IWWFg/m+mst1FX3yobkS2JcX1h/xiYYdJlEZOuGHv
-         n3WXcsI/1UfIRjPfS18uAwVT4u+87Bb6zk4WVb/iQFgI3/OJkJKuc8W0O0jpGTOHqJCT
-         30MEBY4icd39ILSU4btHM5ttj8/Y9ZWuQkzlbBFDC0MktGcXrXZ1Py2z9d41ZpX+Hrtw
-         SJBLYijM3OF0gDog69tdDEUtC+qOt6uMm8w+HQEf74UHbPyOwf87CP4SQ8SqRgo7pDxL
-         /+RQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWx03CwolEH7EsyMxKvBJan+JyTraETPf90k4MPdyGaYo+TmO4pixLMQ2P05j8DzFCM1BMY1XCXQBQ6qxyw7g==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx8Kwuwcr3qsxG742tQFesg0A0v7tdCE9PCri1uSQ2Hm0HsgkpK
-	+S62fKpUUyWCnhOOAX9DieRWGV4HCYiISZKvD7trre76Aq2Kiox9VqSIydD11bi1eoKZxenHXrj
-	6p13uaaaGK4OZr9zSd6dITuVZVpTFejvRoDxDQx4tq3UEM/HrFeMk3ho=
-X-Google-Smtp-Source: AGHT+IH/3LtD55t9PyxZ315pAO6kSBSIySD7onGoASNJK7NM2p10S2/QLcsECwasGTGsmzAJJ/DyzWy4Yv7LqpekD0YewzxA6bFf
+        bh=kO4Jl/o7NJi0wFJPRurmXgjfPaKYJsRjlw2GZSDQy+E=;
+        b=YQ8UI+T/127bEZc/BzbbhQBMt/8dCf5lYb+KWC1KvjylHgc0pzfrKta8N9A1Bzn882
+         KkF9BNysZMUyoqLPpSBHqbjd/7q+oakA7LKwDzu7uh10SaxO9OI/aQsRsQEnWI6G0Z4n
+         ifUNXAkuQHRskxgch934uyhrs9zI5S+Z0hZ/KSZdvirZExOJ5f0xrR4npNCN+yg69zQi
+         Jm6w72yLm6x0yJoxn3YAAi20D7oPGeZPVLAANFgCPzn1+HLgNkMQdsGsNseXntwnpymy
+         LJb+Sh3z8bGjYYPisOtySu/mNNop3KQjQ9OZWQsTB2BHwFbZmTQSJ4Er0+7HTk9isCnb
+         LxbA==
+X-Forwarded-Encrypted: i=1; AJvYcCXmG9WREMpq+ZBQ/Bhl7gDDXke7aP017vQLT1xkQw4ZLGWzKRhIddqU8Lg3eU9tYIoInIOfnrO0S2itWYHA4g==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxGo7aYkT2zChBHd/zoYCfDgM8WjxmM/aPB35SURKQoLURwLZRg
+	HrLDkNw4rmTL5vf3bAbST4vPQ1C4uaaCRa0DAtvJivnZKo0JpBzUQ6speTgsXj2sode0AFCc/Ln
+	2bsNlKsEr1spRDhSX6uFoAaOrS1RvbLb3OpDVoI8mq88WtkLbiB/J3wE=
+X-Google-Smtp-Source: AGHT+IH/QjShxlwUHaM/RREZP0ThnKVN3767LeOTQdPfCtfCtTt/5Cy+DhZEVPICLMHATNP1a13QnmKvnHi+8oHNea43DB4ApVr9
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2b8a:b0:862:ba37:eb0e with SMTP id
- ca18e2360f4ac-8676368bf21mr1731695339f.12.1747083329871; Mon, 12 May 2025
- 13:55:29 -0700 (PDT)
-Date: Mon, 12 May 2025 13:55:29 -0700
+X-Received: by 2002:a05:6e02:4513:b0:3d8:2032:ca67 with SMTP id
+ e9e14a558f8ab-3da7e1e762bmr127904315ab.9.1747102466220; Mon, 12 May 2025
+ 19:14:26 -0700 (PDT)
+Date: Mon, 12 May 2025 19:14:26 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68226041.050a0220.f2294.00ac.GAE@google.com>
-Subject: [syzbot] [bcachefs?] possible deadlock in __bch2_folio_reservation_get
- (2)
-From: syzbot <syzbot+bfdc0e00ec47a6f7f6a5@syzkaller.appspotmail.com>
+Message-ID: <6822ab02.050a0220.f2294.00cb.GAE@google.com>
+Subject: [syzbot] [bcachefs?] possible deadlock in __bch2_fsck_err (2)
+From: syzbot <syzbot+2c3ef91c9523c3d1a25c@syzkaller.appspotmail.com>
 To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
@@ -57,58 +56,123 @@ syzbot found the following issue on:
 
 HEAD commit:    c32f8dc5aaf9 Merge branch 'for-next/core' into for-kernelci
 git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=143862f4580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10a7b4f4580000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=ea4635ffd6ad5b4a
-dashboard link: https://syzkaller.appspot.com/bug?extid=bfdc0e00ec47a6f7f6a5
+dashboard link: https://syzkaller.appspot.com/bug?extid=2c3ef91c9523c3d1a25c
 compiler:       Debian clang version 20.1.2 (++20250402124445+58df0ef89dd6-1~exp1~20250402004600.97), Debian LLD 20.1.2
 userspace arch: arm64
-
-Unfortunately, I don't have any reproducer for this issue yet.
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1385f4f4580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17f694d4580000
 
 Downloadable assets:
 disk image: https://storage.googleapis.com/syzbot-assets/b921498959d4/disk-c32f8dc5.raw.xz
 vmlinux: https://storage.googleapis.com/syzbot-assets/04e6ad946c4b/vmlinux-c32f8dc5.xz
 kernel image: https://storage.googleapis.com/syzbot-assets/d4f0d8db50ee/Image-c32f8dc5.gz.xz
+mounted in repro #1: https://storage.googleapis.com/syzbot-assets/bef5d39edee9/mount_0.gz
+mounted in repro #2: https://storage.googleapis.com/syzbot-assets/ae8072e17390/mount_8.gz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+bfdc0e00ec47a6f7f6a5@syzkaller.appspotmail.com
+Reported-by: syzbot+2c3ef91c9523c3d1a25c@syzkaller.appspotmail.com
 
 ======================================================
 WARNING: possible circular locking dependency detected
 6.15.0-rc5-syzkaller-gc32f8dc5aaf9 #0 Not tainted
 ------------------------------------------------------
-syz.1.118/7224 is trying to acquire lock:
-ffff0000dde633b8 (&inode->ei_quota_lock){+.+.}-{4:4}, at: bch2_quota_reservation_add fs/bcachefs/fs-io.h:97 [inline]
-ffff0000dde633b8 (&inode->ei_quota_lock){+.+.}-{4:4}, at: __bch2_folio_reservation_get+0x5c0/0xa00 fs/bcachefs/fs-io-pagecache.c:460
+kworker/u8:5/201 is trying to acquire lock:
+ffff80008f4edda0 (console_lock){+.+.}-{0:0}, at: __bch2_print_string_as_lines fs/bcachefs/util.c:267 [inline]
+ffff80008f4edda0 (console_lock){+.+.}-{0:0}, at: bch2_print_string_as_lines+0x34/0x150 fs/bcachefs/util.c:286
 
 but task is already holding lock:
-ffff0000d5030518 (sb_pagefaults#3){.+.+}-{0:0}, at: do_page_mkwrite+0x138/0x2b8 mm/memory.c:3287
+ffff0000ebae1448 (&c->fsck_error_msgs_lock){+.+.}-{4:4}, at: __bch2_fsck_err+0x370/0xdd0 fs/bcachefs/error.c:455
 
 which lock already depends on the new lock.
 
 
 the existing dependency chain (in reverse order) is:
 
--> #8 (sb_pagefaults#3){.+.+}-{0:0}:
-       percpu_down_read include/linux/percpu-rwsem.h:52 [inline]
-       __sb_start_write include/linux/fs.h:1783 [inline]
-       sb_start_pagefault include/linux/fs.h:1948 [inline]
-       bch2_page_mkwrite+0x260/0xd60 fs/bcachefs/fs-io-pagecache.c:614
+-> #9 (&c->fsck_error_msgs_lock){+.+.}-{4:4}:
+       __mutex_lock_common+0x1d0/0x2190 kernel/locking/mutex.c:601
+       __mutex_lock kernel/locking/mutex.c:746 [inline]
+       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:798
+       __bch2_count_fsck_err+0x58/0x98 fs/bcachefs/error.c:385
+       __bch2_i_sectors_acct+0x328/0x3c4 fs/bcachefs/fs-io.c:155
+       bch2_i_sectors_acct fs/bcachefs/fs-io.h:138 [inline]
+       bchfs_truncate+0x684/0xa70 fs/bcachefs/fs-io.c:510
+       bch2_setattr+0x198/0x20c fs/bcachefs/fs.c:1245
+       notify_change+0x9a4/0xc50 fs/attr.c:552
+       do_truncate+0x178/0x1f0 fs/open.c:65
+       handle_truncate fs/namei.c:3501 [inline]
+       do_open fs/namei.c:3884 [inline]
+       path_openat+0x25a0/0x2c40 fs/namei.c:4039
+       do_filp_open+0x18c/0x36c fs/namei.c:4066
+       do_sys_openat2+0x11c/0x1b4 fs/open.c:1429
+       do_sys_open fs/open.c:1444 [inline]
+       __do_sys_openat fs/open.c:1460 [inline]
+       __se_sys_openat fs/open.c:1455 [inline]
+       __arm64_sys_openat+0x120/0x158 fs/open.c:1455
+       __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
+       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
+       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
+       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
+       el0_svc+0x58/0x17c arch/arm64/kernel/entry-common.c:767
+       el0t_64_sync_handler+0x78/0x108 arch/arm64/kernel/entry-common.c:786
+       el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
+
+-> #8 (&inode->ei_quota_lock){+.+.}-{4:4}:
+       __mutex_lock_common+0x1d0/0x2190 kernel/locking/mutex.c:601
+       __mutex_lock kernel/locking/mutex.c:746 [inline]
+       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:798
+       bch2_quota_reservation_add fs/bcachefs/fs-io.h:97 [inline]
+       __bch2_folio_reservation_get+0x5c0/0xa00 fs/bcachefs/fs-io-pagecache.c:460
+       bch2_folio_reservation_get fs/bcachefs/fs-io-pagecache.c:477 [inline]
+       bch2_page_mkwrite+0xa48/0xd60 fs/bcachefs/fs-io-pagecache.c:637
        do_page_mkwrite+0x138/0x2b8 mm/memory.c:3287
-       do_shared_fault mm/memory.c:5594 [inline]
-       do_fault mm/memory.c:5656 [inline]
-       do_pte_missing mm/memory.c:4160 [inline]
-       handle_pte_fault mm/memory.c:5997 [inline]
+       wp_page_shared mm/memory.c:3688 [inline]
+       do_wp_page+0x1b54/0x43a8 mm/memory.c:3907
+       handle_pte_fault mm/memory.c:6013 [inline]
        __handle_mm_fault mm/memory.c:6140 [inline]
-       handle_mm_fault+0x1998/0x4cec mm/memory.c:6309
-       do_page_fault+0x598/0x1554 arch/arm64/mm/fault.c:690
-       do_translation_fault+0xc4/0x114 arch/arm64/mm/fault.c:783
+       handle_mm_fault+0x1064/0x4cec mm/memory.c:6309
+       do_page_fault+0x428/0x1554 arch/arm64/mm/fault.c:647
        do_mem_abort+0x70/0x194 arch/arm64/mm/fault.c:919
        el0_da+0x64/0x160 arch/arm64/kernel/entry-common.c:627
        el0t_64_sync_handler+0x84/0x108 arch/arm64/kernel/entry-common.c:789
        el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
 
--> #7 (&mm->mmap_lock){++++}-{4:4}:
+-> #7 (sb_pagefaults){.+.+}-{0:0}:
+       percpu_down_read include/linux/percpu-rwsem.h:52 [inline]
+       __sb_start_write include/linux/fs.h:1783 [inline]
+       sb_start_pagefault include/linux/fs.h:1948 [inline]
+       bch2_page_mkwrite+0x260/0xd60 fs/bcachefs/fs-io-pagecache.c:614
+       do_page_mkwrite+0x138/0x2b8 mm/memory.c:3287
+       wp_page_shared mm/memory.c:3688 [inline]
+       do_wp_page+0x1b54/0x43a8 mm/memory.c:3907
+       handle_pte_fault mm/memory.c:6013 [inline]
+       __handle_mm_fault mm/memory.c:6140 [inline]
+       handle_mm_fault+0x1064/0x4cec mm/memory.c:6309
+       do_page_fault+0x428/0x1554 arch/arm64/mm/fault.c:647
+       do_mem_abort+0x70/0x194 arch/arm64/mm/fault.c:919
+       el0_da+0x64/0x160 arch/arm64/kernel/entry-common.c:627
+       el0t_64_sync_handler+0x84/0x108 arch/arm64/kernel/entry-common.c:789
+       el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
+
+-> #6 (vm_lock){++++}-{0:0}:
+       __vma_enter_locked+0x184/0x354 mm/memory.c:6473
+       __vma_start_write+0x34/0x158 mm/memory.c:6497
+       vma_start_write include/linux/mm.h:829 [inline]
+       vma_expand+0x1b8/0x8f0 mm/vma.c:1086
+       relocate_vma_down+0x234/0x400 mm/mmap.c:1767
+       setup_arg_pages+0x4b4/0x920 fs/exec.c:800
+       load_elf_binary+0x8c4/0x1ebc fs/binfmt_elf.c:1019
+       search_binary_handler fs/exec.c:1778 [inline]
+       exec_binprm fs/exec.c:1810 [inline]
+       bprm_execve+0x77c/0x10dc fs/exec.c:1862
+       kernel_execve+0x70c/0x7f4 fs/exec.c:2028
+       run_init_process+0x1bc/0x1ec init/main.c:1378
+       try_to_run_init_process+0x20/0x7c init/main.c:1385
+       kernel_init+0xa8/0x1dc init/main.c:1513
+       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:847
+
+-> #5 (&mm->mmap_lock){++++}-{4:4}:
        __might_fault+0xc4/0x124 mm/memory.c:7151
        drm_mode_object_get_properties+0x1f0/0x524 drivers/gpu/drm/drm_mode_object.c:407
        drm_mode_getconnector+0xd78/0x1254 drivers/gpu/drm/drm_connector.c:3399
@@ -126,7 +190,7 @@ the existing dependency chain (in reverse order) is:
        el0t_64_sync_handler+0x78/0x108 arch/arm64/kernel/entry-common.c:786
        el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
 
--> #6 (crtc_ww_class_mutex){+.+.}-{4:4}:
+-> #4 (crtc_ww_class_mutex){+.+.}-{4:4}:
        ww_acquire_init include/linux/ww_mutex.h:162 [inline]
        drm_modeset_acquire_init+0x1d8/0x374 drivers/gpu/drm/drm_modeset_lock.c:250
        drmm_mode_config_init+0xb0c/0x10d8 drivers/gpu/drm/drm_mode_config.c:462
@@ -141,7 +205,7 @@ the existing dependency chain (in reverse order) is:
        kernel_init+0x24/0x1dc init/main.c:1457
        ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:847
 
--> #5 (crtc_ww_class_acquire){+.+.}-{0:0}:
+-> #3 (crtc_ww_class_acquire){+.+.}-{0:0}:
        ww_acquire_init include/linux/ww_mutex.h:161 [inline]
        drm_modeset_acquire_init+0x1b8/0x374 drivers/gpu/drm/drm_modeset_lock.c:250
        drm_client_modeset_commit_atomic+0xcc/0x6ac drivers/gpu/drm/drm_client_modeset.c:1018
@@ -174,7 +238,7 @@ the existing dependency chain (in reverse order) is:
        kernel_init+0x24/0x1dc init/main.c:1457
        ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:847
 
--> #4 (&client->modeset_mutex){+.+.}-{4:4}:
+-> #2 (&client->modeset_mutex){+.+.}-{4:4}:
        __mutex_lock_common+0x1d0/0x2190 kernel/locking/mutex.c:601
        __mutex_lock kernel/locking/mutex.c:746 [inline]
        mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:798
@@ -195,7 +259,7 @@ the existing dependency chain (in reverse order) is:
        kernel_init+0x24/0x1dc init/main.c:1457
        ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:847
 
--> #3 (&helper->lock){+.+.}-{4:4}:
+-> #1 (&helper->lock){+.+.}-{4:4}:
        __mutex_lock_common+0x1d0/0x2190 kernel/locking/mutex.c:601
        __mutex_lock kernel/locking/mutex.c:746 [inline]
        mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:798
@@ -226,7 +290,12 @@ the existing dependency chain (in reverse order) is:
        kernel_init+0x24/0x1dc init/main.c:1457
        ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:847
 
--> #2 (console_lock){+.+.}-{0:0}:
+-> #0 (console_lock){+.+.}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:3166 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3285 [inline]
+       validate_chain kernel/locking/lockdep.c:3909 [inline]
+       __lock_acquire+0x1728/0x3058 kernel/locking/lockdep.c:5235
+       lock_acquire+0x14c/0x2e0 kernel/locking/lockdep.c:5866
        console_lock+0x194/0x1ec kernel/printk/printk.c:2849
        __bch2_print_string_as_lines fs/bcachefs/util.c:267 [inline]
        bch2_print_string_as_lines+0x34/0x150 fs/bcachefs/util.c:286
@@ -248,86 +317,33 @@ the existing dependency chain (in reverse order) is:
        kthread+0x5fc/0x75c kernel/kthread.c:464
        ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:847
 
--> #1 (&c->fsck_error_msgs_lock){+.+.}-{4:4}:
-       __mutex_lock_common+0x1d0/0x2190 kernel/locking/mutex.c:601
-       __mutex_lock kernel/locking/mutex.c:746 [inline]
-       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:798
-       __bch2_count_fsck_err+0x58/0x98 fs/bcachefs/error.c:385
-       __bch2_i_sectors_acct+0x328/0x3c4 fs/bcachefs/fs-io.c:155
-       bch2_i_sectors_acct fs/bcachefs/fs-io.h:138 [inline]
-       bchfs_truncate+0x684/0xa70 fs/bcachefs/fs-io.c:510
-       bch2_setattr+0x198/0x20c fs/bcachefs/fs.c:1245
-       notify_change+0x9a4/0xc50 fs/attr.c:552
-       do_truncate+0x178/0x1f0 fs/open.c:65
-       handle_truncate fs/namei.c:3501 [inline]
-       do_open fs/namei.c:3884 [inline]
-       path_openat+0x25a0/0x2c40 fs/namei.c:4039
-       do_filp_open+0x18c/0x36c fs/namei.c:4066
-       do_sys_openat2+0x11c/0x1b4 fs/open.c:1429
-       do_sys_open fs/open.c:1444 [inline]
-       __do_sys_openat fs/open.c:1460 [inline]
-       __se_sys_openat fs/open.c:1455 [inline]
-       __arm64_sys_openat+0x120/0x158 fs/open.c:1455
-       __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
-       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
-       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
-       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
-       el0_svc+0x58/0x17c arch/arm64/kernel/entry-common.c:767
-       el0t_64_sync_handler+0x78/0x108 arch/arm64/kernel/entry-common.c:786
-       el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
-
--> #0 (&inode->ei_quota_lock){+.+.}-{4:4}:
-       check_prev_add kernel/locking/lockdep.c:3166 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3285 [inline]
-       validate_chain kernel/locking/lockdep.c:3909 [inline]
-       __lock_acquire+0x1728/0x3058 kernel/locking/lockdep.c:5235
-       lock_acquire+0x14c/0x2e0 kernel/locking/lockdep.c:5866
-       __mutex_lock_common+0x1d0/0x2190 kernel/locking/mutex.c:601
-       __mutex_lock kernel/locking/mutex.c:746 [inline]
-       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:798
-       bch2_quota_reservation_add fs/bcachefs/fs-io.h:97 [inline]
-       __bch2_folio_reservation_get+0x5c0/0xa00 fs/bcachefs/fs-io-pagecache.c:460
-       bch2_folio_reservation_get fs/bcachefs/fs-io-pagecache.c:477 [inline]
-       bch2_page_mkwrite+0xa48/0xd60 fs/bcachefs/fs-io-pagecache.c:637
-       do_page_mkwrite+0x138/0x2b8 mm/memory.c:3287
-       do_shared_fault mm/memory.c:5594 [inline]
-       do_fault mm/memory.c:5656 [inline]
-       do_pte_missing mm/memory.c:4160 [inline]
-       handle_pte_fault mm/memory.c:5997 [inline]
-       __handle_mm_fault mm/memory.c:6140 [inline]
-       handle_mm_fault+0x1998/0x4cec mm/memory.c:6309
-       do_page_fault+0x598/0x1554 arch/arm64/mm/fault.c:690
-       do_translation_fault+0xc4/0x114 arch/arm64/mm/fault.c:783
-       do_mem_abort+0x70/0x194 arch/arm64/mm/fault.c:919
-       el0_da+0x64/0x160 arch/arm64/kernel/entry-common.c:627
-       el0t_64_sync_handler+0x84/0x108 arch/arm64/kernel/entry-common.c:789
-       el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
-
 other info that might help us debug this:
 
 Chain exists of:
-  &inode->ei_quota_lock --> &mm->mmap_lock --> sb_pagefaults#3
+  console_lock --> &inode->ei_quota_lock --> &c->fsck_error_msgs_lock
 
  Possible unsafe locking scenario:
 
        CPU0                    CPU1
        ----                    ----
-  rlock(sb_pagefaults#3);
-                               lock(&mm->mmap_lock);
-                               lock(sb_pagefaults#3);
-  lock(&inode->ei_quota_lock);
+  lock(&c->fsck_error_msgs_lock);
+                               lock(&inode->ei_quota_lock);
+                               lock(&c->fsck_error_msgs_lock);
+  lock(console_lock);
 
  *** DEADLOCK ***
 
-2 locks held by syz.1.118/7224:
- #0: ffff0000cdb392d0 (&mm->mmap_lock){++++}-{4:4}, at: mmap_read_trylock include/linux/mmap_lock.h:203 [inline]
- #0: ffff0000cdb392d0 (&mm->mmap_lock){++++}-{4:4}, at: get_mmap_lock_carefully mm/memory.c:6346 [inline]
- #0: ffff0000cdb392d0 (&mm->mmap_lock){++++}-{4:4}, at: lock_mm_and_find_vma+0x38/0x2d8 mm/memory.c:6406
- #1: ffff0000d5030518 (sb_pagefaults#3){.+.+}-{0:0}, at: do_page_mkwrite+0x138/0x2b8 mm/memory.c:3287
+5 locks held by kworker/u8:5/201:
+ #0: ffff0000d985d948 ((wq_completion)btree_update#5){+.+.}-{0:0}, at: process_one_work+0x658/0x156c kernel/workqueue.c:3212
+ #1: ffff80009b8d7bc0 ((work_completion)(&c->btree_interior_update_work)){+.+.}-{0:0}, at: process_one_work+0x6ec/0x156c kernel/workqueue.c:3212
+ #2: ffff0000eba84228 (&c->btree_trans_barrier){.+.+}-{0:0}, at: srcu_lock_acquire+0x18/0x54 include/linux/srcu.h:160
+ #3: ffff0000cf2bc140 (bcachefs_btree){+.+.}-{0:0}, at: trans_set_locked+0x68/0x200 fs/bcachefs/btree_locking.h:197
+ #4: ffff0000ebae1448 (&c->fsck_error_msgs_lock){+.+.}-{4:4}, at: __bch2_fsck_err+0x370/0xdd0 fs/bcachefs/error.c:455
 
 stack backtrace:
-CPU: 1 UID: 0 PID: 7224 Comm: syz.1.118 Not tainted 6.15.0-rc5-syzkaller-gc32f8dc5aaf9 #0 PREEMPT 
+CPU: 1 UID: 0 PID: 201 Comm: kworker/u8:5 Not tainted 6.15.0-rc5-syzkaller-gc32f8dc5aaf9 #0 PREEMPT 
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
+Workqueue: btree_update btree_interior_update_work
 Call trace:
  show_stack+0x2c/0x3c arch/arm64/kernel/stacktrace.c:466 (C)
  __dump_stack+0x30/0x40 lib/dump_stack.c:94
@@ -340,26 +356,42 @@ Call trace:
  validate_chain kernel/locking/lockdep.c:3909 [inline]
  __lock_acquire+0x1728/0x3058 kernel/locking/lockdep.c:5235
  lock_acquire+0x14c/0x2e0 kernel/locking/lockdep.c:5866
- __mutex_lock_common+0x1d0/0x2190 kernel/locking/mutex.c:601
- __mutex_lock kernel/locking/mutex.c:746 [inline]
- mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:798
- bch2_quota_reservation_add fs/bcachefs/fs-io.h:97 [inline]
- __bch2_folio_reservation_get+0x5c0/0xa00 fs/bcachefs/fs-io-pagecache.c:460
- bch2_folio_reservation_get fs/bcachefs/fs-io-pagecache.c:477 [inline]
- bch2_page_mkwrite+0xa48/0xd60 fs/bcachefs/fs-io-pagecache.c:637
- do_page_mkwrite+0x138/0x2b8 mm/memory.c:3287
- do_shared_fault mm/memory.c:5594 [inline]
- do_fault mm/memory.c:5656 [inline]
- do_pte_missing mm/memory.c:4160 [inline]
- handle_pte_fault mm/memory.c:5997 [inline]
- __handle_mm_fault mm/memory.c:6140 [inline]
- handle_mm_fault+0x1998/0x4cec mm/memory.c:6309
- do_page_fault+0x598/0x1554 arch/arm64/mm/fault.c:690
- do_translation_fault+0xc4/0x114 arch/arm64/mm/fault.c:783
- do_mem_abort+0x70/0x194 arch/arm64/mm/fault.c:919
- el0_da+0x64/0x160 arch/arm64/kernel/entry-common.c:627
- el0t_64_sync_handler+0x84/0x108 arch/arm64/kernel/entry-common.c:789
- el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
+ console_lock+0x194/0x1ec kernel/printk/printk.c:2849
+ __bch2_print_string_as_lines fs/bcachefs/util.c:267 [inline]
+ bch2_print_string_as_lines+0x34/0x150 fs/bcachefs/util.c:286
+ __bch2_fsck_err+0xb5c/0xdd0 fs/bcachefs/error.c:562
+ __need_discard_or_freespace_err+0x14c/0x1cc fs/bcachefs/alloc_background.c:678
+ bch2_bucket_do_index+0x320/0x490 fs/bcachefs/alloc_background.c:729
+ bch2_trigger_alloc+0xd1c/0x2d54 fs/bcachefs/alloc_background.c:885
+ bch2_key_trigger fs/bcachefs/bkey_methods.h:88 [inline]
+ bch2_key_trigger_new fs/bcachefs/bkey_methods.h:116 [inline]
+ run_one_trans_trigger fs/bcachefs/btree_trans_commit.c:516 [inline]
+ bch2_trans_commit_run_triggers fs/bcachefs/btree_trans_commit.c:550 [inline]
+ __bch2_trans_commit+0x634/0x62d0 fs/bcachefs/btree_trans_commit.c:990
+ bch2_trans_commit fs/bcachefs/btree_update.h:195 [inline]
+ btree_update_nodes_written fs/bcachefs/btree_update_interior.c:705 [inline]
+ btree_interior_update_work+0xb80/0x1cfc fs/bcachefs/btree_update_interior.c:843
+ process_one_work+0x7e8/0x156c kernel/workqueue.c:3238
+ process_scheduled_works kernel/workqueue.c:3319 [inline]
+ worker_thread+0x958/0xed8 kernel/workqueue.c:3400
+ kthread+0x5fc/0x75c kernel/kthread.c:464
+ ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:847
+bcachefs (loop2): bucket incorrectly unset in freespace btree
+  u64s 5 type deleted 0:1:0 len 0 ver 0, , continuing
+bcachefs (loop2): bucket incorrectly unset in freespace btree
+  u64s 5 type deleted 0:4:0 len 0 ver 0, , continuing
+bcachefs (loop2): bucket incorrectly unset in freespace btree
+  u64s 5 type deleted 0:6:0 len 0 ver 0, , continuing
+bcachefs (loop2): bucket incorrectly unset in freespace btree
+  u64s 5 type deleted 0:9:0 len 0 ver 0, , continuing
+bcachefs (loop0): bucket incorrectly unset in freespace btree
+  u64s 5 type deleted 0:1:0 len 0 ver 0, , continuing
+bcachefs (loop0): bucket incorrectly unset in freespace btree
+  u64s 5 type deleted 0:4:0 len 0 ver 0, , continuing
+bcachefs (loop0): bucket incorrectly unset in freespace btree
+  u64s 5 type deleted 0:6:0 len 0 ver 0, , continuing
+bcachefs (loop0): bucket incorrectly unset in freespace btree
+  u64s 5 type deleted 0:9:0 len 0 ver 0, , continuing
 
 
 ---
@@ -372,6 +404,10 @@ https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
 If the report is already addressed, let syzbot know by replying with:
 #syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
 If you want to overwrite report's subsystems, reply with:
 #syz set subsystems: new-subsystem
