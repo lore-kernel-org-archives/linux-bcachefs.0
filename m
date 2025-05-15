@@ -1,131 +1,103 @@
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F239719D07E;
-	Thu, 15 May 2025 16:58:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C75C71D79A6
+	for <linux-bcachefs@vger.kernel.org>; Thu, 15 May 2025 17:06:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747328339; cv=none; b=t9NPouoxBnruAKBMSVLeNlE8ZzUrLBd4PKbWcPUGP/2wjbvw4DRkMRxtRrUr0Yao5kMV5hzT/9hvbklTVnehFSNiEUq8KY3iDCR+hNdnU4NKQ1196B5fxjuJBwl1n4qIelo1aO5yd6TQAf63i/gCFin1dcRWJUD/VwqfUt5D86s=
+	t=1747328766; cv=none; b=DvdfNRwfenSKiXKEGWXQJDpJinJie1opTf0RU6mvw3ywcNIr6Eft35Wu6sjDnfWY0J620Fk+82A24mNz7lgkEY2hEa1bLq74zXBTTPO/ZSJ1Ggs/+hNYIt+uK0MZ2xfFUGpyWsasG0hZttHSRcRBAtE5IQX2OxtuaWgfgqYe2GQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747328339; c=relaxed/simple;
-	bh=iAtQvWTdSGZneEP+K3adQdKa73rxxVoUasNSZAfZMFQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=DlAhte4kDOGdmBg70RqVuff0mDvLUhTmzirVseXjodaKBPIsQdr8cDZ5+AzCdtzNHqHWeZEgOLhue+x8xqKpd7fLkkdB9E7BEoOFnoEPGNQRwoDsLchmnSe2DmkIx95fMxww9+YYoo3euk4YjRNucd1uqehv4kpQQrYLT85ir9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.29])
-	by frasgout11.his.huawei.com (SkyGuard) with ESMTPS id 4ZywsR1kfBz1HCN7;
-	Fri, 16 May 2025 00:39:23 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id 5796F1402E0;
-	Fri, 16 May 2025 00:40:02 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-	by APP1 (Coremail) with SMTP id LxC2BwB3_kzYGCZoyALvBw--.63654S2;
-	Thu, 15 May 2025 17:40:01 +0100 (CET)
-Message-ID: <2993afd1b2b1553a75d1016ec2d06b6fb8e78e57.camel@huaweicloud.com>
-Subject: Re: [syzbot] [lsm?] [integrity?] KMSAN: uninit-value in
- ima_add_template_entry (3)
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: syzbot <syzbot+3f0b3970f154dfc95e6e@syzkaller.appspotmail.com>, 
- dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, jmorris@namei.org, 
- linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-security-module@vger.kernel.org, paul@paul-moore.com, 
- roberto.sassu@huawei.com, serge@hallyn.com,
- syzkaller-bugs@googlegroups.com,  zohar@linux.ibm.com,
- linux-bcachefs@vger.kernel.org
-Date: Thu, 15 May 2025 18:39:48 +0200
-In-Reply-To: <l7xs6ea7takb5yvyvobxoce3mudbgen5d7s47onksm4ujpdkib@tvstwbdpvm4o>
-References: <6824aea8.a00a0220.104b28.0011.GAE@google.com>
-	 <38c28bd4dc40b2e992c13a6fdba820a667861d8c.camel@huaweicloud.com>
-	 <rbab6axciiuomrann3uwvpks2zogx3xfntk7w4p2betq3morlf@5xnl5guhnaxj>
-	 <576e10238d83f725fbe23c4af63be6e83de9ce48.camel@huaweicloud.com>
-	 <l7xs6ea7takb5yvyvobxoce3mudbgen5d7s47onksm4ujpdkib@tvstwbdpvm4o>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1747328766; c=relaxed/simple;
+	bh=ZnphpeyzmL5FF8G8AjQtwp1eD+tTc2zqrM9xgNbzPxw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sj+sXfRv2Yy8iwWduWPmzbtII8YQ/n4Is10sQLwbbL3Pdc1/4dmTvbyYjt7oXggIUd2ofQYqRFYqRjzkzw9/lIhu0q6Iq12lgmp1DOMbyoZQ0yJNvYWZ8k08ZP8b21+kRG+1vGR5e+rP5APFkqSy8oBg+9DGPA56u5hRH26Ofng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iKlO+upA; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iKlO+upA"
+Date: Thu, 15 May 2025 13:05:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1747328759;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5chk7E4x3h1R+A5Xl3j2s/JOuBnrO0n5tz6zd+9lyOg=;
+	b=iKlO+upAKJh78b3H8aTULIJmmMOuP9z7qA55iDK4Vo1ZXg5ww2/Mp+K/glsiNN7wnM+WCq
+	Nom/wEi/tNGHA0inZ5SeVBSKh34sZ4coT4vSqY7NcNjZALVzzBqcyUGHpb7z4+sn74uzyi
+	ZSy2l+cAtLG2eH0yNAHgCBGFwjhqItY=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Alan Huang <mmpgouride@gmail.com>
+Cc: linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH] bcachefs: Kill BTREE_TRIGGER_bucket_invalidate
+Message-ID: <dpv2m7opow2uo2flilsrezjupnkkve6nnszizn2amqqag5x5sp@vyamfk7nv7tz>
+References: <20250515142950.375479-1-mmpgouride@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CM-TRANSID:LxC2BwB3_kzYGCZoyALvBw--.63654S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7uw4DKF45tw1kuw13WF4xXrb_yoW8tFW3pa
-	42gF1UK3yvgFy7CrW2y3WYyFyFkrW8ta43W3yrXr92kF98XFn09FySkr4YgrnxWr1Fyw12
-	kr1vq343A3WDtFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
-	v3UUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAJBGglkmQHswAAsD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250515142950.375479-1-mmpgouride@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, 2025-05-15 at 12:37 -0400, Kent Overstreet wrote:
-> On Thu, May 15, 2025 at 04:30:09PM +0200, Roberto Sassu wrote:
-> > On Thu, 2025-05-15 at 10:18 -0400, Kent Overstreet wrote:
-> > > On Thu, May 15, 2025 at 04:06:02PM +0200, Roberto Sassu wrote:
-> > > > On Wed, 2025-05-14 at 07:54 -0700, syzbot wrote:
-> > > > > Hello,
-> > > >=20
-> > > > + Kent, bcachefs mailing list
-> > > >=20
-> > > > I have the feeling that this was recently fixed in one of the lates=
-t
-> > > > pull requests in bcachefs. I don't see it occurring anymore, and th=
-ere
-> > > > are more commits after the one reported by syzbot.
-> > >=20
-> > > I have no idea how any of the ima stuff works or even what it does, I=
-'m
-> > > not even sure where I'd start...
-> >=20
-> > Basically, I got a clue that bcachefs would be the cause from the
-> > bottom of the report:
-> >=20
-> >  page_cache_sync_ra+0x108a/0x13e0 mm/readahead.c:621
-> >  filemap_get_pages+0xfb3/0x3a70 mm/filemap.c:2591
-> >  filemap_read+0x5c6/0x2190 mm/filemap.c:2702
-> >  bch2_read_iter+0x559/0x21c0 fs/bcachefs/fs-io-direct.c:221
-> >  __kernel_read+0x750/0xda0 fs/read_write.c:528
-> >  integrity_kernel_read+0x77/0x90 security/integrity/iint.c:28
-> >=20
-> > This means that IMA is reading a file and calculating a digest over it:
-> >=20
-> >  ima_calc_file_hash_tfm security/integrity/ima/ima_crypto.c:498 [inline=
-]
-> >  ima_calc_file_shash security/integrity/ima/ima_crypto.c:511 [inline]
-> >  ima_calc_file_hash+0x240a/0x3fd0 security/integrity/ima/ima_crypto.c:5=
-68
-> >  ima_collect_measurement+0x45d/0xe60 security/integrity/ima/ima_api.c:2=
-93
-> >  process_measurement+0x2d1a/0x40e0 security/integrity/ima/ima_main.c:38=
-5
-> >  ima_file_check+0x8e/0xd0 security/integrity/ima/ima_main.c:613
-> >=20
-> > syzbot is complaining that the data the digest was calculated from was
-> > not initialized (e.g. zeroed).
-> >=20
-> > There is a reproducer, we would be probably able to do a bisection and
-> > find the commit that caused it (and maybe the one that fixed it).
->=20
-> Ok, that would be fixed by the - multiple - KMSAN fixes, most of those
-> were spurious but code was lacking annotations. Probably this one:
->=20
-> 9c3a2c9b471a bcachefs: Disable asm memcpys when kmsan enabled
+On Thu, May 15, 2025 at 10:29:50PM +0800, Alan Huang wrote:
+> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
 
-Perfect, thanks a lot!
+Applied
 
-Will check it and mark this report as fixed.
-
-Roberto
-
+> ---
+>  fs/bcachefs/alloc_background.c | 9 ---------
+>  fs/bcachefs/btree_types.h      | 6 +-----
+>  2 files changed, 1 insertion(+), 14 deletions(-)
+> 
+> diff --git a/fs/bcachefs/alloc_background.c b/fs/bcachefs/alloc_background.c
+> index 81e2ae4bb400..51dfd2f24c20 100644
+> --- a/fs/bcachefs/alloc_background.c
+> +++ b/fs/bcachefs/alloc_background.c
+> @@ -914,15 +914,6 @@ int bch2_trigger_alloc(struct btree_trans *trans,
+>  				goto err;
+>  		}
+>  
+> -		if ((flags & BTREE_TRIGGER_bucket_invalidate) &&
+> -		    old_a->cached_sectors) {
+> -			ret = bch2_mod_dev_cached_sectors(trans, ca->dev_idx,
+> -					 -((s64) old_a->cached_sectors),
+> -					 flags & BTREE_TRIGGER_gc);
+> -			if (ret)
+> -				goto err;
+> -		}
+> -
+>  		ret = bch2_alloc_key_to_dev_counters(trans, ca, old_a, new_a, flags);
+>  		if (ret)
+>  			goto err;
+> diff --git a/fs/bcachefs/btree_types.h b/fs/bcachefs/btree_types.h
+> index 3acccca3b3a3..e5a965db68b4 100644
+> --- a/fs/bcachefs/btree_types.h
+> +++ b/fs/bcachefs/btree_types.h
+> @@ -258,9 +258,6 @@ struct btree_node_iter {
+>   *
+>   * BTREE_TRIGGER_insert - @new is entering the btree
+>   * BTREE_TRIGGER_overwrite - @old is leaving the btree
+> - *
+> - * BTREE_TRIGGER_bucket_invalidate - signal from bucket invalidate path to alloc
+> - * trigger
+>   */
+>  #define BTREE_TRIGGER_FLAGS()			\
+>  	x(norun)				\
+> @@ -270,8 +267,7 @@ struct btree_node_iter {
+>  	x(gc)					\
+>  	x(insert)				\
+>  	x(overwrite)				\
+> -	x(is_root)				\
+> -	x(bucket_invalidate)
+> +	x(is_root)
+>  
+>  enum {
+>  #define x(n) BTREE_ITER_FLAG_BIT_##n,
+> -- 
+> 2.48.1
+> 
