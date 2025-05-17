@@ -1,124 +1,71 @@
-Received: from mail.tnxip.de (mail.tnxip.de [49.12.77.104])
+Received: from mail.lichtvoll.de (lichtvoll.de [37.120.160.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C5B3B664
-	for <linux-bcachefs@vger.kernel.org>; Sat, 17 May 2025 09:15:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=49.12.77.104
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EE7DFBF6
+	for <linux-bcachefs@vger.kernel.org>; Sat, 17 May 2025 10:41:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.120.160.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747473363; cv=none; b=YXS68TZUDUSCrxHS7zdu7zTfFFaAtbmd60k2kPbA+9iAYekQyRsgGBRXwbl6hvrqo6+3URmQIIQqHx5W6tmJnZXOrOtU4csfxTjLnwigLog5m4d8MfSsaUQ9ewllMF55ENMDUStVyW0U9+yt4RXPMzLc7c8yoSZ0GlKLuX69Zdc=
+	t=1747478481; cv=none; b=lDup77OSkIW2tgWXsL6YP/xLOEBUL+IniNnin/2rUrUKSLC57XA1ny8/KfBBGC+4bG/UH7iy5WqrRl7soiQsnqsMm8bT3QapK1nEgAaBHyQ1U+/9LWHTZXMZ/qr1CqXiWV5E7c2s86xXuKiCYT4D9FsFn1V+pojPN5CDrFf5QUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747473363; c=relaxed/simple;
-	bh=adVfjFBqy6jLjYmfmxjGufv3KqBamaR7RPblbS7jEys=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=XGQkAFHRdFtpiDJM/A5sEEtkt6FadGNPwwg7yjgX7Z7jA9uVPjI8NTes+Qv2ictqGiN7YIrsrorkixEKZ2RiMoEsSSfLIFWmMAThVMiLfABxHzd+K59g/82yypOw2SmITuqUiyWM97TmwmlhyHXgn/hq9Smnm8ZFsuDjcZCrN1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=tnxip.de; spf=pass smtp.mailfrom=tnxip.de; dkim=permerror (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b=Wb9GvSPq; dkim=pass (1024-bit key) header.d=tnxip.de header.i=@tnxip.de header.b=LDtIBdE2; dkim=pass (1024-bit key) header.d=tnxip.de header.i=@tnxip.de header.b=SJ6KCetW; dkim=permerror (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b=Uzd+saRK; arc=none smtp.client-ip=49.12.77.104
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=tnxip.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tnxip.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=permerror (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b="Wb9GvSPq";
-	dkim=pass (1024-bit key) header.d=tnxip.de header.i=@tnxip.de header.b="LDtIBdE2";
-	dkim=pass (1024-bit key) header.d=tnxip.de header.i=@tnxip.de header.b="SJ6KCetW";
-	dkim=permerror (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b="Uzd+saRK"
-Received: from gw.tnxip.de (unknown [IPv6:fdc7:1cc3:ec03:1:a4c6:597:2a14:e443])
-	by mail.tnxip.de (Postfix) with ESMTPS id 8D656208AB;
-	Sat, 17 May 2025 11:15:49 +0200 (CEST)
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=tnxip.de;
-	s=mail-vps-ed; t=1747473349;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k1I8WnhIA6KaQmrONhBFupvBkPzGJ1st2IVRYX1JurQ=;
-	b=Wb9GvSPqv//bKZk62bezCjB+7UQEZPKegJ/0cVuRF2roa9Iw7vX/pWPW0LyAth7AMDjZEe
-	GksuJItX0Wdij7BQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tnxip.de; s=mail-vps;
-	t=1747473349;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k1I8WnhIA6KaQmrONhBFupvBkPzGJ1st2IVRYX1JurQ=;
-	b=LDtIBdE2oyWcfZg6FNdO+j481MwFpuKvyPJGhrGvuOM+dHoBjpmbu32q32uB8PCLtL8feH
-	sUzWHJ1u8OdkOUhVI3cJgElF+1odEvTGP60h+dF5wqpFe3ZQHeUn4PwVsyHKhb3KGg2eI/
-	ZcuLA9aw/J8CR3PuTYkbmfVU07iy+70=
-Received: from [IPV6:2a04:4540:8c09:8c00:7f69:c40:c544:7ff3] (unknown [IPv6:2a04:4540:8c09:8c00:7f69:c40:c544:7ff3])
-	by gw.tnxip.de (Postfix) with ESMTPSA id D294154000000000386E4;
-	Sat, 17 May 2025 11:15:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tnxip.de; s=mail-gw;
-	t=1747473348;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k1I8WnhIA6KaQmrONhBFupvBkPzGJ1st2IVRYX1JurQ=;
-	b=SJ6KCetWMU7BWC4BqK5F2IDunFfus+d+fSkCr5CsDdzbSvD5vQW6uV5bbcoo79B05uh5Nq
-	9uSzlQZjmOXANGKHiYpbUOfgQr62ew6RUjnqypRe5oNgnbmjGasLBD9J02REoZaGRNeBIJ
-	upIzaTZvaEzNA/a+GFxSqX5zMcd/sUg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=tnxip.de;
-	s=mail-gw-ed; t=1747473348;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k1I8WnhIA6KaQmrONhBFupvBkPzGJ1st2IVRYX1JurQ=;
-	b=Uzd+saRKPM4h5V44jtG7EVAyW/qd6wyWSBgO5B6JPU7KisP89f1glGcIQJMaUgxAJSQzXj
-	ckSxsbU2HEtksEBQ==
-Message-ID: <7d4de775-2fd3-4edb-8c24-bd1736a4df89@tnxip.de>
-Date: Sat, 17 May 2025 11:15:39 +0200
+	s=arc-20240116; t=1747478481; c=relaxed/simple;
+	bh=/+/axh/Y69caNlx2c2J4BpXOl3Rev5FRE87zPKc4Qrw=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=PxV+vRecyoReyVFan8AFQlEnHNqbXNEg/51/+T0BYZZKHXmguUngrgo6OOXj3ZyYQmnawwxmkreDNOnwfj4mS/poGce2+v6ir5MMHh3nz06iEWHGftIEXaZj2Q4eInb2LCMS6ctIQVZlXVCEVTE4JCvMrJ3Nc9Q4cA0HeEmEQko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de; spf=pass smtp.mailfrom=lichtvoll.de; arc=none smtp.client-ip=37.120.160.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lichtvoll.de
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+	(No client certificate requested)
+	by mail.lichtvoll.de (Postfix) with ESMTPSA id 94588FB898;
+	Sat, 17 May 2025 10:41:15 +0000 (UTC)
+Authentication-Results: mail.lichtvoll.de;
+	auth=pass smtp.auth=martin@lichtvoll.de smtp.mailfrom=martin@lichtvoll.de
+From: Martin Steigerwald <martin@lichtvoll.de>
+To: linux-bcachefs@vger.kernel.org, Pavin Joseph <me@pavinjoseph.com>,
+ Malte =?UTF-8?B?U2NocsO2ZGVy?= <malte.schroeder@tnxip.de>
+Subject: Re: Status of rebalance and scrub support
+Date: Sat, 17 May 2025 12:41:15 +0200
+Message-ID: <5890559.DvuYhMxLoT@lichtvoll.de>
+In-Reply-To: <7d4de775-2fd3-4edb-8c24-bd1736a4df89@tnxip.de>
+References:
+ <28759521-d0ef-4f56-ad3d-3f07ad670adf@pavinjoseph.com>
+ <4984817.GXAFRqVoOG@lichtvoll.de>
+ <7d4de775-2fd3-4edb-8c24-bd1736a4df89@tnxip.de>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Betterbird (Linux)
-Subject: Re: Status of rebalance and scrub support
-To: Martin Steigerwald <martin@lichtvoll.de>, linux-bcachefs@vger.kernel.org,
- Pavin Joseph <me@pavinjoseph.com>
-References: <28759521-d0ef-4f56-ad3d-3f07ad670adf@pavinjoseph.com>
- <c76f1900-de04-422e-b6eb-12453d982ddf@pavinjoseph.com>
- <4984817.GXAFRqVoOG@lichtvoll.de>
-Content-Language: en-US, de-DE
-From: =?UTF-8?Q?Malte_Schr=C3=B6der?= <malte.schroeder@tnxip.de>
-In-Reply-To: <4984817.GXAFRqVoOG@lichtvoll.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 
-On 17/05/2025 11:12, Martin Steigerwald wrote:
-> Hi.
->
-> Pavin Joseph - 17.08.24, 19:17:18 CEST:
->> Gentle ping, anyone? 🥺
->>
->> On 8/7/24 11:07 AM, Pavin Joseph wrote:
->>> Hello everyone,
->>>
->>> Is there an ETA available for full rebalance and scrub support?
-> I take it that scrub support is not yet fully implemented?
->
-> I am not really asking for an ETA – it will be done when it is done – 
-> however I am not sure whether scrub is not yet fully implemented or 
-> whether I am facing a bug:
->
-> % bcachefs data scrub /mnt/tmp
-> Starting scrub on 1 devices:  dm-6
-> device   checked   corrected uncorrected  total
-> dm-6     0 B         0 B         0 B      17.2 GiB    0%  0 B/sec
->
-> (quick test filesystem formatted with bcachefs format without additional 
-> options on LUKS encrypted LVM)
->
-> Stays there until I Ctrl-C it. I waited for a bit more than 5 minutes. No 
-> disk I/O to the logical volume.
->
-> Self-compiled bcachefs-tools from 1.25.2 tag (displays version 1.25.1 
-> still) on self-compiled kernel 6.14.6 on Devuan Ceres. bcachefs-tools with 
-> tiny patch to Makefile to recognize eudev for determining udev directory.
->
-> Best,
+Hi.
 
-Can you retest on 6.15-rc? I didn't try that on 6.14, but on 6.15 it is
-working for me (tm).
+Malte Schr=C3=B6der - 17.05.25, 11:15:39 CEST:
+> > % bcachefs data scrub /mnt/tmp
+> > Starting scrub on 1 devices:  dm-6
+> > device   checked   corrected uncorrected  total
+> > dm-6     0 B         0 B         0 B      17.2 GiB    0%  0 B/sec
+[=E2=80=A6]
+> Can you retest on 6.15-rc? I didn't try that on 6.14, but on 6.15 it is
+> working for me (tm).
 
-/Malte
+Thanks for letting me know!
+
+Wonderful, seems to be working just fine:
+
+% bcachefs data scrub /mnt/tmp=20
+Starting scrub on 1 devices:  dm-6
+device    checked   corrected uncorrected     total
+dm-6      17.2 GiB        0 B         0 B  17.2 GiB  100%  complete
+
+So seems since 6.15 there is scrub support :)
+
+Best,
+=2D-=20
+Martin
+
 
