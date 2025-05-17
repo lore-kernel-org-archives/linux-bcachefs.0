@@ -1,38 +1,38 @@
 Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D27E720E31B
-	for <linux-bcachefs@vger.kernel.org>; Sat, 17 May 2025 19:25:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D78B170826
+	for <linux-bcachefs@vger.kernel.org>; Sat, 17 May 2025 19:26:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747509962; cv=none; b=tv6na6N793MU4Bi4SsENa5kd1hsiR9+tz4NDFiWieq04B+cf6Z/8LDYHGdLN32v1LUWgsEo1j9+ot8cHYIBqF8TyQHbC5IuXlcFWgG/3nqomN2/uZNCmZOsjR1a1MGLEoTrEPBqpP6qg4bvZp/z5GjLlrxcGZNALiH4RfImkK8Q=
+	t=1747509962; cv=none; b=hYDpqnBb1Ofvm1PBh2GPG7uJP+4tTjiKHo0PUcVL8XeXEshS7Q730WI/xY1RopxJBSQEsckNi7utjY7HytgH2HQZKSu2axtohL8NlH0U9Q5xXgjAPNhRDwZP9y55hNy/Q45vbvZ7k/e1TVbFkviPB81b4CWdIP+xzK8c8MnZdPg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1747509962; c=relaxed/simple;
-	bh=56lw+XsPWEt9mwVuDfSwuzPuUKM2NdtLJkgjZEzjDMA=;
+	bh=x13Br3fJwTjEniC+KrY3pGcG6xxhmpNv7eKlYvuyMbs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iY1PLipcc+VNjsn2F6bIBs414Wo2b6hN6wfQRiqeFRh6ImNJvj4ioxxzWRh9697IETUQ5zWjvNV7/BGbGGCJh/JrwsZRlNXFwEgGgPhyfvoSr53h/seyBo2sF1Y5Z5+qeqbD+J4Zt0yMxNm8SepFSeKZG0YiAwJ9+kmIEZ0QWzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ihqM1Tzs; arc=none smtp.client-ip=95.215.58.182
+	 MIME-Version; b=ubIJIVimYw1obLAaRs4Rf0N4Mo57Pze8EKgu57hg55SLbbW/zLyqpcGtVlg3CaB7TM4GO/kS0tGwNMutRr+O5d31PCP5TpXEp3JnIqq8kQrbPoSkX8e5gP0ST3ZaCDplibZvZnGur6XLwTz7r37QiAPoX9XmydmDVptDl1pR8+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IDBPoNIF; arc=none smtp.client-ip=95.215.58.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ihqM1Tzs"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IDBPoNIF"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747509954;
+	t=1747509958;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kp9VAYQLBi0pZt+IF9+IVnXnRcDF8AQc7FVsbNwKX7c=;
-	b=ihqM1TzsbumwZPqa3xkHNd7PZPGXSYWrXlPJ2FSvYuAGpQzcL0e9fQvg4nr41Kh93Snbq3
-	25Ha7qVOa6cKJLkXwWlyPRSp6vzGAjXmBQoi4tHOTaJI7A44zeXghiFivYczZQ+aegbrZ1
-	9ET+zgpnCKr+Z09pqVitW6rM3Z7cQvc=
+	bh=FKydUxUP+IzkgNctDwz0b739VvfLs4QRHJGYFfdQefo=;
+	b=IDBPoNIFaaxsysRLWwGrQJoXMuznh3CUQ0p2VDl0969J/i/HIIFewdYQI4TuRcPd52BqYd
+	ZcYeIJfrePXxeiN4UZrC52JDA9C4J4i9ccl7iS//fKcHeDPUy1SH7griWfa1hmaDpV2PfW
+	nWYVhpqetLiOey+KRIoyYhQ1faB2QxE=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 2/8] bcachefs: __bch2_run_recovery_passes()
-Date: Sat, 17 May 2025 15:25:39 -0400
-Message-ID: <20250517192547.3849149-3-kent.overstreet@linux.dev>
+Subject: [PATCH 6/8] bcachefs: Run recovery passes asynchronously
+Date: Sat, 17 May 2025 15:25:43 -0400
+Message-ID: <20250517192547.3849149-7-kent.overstreet@linux.dev>
 In-Reply-To: <20250517192547.3849149-1-kent.overstreet@linux.dev>
 References: <20250517192547.3849149-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,343 +44,275 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Consolidate bch2_run_recovery_passes() and
-bch2_run_online_recovery_passes(), prep work for automatically
-scheduling and running recovery passes in the background.
+When we request a recovery pass to be run online, i.e. not during
+recovery, if it's an online pass it'll now be run in the background,
+instead of waiting for the next mount.
 
-- Now takes a mask of which passes to run, automatic background repair
-  will pass in sb.recovery_passes_required.
-
-- Skips passes that are failing: a pass that failed may be reattempted
-  after another pass succeeds (some passes depend on repair done by
-  other passes for successful completion).
-
-- bch2_recovery_passes_match() helper to skip alloc passes on a
-  filesystem without alloc info.
+To avoid situations where recovery passes are running continuously, this
+also includes ratelimiting: if the RUN_RECOVERY_PASS_ratelimit flag is
+passed, the pass may be deferred until later - depending on the runtime
+and last run stats in the recovery_passes superblock section.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/fsck.c                  |   2 +-
- fs/bcachefs/recovery.c              |   7 +-
- fs/bcachefs/recovery_passes.c       | 180 +++++++++++++++-------------
- fs/bcachefs/recovery_passes.h       |   4 +-
+ fs/bcachefs/bcachefs.h              |   3 +-
+ fs/bcachefs/recovery_passes.c       | 133 ++++++++++++++++++++++------
+ fs/bcachefs/recovery_passes.h       |   1 +
  fs/bcachefs/recovery_passes_types.h |   2 +
- 5 files changed, 104 insertions(+), 91 deletions(-)
+ 4 files changed, 113 insertions(+), 26 deletions(-)
 
-diff --git a/fs/bcachefs/fsck.c b/fs/bcachefs/fsck.c
-index dc541a66b8eb..0909716900f9 100644
---- a/fs/bcachefs/fsck.c
-+++ b/fs/bcachefs/fsck.c
-@@ -3141,7 +3141,7 @@ static int bch2_fsck_online_thread_fn(struct thread_with_stdio *stdio)
- 	set_bit(BCH_FS_in_fsck, &c->flags);
+diff --git a/fs/bcachefs/bcachefs.h b/fs/bcachefs/bcachefs.h
+index 1458f131af16..e1680b635fe1 100644
+--- a/fs/bcachefs/bcachefs.h
++++ b/fs/bcachefs/bcachefs.h
+@@ -760,7 +760,8 @@ struct btree_trans_buf {
+ 	x(snapshot_delete_pagecache)					\
+ 	x(sysfs)							\
+ 	x(btree_write_buffer)						\
+-	x(btree_node_scrub)
++	x(btree_node_scrub)						\
++	x(async_recovery_passes)
  
- 	c->recovery.curr_pass = BCH_RECOVERY_PASS_check_alloc_info;
--	int ret = bch2_run_online_recovery_passes(c);
-+	int ret = bch2_run_online_recovery_passes(c, ~0ULL);
- 
- 	clear_bit(BCH_FS_in_fsck, &c->flags);
- 	bch_err_fn(c, ret);
-diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
-index cd2372221a54..a7e6b5a6505a 100644
---- a/fs/bcachefs/recovery.c
-+++ b/fs/bcachefs/recovery.c
-@@ -966,7 +966,7 @@ int bch2_fs_recovery(struct bch_fs *c)
- 	if (ret)
- 		goto err;
- 
--	ret = bch2_run_recovery_passes(c);
-+	ret = bch2_run_recovery_passes(c, 0);
- 	if (ret)
- 		goto err;
- 
-@@ -1001,9 +1001,8 @@ int bch2_fs_recovery(struct bch_fs *c)
- 		bch_info(c, "Fixed errors, running fsck a second time to verify fs is clean");
- 		clear_bit(BCH_FS_errors_fixed, &c->flags);
- 
--		c->recovery.curr_pass = BCH_RECOVERY_PASS_check_alloc_info;
--
--		ret = bch2_run_recovery_passes(c);
-+		ret = bch2_run_recovery_passes(c,
-+			BCH_RECOVERY_PASS_check_alloc_info);
- 		if (ret)
- 			goto err;
- 
+ enum bch_write_ref {
+ #define x(n) BCH_WRITE_REF_##n,
 diff --git a/fs/bcachefs/recovery_passes.c b/fs/bcachefs/recovery_passes.c
-index c1eca55a1dde..e0e261aa752e 100644
+index b931a9b465d4..f74f14227137 100644
 --- a/fs/bcachefs/recovery_passes.c
 +++ b/fs/bcachefs/recovery_passes.c
-@@ -203,6 +203,21 @@ static struct recovery_pass_fn recovery_pass_fns[] = {
- #undef x
- };
- 
-+static u64 bch2_recovery_passes_match(unsigned flags)
-+{
-+	u64 ret = 0;
-+
-+	for (unsigned i = 0; i < ARRAY_SIZE(recovery_pass_fns); i++)
-+		if (recovery_pass_fns[i].when & flags)
-+			ret |= BIT_ULL(i);
-+	return ret;
-+}
-+
-+u64 bch2_fsck_recovery_passes(void)
-+{
-+	return bch2_recovery_passes_match(PASS_FSCK);
-+}
-+
- /*
-  * For when we need to rewind recovery passes and run a pass we skipped:
-  */
-@@ -235,10 +250,12 @@ static int __bch2_run_explicit_recovery_pass(struct printbuf *out,
- 
- 	c->opts.recovery_passes |= BIT_ULL(pass);
- 
-+	if (test_bit(BCH_FS_in_recovery, &c->flags))
-+		r->passes_to_run |= BIT_ULL(pass);
-+
- 	if (test_bit(BCH_FS_in_recovery, &c->flags) &&
- 	    r->curr_pass > pass) {
- 		r->next_pass = pass;
--		r->passes_complete &= (1ULL << pass) >> 1;
- 		return -BCH_ERR_restart_recovery;
- 	} else {
- 		return 0;
-@@ -302,37 +319,9 @@ int bch2_run_explicit_recovery_pass_persistent(struct bch_fs *c,
- 	return ret;
+@@ -138,6 +138,30 @@ static void bch2_sb_recovery_pass_complete(struct bch_fs *c,
+ 	mutex_unlock(&c->sb_lock);
  }
  
--u64 bch2_fsck_recovery_passes(void)
--{
--	u64 ret = 0;
--
--	for (unsigned i = 0; i < ARRAY_SIZE(recovery_pass_fns); i++)
--		if (recovery_pass_fns[i].when & PASS_FSCK)
--			ret |= BIT_ULL(i);
--	return ret;
--}
--
--static bool should_run_recovery_pass(struct bch_fs *c, enum bch_recovery_pass pass)
--{
--	struct recovery_pass_fn *p = recovery_pass_fns + pass;
--
--	if ((p->when & PASS_ALLOC) && (c->sb.features & BIT_ULL(BCH_FEATURE_no_alloc_info)))
--		return false;
--	if (c->opts.recovery_passes_exclude & BIT_ULL(pass))
--		return false;
--	if (c->opts.recovery_passes & BIT_ULL(pass))
--		return true;
--	if ((p->when & PASS_FSCK) && c->opts.fsck)
--		return true;
--	if ((p->when & PASS_UNCLEAN) && !c->sb.clean)
--		return true;
--	if (p->when & PASS_ALWAYS)
--		return true;
--	return false;
--}
--
- static int bch2_run_recovery_pass(struct bch_fs *c, enum bch_recovery_pass pass)
- {
-+	struct bch_fs_recovery *r = &c->recovery;
- 	struct recovery_pass_fn *p = recovery_pass_fns + pass;
- 
- 	if (!(p->when & PASS_SILENT))
-@@ -341,8 +330,15 @@ static int bch2_run_recovery_pass(struct bch_fs *c, enum bch_recovery_pass pass)
- 
- 	s64 start_time = ktime_get_real_seconds();
- 	int ret = p->fn(c);
--	if (ret)
++static bool bch2_recovery_pass_want_ratelimit(struct bch_fs *c, enum bch_recovery_pass pass)
++{
++	enum bch_recovery_pass_stable stable = bch2_recovery_pass_to_stable(pass);
++	bool ret = false;
 +
-+	r->passes_to_run &= ~BIT_ULL(pass);
++	lockdep_assert_held(&c->sb_lock);
 +
-+	if (ret) {
-+		r->passes_failing |= BIT_ULL(pass);
- 		return ret;
++	struct bch_sb_field_recovery_passes *r =
++		bch2_sb_field_get(c->disk_sb.sb, recovery_passes);
++
++	if (stable < recovery_passes_nr_entries(r)) {
++		struct recovery_pass_entry *i = r->start + stable;
++
++		/*
++		 * Ratelimit if the last runtime was more than 1% of the time
++		 * since we last ran
++		 */
++		ret = (u64) le32_to_cpu(i->last_runtime) * 100 >
++			ktime_get_real_seconds() - le64_to_cpu(i->last_run);
 +	}
 +
-+	r->passes_failing = 0;
- 
- 	if (!test_bit(BCH_FS_error, &c->flags))
- 		bch2_sb_recovery_pass_complete(c, pass, start_time);
-@@ -353,80 +349,96 @@ static int bch2_run_recovery_pass(struct bch_fs *c, enum bch_recovery_pass pass)
- 	return 0;
- }
- 
--int bch2_run_online_recovery_passes(struct bch_fs *c)
-+static int __bch2_run_recovery_passes(struct bch_fs *c, u64 orig_passes_to_run,
-+				      bool online)
- {
--	for (unsigned i = 0; i < ARRAY_SIZE(recovery_pass_fns); i++) {
--		struct recovery_pass_fn *p = recovery_pass_fns + i;
--
--		if (!(p->when & PASS_ONLINE))
--			continue;
-+	struct bch_fs_recovery *r = &c->recovery;
-+	int ret = 0;
- 
--		int ret = bch2_run_recovery_pass(c, i);
--		if (bch2_err_matches(ret, BCH_ERR_restart_recovery)) {
--			i = c->recovery.curr_pass;
--			continue;
--		}
--		if (ret)
--			return ret;
--	}
-+	spin_lock_irq(&r->lock);
- 
--	return 0;
--}
-+	if (online)
-+		orig_passes_to_run &= bch2_recovery_passes_match(PASS_ONLINE);
- 
--int bch2_run_recovery_passes(struct bch_fs *c)
--{
--	int ret = 0;
-+	if (c->sb.features & BIT_ULL(BCH_FEATURE_no_alloc_info))
-+		orig_passes_to_run &= ~bch2_recovery_passes_match(PASS_ALLOC);
- 
- 	/*
--	 * We can't allow set_may_go_rw to be excluded; that would cause us to
--	 * use the journal replay keys for updates where it's not expected.
-+	 * A failed recovery pass will be retried after another pass succeeds -
-+	 * but not this iteration.
-+	 *
-+	 * This is because some passes depend on repair done by other passes: we
-+	 * may want to retry, but we don't want to loop on failing passes.
- 	 */
--	c->opts.recovery_passes_exclude &= ~BCH_RECOVERY_PASS_set_may_go_rw;
- 
--	down(&c->recovery.run_lock);
--	spin_lock_irq(&c->recovery.lock);
-+	orig_passes_to_run &= ~r->passes_failing;
- 
--	while (c->recovery.curr_pass < ARRAY_SIZE(recovery_pass_fns) && !ret) {
--		unsigned prev_done = c->recovery.pass_done;
--		unsigned pass = c->recovery.curr_pass;
-+	r->passes_to_run = orig_passes_to_run;
- 
--		c->recovery.next_pass = pass + 1;
-+	while (r->passes_to_run) {
-+		unsigned prev_done = r->pass_done;
-+		unsigned pass = __ffs64(r->passes_to_run);
-+		r->curr_pass = pass;
-+		r->next_pass = r->curr_pass + 1;
-+		r->passes_to_run &= ~BIT_ULL(pass);
- 
--		if (c->opts.recovery_pass_last &&
--		    c->recovery.curr_pass > c->opts.recovery_pass_last)
--			break;
-+		spin_unlock_irq(&r->lock);
-+
-+		int ret2 = bch2_run_recovery_pass(c, pass) ?:
-+			bch2_journal_flush(&c->journal);
- 
--		if (should_run_recovery_pass(c, pass)) {
--			spin_unlock_irq(&c->recovery.lock);
--			ret =   bch2_run_recovery_pass(c, pass) ?:
--				bch2_journal_flush(&c->journal);
--			spin_lock_irq(&c->recovery.lock);
--
--			if (c->recovery.next_pass < c->recovery.curr_pass) {
--				/*
--				 * bch2_run_explicit_recovery_pass() was called: we
--				 * can't always catch -BCH_ERR_restart_recovery because
--				 * it may have been called from another thread (btree
--				 * node read completion)
--				 */
--				ret = 0;
--				c->recovery.passes_complete &= ~(~0ULL << c->recovery.curr_pass);
--			} else {
--				c->recovery.passes_complete |= BIT_ULL(pass);
--				c->recovery.pass_done = max(c->recovery.pass_done, pass);
--			}
-+		spin_lock_irq(&r->lock);
-+
-+		if (r->next_pass < r->curr_pass) {
-+			/* Rewind: */
-+			r->passes_to_run |= orig_passes_to_run & (~0ULL << r->next_pass);
-+		} else if (!ret2) {
-+			r->pass_done = max(r->pass_done, pass);
-+			r->passes_complete |= BIT_ULL(pass);
-+		} else {
-+			ret = ret2;
- 		}
- 
--		c->recovery.curr_pass = c->recovery.next_pass;
-+		if (ret && !online)
-+			break;
- 
- 		if (prev_done <= BCH_RECOVERY_PASS_check_snapshots &&
--		    c->recovery.pass_done > BCH_RECOVERY_PASS_check_snapshots) {
-+		    r->pass_done > BCH_RECOVERY_PASS_check_snapshots) {
- 			bch2_copygc_wakeup(c);
- 			bch2_rebalance_wakeup(c);
- 		}
- 	}
- 
--	spin_unlock_irq(&c->recovery.lock);
-+	spin_unlock_irq(&r->lock);
-+
 +	return ret;
 +}
 +
-+int bch2_run_online_recovery_passes(struct bch_fs *c, u64 passes)
+ const struct bch_sb_field_ops bch_sb_field_ops_recovery_passes = {
+ 	.validate	= bch2_sb_recovery_passes_validate,
+ 	.to_text	= bch2_sb_recovery_passes_to_text
+@@ -218,13 +242,33 @@ u64 bch2_fsck_recovery_passes(void)
+ 	return bch2_recovery_passes_match(PASS_FSCK);
+ }
+ 
++static void bch2_run_async_recovery_passes(struct bch_fs *c)
 +{
-+	return __bch2_run_recovery_passes(c, c->sb.recovery_passes_required|passes, true);
++	if (!down_trylock(&c->recovery.run_lock))
++		return;
++
++	if (!enumerated_ref_tryget(&c->writes, BCH_WRITE_REF_async_recovery_passes))
++		goto unlock;
++
++	if (queue_work(system_long_wq, &c->recovery.work))
++		return;
++
++	enumerated_ref_put(&c->writes, BCH_WRITE_REF_async_recovery_passes);
++unlock:
++	up(&c->recovery.run_lock);
 +}
 +
-+int bch2_run_recovery_passes(struct bch_fs *c, enum bch_recovery_pass from)
-+{
-+	u64 passes =
-+		bch2_recovery_passes_match(PASS_ALWAYS) |
-+		(!c->sb.clean ? bch2_recovery_passes_match(PASS_UNCLEAN) : 0) |
-+		(c->opts.fsck ? bch2_recovery_passes_match(PASS_FSCK) : 0) |
-+		c->opts.recovery_passes |
-+		c->sb.recovery_passes_required;
+ static bool recovery_pass_needs_set(struct bch_fs *c,
+ 				    enum bch_recovery_pass pass,
+-				    enum bch_run_recovery_pass_flags flags)
++				    enum bch_run_recovery_pass_flags *flags)
+ {
+ 	struct bch_fs_recovery *r = &c->recovery;
+ 	bool in_recovery = test_bit(BCH_FS_in_recovery, &c->flags);
+-	bool persistent = !in_recovery || !(flags & RUN_RECOVERY_PASS_nopersistent);
++	bool persistent = !in_recovery || !(*flags & RUN_RECOVERY_PASS_nopersistent);
 +
-+	/*
-+	 * We can't allow set_may_go_rw to be excluded; that would cause us to
-+	 * use the journal replay keys for updates where it's not expected.
-+	 */
-+	c->opts.recovery_passes_exclude &= ~BCH_RECOVERY_PASS_set_may_go_rw;
-+	passes &= ~c->opts.recovery_passes_exclude;
++	if ((*flags & RUN_RECOVERY_PASS_ratelimit) &&
++	    !bch2_recovery_pass_want_ratelimit(c, pass))
++		*flags &= ~RUN_RECOVERY_PASS_ratelimit;
+ 
+ 	/*
+ 	 * If RUN_RECOVERY_PASS_nopersistent is set, we don't want to do
+@@ -236,9 +280,16 @@ static bool recovery_pass_needs_set(struct bch_fs *c,
+ 	 * it should run again even if it's already run:
+ 	 */
+ 
+-	return persistent
+-		? !(c->sb.recovery_passes_required & BIT_ULL(pass))
+-		: !((r->passes_to_run|r->passes_complete) & BIT_ULL(pass));
++	if (persistent
++	    ? !(c->sb.recovery_passes_required & BIT_ULL(pass))
++	    : !((r->passes_to_run|r->passes_complete) & BIT_ULL(pass)))
++		return true;
 +
-+	passes &= ~(BIT_ULL(from) - 1);
++	if (!(*flags & RUN_RECOVERY_PASS_ratelimit) &&
++	    (r->passes_ratelimiting & BIT_ULL(pass)))
++		return true;
 +
-+	down(&c->recovery.run_lock);
-+	int ret = __bch2_run_recovery_passes(c, passes, false);
- 	up(&c->recovery.run_lock);
++	return false;
+ }
+ 
+ /*
+@@ -260,15 +311,14 @@ int __bch2_run_explicit_recovery_pass(struct bch_fs *c,
+ 	unsigned long lockflags;
+ 	spin_lock_irqsave(&r->lock, lockflags);
+ 
+-	if (!recovery_pass_needs_set(c, pass, flags))
++	if (!recovery_pass_needs_set(c, pass, &flags))
+ 		goto out;
+ 
+ 	bool in_recovery = test_bit(BCH_FS_in_recovery, &c->flags);
+ 	bool rewind = in_recovery && r->curr_pass > pass;
++	bool ratelimit = flags & RUN_RECOVERY_PASS_ratelimit;
+ 
+-	if ((flags & RUN_RECOVERY_PASS_nopersistent) && in_recovery) {
+-		r->passes_to_run |= BIT_ULL(pass);
+-	} else {
++	if (!(in_recovery && (flags & RUN_RECOVERY_PASS_nopersistent))) {
+ 		struct bch_sb_field_ext *ext = bch2_sb_field_get(c->disk_sb.sb, ext);
+ 		__set_bit_le64(bch2_recovery_pass_to_stable(pass), ext->recovery_passes_required);
+ 	}
+@@ -281,18 +331,32 @@ int __bch2_run_explicit_recovery_pass(struct bch_fs *c,
+ 		goto out;
+ 	}
+ 
+-	prt_printf(out, "running recovery pass %s (%u), currently at %s (%u)%s\n",
+-		   bch2_recovery_passes[pass], pass,
+-		   bch2_recovery_passes[r->curr_pass], r->curr_pass,
+-		   rewind ? " - rewinding" : "");
++	if (ratelimit)
++		r->passes_ratelimiting |= BIT_ULL(pass);
++	else
++		r->passes_ratelimiting &= ~BIT_ULL(pass);
++
++	if (in_recovery && !ratelimit) {
++		prt_printf(out, "running recovery pass %s (%u), currently at %s (%u)%s\n",
++			   bch2_recovery_passes[pass], pass,
++			   bch2_recovery_passes[r->curr_pass], r->curr_pass,
++			   rewind ? " - rewinding" : "");
+ 
+-	if (test_bit(BCH_FS_in_recovery, &c->flags))
+ 		r->passes_to_run |= BIT_ULL(pass);
+ 
+-	if (rewind) {
+-		r->next_pass = pass;
+-		r->passes_complete &= (1ULL << pass) >> 1;
+-		ret = -BCH_ERR_restart_recovery;
++		if (rewind) {
++			r->next_pass = pass;
++			r->passes_complete &= (1ULL << pass) >> 1;
++			ret = -BCH_ERR_restart_recovery;
++		}
++	} else {
++		prt_printf(out, "scheduling recovery pass %s (%u)%s\n",
++			   bch2_recovery_passes[pass], pass,
++			   ratelimit ? " - ratelimiting" : "");
++
++		struct recovery_pass_fn *p = recovery_pass_fns + pass;
++		if (p->when & PASS_ONLINE)
++			bch2_run_async_recovery_passes(c);
+ 	}
+ out:
+ 	spin_unlock_irqrestore(&r->lock, lockflags);
+@@ -305,20 +369,24 @@ int bch2_run_explicit_recovery_pass(struct bch_fs *c,
+ 				    enum bch_recovery_pass pass,
+ 				    enum bch_run_recovery_pass_flags flags)
+ {
+-	if (!recovery_pass_needs_set(c, pass, flags))
+-		return 0;
++	int ret = 0;
+ 
+-	mutex_lock(&c->sb_lock);
+-	int ret = __bch2_run_explicit_recovery_pass(c, out, pass, flags);
+-	bch2_write_super(c);
+-	mutex_unlock(&c->sb_lock);
++	scoped_guard(mutex, &c->sb_lock) {
++		if (!recovery_pass_needs_set(c, pass, &flags))
++			return 0;
++
++		ret = __bch2_run_explicit_recovery_pass(c, out, pass, flags);
++		bch2_write_super(c);
++	}
  
  	return ret;
+ }
+ 
+ int bch2_run_print_explicit_recovery_pass(struct bch_fs *c, enum bch_recovery_pass pass)
+ {
+-	if (!recovery_pass_needs_set(c, pass, RUN_RECOVERY_PASS_nopersistent))
++	enum bch_run_recovery_pass_flags flags = RUN_RECOVERY_PASS_nopersistent;
++
++	if (!recovery_pass_needs_set(c, pass, &flags))
+ 		return 0;
+ 
+ 	struct printbuf buf = PRINTBUF;
+@@ -430,6 +498,19 @@ static int __bch2_run_recovery_passes(struct bch_fs *c, u64 orig_passes_to_run,
+ 	return ret;
+ }
+ 
++static void bch2_async_recovery_passes_work(struct work_struct *work)
++{
++	struct bch_fs *c = container_of(work, struct bch_fs, recovery.work);
++	struct bch_fs_recovery *r = &c->recovery;
++
++	__bch2_run_recovery_passes(c,
++		c->sb.recovery_passes_required & ~r->passes_ratelimiting,
++		true);
++
++	up(&r->run_lock);
++	enumerated_ref_put(&c->writes, BCH_WRITE_REF_async_recovery_passes);
++}
++
+ int bch2_run_online_recovery_passes(struct bch_fs *c, u64 passes)
+ {
+ 	return __bch2_run_recovery_passes(c, c->sb.recovery_passes_required|passes, true);
+@@ -488,4 +569,6 @@ void bch2_fs_recovery_passes_init(struct bch_fs *c)
+ {
+ 	spin_lock_init(&c->recovery.lock);
+ 	sema_init(&c->recovery.run_lock, 1);
++
++	INIT_WORK(&c->recovery.work, bch2_async_recovery_passes_work);
+ }
 diff --git a/fs/bcachefs/recovery_passes.h b/fs/bcachefs/recovery_passes.h
-index 4c03472be5b9..0e79cc33fd8f 100644
+index 30f896479a52..dc0d2014ff9b 100644
 --- a/fs/bcachefs/recovery_passes.h
 +++ b/fs/bcachefs/recovery_passes.h
-@@ -17,8 +17,8 @@ int __bch2_run_explicit_recovery_pass_persistent(struct bch_fs *, struct printbu
- int bch2_run_explicit_recovery_pass_persistent(struct bch_fs *, struct printbuf *,
- 					       enum bch_recovery_pass);
+@@ -12,6 +12,7 @@ u64 bch2_fsck_recovery_passes(void);
  
--int bch2_run_online_recovery_passes(struct bch_fs *);
--int bch2_run_recovery_passes(struct bch_fs *);
-+int bch2_run_online_recovery_passes(struct bch_fs *, u64);
-+int bch2_run_recovery_passes(struct bch_fs *, enum bch_recovery_pass);
+ enum bch_run_recovery_pass_flags {
+ 	RUN_RECOVERY_PASS_nopersistent	= BIT(0),
++	RUN_RECOVERY_PASS_ratelimit	= BIT(1),
+ };
  
- void bch2_fs_recovery_passes_init(struct bch_fs *);
- 
+ int bch2_run_print_explicit_recovery_pass(struct bch_fs *, enum bch_recovery_pass);
 diff --git a/fs/bcachefs/recovery_passes_types.h b/fs/bcachefs/recovery_passes_types.h
-index 69e8e29d58d0..deb6e0565cb9 100644
+index deb6e0565cb9..aa9526938cc3 100644
 --- a/fs/bcachefs/recovery_passes_types.h
 +++ b/fs/bcachefs/recovery_passes_types.h
-@@ -14,8 +14,10 @@ struct bch_fs_recovery {
- 	enum bch_recovery_pass	next_pass;
- 	/* never rewinds version of curr_pass */
- 	enum bch_recovery_pass	pass_done;
-+	u64			passes_to_run;
+@@ -18,8 +18,10 @@ struct bch_fs_recovery {
  	/* bitmask of recovery passes that we actually ran */
  	u64			passes_complete;
-+	u64			passes_failing;
+ 	u64			passes_failing;
++	u64			passes_ratelimiting;
  	spinlock_t		lock;
  	struct semaphore	run_lock;
++	struct work_struct	work;
  };
+ 
+ #endif /* _BCACHEFS_RECOVERY_PASSES_TYPES_H */
 -- 
 2.49.0
 
