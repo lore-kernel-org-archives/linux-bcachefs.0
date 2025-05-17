@@ -1,38 +1,38 @@
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D78B170826
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07CA2147F0
 	for <linux-bcachefs@vger.kernel.org>; Sat, 17 May 2025 19:26:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747509962; cv=none; b=hYDpqnBb1Ofvm1PBh2GPG7uJP+4tTjiKHo0PUcVL8XeXEshS7Q730WI/xY1RopxJBSQEsckNi7utjY7HytgH2HQZKSu2axtohL8NlH0U9Q5xXgjAPNhRDwZP9y55hNy/Q45vbvZ7k/e1TVbFkviPB81b4CWdIP+xzK8c8MnZdPg=
+	t=1747509963; cv=none; b=f5kTmXrt5VTwjirFlqsQ10tiGGtPwblLTeEWYIpw5PRHQstmNZpqiVFXhB3UN3XbreKenNIwL1TdRxIFHSdcXJaegE+s4umTzVPENXXN2Of7UIj1mHBayUw9aHQDUjKpwDL2gKRTuJfHAQ4WNY/Z0Vpo/jTKl6pqHJdLJYS6okI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747509962; c=relaxed/simple;
-	bh=x13Br3fJwTjEniC+KrY3pGcG6xxhmpNv7eKlYvuyMbs=;
+	s=arc-20240116; t=1747509963; c=relaxed/simple;
+	bh=TGcMuuAj7i+rWzKXf/MF3YpOoQtt/SF+lYynnOxvhvA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ubIJIVimYw1obLAaRs4Rf0N4Mo57Pze8EKgu57hg55SLbbW/zLyqpcGtVlg3CaB7TM4GO/kS0tGwNMutRr+O5d31PCP5TpXEp3JnIqq8kQrbPoSkX8e5gP0ST3ZaCDplibZvZnGur6XLwTz7r37QiAPoX9XmydmDVptDl1pR8+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IDBPoNIF; arc=none smtp.client-ip=95.215.58.182
+	 MIME-Version; b=JkEI6sJjOBwWKGgan/Rmyx8WZo2ccRd9g9VY4Y1fW3/dMO6pfqA/Ynq/qDVb+U/pSPIxQH9WUCCQ2W8fClsZsKeJjSoL3PmD7vVZ6MBdoOk2xnocmI4rlzl2n2cjBuOEgODHjD6zs1awCy87iIU0yb9ywN649PZ6C8qey5R8kII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Y7frtzaO; arc=none smtp.client-ip=95.215.58.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IDBPoNIF"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Y7frtzaO"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747509958;
+	t=1747509959;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FKydUxUP+IzkgNctDwz0b739VvfLs4QRHJGYFfdQefo=;
-	b=IDBPoNIFaaxsysRLWwGrQJoXMuznh3CUQ0p2VDl0969J/i/HIIFewdYQI4TuRcPd52BqYd
-	ZcYeIJfrePXxeiN4UZrC52JDA9C4J4i9ccl7iS//fKcHeDPUy1SH7griWfa1hmaDpV2PfW
-	nWYVhpqetLiOey+KRIoyYhQ1faB2QxE=
+	bh=djXkxfV3WhL+jxj8QkUmquBtKoHpkPQ0PtesuZFfHg0=;
+	b=Y7frtzaONm9/mTi/9El5nyKRzGcOEMNjy4tN7+o2Q3Ip8UYPy3qM7p0hk87+pqABZiNKRQ
+	avU8AqL6jUY8qUylVfuuSG5xXl0QcFW3kpFEquZrF1wBCDswufcuiVMDP68ZBUh8hdzfiT
+	RuIrApP+plcdhgPop04S7Ip60o7iEoQ=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 6/8] bcachefs: Run recovery passes asynchronously
-Date: Sat, 17 May 2025 15:25:43 -0400
-Message-ID: <20250517192547.3849149-7-kent.overstreet@linux.dev>
+Subject: [PATCH 7/8] bcachefs: Improve bucket_bitmap code
+Date: Sat, 17 May 2025 15:25:44 -0400
+Message-ID: <20250517192547.3849149-8-kent.overstreet@linux.dev>
 In-Reply-To: <20250517192547.3849149-1-kent.overstreet@linux.dev>
 References: <20250517192547.3849149-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,275 +44,334 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-When we request a recovery pass to be run online, i.e. not during
-recovery, if it's an online pass it'll now be run in the background,
-instead of waiting for the next mount.
-
-To avoid situations where recovery passes are running continuously, this
-also includes ratelimiting: if the RUN_RECOVERY_PASS_ratelimit flag is
-passed, the pass may be deferred until later - depending on the runtime
-and last run stats in the recovery_passes superblock section.
+Add some more helpers, and mismatches is now a superset of the empty
+bitmap - simplifies most checks.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/bcachefs.h              |   3 +-
- fs/bcachefs/recovery_passes.c       | 133 ++++++++++++++++++++++------
- fs/bcachefs/recovery_passes.h       |   1 +
- fs/bcachefs/recovery_passes_types.h |   2 +
- 4 files changed, 113 insertions(+), 26 deletions(-)
+ fs/bcachefs/backpointers.c | 123 ++++++++++++++++++++++---------------
+ fs/bcachefs/backpointers.h |   7 +++
+ fs/bcachefs/bcachefs.h     |   3 +-
+ fs/bcachefs/buckets.c      |  25 ++------
+ fs/bcachefs/movinggc.c     |   6 +-
+ fs/bcachefs/super.c        |   8 +--
+ 6 files changed, 92 insertions(+), 80 deletions(-)
 
-diff --git a/fs/bcachefs/bcachefs.h b/fs/bcachefs/bcachefs.h
-index 1458f131af16..e1680b635fe1 100644
---- a/fs/bcachefs/bcachefs.h
-+++ b/fs/bcachefs/bcachefs.h
-@@ -760,7 +760,8 @@ struct btree_trans_buf {
- 	x(snapshot_delete_pagecache)					\
- 	x(sysfs)							\
- 	x(btree_write_buffer)						\
--	x(btree_node_scrub)
-+	x(btree_node_scrub)						\
-+	x(async_recovery_passes)
+diff --git a/fs/bcachefs/backpointers.c b/fs/bcachefs/backpointers.c
+index d9ddfc4b5dcc..6b98ce1ed6c9 100644
+--- a/fs/bcachefs/backpointers.c
++++ b/fs/bcachefs/backpointers.c
+@@ -15,6 +15,8 @@
  
- enum bch_write_ref {
- #define x(n) BCH_WRITE_REF_##n,
-diff --git a/fs/bcachefs/recovery_passes.c b/fs/bcachefs/recovery_passes.c
-index b931a9b465d4..f74f14227137 100644
---- a/fs/bcachefs/recovery_passes.c
-+++ b/fs/bcachefs/recovery_passes.c
-@@ -138,6 +138,30 @@ static void bch2_sb_recovery_pass_complete(struct bch_fs *c,
- 	mutex_unlock(&c->sb_lock);
+ #include <linux/mm.h>
+ 
++static int bch2_bucket_bitmap_set(struct bch_dev *, struct bucket_bitmap *, u64);
++
+ static inline struct bbpos bp_to_bbpos(struct bch_backpointer bp)
+ {
+ 	return (struct bbpos) {
+@@ -685,31 +687,28 @@ static int check_extent_to_backpointers(struct btree_trans *trans,
+ 			continue;
+ 		}
+ 
+-		u64 b = PTR_BUCKET_NR(ca, &p.ptr);
+-		bool set[2];
+-
+-		for (unsigned i = 0; i < ARRAY_SIZE(ca->bucket_backpointer_mismatches); i++) {
+-			unsigned long *bitmap =
+-				READ_ONCE(ca->bucket_backpointer_mismatches[i].buckets);
+-			set[i] = bitmap && test_bit(b, bitmap);
++		if (p.ptr.cached && dev_ptr_stale_rcu(ca, &p.ptr)) {
++			rcu_read_unlock();
++			continue;
+ 		}
+ 
+-		bool check = set[0];
+-		bool empty = set[1];
++		u64 b = PTR_BUCKET_NR(ca, &p.ptr);
++		if (!bch2_bucket_bitmap_test(&ca->bucket_backpointer_mismatch, b)) {
++			rcu_read_unlock();
++			continue;
++		}
+ 
+-		bool stale = p.ptr.cached && (!ca || dev_ptr_stale_rcu(ca, &p.ptr));
++		bool empty = bch2_bucket_bitmap_test(&ca->bucket_backpointer_empty, b);
+ 		rcu_read_unlock();
+ 
+-		if ((check || empty) && !stale) {
+-			struct bkey_i_backpointer bp;
+-			bch2_extent_ptr_to_bp(c, btree, level, k, p, entry, &bp);
++		struct bkey_i_backpointer bp;
++		bch2_extent_ptr_to_bp(c, btree, level, k, p, entry, &bp);
+ 
+-			int ret = check
+-				? check_bp_exists(trans, s, &bp, k)
+-				: bch2_bucket_backpointer_mod(trans, k, &bp, true);
+-			if (ret)
+-				return ret;
+-		}
++		int ret = !empty
++			? check_bp_exists(trans, s, &bp, k)
++			: bch2_bucket_backpointer_mod(trans, k, &bp, true);
++		if (ret)
++			return ret;
+ 	}
+ 
+ 	return 0;
+@@ -952,21 +951,12 @@ static int check_bucket_backpointer_mismatch(struct btree_trans *trans, struct b
+ 			      sectors[ALLOC_stripe] +
+ 			      sectors[ALLOC_cached]) == 0;
+ 
+-		struct bucket_bitmap *bitmap = &ca->bucket_backpointer_mismatches[empty];
+-
+-		mutex_lock(&bitmap->lock);
+-		if (!bitmap->buckets) {
+-			bitmap->buckets = kvcalloc(BITS_TO_LONGS(ca->mi.nbuckets),
+-						   sizeof(unsigned long), GFP_KERNEL);
+-			if (!bitmap->buckets) {
+-				mutex_unlock(&bitmap->lock);
+-				ret = -BCH_ERR_ENOMEM_backpointer_mismatches_bitmap;
+-				goto err;
+-			}
+-		}
+-
+-		bitmap->nr += !__test_and_set_bit(alloc_k.k->p.offset, bitmap->buckets);
+-		mutex_unlock(&bitmap->lock);
++		ret = bch2_bucket_bitmap_set(ca, &ca->bucket_backpointer_mismatch,
++					     alloc_k.k->p.offset) ?:
++			(empty
++			 ? bch2_bucket_bitmap_set(ca, &ca->bucket_backpointer_empty,
++						  alloc_k.k->p.offset)
++			 : 0);
+ 	}
+ err:
+ 	bch2_dev_put(ca);
+@@ -992,15 +982,10 @@ static bool backpointer_node_has_missing(struct bch_fs *c, struct bkey_s_c k)
+ 			struct bpos bucket = bp_pos_to_bucket(ca, pos);
+ 			u64 next = ca->mi.nbuckets;
+ 
+-			for (unsigned i = 0; i < ARRAY_SIZE(ca->bucket_backpointer_mismatches); i++) {
+-				unsigned long *bitmap =
+-					READ_ONCE(ca->bucket_backpointer_mismatches[i].buckets);
+-				if (bitmap)
+-					next = min_t(u64, next,
+-						     find_next_bit(bitmap,
+-								   ca->mi.nbuckets,
+-								   bucket.offset));
+-			}
++			unsigned long *bitmap = READ_ONCE(ca->bucket_backpointer_mismatch.buckets);
++			if (bitmap)
++				next = min_t(u64, next,
++					     find_next_bit(bitmap, ca->mi.nbuckets, bucket.offset));
+ 
+ 			bucket.offset = next;
+ 			if (bucket.offset == ca->mi.nbuckets)
+@@ -1124,18 +1109,17 @@ int bch2_check_extents_to_backpointers(struct bch_fs *c)
+ 	if (ret)
+ 		goto err;
+ 
+-	u64 nr_buckets = 0, nr_mismatches = 0, nr_empty = 0;
++	u64 nr_buckets = 0, nr_mismatches = 0;
+ 	for_each_member_device(c, ca) {
+ 		nr_buckets	+= ca->mi.nbuckets;
+-		nr_mismatches	+= ca->bucket_backpointer_mismatches[0].nr;
+-		nr_empty	+= ca->bucket_backpointer_mismatches[1].nr;
++		nr_mismatches	+= ca->bucket_backpointer_mismatch.nr;
+ 	}
+ 
+-	if (!nr_mismatches && !nr_empty)
++	if (!nr_mismatches)
+ 		goto err;
+ 
+ 	bch_info(c, "scanning for missing backpointers in %llu/%llu buckets",
+-		 nr_mismatches + nr_empty, nr_buckets);
++		 nr_mismatches, nr_buckets);
+ 
+ 	while (1) {
+ 		ret = bch2_pin_backpointer_nodes_with_missing(trans, s.bp_start, &s.bp_end);
+@@ -1171,9 +1155,10 @@ int bch2_check_extents_to_backpointers(struct bch_fs *c)
+ 	bch2_bkey_buf_exit(&s.last_flushed, c);
+ 	bch2_btree_cache_unpin(c);
+ 
+-	for_each_member_device(c, ca)
+-		for (unsigned i = 0; i < ARRAY_SIZE(ca->bucket_backpointer_mismatches); i++)
+-			bch2_bucket_bitmap_free(&ca->bucket_backpointer_mismatches[i]);
++	for_each_member_device(c, ca) {
++		bch2_bucket_bitmap_free(&ca->bucket_backpointer_mismatch);
++		bch2_bucket_bitmap_free(&ca->bucket_backpointer_empty);
++	}
+ 
+ 	bch_err_fn(c, ret);
+ 	return ret;
+@@ -1297,6 +1282,42 @@ int bch2_check_backpointers_to_extents(struct bch_fs *c)
+ 	return ret;
  }
  
-+static bool bch2_recovery_pass_want_ratelimit(struct bch_fs *c, enum bch_recovery_pass pass)
++static int bch2_bucket_bitmap_set(struct bch_dev *ca, struct bucket_bitmap *b, u64 bit)
 +{
-+	enum bch_recovery_pass_stable stable = bch2_recovery_pass_to_stable(pass);
-+	bool ret = false;
++	scoped_guard(mutex, &b->lock) {
++		if (!b->buckets) {
++			b->buckets = kvcalloc(BITS_TO_LONGS(ca->mi.nbuckets),
++					      sizeof(unsigned long), GFP_KERNEL);
++			if (!b->buckets)
++				return -BCH_ERR_ENOMEM_backpointer_mismatches_bitmap;
++		}
 +
-+	lockdep_assert_held(&c->sb_lock);
-+
-+	struct bch_sb_field_recovery_passes *r =
-+		bch2_sb_field_get(c->disk_sb.sb, recovery_passes);
-+
-+	if (stable < recovery_passes_nr_entries(r)) {
-+		struct recovery_pass_entry *i = r->start + stable;
-+
-+		/*
-+		 * Ratelimit if the last runtime was more than 1% of the time
-+		 * since we last ran
-+		 */
-+		ret = (u64) le32_to_cpu(i->last_runtime) * 100 >
-+			ktime_get_real_seconds() - le64_to_cpu(i->last_run);
++		b->nr += !__test_and_set_bit(bit, b->buckets);
 +	}
 +
-+	return ret;
++	return 0;
 +}
 +
- const struct bch_sb_field_ops bch_sb_field_ops_recovery_passes = {
- 	.validate	= bch2_sb_recovery_passes_validate,
- 	.to_text	= bch2_sb_recovery_passes_to_text
-@@ -218,13 +242,33 @@ u64 bch2_fsck_recovery_passes(void)
- 	return bch2_recovery_passes_match(PASS_FSCK);
- }
- 
-+static void bch2_run_async_recovery_passes(struct bch_fs *c)
++int bch2_bucket_bitmap_resize(struct bucket_bitmap *b, u64 old_size, u64 new_size)
 +{
-+	if (!down_trylock(&c->recovery.run_lock))
-+		return;
-+
-+	if (!enumerated_ref_tryget(&c->writes, BCH_WRITE_REF_async_recovery_passes))
-+		goto unlock;
-+
-+	if (queue_work(system_long_wq, &c->recovery.work))
-+		return;
-+
-+	enumerated_ref_put(&c->writes, BCH_WRITE_REF_async_recovery_passes);
-+unlock:
-+	up(&c->recovery.run_lock);
-+}
-+
- static bool recovery_pass_needs_set(struct bch_fs *c,
- 				    enum bch_recovery_pass pass,
--				    enum bch_run_recovery_pass_flags flags)
-+				    enum bch_run_recovery_pass_flags *flags)
- {
- 	struct bch_fs_recovery *r = &c->recovery;
- 	bool in_recovery = test_bit(BCH_FS_in_recovery, &c->flags);
--	bool persistent = !in_recovery || !(flags & RUN_RECOVERY_PASS_nopersistent);
-+	bool persistent = !in_recovery || !(*flags & RUN_RECOVERY_PASS_nopersistent);
-+
-+	if ((*flags & RUN_RECOVERY_PASS_ratelimit) &&
-+	    !bch2_recovery_pass_want_ratelimit(c, pass))
-+		*flags &= ~RUN_RECOVERY_PASS_ratelimit;
- 
- 	/*
- 	 * If RUN_RECOVERY_PASS_nopersistent is set, we don't want to do
-@@ -236,9 +280,16 @@ static bool recovery_pass_needs_set(struct bch_fs *c,
- 	 * it should run again even if it's already run:
- 	 */
- 
--	return persistent
--		? !(c->sb.recovery_passes_required & BIT_ULL(pass))
--		: !((r->passes_to_run|r->passes_complete) & BIT_ULL(pass));
-+	if (persistent
-+	    ? !(c->sb.recovery_passes_required & BIT_ULL(pass))
-+	    : !((r->passes_to_run|r->passes_complete) & BIT_ULL(pass)))
-+		return true;
-+
-+	if (!(*flags & RUN_RECOVERY_PASS_ratelimit) &&
-+	    (r->passes_ratelimiting & BIT_ULL(pass)))
-+		return true;
-+
-+	return false;
- }
- 
- /*
-@@ -260,15 +311,14 @@ int __bch2_run_explicit_recovery_pass(struct bch_fs *c,
- 	unsigned long lockflags;
- 	spin_lock_irqsave(&r->lock, lockflags);
- 
--	if (!recovery_pass_needs_set(c, pass, flags))
-+	if (!recovery_pass_needs_set(c, pass, &flags))
- 		goto out;
- 
- 	bool in_recovery = test_bit(BCH_FS_in_recovery, &c->flags);
- 	bool rewind = in_recovery && r->curr_pass > pass;
-+	bool ratelimit = flags & RUN_RECOVERY_PASS_ratelimit;
- 
--	if ((flags & RUN_RECOVERY_PASS_nopersistent) && in_recovery) {
--		r->passes_to_run |= BIT_ULL(pass);
--	} else {
-+	if (!(in_recovery && (flags & RUN_RECOVERY_PASS_nopersistent))) {
- 		struct bch_sb_field_ext *ext = bch2_sb_field_get(c->disk_sb.sb, ext);
- 		__set_bit_le64(bch2_recovery_pass_to_stable(pass), ext->recovery_passes_required);
- 	}
-@@ -281,18 +331,32 @@ int __bch2_run_explicit_recovery_pass(struct bch_fs *c,
- 		goto out;
- 	}
- 
--	prt_printf(out, "running recovery pass %s (%u), currently at %s (%u)%s\n",
--		   bch2_recovery_passes[pass], pass,
--		   bch2_recovery_passes[r->curr_pass], r->curr_pass,
--		   rewind ? " - rewinding" : "");
-+	if (ratelimit)
-+		r->passes_ratelimiting |= BIT_ULL(pass);
-+	else
-+		r->passes_ratelimiting &= ~BIT_ULL(pass);
-+
-+	if (in_recovery && !ratelimit) {
-+		prt_printf(out, "running recovery pass %s (%u), currently at %s (%u)%s\n",
-+			   bch2_recovery_passes[pass], pass,
-+			   bch2_recovery_passes[r->curr_pass], r->curr_pass,
-+			   rewind ? " - rewinding" : "");
- 
--	if (test_bit(BCH_FS_in_recovery, &c->flags))
- 		r->passes_to_run |= BIT_ULL(pass);
- 
--	if (rewind) {
--		r->next_pass = pass;
--		r->passes_complete &= (1ULL << pass) >> 1;
--		ret = -BCH_ERR_restart_recovery;
-+		if (rewind) {
-+			r->next_pass = pass;
-+			r->passes_complete &= (1ULL << pass) >> 1;
-+			ret = -BCH_ERR_restart_recovery;
-+		}
-+	} else {
-+		prt_printf(out, "scheduling recovery pass %s (%u)%s\n",
-+			   bch2_recovery_passes[pass], pass,
-+			   ratelimit ? " - ratelimiting" : "");
-+
-+		struct recovery_pass_fn *p = recovery_pass_fns + pass;
-+		if (p->when & PASS_ONLINE)
-+			bch2_run_async_recovery_passes(c);
- 	}
- out:
- 	spin_unlock_irqrestore(&r->lock, lockflags);
-@@ -305,20 +369,24 @@ int bch2_run_explicit_recovery_pass(struct bch_fs *c,
- 				    enum bch_recovery_pass pass,
- 				    enum bch_run_recovery_pass_flags flags)
- {
--	if (!recovery_pass_needs_set(c, pass, flags))
--		return 0;
-+	int ret = 0;
- 
--	mutex_lock(&c->sb_lock);
--	int ret = __bch2_run_explicit_recovery_pass(c, out, pass, flags);
--	bch2_write_super(c);
--	mutex_unlock(&c->sb_lock);
-+	scoped_guard(mutex, &c->sb_lock) {
-+		if (!recovery_pass_needs_set(c, pass, &flags))
++	scoped_guard(mutex, &b->lock) {
++		if (!b->buckets)
 +			return 0;
 +
-+		ret = __bch2_run_explicit_recovery_pass(c, out, pass, flags);
-+		bch2_write_super(c);
++		unsigned long *n = kvcalloc(BITS_TO_LONGS(new_size),
++					    sizeof(unsigned long), GFP_KERNEL);
++		if (!n)
++			return -BCH_ERR_ENOMEM_backpointer_mismatches_bitmap;
++
++		memcpy(n, b->buckets,
++		       BITS_TO_LONGS(min(old_size, new_size)) * sizeof(unsigned long));
++		kvfree(b->buckets);
++		b->buckets = n;
 +	}
- 
- 	return ret;
- }
- 
- int bch2_run_print_explicit_recovery_pass(struct bch_fs *c, enum bch_recovery_pass pass)
- {
--	if (!recovery_pass_needs_set(c, pass, RUN_RECOVERY_PASS_nopersistent))
-+	enum bch_run_recovery_pass_flags flags = RUN_RECOVERY_PASS_nopersistent;
 +
-+	if (!recovery_pass_needs_set(c, pass, &flags))
- 		return 0;
- 
- 	struct printbuf buf = PRINTBUF;
-@@ -430,6 +498,19 @@ static int __bch2_run_recovery_passes(struct bch_fs *c, u64 orig_passes_to_run,
- 	return ret;
- }
- 
-+static void bch2_async_recovery_passes_work(struct work_struct *work)
-+{
-+	struct bch_fs *c = container_of(work, struct bch_fs, recovery.work);
-+	struct bch_fs_recovery *r = &c->recovery;
-+
-+	__bch2_run_recovery_passes(c,
-+		c->sb.recovery_passes_required & ~r->passes_ratelimiting,
-+		true);
-+
-+	up(&r->run_lock);
-+	enumerated_ref_put(&c->writes, BCH_WRITE_REF_async_recovery_passes);
++	return 0;
 +}
 +
- int bch2_run_online_recovery_passes(struct bch_fs *c, u64 passes)
+ void bch2_bucket_bitmap_free(struct bucket_bitmap *b)
  {
- 	return __bch2_run_recovery_passes(c, c->sb.recovery_passes_required|passes, true);
-@@ -488,4 +569,6 @@ void bch2_fs_recovery_passes_init(struct bch_fs *c)
- {
- 	spin_lock_init(&c->recovery.lock);
- 	sema_init(&c->recovery.run_lock, 1);
+ 	mutex_lock(&b->lock);
+diff --git a/fs/bcachefs/backpointers.h b/fs/bcachefs/backpointers.h
+index f57098c32143..fe7149a2fbf5 100644
+--- a/fs/bcachefs/backpointers.h
++++ b/fs/bcachefs/backpointers.h
+@@ -188,6 +188,13 @@ int bch2_check_btree_backpointers(struct bch_fs *);
+ int bch2_check_extents_to_backpointers(struct bch_fs *);
+ int bch2_check_backpointers_to_extents(struct bch_fs *);
+ 
++static inline bool bch2_bucket_bitmap_test(struct bucket_bitmap *b, u64 i)
++{
++	unsigned long *bitmap = READ_ONCE(b->buckets);
++	return bitmap && test_bit(i, bitmap);
++}
 +
-+	INIT_WORK(&c->recovery.work, bch2_async_recovery_passes_work);
++int bch2_bucket_bitmap_resize(struct bucket_bitmap *, u64, u64);
+ void bch2_bucket_bitmap_free(struct bucket_bitmap *);
+ 
+ #endif /* _BCACHEFS_BACKPOINTERS_BACKGROUND_H */
+diff --git a/fs/bcachefs/bcachefs.h b/fs/bcachefs/bcachefs.h
+index e1680b635fe1..b58fad743fc4 100644
+--- a/fs/bcachefs/bcachefs.h
++++ b/fs/bcachefs/bcachefs.h
+@@ -626,7 +626,8 @@ struct bch_dev {
+ 	u8			*oldest_gen;
+ 	unsigned long		*buckets_nouse;
+ 
+-	struct bucket_bitmap	bucket_backpointer_mismatches[2];
++	struct bucket_bitmap	bucket_backpointer_mismatch;
++	struct bucket_bitmap	bucket_backpointer_empty;
+ 
+ 	struct bch_dev_usage_full __percpu
+ 				*usage;
+diff --git a/fs/bcachefs/buckets.c b/fs/bcachefs/buckets.c
+index ca6e58d6fbc8..8bb6384190c5 100644
+--- a/fs/bcachefs/buckets.c
++++ b/fs/bcachefs/buckets.c
+@@ -1324,27 +1324,10 @@ int bch2_dev_buckets_resize(struct bch_fs *c, struct bch_dev *ca, u64 nbuckets)
+ 		       sizeof(bucket_gens->b[0]) * copy);
+ 	}
+ 
+-	for (unsigned i = 0; i < ARRAY_SIZE(ca->bucket_backpointer_mismatches); i++) {
+-		struct bucket_bitmap *bitmap = &ca->bucket_backpointer_mismatches[i];
+-
+-		mutex_lock(&bitmap->lock);
+-		if (bitmap->buckets) {
+-			unsigned long *n = kvcalloc(BITS_TO_LONGS(nbuckets),
+-						    sizeof(unsigned long), GFP_KERNEL);
+-			if (!n) {
+-				mutex_unlock(&bitmap->lock);
+-				ret = -BCH_ERR_ENOMEM_backpointer_mismatches_bitmap;
+-				goto err;
+-			}
+-
+-			memcpy(n, bitmap->buckets,
+-			       BITS_TO_LONGS(ca->mi.nbuckets) * sizeof(unsigned long));
+-			kvfree(bitmap->buckets);
+-			bitmap->buckets = n;
+-
+-		}
+-		mutex_unlock(&bitmap->lock);
+-	}
++	ret =   bch2_bucket_bitmap_resize(&ca->bucket_backpointer_mismatch,
++					  ca->mi.nbuckets, nbuckets) ?:
++		bch2_bucket_bitmap_resize(&ca->bucket_backpointer_empty,
++					  ca->mi.nbuckets, nbuckets);
+ 
+ 	rcu_assign_pointer(ca->bucket_gens, bucket_gens);
+ 	bucket_gens	= old_bucket_gens;
+diff --git a/fs/bcachefs/movinggc.c b/fs/bcachefs/movinggc.c
+index 4bfdb1befb9a..0a751a65386f 100644
+--- a/fs/bcachefs/movinggc.c
++++ b/fs/bcachefs/movinggc.c
+@@ -8,6 +8,7 @@
+ #include "bcachefs.h"
+ #include "alloc_background.h"
+ #include "alloc_foreground.h"
++#include "backpointers.h"
+ #include "btree_iter.h"
+ #include "btree_update.h"
+ #include "btree_write_buffer.h"
+@@ -76,7 +77,7 @@ static int bch2_bucket_is_movable(struct btree_trans *trans,
+ 
+ 	if (ca->mi.state != BCH_MEMBER_STATE_rw ||
+ 	    !bch2_dev_is_online(ca))
+-		goto out_put;
++		goto out;
+ 
+ 	struct bch_alloc_v4 _a;
+ 	const struct bch_alloc_v4 *a = bch2_alloc_to_v4(k, &_a);
+@@ -85,9 +86,8 @@ static int bch2_bucket_is_movable(struct btree_trans *trans,
+ 	u64 lru_idx	= alloc_lru_idx_fragmentation(*a, ca);
+ 
+ 	ret = lru_idx && lru_idx <= time;
+-out_put:
+-	bch2_dev_put(ca);
+ out:
++	bch2_dev_put(ca);
+ 	bch2_trans_iter_exit(trans, &iter);
+ 	return ret;
  }
-diff --git a/fs/bcachefs/recovery_passes.h b/fs/bcachefs/recovery_passes.h
-index 30f896479a52..dc0d2014ff9b 100644
---- a/fs/bcachefs/recovery_passes.h
-+++ b/fs/bcachefs/recovery_passes.h
-@@ -12,6 +12,7 @@ u64 bch2_fsck_recovery_passes(void);
+diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
+index 170b0f26c018..24658bf450ab 100644
+--- a/fs/bcachefs/super.c
++++ b/fs/bcachefs/super.c
+@@ -1366,8 +1366,8 @@ static void bch2_dev_free(struct bch_dev *ca)
+ 	if (ca->kobj.state_in_sysfs)
+ 		kobject_del(&ca->kobj);
  
- enum bch_run_recovery_pass_flags {
- 	RUN_RECOVERY_PASS_nopersistent	= BIT(0),
-+	RUN_RECOVERY_PASS_ratelimit	= BIT(1),
- };
+-	for (unsigned i = 0; i < ARRAY_SIZE(ca->bucket_backpointer_mismatches); i++)
+-		bch2_bucket_bitmap_free(&ca->bucket_backpointer_mismatches[i]);
++	bch2_bucket_bitmap_free(&ca->bucket_backpointer_mismatch);
++	bch2_bucket_bitmap_free(&ca->bucket_backpointer_empty);
  
- int bch2_run_print_explicit_recovery_pass(struct bch_fs *, enum bch_recovery_pass);
-diff --git a/fs/bcachefs/recovery_passes_types.h b/fs/bcachefs/recovery_passes_types.h
-index deb6e0565cb9..aa9526938cc3 100644
---- a/fs/bcachefs/recovery_passes_types.h
-+++ b/fs/bcachefs/recovery_passes_types.h
-@@ -18,8 +18,10 @@ struct bch_fs_recovery {
- 	/* bitmask of recovery passes that we actually ran */
- 	u64			passes_complete;
- 	u64			passes_failing;
-+	u64			passes_ratelimiting;
- 	spinlock_t		lock;
- 	struct semaphore	run_lock;
-+	struct work_struct	work;
- };
+ 	bch2_free_super(&ca->disk_sb);
+ 	bch2_dev_allocator_background_exit(ca);
+@@ -1499,8 +1499,8 @@ static struct bch_dev *__bch2_dev_alloc(struct bch_fs *c,
+ 	atomic_long_set(&ca->ref, 1);
+ #endif
  
- #endif /* _BCACHEFS_RECOVERY_PASSES_TYPES_H */
+-	for (unsigned i = 0; i < ARRAY_SIZE(ca->bucket_backpointer_mismatches); i++)
+-		mutex_init(&ca->bucket_backpointer_mismatches[i].lock);
++	mutex_init(&ca->bucket_backpointer_mismatch.lock);
++	mutex_init(&ca->bucket_backpointer_empty.lock);
+ 
+ 	bch2_dev_allocator_background_init(ca);
+ 
 -- 
 2.49.0
 
