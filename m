@@ -1,226 +1,215 @@
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2079.outbound.protection.outlook.com [40.107.22.79])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C844822DF9E
-	for <linux-bcachefs@vger.kernel.org>; Wed, 21 May 2025 17:47:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747849652; cv=none; b=OWj3zd/7VllmJIR91OPkkE8Aj+dyjb2bZ9gNvsX2rdgTfxSg0GDIma5SdZCgJl9MElbXMttL9XAO857J9GAvbSg2SkuG/1SimrDuyMUkoNv0zjF5wSBGwjqg7wCyNe0MDksAEF8IwUXeAqJeGnh82SsfJkxyNsipnjDzfgwzTTg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747849652; c=relaxed/simple;
-	bh=miR8lyLraFkbpXwdmCbNKFQvHvtAU72aRD8h6kj2LRI=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=mJ48SweOhqeraoZ9jWgSCRyHcLFZ9GRbSxtcuIFb8VrfyZ4FtFI+MSlkVucl8WGxqxeCFMetqEETTHMtszVh/ASC/ChOgoEbaeYVRtVcUzvr6YXqBs0M67nn5jJsoUhKwT43txb0d8OZ/yluscc2q2Rr94Tfw9zZh8aW48aj02g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3dc880e5fa1so10573235ab.1
-        for <linux-bcachefs@vger.kernel.org>; Wed, 21 May 2025 10:47:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747849650; x=1748454450;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GFRlxxr5q/oFiqmYoyxlbBF5QhEAtZh2WG5O57V5aw8=;
-        b=VbJTTtXkNUQlwm64AlCcqYKPqWB1ZylczxKIPyYDkodGskYhyBMCk9NtPmW8ZOzRtC
-         Fa8vh/oA5bvm0DHqoyPjlB3cNmHDN6ek73Dut8t7t1NSGcBMRw+pB2krvClU4jPpLLPG
-         BBWoHiI6qbS9NLkl+Qxzx27L0BhCqXDgHrgVJUchXeo70GOE21FKD7MZ8l79QEtIls+U
-         0DT4YfV8ZMl2hcohShea9xKMQPPKJiOWr7fHRBf6ua+zaCZDvDb77UxDdBqcMDOa+Tyz
-         Sv2iLqriNZwZBwubomgMqsV2UoKctJmbjf6+NpRy8LV2RuGK0GKwOvq9yWuLLqEODbXo
-         rVQA==
-X-Forwarded-Encrypted: i=1; AJvYcCWd/BDBp9i2hjIKN6xU0OadZKxvZbVGKpQrdt8BPwa/ianQcK3hFHLjcUIg3blhspgKSEXy8bs35xnZYDn8vw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzTuS7w97MHG2ndmBa/5qmrRt23YlPor7dW0VbJBCTJ5gVblDzD
-	it7ZG5Rd/HvHzMiGC+DJtbuItzyAZyXpmcoGayE7ZzFrTSe5viUz3b6nNZUOwVa/InWMA3MPKyw
-	CITktYxpKu7kojnPMmz8vCFG66VL4SjzDi3SkHrniXuO9E4ipRQBkPVmUxKU=
-X-Google-Smtp-Source: AGHT+IHgAaPQ0lG4Qb3DlcMMS8TnBYFKFtvsykayCG6Bt+L/0n3F80q+nU1nO17Pm6I0dP6ygR87LyenQ3hXLXUX714DlADdD654
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 194EC1C5D77
+	for <linux-bcachefs@vger.kernel.org>; Thu, 22 May 2025 06:39:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.79
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1747895956; cv=fail; b=V1cb5F02R/b+tYNCPKwtNHgBu3xd9SvO67/w64aredMaQ68FZAYZyk1mnWSnERcORYic4fDyMJ8HxrnFUiVykuDvToEQMZvkohwXbi2FrebFeWYiCHj7MQZRNmQ0ObxEzVvkFjtfS3lWEEEZewEOgokMwN3q6hBfwd3b0MF6Ddo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1747895956; c=relaxed/simple;
+	bh=Z5I2kohxSlMkgLWsF7Vz79P3x1IsQJSuLjhtzfmwAro=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=V7uCfpw54jhrS2E1AyBsryQy6CiCZ1mvvJzuxA94K4oIkY/iIUFFpXm5G3R5DqCk2S9sFQDv0xZw3p/eKPefyTn0id2cCPd/vfbLHHgdYag3FzSoYmGgApb29GXV8lT3RgQCidQ6TyBQRIJhRcbqa26jEM7re6YGYlwftmLZjdE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=n2jXlHVl; arc=fail smtp.client-ip=40.107.22.79
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="n2jXlHVl"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=MZuzEsLoD8ZIr6kU0mRt240aZmc7bOqWn9dgP3lb4eKZc8xq63RhT9puqj2GRbgGiRuUWwr4deR0u92g0JCnFEBBzEi6k/OgT+Rd9RKWaBfrzWLgUkWmVDJvR4vVEoBT3XCXC3megNd89K1Du2xvDm+onnwSF8PWrwXGhubq8dxfJV7Zx/UYv5e4kMYkKUKNmb6Zo4FjqgF2jhuNmC2NP7RWCf8+nJZZk+M0Qq6gf9w8BQBlMAAkQGJa3G2//WRl8/tTeYO5A6HutWCaEGCYDMraQBvN6utOMK8JoVadW7tLzyocO7vbSTY8yqf5w4Qevori+O4mm/54aNMCfc1bQg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AgEsjcTGgunJSPxogmF+1QI7Bda+nKwKoMw8qsnVQss=;
+ b=aLkQ4Mch03qcVGj77LRvOsi/tL9p+IcYbqX39RoZvYxyBkAFooxw/k1vo4atYiyP8jrL2Ul/J10apRKttfbXlTXssDXlekT9pYpnodzOaDa04ZC4RMAn5mM9d+IwMw+4h9JDImlRSNNO6/gY+aTIIoLUJ1h+R05K7oSHlGyO9omaMf3BZxwQwx52tb9zX2e1ssYWzLpvp+X0ETMJbhsVm/I8t8opaqrUJuUV6Z6rZV0Ww9wikLBGyBWYQykC0upgfSBc2yd08awaKxHWmrcY87LdppK1F4/7PgzkDcTXFypq2ypifrgKOxxG/H9MhVtwSHDLls3XnqMcrcIHHuEyVA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AgEsjcTGgunJSPxogmF+1QI7Bda+nKwKoMw8qsnVQss=;
+ b=n2jXlHVlZcxJ4aS6Y2LQk3DhpJUTcVI26Za48qmsvoc00KPalDtKmwHiPL0/Je2ftVi62XrjzZKN9wVVsUAbliNpmJHGqSuvurr+t/Yw7GuuGFO5eVit0TLbGvkleKvHudE69Az1oWs9EkwcNtY5zPNnYqN4Zl+/pBQPoeBB1Z0I3LJot3UBuXFearFAyC3RxymFv5k0hnr1Vq9kU/TjfN2OzxN1S7usROegyl1ThycPJZe5ALmvo7nQb8yMMrR0w4ko7EA6W+md2YdmqN1FZN+9klawTWAol4lSSg/BYbl4hV6Ji6QScpUmF3+5hdUPxDh2wbHAFR37Z+R8DT2A/w==
+Received: from PAXPR04MB8459.eurprd04.prod.outlook.com (2603:10a6:102:1da::15)
+ by DU2PR04MB8726.eurprd04.prod.outlook.com (2603:10a6:10:2dd::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8746.31; Thu, 22 May
+ 2025 06:39:11 +0000
+Received: from PAXPR04MB8459.eurprd04.prod.outlook.com
+ ([fe80::165a:30a2:5835:9630]) by PAXPR04MB8459.eurprd04.prod.outlook.com
+ ([fe80::165a:30a2:5835:9630%4]) with mapi id 15.20.8722.031; Thu, 22 May 2025
+ 06:39:11 +0000
+From: Peng Fan <peng.fan@nxp.com>
+To: Arnd Bergmann <arnd@kernel.org>, Kent Overstreet
+	<kent.overstreet@linux.dev>
+CC: "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
+	"moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE"
+	<linux-arm-kernel@lists.infradead.org>
+Subject: error: the frame size of 1552 bytes is larger than 1280 bytes when
+ building bcachefs
+Thread-Topic: error: the frame size of 1552 bytes is larger than 1280 bytes
+ when building bcachefs
+Thread-Index: AdvK5BugLAt56HnRQGioX/TkvS3ASA==
+Date: Thu, 22 May 2025 06:39:11 +0000
+Message-ID:
+ <PAXPR04MB845954FBBF2AD810B17536138899A@PAXPR04MB8459.eurprd04.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PAXPR04MB8459:EE_|DU2PR04MB8726:EE_
+x-ms-office365-filtering-correlation-id: d05e925d-918a-4397-cd9a-08dd98fb5c7c
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|376014|366016|1800799024|38070700018;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?zTeZ1lUuoF/H7KgsZms7nM1STedJqD4bXuNzTLomyrU3VMF/cOAgcxxm4vu7?=
+ =?us-ascii?Q?MEDsaxqzjnUJ9PKS1EeW/AoDWek+MeESrZtbIRiRuLbSLEbFCn3lyO37Nhk4?=
+ =?us-ascii?Q?agp6Yfg7j2DH+F9B5jxP7TT7DceKjx/oyjpQcRLeDUMGtYRaIwMLCMTH+f12?=
+ =?us-ascii?Q?dGR0Mf5dhfOh1HwEwHmaAUHXLYe+SwX2yZdkiRJsFiZAg0RDRAYdxX8ilTay?=
+ =?us-ascii?Q?+59nHHltPSu77vIWuywroHo70toyoUiGUYo3cUgnt3pP+aBPk2Lh6gRPdLff?=
+ =?us-ascii?Q?OghNVt+eVxYCXUVeiY1u6rrb2Ifg+4cVXheleCEaZ8uKMsvmiaT13qZASPq/?=
+ =?us-ascii?Q?gjmX5OUy7f25PXek2imSQhzHN/TerG1PAdmu0IPi2UVnv6h1kRiLoNOzJfvu?=
+ =?us-ascii?Q?rJLoTqxZb3DSmCVUsTy89KrKTp++0jGCkGhYpMNjCNM/ef6PZT4TS2iY05Qn?=
+ =?us-ascii?Q?jpUq88SJuKDeaqvO+ZWp3FOmwkBS+Jc1KN5ow9OhfTk+wIKdHHfl2hRSs6kZ?=
+ =?us-ascii?Q?ADV+wMUwEsxPbXCqnSuje9JHqKqdyAR/0/EUpPkGqrGa0Hl/LBfXGCKQOg9g?=
+ =?us-ascii?Q?uPPXYvjzJwwVsZQb0vKUvL0tEt3nsCGNrTsDWcDa/HQOewDZou5KMktadfqg?=
+ =?us-ascii?Q?+fKYZS8mxLjhqeswJYo0GTGjB1aKqgXAeLrvQ+FYkAPGhLOnuaXb5j1pqUdg?=
+ =?us-ascii?Q?8u+n8hBiFCyopwTNn3cdv6O7x4gbRX0ZYOma6lO7OngT/SdQeOgeLJLLl56Q?=
+ =?us-ascii?Q?Eb70n2Kc2k/ae4UGoEzNWo0+pOBRFaoe2M8fovJvkg/QVL5y2e5WKGI9iNMF?=
+ =?us-ascii?Q?8W5H9/LBmx0RrR0SZyIFpL/HtmL4T8eQiOzKvWuuRFH3C/AzQGxLqZuzFYf3?=
+ =?us-ascii?Q?Vm18ICvampg8VfgXADAl63CJhs9jKLfDF8mXIsp/g10f9AfOm7nZwIKaSSoM?=
+ =?us-ascii?Q?3VK1b9Z2Zq3btTmgd+QVfpiOeLAGUUXl2tSpYspGwokHqWJoxCiS6CwEknuv?=
+ =?us-ascii?Q?chl9oxujOVhkTOB03dY3HKELhh+7hgE02aflV7FcVSTPLlv1vgGXhMy35bVo?=
+ =?us-ascii?Q?P1Slm1WawYeJPsCI95GpJ7hwvpNbiHWPI9DxmkyZRa19KDpbe30Hbgq6w8Vb?=
+ =?us-ascii?Q?uEY6c/HKSP8wRQPRpmuHHatkFZr1tyLU/vm1CumacI0TXtxsXnyl5LGRxAhy?=
+ =?us-ascii?Q?yoa7+0Mergv9GkTGqQ9CaWQipM4eIZvIJuaQFPdpiolCbwzPxHGnnmlgwbxv?=
+ =?us-ascii?Q?V6fEhZsRNsrwq79Fc9y/yI0B4KT52X3zKM0Poai+SZFvm/TjlXYZOCgn1x3V?=
+ =?us-ascii?Q?WZ/js6LVcdmtVlXW1SSjSE+r85lnWJmWHlHRpsRfVJrxYBSc/B4S0LMnzSDa?=
+ =?us-ascii?Q?V2CEndHjXvgi46M0vpSqvVKqLM9DMWIaX3Jf6SgDWW4aNe3jUUVRka8g3uZ+?=
+ =?us-ascii?Q?/nWXyVx2pB0yKY45kTPRSu9KRxhropejv+A88ttsUgacG9VEGB+vMw=3D=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB8459.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?F1+0mulozecSyCCOMS8QBEUu61XidAgCnho1hJnCxPITn/sb/u1Ku+AMquRv?=
+ =?us-ascii?Q?w9U1cOkOKMeIXIXcyMFSP6SJmh6XuOsFIJ/llzEZzJbe5VUGOayPT8qz8xka?=
+ =?us-ascii?Q?aTAsFPgGheZZNI44sb6ttP6wobkbpsY2NZ7ksz0FutL74JhK5uVA0Oqdty1o?=
+ =?us-ascii?Q?MdnKGRL9kBglXbN0T1LlXhj7WXYCDHYq4+EIVlS9JElovohEDSIujoCiiCrZ?=
+ =?us-ascii?Q?mlLMKZcKE97VgJoH5rI3KfK1KpFRjjJ+TQYbmJ8nLkV+E/9dhvfzJsFfKON5?=
+ =?us-ascii?Q?BMuPykYdQbGW2jDLCncRChk0rm/xupkNRLaNbjEPqZhZ5rJGeSKavAyqPBIL?=
+ =?us-ascii?Q?sMCHfqLKr6vzTqDn8VYxiCwq+kJRQzyLLKuFYKl8c0donvYp1ZO+OZ3o4ed2?=
+ =?us-ascii?Q?gGKR14Mtag/YImI+f6ff4mBqHnVstpAKlgIPvxsm4PlqX9Ql7a1J8OAtvzW0?=
+ =?us-ascii?Q?jqgf6S3YxSPfb+BY30wxEbLQH/6vYbsdOEC0nR/zkJdQBbLESN8ZNhYOffAK?=
+ =?us-ascii?Q?K/oNJLjhTOBf6aVtyOrR7zsdMDw0DsIsl5y0GgkklVeJBz7jAp0auWzunpab?=
+ =?us-ascii?Q?hBYPpmVQeV1ZthZcr8IPceuEs1Sth5HEIb4egzPbY3nQINwaLqgREh4OFHiT?=
+ =?us-ascii?Q?bjTbK+oVZuaaIlwEJbHcMd9VbGVFJO7/D9PiOJtCpRViMu50gvnXD95GNrz/?=
+ =?us-ascii?Q?HpBJ+IqtuhdBZdxoxRame2Ucx3ygW7WZkIhTF9sDpRE0ztcbWmkRmF8BCQw4?=
+ =?us-ascii?Q?q0QMSX684TASlq5Hf2dfQDzAehTnO03ZVHw6QCtoBdLqVf8kfnSlxlVX2ijg?=
+ =?us-ascii?Q?Kc5emRYLUGyyFpGQH9NUSyITl/ocyeZEMRyFmsZTA4V7hrZNg8QNfn2AO1bG?=
+ =?us-ascii?Q?bGxPI7xgkK6KXsY9uhcdCWYsk+tiYbwH/FY12/vhZ1bz32kzkmrXGdyb4q1j?=
+ =?us-ascii?Q?uf4UEsiOpmf6wiXDCt/78VgTGBFd5Kj6NvJhAY5ljmupPAjEsQ1w/X6ptTHZ?=
+ =?us-ascii?Q?cIsDOKf1tVw1VkdTmea0oDaRiffrQtZ+zlK/Kjwsip9fH4diy9JIpxuLmRVg?=
+ =?us-ascii?Q?Jrb3he18YSRP9VKzYhlXBwz57kJEy67rUMdrJLet8bmU1Qxrgid9sxDLBDSU?=
+ =?us-ascii?Q?fI3u1i//cGX02wptmArfV+iNFAfwruk9St4oqlVy7Fm/PmPMMCPZdSNzNtUK?=
+ =?us-ascii?Q?9J35G3WNG9TdF6J8QRpQ0pT8Y3ZHMoT/4ATbY+oGR+dlpvkkxZTqkvDL72n2?=
+ =?us-ascii?Q?rmHPYpEOEWddmy4O5ztBljHrgwgvctTgEXmWKo4XpaEkKlsVfUa9j5QtW0x4?=
+ =?us-ascii?Q?Z3fcajja3oTWrmGSmdlfjtA4s4dsfD9WXb4b96ph1eHBqcLhpblvfhavhvBJ?=
+ =?us-ascii?Q?IzW/q68t71NFQfEQq6aBucCOFKUcSVhdNUdn0JKB2i4LqCsVrRazlUWU6WmT?=
+ =?us-ascii?Q?Ry3HD2JSDuxiYi/Xlh3SdwsiP8WrT4HIkvr+KWCTvHOF022s+QlT455Tjgmn?=
+ =?us-ascii?Q?Gb42pDIm/RNVeoCms883rg+lq2HwXixgjlULsbap+b5QwOs1Fc7pVfthbGMl?=
+ =?us-ascii?Q?LC6bcx4+Sy3Ls5qV+zA=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1745:b0:3d9:36a8:3d98 with SMTP id
- e9e14a558f8ab-3db84296deemr261924655ab.2.1747849649857; Wed, 21 May 2025
- 10:47:29 -0700 (PDT)
-Date: Wed, 21 May 2025 10:47:29 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <682e11b1.050a0220.ade60.09e5.GAE@google.com>
-Subject: [syzbot] [integrity?] [lsm?] INFO: task hung in process_measurement (3)
-From: syzbot <syzbot+cb9e66807bcb882cd0c5@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, 
-	jmorris@namei.org, kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, paul@paul-moore.com, 
-	roberto.sassu@huawei.com, serge@hallyn.com, syzkaller-bugs@googlegroups.com, 
-	zohar@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB8459.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d05e925d-918a-4397-cd9a-08dd98fb5c7c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 May 2025 06:39:11.1843
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ImdhCV48SOses0tEPmPvtwbBr7xST/C+AcLdknHDeO108+oY8lrvegondxYaXs4gHQRntDTRsE+tGrwjuDe4Kg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8726
 
-Hello,
+Hi Kent, Arnd
 
-syzbot found the following issue on:
+There is below build error with "make ARCH=3Darm randconfig; make"
 
-HEAD commit:    172a9d94339c Merge tag '6.15-rc6-smb3-client-fixes' of git..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=142a5ef4580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ea35e429f965296e
-dashboard link: https://syzkaller.appspot.com/bug?extid=cb9e66807bcb882cd0c5
-compiler:       Debian clang version 20.1.2 (++20250402124445+58df0ef89dd6-1~exp1~20250402004600.97), Debian LLD 20.1.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16836e70580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1617a2d4580000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/c7d5b496fd25/disk-172a9d94.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/965a0ad50b10/vmlinux-172a9d94.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/62675d801af8/bzImage-172a9d94.xz
-mounted in repro #1: https://storage.googleapis.com/syzbot-assets/a11594a5d459/mount_0.gz
-mounted in repro #2: https://storage.googleapis.com/syzbot-assets/84492c682353/mount_4.gz
-
-The issue was bisected to:
-
-commit 1d16c605cc55ef26f0c65b362665a6c99080ccbc
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Thu Nov 9 19:22:46 2023 +0000
-
-    bcachefs: Disk space accounting rewrite
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13f61e70580000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=100e1e70580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17f61e70580000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cb9e66807bcb882cd0c5@syzkaller.appspotmail.com
-Fixes: 1d16c605cc55 ("bcachefs: Disk space accounting rewrite")
-
-INFO: task syz-executor236:5862 blocked for more than 143 seconds.
-      Not tainted 6.15.0-rc6-syzkaller-00278-g172a9d94339c #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor236 state:D stack:26936 pid:5862  tgid:5849  ppid:5845   task_flags:0x400140 flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5382 [inline]
- __schedule+0x168f/0x4c70 kernel/sched/core.c:6767
- __schedule_loop kernel/sched/core.c:6845 [inline]
- schedule+0x165/0x360 kernel/sched/core.c:6860
- schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6917
- rwsem_down_write_slowpath+0xbec/0x1030 kernel/locking/rwsem.c:1176
- __down_write_common kernel/locking/rwsem.c:1304 [inline]
- __down_write kernel/locking/rwsem.c:1313 [inline]
- down_write+0x1ab/0x1f0 kernel/locking/rwsem.c:1578
- inode_lock include/linux/fs.h:867 [inline]
- process_measurement+0x3d8/0x1a40 security/integrity/ima/ima_main.c:260
- ima_file_check+0xd7/0x120 security/integrity/ima/ima_main.c:613
- security_file_post_open+0xbb/0x290 security/security.c:3130
- do_open fs/namei.c:3882 [inline]
- path_openat+0x2f26/0x3830 fs/namei.c:4039
- do_filp_open+0x1fa/0x410 fs/namei.c:4066
- do_sys_openat2+0x121/0x1c0 fs/open.c:1429
- do_sys_open fs/open.c:1444 [inline]
- __do_sys_creat fs/open.c:1522 [inline]
- __se_sys_creat fs/open.c:1516 [inline]
- __x64_sys_creat+0x8f/0xc0 fs/open.c:1516
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xf6/0x210 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fd31f9f4ef9
-RSP: 002b:00007fd31f95f218 EFLAGS: 00000246 ORIG_RAX: 0000000000000055
-RAX: ffffffffffffffda RBX: 00007fd31fa9b6e8 RCX: 00007fd31f9f4ef9
-RDX: ffffffffffffffb0 RSI: c9028ba210c11e9b RDI: 00002000000000c0
-RBP: 00007fd31fa9b6e0 R08: 0000000000000000 R09: 0000000000000000
-R10: 00007ffcb62f60c7 R11: 0000000000000246 R12: 00007fd31fa67314
-R13: 00002000000000c0 R14: 0030656c69662f2e R15: 00007ffcb62f60c8
- </TASK>
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/31:
- #0: ffffffff8df3dce0 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:331 [inline]
- #0: ffffffff8df3dce0 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:841 [inline]
- #0: ffffffff8df3dce0 (rcu_read_lock){....}-{1:3}, at: debug_show_all_locks+0x2e/0x180 kernel/locking/lockdep.c:6764
-1 lock held by kworker/u8:3/53:
- #0: ffff8880b88399d8 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:605
-1 lock held by klogd/5178:
- #0: ffff8880b88399d8 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:605
-2 locks held by getty/5577:
- #0: ffff8880340120a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
- #1: ffffc900036ec2f0 (&ldata->atomic_read_lock){+.+.}-{4:4}, at: n_tty_read+0x43e/0x1400 drivers/tty/n_tty.c:2222
-3 locks held by syz-executor236/5850:
- #0: ffff888078b629b8 (&f->f_pos_lock){+.+.}-{4:4}, at: fdget_pos+0x247/0x320 fs/file.c:1213
- #1: ffff88823bfbe420 (sb_writers#9){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:3041 [inline]
- #1: ffff88823bfbe420 (sb_writers#9){.+.+}-{0:0}, at: vfs_write+0x211/0xa90 fs/read_write.c:680
- #2: ffff8880761b08e0 (&sb->s_type->i_mutex_key#14){+.+.}-{4:4}, at: inode_lock include/linux/fs.h:867 [inline]
- #2: ffff8880761b08e0 (&sb->s_type->i_mutex_key#14){+.+.}-{4:4}, at: bch2_direct_write+0x267/0x2d50 fs/bcachefs/fs-io-direct.c:612
-2 locks held by syz-executor236/5862:
- #0: ffff88823bfbe420 (sb_writers#9){.+.+}-{0:0}, at: mnt_want_write+0x41/0x90 fs/namespace.c:556
- #1: ffff8880761b08e0 (&sb->s_type->i_mutex_key#14){+.+.}-{4:4}, at: inode_lock include/linux/fs.h:867 [inline]
- #1: ffff8880761b08e0 (&sb->s_type->i_mutex_key#14){+.+.}-{4:4}, at: process_measurement+0x3d8/0x1a40 security/integrity/ima/ima_main.c:260
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 UID: 0 PID: 31 Comm: khungtaskd Not tainted 6.15.0-rc6-syzkaller-00278-g172a9d94339c #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
-Call Trace:
- <TASK>
- dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
- nmi_cpu_backtrace+0x39e/0x3d0 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x17a/0x300 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:158 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:274 [inline]
- watchdog+0xfee/0x1030 kernel/hung_task.c:437
- kthread+0x70e/0x8a0 kernel/kthread.c:464
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:153
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 UID: 0 PID: 0 Comm: swapper/1 Not tainted 6.15.0-rc6-syzkaller-00278-g172a9d94339c #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
-RIP: 0010:pv_native_safe_halt+0x13/0x20 arch/x86/kernel/paravirt.c:81
-Code: 43 d4 02 00 cc cc cc 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 66 90 0f 00 2d a3 9f 18 00 f3 0f 1e fa fb f4 <e9> 18 d4 02 00 cc cc cc cc cc cc cc cc 90 90 90 90 90 90 90 90 90
-RSP: 0018:ffffc90000197de0 EFLAGS: 000002c6
-RAX: a55f7e0638390b00 RBX: ffffffff81977048 RCX: a55f7e0638390b00
-RDX: 0000000000000001 RSI: ffffffff8d73a84c RDI: ffffffff8bc12000
-RBP: ffffc90000197f20 R08: ffff8880b8932b5b R09: 1ffff1101712656b
-R10: dffffc0000000000 R11: ffffed101712656c R12: ffffffff8f7e0670
-R13: 0000000000000001 R14: 0000000000000001 R15: 1ffff110038dcb40
-FS:  0000000000000000(0000) GS:ffff8881261f6000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055b5f126d168 CR3: 000000000dd38000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- arch_safe_halt arch/x86/include/asm/paravirt.h:107 [inline]
- default_idle+0x13/0x20 arch/x86/kernel/process.c:748
- default_idle_call+0x74/0xb0 kernel/sched/idle.c:117
- cpuidle_idle_call kernel/sched/idle.c:185 [inline]
- do_idle+0x1e8/0x510 kernel/sched/idle.c:325
- cpu_startup_entry+0x44/0x60 kernel/sched/idle.c:423
- start_secondary+0x101/0x110 arch/x86/kernel/smpboot.c:315
- common_startup_64+0x13e/0x147
- </TASK>
+fs/bcachefs/data_update.c: In function '__bch2_data_update_index_update':
+fs/bcachefs/data_update.c:439:1: error: the frame size of 1552 bytes is lar=
+ger than 1280 bytes [-Werror=3Dframe-larger-than=3D]
+  439 | }
+      | ^
+cc1: all warnings being treated as errors
+make[4]: *** [scripts/Makefile.build:203: fs/bcachefs/data_update.o] Error =
+1
+make[3]: *** [scripts/Makefile.build:461: fs/bcachefs] Error 2
+make[2]: *** [scripts/Makefile.build:461: fs] Error 2
+make[1]: *** [/home/nxa18884/linux/linux-next/Makefile:2006: .] Error 2
+make: *** [Makefile:248: __sub-make] Error 2
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Toolchain:
+arm-poky-linux-gnueabi-gcc -v
+Using built-in specs.
+COLLECT_GCC=3Darm-poky-linux-gnueabi-gcc
+COLLECT_LTO_WRAPPER=3D/opt/fsl-imx-internal-xwayland/6.6-scarthgap/sysroots=
+/x86_64-pokysdk-linux/usr/libexec/arm-poky-linux-gnueabi/gcc/arm-poky-linux=
+-gnueabi/13.3.0/lto-wrapper
+Target: arm-poky-linux-gnueabi
+Configured with: ../../../../../../work-shared/gcc-13.3.0-r0/gcc-13.3.0/con=
+figure --build=3Dx86_64-linux --host=3Dx86_64-pokysdk-linux --target=3Darm-=
+poky-linux-gnueabi --prefix=3D/usr/local/oe-sdk-hardcoded-buildpath/sysroot=
+s/x86_64-pokysdk-linux/usr --exec_prefix=3D/usr/local/oe-sdk-hardcoded-buil=
+dpath/sysroots/x86_64-pokysdk-linux/usr --bindir=3D/usr/local/oe-sdk-hardco=
+ded-buildpath/sysroots/x86_64-pokysdk-linux/usr/bin/arm-poky-linux-gnueabi =
+--sbindir=3D/usr/local/oe-sdk-hardcoded-buildpath/sysroots/x86_64-pokysdk-l=
+inux/usr/bin/arm-poky-linux-gnueabi --libexecdir=3D/usr/local/oe-sdk-hardco=
+ded-buildpath/sysroots/x86_64-pokysdk-linux/usr/libexec/arm-poky-linux-gnue=
+abi --datadir=3D/usr/local/oe-sdk-hardcoded-buildpath/sysroots/x86_64-pokys=
+dk-linux/usr/share --sysconfdir=3D/usr/local/oe-sdk-hardcoded-buildpath/sys=
+roots/x86_64-pokysdk-linux/etc --sharedstatedir=3D/usr/local/oe-sdk-hardcod=
+ed-buildpath/sysroots/x86_64-pokysdk-linux/com --localstatedir=3D/usr/local=
+/oe-sdk-hardcoded-buildpath/sysroots/x86_64-pokysdk-linux/var --libdir=3D/u=
+sr/local/oe-sdk-hardcoded-buildpath/sysroots/x86_64-pokysdk-linux/usr/lib/a=
+rm-poky-linux-gnueabi --includedir=3D/usr/local/oe-sdk-hardcoded-buildpath/=
+sysroots/x86_64-pokysdk-linux/usr/include --oldincludedir=3D/usr/local/oe-s=
+dk-hardcoded-buildpath/sysroots/x86_64-pokysdk-linux/usr/include --infodir=
+=3D/usr/local/oe-sdk-hardcoded-buildpath/sysroots/x86_64-pokysdk-linux/usr/=
+share/info --mandir=3D/usr/local/oe-sdk-hardcoded-buildpath/sysroots/x86_64=
+-pokysdk-linux/usr/share/man --disable-silent-rules --disable-dependency-tr=
+acking --with-libtool-sysroot=3D/home/bamboo/bamboo-agent-home/xml-data/bui=
+ld-dir/IMXYOCTO-SDK-MX6QPDL/112/build/tmp/work/x86_64-nativesdk-pokysdk-lin=
+ux/gcc-cross-canadian-arm/13.3.0/recipe-sysroot --with-gnu-ld --enable-shar=
+ed --enable-languages=3Dc,c++ --enable-threads=3Dposix --enable-multilib --=
+enable-default-pie --enable-c99 --enable-long-long --enable-symvers=3Dgnu -=
+-enable-libstdcxx-pch --program-prefix=3Darm-poky-linux-gnueabi- --without-=
+local-prefix --disable-install-libiberty --disable-libssp --enable-libitm -=
+-enable-lto --disable-bootstrap --with-system-zlib --with-linker-hash-style=
+=3Dgnu --enable-linker-build-id --with-ppl=3Dno --with-cloog=3Dno --enable-=
+checking=3Drelease --enable-cheaders=3Dc_global --without-isl --with-gxx-in=
+clude-dir=3D/not/exist/usr/include/c++/13.3.0 --with-build-time-tools=3D/ho=
+me/bamboo/bamboo-agent-home/xml-data/build-dir/IMXYOCTO-SDK-MX6QPDL/112/bui=
+ld/tmp/work/x86_64-nativesdk-pokysdk-linux/gcc-cross-canadian-arm/13.3.0/re=
+cipe-sysroot-native/usr/arm-poky-linux-gnueabi/bin --with-sysroot=3D/not/ex=
+ist --with-build-sysroot=3D/home/bamboo/bamboo-agent-home/xml-data/build-di=
+r/IMXYOCTO-SDK-MX6QPDL/112/build/tmp/work/x86_64-nativesdk-pokysdk-linux/gc=
+c-cross-canadian-arm/13.3.0/recipe-sysroot --with-plugin-ld=3Dld --enable-p=
+oison-system-directories --disable-static --enable-nls --with-glibc-version=
+=3D2.28 --enable-initfini-array
+Thread model: posix
+Supported LTO compression algorithms: zlib zstd
+gcc version 13.3.0 (GCC)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Regards,
+Peng.
