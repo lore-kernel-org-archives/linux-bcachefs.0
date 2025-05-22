@@ -1,78 +1,139 @@
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+Received: from mail75.out.titan.email (mail75.out.titan.email [3.216.99.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5A4E289E3C
-	for <linux-bcachefs@vger.kernel.org>; Thu, 22 May 2025 11:29:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FAAD299937
+	for <linux-bcachefs@vger.kernel.org>; Thu, 22 May 2025 15:50:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=3.216.99.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747913387; cv=none; b=kti3VJz/y1A9JckpsLsktGltUfgAA6NcP9LP5DqCEvImZRuun8HAhjnThroU1KoDVf2uUOIEi48P3ZON8Eh8h6qhA4ocQa9qd9eiATOLaEsTdgBRwrOtVEJO8jFmy7yo7TlQV32Tj2IzrlCWzqsAwlT6g5Zyyn8P1y1qLNGwnFc=
+	t=1747929004; cv=none; b=Nnj60aBbOSCZ3vve1GBBaXti4MCBamYPJxRxM9ih1jau0waTyTmsqmJGjTNpAcw248OSKIjsA1cO1oB1RRc66ou0/kfR8/FL9yCAieBzVzCrWLfvUzGVz1CDY6bKCfSLc7V9ECXKSnoCy0qcBd312LJZ0CXjhpRa3s7/HhTJG4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747913387; c=relaxed/simple;
-	bh=UPIFn9N+1+QDNZcNA25KXvz+sMm80w2VxPa8i9qkuCs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ly6zN6JI+7mCeIWJ+qvjlQOpFd+FCAYpl750OIrSib6vihkCKDRe86OhpBrFYGyeS8RBtwJf+BB05q8PEYbRDY+e3VQoW9cpjaNS5N0XBwxXvc5ThsZvfG1oCG7MoCy5x8awIItw2j2xMTWnORjb/O5FQcKZkO5nTABqfPggISI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=O3Qiqb2o; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1747929004; c=relaxed/simple;
+	bh=Q0PYmNdAm+3Qf4fqBIwBC7PH0E4dHRftuI+OgdY3lXM=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=I0AMQDjFD/mqKNgQlDSEuBCYaNDaXpmZyDgyR6UkL8QvLCIEkXuu/xOwUXuycc55V2VCFa//ncj+MgACKLSEVLs45K6Yq9HXm3BEX9QDG0uMRA6jne5SuMN8dSNzDm4gZCV0mF73Gro7pK2c7HciouKJ2b4U4XMZX3kJAEi/3lM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=coly.li; spf=pass smtp.mailfrom=coly.li; dkim=pass (1024-bit key) header.d=t12smtp-sign004.email header.i=@t12smtp-sign004.email header.b=W8ucw8tM; arc=none smtp.client-ip=3.216.99.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=coly.li
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=coly.li
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="O3Qiqb2o"
-Date: Thu, 22 May 2025 07:29:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747913382;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D30c4LpbKJGTLV3TDgbPM1yl7EfEP9gR4/PJue8vafM=;
-	b=O3Qiqb2oTyWCjy+2mmqUGHpQUwP6BkMOcfELHuASHOWiSQktk1CGwhXna+jFxOqNJcc5Q6
-	2MGd7pHqhmhSEa9T8Ub/KpvZ7p5AmNSPC2T3/J7I7mK4HpsQebDcYLxO6sfzrNJCl/Rwyi
-	V2jPLFBTqPjBlkh3gjjmkOmjdkEEE6M=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Peng Fan <peng.fan@nxp.com>, 
-	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>, 
-	"moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: error: the frame size of 1552 bytes is larger than 1280 bytes
- when building bcachefs
-Message-ID: <oelk3icaqi6d4qpd2lymmybnk4ah7wwydz53zihxrhula2adfr@3dsd263tjibo>
-References: <PAXPR04MB845954FBBF2AD810B17536138899A@PAXPR04MB8459.eurprd04.prod.outlook.com>
- <d8e9f098-49a2-4f1e-a6a5-7a6437658d93@app.fastmail.com>
+	dkim=pass (1024-bit key) header.d=t12smtp-sign004.email header.i=@t12smtp-sign004.email header.b="W8ucw8tM"
+Received: from localhost (localhost [127.0.0.1])
+	by smtp-out.flockmail.com (Postfix) with ESMTP id D1F65E0015;
+	Thu, 22 May 2025 15:14:27 +0000 (UTC)
+DKIM-Signature: a=rsa-sha256; bh=taO0LrTM+GjJ2q8d/yfaS+WGBoxT48m7W5053bW9Haw=;
+	c=relaxed/relaxed; d=t12smtp-sign004.email;
+	h=message-id:subject:from:in-reply-to:cc:date:mime-version:references:to:from:to:cc:subject:date:message-id:in-reply-to:references:reply-to;
+	q=dns/txt; s=titan1; t=1747926867; v=1;
+	b=W8ucw8tMezn3KIC4AFxXK1J6IzhuvZBneSaYRQmF7H49EF1xj6Vyjq/pTeUhLKtkG0KOOv/J
+	neFKoI1pJk5KbvpApEKtvNaBm/AqDNSXodeuZFiGCy9Hq0Zn6gRXAA+U+hRXpg5mMrt80j+TPJa
+	IIjy5ka6U6tuKVr75SFVsxSY=
+Received: from smtpclient.apple (n218103205009.netvigator.com [218.103.205.9])
+	by smtp-out.flockmail.com (Postfix) with ESMTPA id A39EAE006A;
+	Thu, 22 May 2025 15:14:24 +0000 (UTC)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d8e9f098-49a2-4f1e-a6a5-7a6437658d93@app.fastmail.com>
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.600.51.1.1\))
+Subject: Re: riscv gcc-13 allyesconfig error the frame size of 2064 bytes is
+ larger than 2048 bytes [-Werror=frame-larger-than=]
+Feedback-ID: :i@coly.li:coly.li:flockmailId
+From: Coly Li <i@coly.li>
+In-Reply-To: <CA+G9fYv08Rbg4f8ZyoZC9qseKdRygy8y86qFvts5D=BoJg888g@mail.gmail.com>
+Date: Thu, 22 May 2025 23:14:11 +0800
+Cc: open list <linux-kernel@vger.kernel.org>,
+ lkft-triage@lists.linaro.org,
+ Linux Regressions <regressions@lists.linux.dev>,
+ kent.overstreet@linux.dev,
+ Arnd Bergmann <arnd@arndb.de>,
+ Dan Carpenter <dan.carpenter@linaro.org>,
+ Anders Roxell <anders.roxell@linaro.org>,
+ linux-bcachefs@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <36D1F736-7E76-47F6-9E26-0E8E8F4E9B44@coly.li>
+References: <CA+G9fYv08Rbg4f8ZyoZC9qseKdRygy8y86qFvts5D=BoJg888g@mail.gmail.com>
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+X-Mailer: Apple Mail (2.3826.600.51.1.1)
+X-F-Verdict: SPFVALID
+X-Titan-Src-Out: 1747926867682161361.26132.8009154321890797791@prod-use1-smtp-out1004.
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.4 cv=U8BoDfru c=1 sm=1 tr=0 ts=682f3f53
+	a=eJNHGpZBYRW47XJYT+WeIA==:117 a=eJNHGpZBYRW47XJYT+WeIA==:17
+	a=IkcTkHD0fZMA:10 a=CEWIc4RMnpUA:10 a=Oh2cFVv5AAAA:8 a=KKAkSRfTAAAA:8
+	a=21D8NHQQAAAA:8 a=VwQbUJbxAAAA:8 a=uOdo12Paqm2KlJZ413YA:9
+	a=QEXdDO2ut3YA:10 a=7KeoIwV6GZqOttXkcoxL:22 a=cvBusfyB2V15izCimMoJ:22
+	a=aE7_2WBlPvBBVsBbSUWX:22
 
-On Thu, May 22, 2025 at 01:23:56PM +0200, Arnd Bergmann wrote:
-> On Thu, May 22, 2025, at 08:39, Peng Fan wrote:
-> > Hi Kent, Arnd
-> >
-> > There is below build error with "make ARCH=arm randconfig; make"
-> >
-> > fs/bcachefs/data_update.c: In function 
-> > '__bch2_data_update_index_update':
-> > fs/bcachefs/data_update.c:439:1: error: the frame size of 1552 bytes is 
-> > larger than 1280 bytes [-Werror=frame-larger-than=]
-> 
-> Right, I think that's been the case with bcachefs since the start,
-> and I see it with allmodconfig as well, the problem being mostly
-> CONFIG_KASAN_STACK.
-> 
-> There are a couple of bcachefs functions that have an unusual number
-> of local struct variables in them, and KASAN_STACK adds a redzone
-> around each one of them, further increasing the size.
-> 
-> When I add "depends on !KASAN_STACK" to bcachefs, I see all
-> randconfig builds succeeding, but that may not be the best
-> solution.
+Hi Naresh,
 
-Post 6.16, all the bcachefs functions I know of with high stack usage
-run with nearly the full stack available - they're running from a
-workqueue, or they're fsck, so this should be a non issue - I recently
-did some testing with max stack tracing usage enabled and our stack
-usage looks ok now.
+Bcachefs has its own mailing list linux-bcachefs@vger.kernel.org =
+<mailto:linux-bcachefs@vger.kernel.org>, here I Cc this email to =
+bcachefs mailing list.
+
+Thanks.
+
+Coly Li
+
+> 2025=E5=B9=B45=E6=9C=8822=E6=97=A5 21:29=EF=BC=8CNaresh Kamboju =
+<naresh.kamboju@linaro.org> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> Regressions on riscv allyesconfig build failed with gcc-13 on the =
+Linux next
+> tag next-20250516 and next-20250522.
+>=20
+> First seen on the next-20250516
+> Good: next-20250515
+> Bad:  next-20250516
+>=20
+> Regressions found on riscv:
+> - build/gcc-13-allyesconfig
+>=20
+> Regression Analysis:
+> - New regression? Yes
+> - Reproducible? Yes
+>=20
+> Build regression: riscv gcc-13 allyesconfig error the frame size of
+> 2064 bytes is larger than 2048 bytes [-Werror=3Dframe-larger-than=3D]
+>=20
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>=20
+> ## Build log
+> fs/bcachefs/data_update.c: In function =
+'__bch2_data_update_index_update':
+> fs/bcachefs/data_update.c:464:1: error: the frame size of 2064 bytes
+> is larger than 2048 bytes [-Werror=3Dframe-larger-than=3D]
+>  464 | }
+>      | ^
+> cc1: all warnings being treated as errors
+>=20
+>=20
+> ## Source
+> * Kernel version: 6.15.0-rc7
+> * Git tree: =
+https://kernel.googlesource.com/pub/scm/linux/kernel/git/next/linux-next.g=
+it
+> * Git sha: 460178e842c7a1e48a06df684c66eb5fd630bcf7
+> * Git describe: next-20250522
+>=20
+> ## Build
+> * Build log: =
+https://qa-reports.linaro.org/api/testruns/28521854/log_file/
+> * Build history:
+> =
+https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250522/t=
+estrun/28521854/suite/build/test/gcc-13-allyesconfig/history/
+> * Build link: =
+https://storage.tuxsuite.com/public/linaro/lkft/builds/2xRoAAw5dl69AvvHb8o=
+Z3pL1SFx/
+> * Kernel config:
+> =
+https://storage.tuxsuite.com/public/linaro/lkft/builds/2xRoAAw5dl69AvvHb8o=
+Z3pL1SFx/config
+>=20
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
+>=20
+
