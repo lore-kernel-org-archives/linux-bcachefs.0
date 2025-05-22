@@ -1,295 +1,222 @@
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+Received: from mail.stoffel.org (mail.stoffel.org [172.104.24.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E45DB7DA82
-	for <linux-bcachefs@vger.kernel.org>; Thu, 22 May 2025 17:00:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BA6225745A;
+	Thu, 22 May 2025 21:45:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.104.24.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747933229; cv=none; b=dP/x6MjvNYlAnIG+ykccZGl+SAu8AmoaKkr5dhn3mBvVhZAOKgLGkfcgJjvapQ41umIpdaA0Fh1Xb6q9urB3cVDTba9LX8Tp35yTCWQ3+Xc2fcuqDsJZdjRPimYT+Kta/BZnvbfMdj6/qZs1YwYk8w6EGR+gnqZyTJU4aLo+upA=
+	t=1747950304; cv=none; b=VyLbh8q+eX+LgmUcIl85Zx5NFhRmVGcH05lcJzMrxqw4L6VtGRusI5C5wOjNBA/cjYcb6gX7/Xg+/2TmNqBUbAON9dekI1BGZj3POaGLnemqG2LPn7xOOQO67e2KkAxUStUW3u01G5oSf9uSK260dnN9PfJiAPe8NXZo9vtrw5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747933229; c=relaxed/simple;
-	bh=846abecOQ13mXRh0jre/QSNiTp9mrU9ufxPQAYh/fsQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PQyIdroo2bKlqb+VZ3BljATKhy/amtbBdwgbDvBY1drsyVKMU40ImZnTowxcnv9wzH8+NiXHku2uLoPr+dpmWg0B8lQOOYhnIJsMfNjGnbl+ZJXXNBZalrNwW7+py1xtTBat9LrYvUg4g47Zrj/5rOwk60Rcr1AIc/eyLdw9DKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Iim/dT7R; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Iim/dT7R"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747933224;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9XDnciBDD11ORFcMxlE/J3Yy6/bDdQsNOtR+/bB+vG4=;
-	b=Iim/dT7Rv+FpaXzTnqn9AwRzSkF+1Mp5FLWJkphX+3u0dLvZwKny7v4NR7OEvLXpXJtaWB
-	S4SxjZht/g8/lzKU6TrFbQ9QQbidNHN/IWk37OMtXGEwsKR6siM5WkK4/y6thkbINa6cLh
-	IgZfVIv/v6KApaNjeFgxycMAu5mLpYU=
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 3/3] bcachefs: Reduce stack usage in data_update_index_update()
-Date: Thu, 22 May 2025 13:00:19 -0400
-Message-ID: <20250522170019.2909181-3-kent.overstreet@linux.dev>
-In-Reply-To: <20250522170019.2909181-1-kent.overstreet@linux.dev>
-References: <20250522170019.2909181-1-kent.overstreet@linux.dev>
+	s=arc-20240116; t=1747950304; c=relaxed/simple;
+	bh=quAfFYzFTzjSxtdhvcIUWaLjy4FsUqMuqkB6PG3nfx4=;
+	h=MIME-Version:Content-Type:Message-ID:Date:From:To:Cc:Subject:
+	 In-Reply-To:References; b=QEG2BG9ubAQUryJczPArhZhsGnpxxXl9+mEAg3WSEAIrbpxBqj0du+BVetfIQfuIsQd5lecKKDRohZJwmGOZYnrXpq312evRPEpMieyYdi0ncsH0JIE5MvhnIz4jlrUGBEpk+EemnWV2mP3eZgjRlCRP1hvOmCFyw6D/NhC1Vq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stoffel.org; spf=pass smtp.mailfrom=stoffel.org; arc=none smtp.client-ip=172.104.24.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stoffel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stoffel.org
+Received: from quad.stoffel.org (syn-097-095-183-072.res.spectrum.com [97.95.183.72])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.stoffel.org (Postfix) with ESMTPSA id 4210F1E38E;
+	Thu, 22 May 2025 17:44:55 -0400 (EDT)
+Received: by quad.stoffel.org (Postfix, from userid 1000)
+	id F4218A0FEF; Thu, 22 May 2025 17:44:49 -0400 (EDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Message-ID: <26671.39633.973350.866531@quad.stoffel.home>
+Date: Thu, 22 May 2025 17:44:49 -0400
+From: "John Stoffel" <john@stoffel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: John Stoffel <john@stoffel.org>,
+    Amir Goldstein <amir73il@gmail.com>,
+    linux-fsdevel@vger.kernel.org,
+    linux-bcachefs@vger.kernel.org,
+    linux-kernel@vger.kernel.org,
+    linux-unionfs@vger.kernel.org,
+    Miklos Szeredi <miklos@szeredi.hu>,
+    Alexander Viro <viro@zeniv.linux.org.uk>,
+    Christian Brauner <brauner@kernel.org>,
+    Jan Kara <jack@suse.cz>
+X-Clacks-Overhead: GNU Terry Pratchett
+Subject: Re: [PATCH 0/6] overlayfs + casefolding
+In-Reply-To: <7b272tdagnkvzt5eo4g4wy47rjwf67nqk26aq27uetc57kzza5@7p5cmikl2fw6>
+References: <20250520051600.1903319-1-kent.overstreet@linux.dev>
+	<CAOQ4uxg8p2Kg0BKrU4NSUzLVVLWcW=vLaw4kJkVR1Q-LyRbRXA@mail.gmail.com>
+	<osbsqlzkc4zttz4gxa25exm5bhqog3tpyirsezcbcdesaucd7g@4sltqny4ybnz>
+	<CAOQ4uxjUC=1MinjDCOfY5t89N3ga6msLmpVXL1p23qdQax6fSg@mail.gmail.com>
+	<gdvg6zswvq4zjzo6vntggoacrgxxh33zmejo72yusp7aqkqzic@kaibexik7lvh>
+	<CAOQ4uxg9sKC_8PLARkN6aB3E_U62_S3kfnBuRbAvho9BNzGAsQ@mail.gmail.com>
+	<rkbkjp7xvefmtutkwtltyd6xch2pbw47x5czx6ctldemus2bvj@2ukfdmtfjjbw>
+	<26668.52908.574606.416955@quad.stoffel.home>
+	<7b272tdagnkvzt5eo4g4wy47rjwf67nqk26aq27uetc57kzza5@7p5cmikl2fw6>
+X-Mailer: VM 8.3.x under 28.2 (x86_64-pc-linux-gnu)
 
-Separate tracepoint message generation and other slowpath code into
-non-inline functions, and use bch2_trans_log_str() instead of using a
-printbuf for our journal message.
+>>>>> "Kent" =3D=3D Kent Overstreet <kent.overstreet@linux.dev> writes:
 
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
----
- fs/bcachefs/data_update.c | 154 +++++++++++++++++++++-----------------
- 1 file changed, 87 insertions(+), 67 deletions(-)
+> On Tue, May 20, 2025 at 02:49:16PM -0400, John Stoffel wrote:
+>> >>>>> "Kent" =3D=3D Kent Overstreet <kent.overstreet@linux.dev> writes:
+>>=20
+>> > On Tue, May 20, 2025 at 04:03:27PM +0200, Amir Goldstein wrote:
+>> >> On Tue, May 20, 2025 at 2:43=E2=80=AFPM Kent Overstreet
+>> >> <kent.overstreet@linux.dev> wrote:
+>> >> >
+>> >> > On Tue, May 20, 2025 at 02:40:07PM +0200, Amir Goldstein wrote:
+>> >> > > On Tue, May 20, 2025 at 2:25=E2=80=AFPM Kent Overstreet
+>> >> > > <kent.overstreet@linux.dev> wrote:
+>> >> > > >
+>> >> > > > On Tue, May 20, 2025 at 10:05:14AM +0200, Amir Goldstein wrote:
+>> >> > > > > On Tue, May 20, 2025 at 7:16=E2=80=AFAM Kent Overstreet
+>> >> > > > > <kent.overstreet@linux.dev> wrote:
+>> >> > > > > >
+>> >> > > > > > This series allows overlayfs and casefolding to safely be used on the
+>> >> > > > > > same filesystem by providing exclusion to ensure that overlayfs never
+>> >> > > > > > has to deal with casefolded directories.
+>> >> > > > > >
+>> >> > > > > > Currently, overlayfs can't be used _at all_ if a filesystem even
+>> >> > > > > > supports casefolding, which is really nasty for users.
+>> >> > > > > >
+>> >> > > > > > Components:
+>> >> > > > > >
+>> >> > > > > > - filesystem has to track, for each directory, "does any _descendent_
+>> >> > > > > >   have casefolding enabled"
+>> >> > > > > >
+>> >> > > > > > - new inode flag to pass this to VFS layer
+>> >> > > > > >
+>> >> > > > > > - new dcache methods for providing refs for overlayfs, and filesystem
+>> >> > > > > >   methods for safely clearing this flag
+>> >> > > > > >
+>> >> > > > > > - new superblock flag for indicating to overlayfs & dcache "filesystem
+>> >> > > > > >   supports casefolding, it's safe to use provided new dcache methods are
+>> >> > > > > >   used"
+>> >> > > > > >
+>> >> > > > >
+>> >> > > > > I don't think that this is really needed.
+>> >> > > > >
+>> >> > > > > Too bad you did not ask before going through the trouble of this implementation.
+>> >> > > > >
+>> >> > > > > I think it is enough for overlayfs to know the THIS directory has no
+>> >> > > > > casefolding.
+>> >> > > >
+>> >> > > > overlayfs works on trees, not directories...
+>> >> > >
+>> >> > > I know how overlayfs works...
+>> >> > >
+>> >> > > I've explained why I don't think that sanitizing the entire tree is needed
+>> >> > > for creating overlayfs over a filesystem that may enable casefolding
+>> >> > > on some of its directories.
+>> >> >
+>> >> > So, you want to move error checking from mount time, where we _just_
+>> >> > did a massive API rework so that we can return errors in a way that
+>> >> > users will actually see them - to open/lookup, where all we have are a
+>> >> > small fixed set of error codes?
+>> >>=20
+>> >> That's one way of putting it.
+>> >>=20
+>> >> Please explain the use case.
+>> >>=20
+>> >> When is overlayfs created over a subtree that is only partially case folded?
+>> >> Is that really so common that a mount time error justifies all the vfs
+>> >> infrastructure involved?
+>>=20
+>> > Amir, you've got two widely used filesystem features that conflict and
+>> > can't be used on the same filesystem.
+>>=20
+>> Wait, what?  How many people use casefolding, on a per-directory
+>> basis?  It's stupid.  Unix/Linux has used case-sensitive filesystems
+>> for years.  Yes, linux supports other OSes which did do casefolding,
+>> but yikes... per-directory support is just insane.  It should be
+>> per-filesystem only at BEST.=20=20
 
-diff --git a/fs/bcachefs/data_update.c b/fs/bcachefs/data_update.c
-index ef648a6d9c52..c34e5b88ba9d 100644
---- a/fs/bcachefs/data_update.c
-+++ b/fs/bcachefs/data_update.c
-@@ -100,9 +100,10 @@ static bool bkey_nocow_lock(struct bch_fs *c, struct moving_context *ctxt, struc
- 	return true;
- }
- 
--static noinline void trace_io_move_finish2(struct data_update *u,
--					       struct bkey_i *new,
--					       struct bkey_i *insert)
-+noinline_for_stack
-+static void trace_io_move_finish2(struct data_update *u,
-+				  struct bkey_i *new,
-+				  struct bkey_i *insert)
- {
- 	struct bch_fs *c = u->op.c;
- 	struct printbuf buf = PRINTBUF;
-@@ -124,6 +125,7 @@ static noinline void trace_io_move_finish2(struct data_update *u,
- 	printbuf_exit(&buf);
- }
- 
-+noinline_for_stack
- static void trace_io_move_fail2(struct data_update *m,
- 			 struct bkey_s_c new,
- 			 struct bkey_s_c wrote,
-@@ -179,19 +181,84 @@ static void trace_io_move_fail2(struct data_update *m,
- 	printbuf_exit(&buf);
- }
- 
-+noinline_for_stack
-+static void trace_data_update2(struct data_update *m,
-+			       struct bkey_s_c old, struct bkey_s_c k,
-+			       struct bkey_i *insert)
-+{
-+	struct bch_fs *c = m->op.c;
-+	struct printbuf buf = PRINTBUF;
-+
-+	prt_str(&buf, "\nold: ");
-+	bch2_bkey_val_to_text(&buf, c, old);
-+	prt_str(&buf, "\nk:   ");
-+	bch2_bkey_val_to_text(&buf, c, k);
-+	prt_str(&buf, "\nnew: ");
-+	bch2_bkey_val_to_text(&buf, c, bkey_i_to_s_c(insert));
-+
-+	trace_data_update(c, buf.buf);
-+	printbuf_exit(&buf);
-+}
-+
-+noinline_for_stack
-+static void trace_io_move_created_rebalance2(struct data_update *m,
-+					     struct bkey_s_c old, struct bkey_s_c k,
-+					     struct bkey_i *insert)
-+{
-+	struct bch_fs *c = m->op.c;
-+	struct printbuf buf = PRINTBUF;
-+
-+	bch2_data_update_opts_to_text(&buf, c, &m->op.opts, &m->data_opts);
-+
-+	prt_str(&buf, "\nold: ");
-+	bch2_bkey_val_to_text(&buf, c, old);
-+	prt_str(&buf, "\nk:   ");
-+	bch2_bkey_val_to_text(&buf, c, k);
-+	prt_str(&buf, "\nnew: ");
-+	bch2_bkey_val_to_text(&buf, c, bkey_i_to_s_c(insert));
-+
-+	trace_io_move_created_rebalance(c, buf.buf);
-+	printbuf_exit(&buf);
-+
-+	this_cpu_inc(c->counters[BCH_COUNTER_io_move_created_rebalance]);
-+}
-+
-+noinline_for_stack
-+static int data_update_invalid_bkey(struct data_update *m,
-+				    struct bkey_s_c old, struct bkey_s_c k,
-+				    struct bkey_i *insert)
-+{
-+	struct bch_fs *c = m->op.c;
-+	struct printbuf buf = PRINTBUF;
-+	bch2_log_msg_start(c, &buf);
-+
-+	prt_str(&buf, "about to insert invalid key in data update path");
-+	prt_printf(&buf, "\nop.nonce: %u", m->op.nonce);
-+	prt_str(&buf, "\nold: ");
-+	bch2_bkey_val_to_text(&buf, c, old);
-+	prt_str(&buf, "\nk:   ");
-+	bch2_bkey_val_to_text(&buf, c, k);
-+	prt_str(&buf, "\nnew: ");
-+	bch2_bkey_val_to_text(&buf, c, bkey_i_to_s_c(insert));
-+
-+	bch2_fs_emergency_read_only2(c, &buf);
-+
-+	bch2_print_str(c, KERN_ERR, buf.buf);
-+	printbuf_exit(&buf);
-+
-+	return -BCH_ERR_invalid_bkey;
-+}
-+
- static int __bch2_data_update_index_update(struct btree_trans *trans,
- 					   struct bch_write_op *op)
- {
- 	struct bch_fs *c = op->c;
- 	struct btree_iter iter;
--	struct data_update *m =
--		container_of(op, struct data_update, op);
--	struct keylist *keys = &op->insert_keys;
--	struct printbuf journal_msg = PRINTBUF;
-+	struct data_update *m = container_of(op, struct data_update, op);
- 	int ret = 0;
- 
- 	bch2_trans_iter_init(trans, &iter, m->btree_id,
--			     bkey_start_pos(&bch2_keylist_front(keys)->k),
-+			     bkey_start_pos(&bch2_keylist_front(&op->insert_keys)->k),
- 			     BTREE_ITER_slots|BTREE_ITER_intent);
- 
- 	while (1) {
-@@ -216,11 +283,11 @@ static int __bch2_data_update_index_update(struct btree_trans *trans,
- 		if (ret)
- 			goto err;
- 
--		new = bkey_i_to_extent(bch2_keylist_front(keys));
-+		new = bkey_i_to_extent(bch2_keylist_front(&op->insert_keys));
- 
- 		if (!bch2_extents_match(k, old)) {
- 			trace_io_move_fail2(m, k, bkey_i_to_s_c(&new->k_i),
--						NULL, "no match:");
-+					    NULL, "no match:");
- 			goto nowork;
- 		}
- 
-@@ -239,7 +306,7 @@ static int __bch2_data_update_index_update(struct btree_trans *trans,
- 		if (ret)
- 			goto err;
- 
--		bkey_copy(&new->k_i, bch2_keylist_front(keys));
-+		bkey_copy(&new->k_i, bch2_keylist_front(&op->insert_keys));
- 		bch2_cut_front(iter.pos, &new->k_i);
- 
- 		bch2_cut_front(iter.pos,	insert);
-@@ -353,31 +420,11 @@ static int __bch2_data_update_index_update(struct btree_trans *trans,
- 							.flags	= BCH_VALIDATE_commit,
- 						 });
- 		if (unlikely(invalid)) {
--			struct printbuf buf = PRINTBUF;
--			bch2_log_msg_start(c, &buf);
--
--			prt_str(&buf, "about to insert invalid key in data update path");
--			prt_printf(&buf, "\nop.nonce: %u", m->op.nonce);
--			prt_str(&buf, "\nold: ");
--			bch2_bkey_val_to_text(&buf, c, old);
--			prt_str(&buf, "\nk:   ");
--			bch2_bkey_val_to_text(&buf, c, k);
--			prt_str(&buf, "\nnew: ");
--			bch2_bkey_val_to_text(&buf, c, bkey_i_to_s_c(insert));
--
--			bch2_fs_emergency_read_only2(c, &buf);
--
--			bch2_print_str(c, KERN_ERR, buf.buf);
--			printbuf_exit(&buf);
--
--			ret = -BCH_ERR_invalid_bkey;
-+			ret = data_update_invalid_bkey(m, old, k, insert);
- 			goto out;
- 		}
- 
--		printbuf_reset(&journal_msg);
--		prt_str(&journal_msg, bch2_data_update_type_strs[m->type]);
--
--		ret =   bch2_trans_log_msg(trans, &journal_msg) ?:
-+		ret =   bch2_trans_log_str(trans, bch2_data_update_type_strs[m->type]) ?:
- 			bch2_trans_log_bkey(trans, m->btree_id, 0, m->k.k) ?:
- 			bch2_insert_snapshot_whiteouts(trans, m->btree_id,
- 						k.k->p, bkey_start_pos(&insert->k)) ?:
-@@ -389,38 +436,12 @@ static int __bch2_data_update_index_update(struct btree_trans *trans,
- 		if (ret)
- 			goto err;
- 
--		if (trace_data_update_enabled()) {
--			struct printbuf buf = PRINTBUF;
--
--			prt_str(&buf, "\nold: ");
--			bch2_bkey_val_to_text(&buf, c, old);
--			prt_str(&buf, "\nk:   ");
--			bch2_bkey_val_to_text(&buf, c, k);
--			prt_str(&buf, "\nnew: ");
--			bch2_bkey_val_to_text(&buf, c, bkey_i_to_s_c(insert));
--
--			trace_data_update(c, buf.buf);
--			printbuf_exit(&buf);
--		}
-+		if (trace_data_update_enabled())
-+			trace_data_update2(m, old, k, insert);
- 
- 		if (bch2_bkey_sectors_need_rebalance(c, bkey_i_to_s_c(insert)) * k.k->size >
--		    bch2_bkey_sectors_need_rebalance(c, k) * insert->k.size) {
--			struct printbuf buf = PRINTBUF;
--
--			bch2_data_update_opts_to_text(&buf, c, &m->op.opts, &m->data_opts);
--
--			prt_str(&buf, "\nold: ");
--			bch2_bkey_val_to_text(&buf, c, old);
--			prt_str(&buf, "\nk:   ");
--			bch2_bkey_val_to_text(&buf, c, k);
--			prt_str(&buf, "\nnew: ");
--			bch2_bkey_val_to_text(&buf, c, bkey_i_to_s_c(insert));
--
--			trace_io_move_created_rebalance(c, buf.buf);
--			printbuf_exit(&buf);
--
--			this_cpu_inc(c->counters[BCH_COUNTER_io_move_created_rebalance]);
--		}
-+		    bch2_bkey_sectors_need_rebalance(c, k) * insert->k.size)
-+			trace_io_move_created_rebalance2(m, old, k, insert);
- 
- 		ret =   bch2_trans_commit(trans, &op->res,
- 				NULL,
-@@ -441,9 +462,9 @@ static int __bch2_data_update_index_update(struct btree_trans *trans,
- 		if (ret)
- 			break;
- next:
--		while (bkey_ge(iter.pos, bch2_keylist_front(keys)->k.p)) {
--			bch2_keylist_pop_front(keys);
--			if (bch2_keylist_empty(keys))
-+		while (bkey_ge(iter.pos, bch2_keylist_front(&op->insert_keys)->k.p)) {
-+			bch2_keylist_pop_front(&op->insert_keys);
-+			if (bch2_keylist_empty(&op->insert_keys))
- 				goto out;
- 		}
- 		continue;
-@@ -461,7 +482,6 @@ static int __bch2_data_update_index_update(struct btree_trans *trans,
- 		goto next;
- 	}
- out:
--	printbuf_exit(&journal_msg);
- 	bch2_trans_iter_exit(trans, &iter);
- 	BUG_ON(bch2_err_matches(ret, BCH_ERR_transaction_restart));
- 	return ret;
--- 
-2.49.0
+> Quite a lot.
+
+As I'm learning!  :-)    And sorry for the late reply... life got in
+the way...
+
+> You may not realize this, but Valve has, quietly, behind the scenes,
+> been intelligently funding a ton of Linux work with an eye towards
+> not just gaming, but improving Linus on the desktop. And they've
+> been deploying it too, you can buy a Steam deck today.
+
+So... this arguement that you're improving the desktop by doing
+case-folding on filesystems smells bogus to me.  I think it's more
+correct to say "Valve wants windows application support on top of
+linux, and since windows does case-folding, linux should too."
+
+Which is more an arguement for supporting legacy backwards
+implementations.  But for the future?  God, why?=20
+
+> And a significant fraction of desktop users like to play games - we're
+> not just all work. Windows ports need casefolding - alternatives have
+> been discussed and they're non viable.
+
+> (I fondly remember the days when I had time for such things).
+
+Heh heh.  I'm not a Windows gamer at all, which is why I haven't run
+into this at all.=20=20
+
+> Samba fileservers are a thing, too.
+
+Sure.  And I understand that Windows (even Windows 11!) is still does
+casefolding by default.  Sigh... which sucks.=20=20
+
+> And for all us desktop/workstation users, not being able to use the same
+> filesystem for wine and docker is the kind of jankiness that makes
+> people say "maybe Linux isn't ready for the desktop after all".
+
+I dunno... I just wonder why overlayfs (or some other level) can't
+just hide this and leave the lower levels alone.  Yes, when you have
+'foo' and 'Foo' on Linux, how do you handle it?  It's painful.
+
+> Put aside your feelings on casefolding - this is about basic attention
+> to detail.
+
+Heh.  I'm getting an education here.  And disliking all the hoops
+filesystems have to go through to support this (IMHO) dumb feature of
+windows.=20=20
+
+>> > That's _broken_.
+>>=20
+>> So?  what about my cross mounting of VMS filesystems with "foo.txt;3"
+>> version control so I can go back to previous versions?  Why can't I do
+>> that from my Linux systems that's mounting that VMS image?=20=20=20
+>>=20
+>> Just because it's done doesn't mean it's not dumb.=20=20
+>>=20
+>> > Users hate partitioning just for separate /boot and /home, having to
+>> > partition for different applications is horrible. And since overlay
+>> > fs is used under the hood by docker, and casefolding is used under
+>> > the hood for running Windows applications, this isn't something
+>> > people can predict in advance.
+>>=20
+>> Sure I can, I don't run windows applications to screw casefolding.
+>> :-)
+>>=20
+>> And I personally LIKE having a seperate /boot and /home, because it
+>> gives isolation.  The world is not just single user laptops with
+>> everything all on one disk or spread across a couple of disks using
+>> LVM or RAID or all of the above.=20=20
+>>=20
+>> I also don't see any updates for the XFS tests, or any other
+>> filesystem tests, that actually checks and confirms this decidedly
+>> obtuse and dumb to implement idea.=20=20
+
+> Well, you certainly are making your personal feelings known :)
+
+> But for me, as the engineer designing and implementing this stuff, I
+> don't let my personal feelings dictate.
+
+> That's not my place.
+
+> My job is to write code that works, works reliably, solves real
+> problems, and lets users do the things they want with their machines.
+
+> All this drama over casefolding has been pure distraction, and I would
+> appreciate if you and everyone else could tone it down now.
 
