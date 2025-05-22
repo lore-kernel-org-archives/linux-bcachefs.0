@@ -1,36 +1,40 @@
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B8301754B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCA9913D8A0
 	for <linux-bcachefs@vger.kernel.org>; Thu, 22 May 2025 17:00:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747933227; cv=none; b=KWM+DYDfpeMp/taICM6oSG6RpT4H9jyN9SJTbZ6OIeQGQdN5dWaSytt9ScawuJE2rinc1/eiNnCYi0Q4g26XAY3gHWKEfGCEHSWmonGer2q0V/Uao4kxrW5zl6ask7MPCtmJzSKbWH9uI8V5FQb995kcdTiSwLPb2yGW4QZ/uJ0=
+	t=1747933227; cv=none; b=S1gvtxCbeontpWk41eQXHEXn3YChgyYZK0SeKXW6/r47/lVfjhM8DhIR/xrzX4O8FzoLPJP1QNxQA7a1xO6h3XcsEKKcZbJQGkPOT9aBMFlMsUtEa2PZ35paHgzTTqNMYZNuA2q3RcRwVrL9dwb9IaLFV2OgYLtmuiEJNDM/xd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1747933227; c=relaxed/simple;
-	bh=8bycyAX2CnGRWEPfe5QqxjtD/hKLSMfQtjlluZMWa0U=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HHjGBzE3dEfXG2WN9x7YvSvntFVOXRzyv3NEyjE+RAjkvt+7oFkjbPnBYMEWvZ68PA3IVQ5WPX3rfwmi9xWSvHENTAF+1t7c+YsZ7nXqE6M65U7oprsjw+lH4r48Tj1BY1IaXsEA2n9GwqHxC4x0obXVE7+UQHqUSmso4Q2rfOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FBndKRP7; arc=none smtp.client-ip=91.218.175.170
+	bh=di6lnctZ68CbdemR33SuOnK3IAPWYGRSZBaWZU+U9qo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=AvAJTKdVpODBiNcriflvJnjQ1J8587qOQhgBzulZLpr8LXTKK0vjFgxCzHol2yz72PuEw1gNblwv4anBLfuzje4GNjhUcs5NgpsQDmiOQO3PPFW1t18yngg+JqFMiKKjePtl/S9RssZmcBYjkNVGXjJOQAVn6YffdIiXZYyFPMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rwfOC07c; arc=none smtp.client-ip=91.218.175.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FBndKRP7"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rwfOC07c"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747933223;
+	t=1747933224;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=QaJCO4NPw0lmVfHRFMR+NAX5BhcPb9kBlRlDLeirRDo=;
-	b=FBndKRP7/k2vddA4mNOFWHMvgVkdvMs23c+AFSyyjACHnIKGtXgg5vhLWG4xqls+HEXbKE
-	FJwyjFWyejK9nEbYAJ97tkToXcSBD2ca3vsQfGWBYzPm9/RXpPmcJVMl/yVTQp3YYiq91z
-	5FPLFm2fPL058VSTOx+s3b/zcPJZdHQ=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zPijSL2WisLPW5DPkG2EvWUbi5fqv6ZMUHX/vaHGFuQ=;
+	b=rwfOC07cuCtpcUKNlpj8P4+GxlnXqreZSMUAOJPbaUITfkdEXPezv6DsyoW3tIbjcuafrc
+	gjPPxxYFimlvq6zPxu8YBXIknopyoamlP1iINUtqxSj+C+JhnGTlfVT4SQtCWtw4qQeTBd
+	cN3LinTZYa6o4VOtlBzNkW/uvSGgeMs=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 1/3] bcachefs: Kill bkey_buf usage in data_update_index_update()
-Date: Thu, 22 May 2025 13:00:17 -0400
-Message-ID: <20250522170019.2909181-1-kent.overstreet@linux.dev>
+Subject: [PATCH 2/3] bcachefs: bch2_trans_log_str()
+Date: Thu, 22 May 2025 13:00:18 -0400
+Message-ID: <20250522170019.2909181-2-kent.overstreet@linux.dev>
+In-Reply-To: <20250522170019.2909181-1-kent.overstreet@linux.dev>
+References: <20250522170019.2909181-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -40,69 +44,75 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Reduce stack usage - bkey_buf has a 96 byte buffer on the stack, but the
-btree_trans bump allocator works just fine here.
+The data update path doesn't need a printbuf for its log message - this
+will help reduce stack usage.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/data_update.c | 26 +++++++++++++++-----------
- 1 file changed, 15 insertions(+), 11 deletions(-)
+ fs/bcachefs/btree_update.c | 26 ++++++++++++++++++--------
+ fs/bcachefs/btree_update.h |  1 +
+ 2 files changed, 19 insertions(+), 8 deletions(-)
 
-diff --git a/fs/bcachefs/data_update.c b/fs/bcachefs/data_update.c
-index de096ca65b4b..ef648a6d9c52 100644
---- a/fs/bcachefs/data_update.c
-+++ b/fs/bcachefs/data_update.c
-@@ -187,14 +187,9 @@ static int __bch2_data_update_index_update(struct btree_trans *trans,
- 	struct data_update *m =
- 		container_of(op, struct data_update, op);
- 	struct keylist *keys = &op->insert_keys;
--	struct bkey_buf _new, _insert;
- 	struct printbuf journal_msg = PRINTBUF;
- 	int ret = 0;
- 
--	bch2_bkey_buf_init(&_new);
--	bch2_bkey_buf_init(&_insert);
--	bch2_bkey_buf_realloc(&_insert, c, U8_MAX);
--
- 	bch2_trans_iter_init(trans, &iter, m->btree_id,
- 			     bkey_start_pos(&bch2_keylist_front(keys)->k),
- 			     BTREE_ITER_slots|BTREE_ITER_intent);
-@@ -229,11 +224,22 @@ static int __bch2_data_update_index_update(struct btree_trans *trans,
- 			goto nowork;
- 		}
- 
--		bkey_reassemble(_insert.k, k);
--		insert = _insert.k;
-+		insert = bch2_trans_kmalloc(trans,
-+					    bkey_bytes(k.k) +
-+					    bkey_val_bytes(&new->k) +
-+					    sizeof(struct bch_extent_rebalance));
-+		ret = PTR_ERR_OR_ZERO(insert);
-+		if (ret)
-+			goto err;
-+
-+		bkey_reassemble(insert, k);
-+
-+		new = bch2_trans_kmalloc(trans, bkey_bytes(&new->k));
-+		ret = PTR_ERR_OR_ZERO(new);
-+		if (ret)
-+			goto err;
- 
--		bch2_bkey_buf_copy(&_new, c, bch2_keylist_front(keys));
--		new = bkey_i_to_extent(_new.k);
-+		bkey_copy(&new->k_i, bch2_keylist_front(keys));
- 		bch2_cut_front(iter.pos, &new->k_i);
- 
- 		bch2_cut_front(iter.pos,	insert);
-@@ -457,8 +463,6 @@ static int __bch2_data_update_index_update(struct btree_trans *trans,
- out:
- 	printbuf_exit(&journal_msg);
- 	bch2_trans_iter_exit(trans, &iter);
--	bch2_bkey_buf_exit(&_insert, c);
--	bch2_bkey_buf_exit(&_new, c);
- 	BUG_ON(bch2_err_matches(ret, BCH_ERR_transaction_restart));
- 	return ret;
+diff --git a/fs/bcachefs/btree_update.c b/fs/bcachefs/btree_update.c
+index afd05c3dfd03..8fe2834f9d57 100644
+--- a/fs/bcachefs/btree_update.c
++++ b/fs/bcachefs/btree_update.c
+@@ -829,25 +829,35 @@ int bch2_btree_bit_mod_buffered(struct btree_trans *trans, enum btree_id btree,
+ 	return bch2_trans_update_buffered(trans, btree, &k);
  }
+ 
+-int bch2_trans_log_msg(struct btree_trans *trans, struct printbuf *buf)
++static int __bch2_trans_log_str(struct btree_trans *trans, const char *str, unsigned len)
+ {
+-	unsigned u64s = DIV_ROUND_UP(buf->pos, sizeof(u64));
+-
+-	int ret = buf->allocation_failure ? -BCH_ERR_ENOMEM_trans_log_msg : 0;
+-	if (ret)
+-		return ret;
++	unsigned u64s = DIV_ROUND_UP(len, sizeof(u64));
+ 
+ 	struct jset_entry *e = bch2_trans_jset_entry_alloc(trans, jset_u64s(u64s));
+-	ret = PTR_ERR_OR_ZERO(e);
++	int ret = PTR_ERR_OR_ZERO(e);
+ 	if (ret)
+ 		return ret;
+ 
+ 	struct jset_entry_log *l = container_of(e, struct jset_entry_log, entry);
+ 	journal_entry_init(e, BCH_JSET_ENTRY_log, 0, 1, u64s);
+-	memcpy_and_pad(l->d, u64s * sizeof(u64), buf->buf, buf->pos, 0);
++	memcpy_and_pad(l->d, u64s * sizeof(u64), str, len, 0);
+ 	return 0;
+ }
+ 
++int bch2_trans_log_str(struct btree_trans *trans, const char *str)
++{
++	return __bch2_trans_log_str(trans, str, strlen(str));
++}
++
++int bch2_trans_log_msg(struct btree_trans *trans, struct printbuf *buf)
++{
++	int ret = buf->allocation_failure ? -BCH_ERR_ENOMEM_trans_log_msg : 0;
++	if (ret)
++		return ret;
++
++	return __bch2_trans_log_str(trans, buf->buf, buf->pos);
++}
++
+ int bch2_trans_log_bkey(struct btree_trans *trans, enum btree_id btree,
+ 			unsigned level, struct bkey_i *k)
+ {
+diff --git a/fs/bcachefs/btree_update.h b/fs/bcachefs/btree_update.h
+index a54dc7277177..f907eaa8b185 100644
+--- a/fs/bcachefs/btree_update.h
++++ b/fs/bcachefs/btree_update.h
+@@ -205,6 +205,7 @@ void bch2_trans_commit_hook(struct btree_trans *,
+ 			    struct btree_trans_commit_hook *);
+ int __bch2_trans_commit(struct btree_trans *, unsigned);
+ 
++int bch2_trans_log_str(struct btree_trans *, const char *);
+ int bch2_trans_log_msg(struct btree_trans *, struct printbuf *);
+ int bch2_trans_log_bkey(struct btree_trans *, enum btree_id, unsigned, struct bkey_i *);
+ 
 -- 
 2.49.0
 
