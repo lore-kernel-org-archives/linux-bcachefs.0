@@ -1,228 +1,497 @@
-Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46EC61F4165
-	for <linux-bcachefs@vger.kernel.org>; Fri, 23 May 2025 04:46:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDDC222D7B7
+	for <linux-bcachefs@vger.kernel.org>; Fri, 23 May 2025 11:55:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747975598; cv=none; b=U4hC8j3qNeb5QQpSh4/upsV0UKwFLhrewwfXygwZGunWjQCUcjBJ9X+wDaIf2DVbv+rq2hVtN15gYyGVrveBTzeMvkuRLX4NzPbKLgruaKb1EenTZzbutUZ653PmnDKQx8deF01d1jl9jJDpcFgLxNLIAEGMlJBlMbY1XekWhR4=
+	t=1748001305; cv=none; b=rFtA5AV9nKjuPwT7fYz1xIUY1r5avhfg/LR491Rrhc3v+74jyuVQNor9j6XSZ83dCOfq32srRzm57wgHimAH5eIU6COSMtYjIkt8F1vatNKNSP1NwYdoqgzFUcm+dZbblHeoJDVOO2RJtIjnHxT8ye8D7O1zvtBXpdqdeciMqbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747975598; c=relaxed/simple;
-	bh=XAqPNcQTWX91zcH2mVA5CqsMow38DbgaVvBjBUe0TDo=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=DqNOF2wjbFIZ4A3oWt1hXrBvFfogxNT0s8g4W+qB3vKRVY0Xx2e3br1dl2UZcrjlfZULzvgCHNcm9yH/zJQyScWN0Zejg/uD/czRpryHmuzx8aEaqns5AaRUHLyy+F/ko6oHHTTnjaFj2WP33cZd5Sd96/w6ncl1SeVG8J1I7nU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3dc62c92d5cso62673905ab.0
-        for <linux-bcachefs@vger.kernel.org>; Thu, 22 May 2025 21:46:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747975594; x=1748580394;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xbWOPZAgkoPSb2bLTKcY8Iaj/okxhf05Cpg7L2qKMFs=;
-        b=svTEWimtr/oBoLiVpNblNKY36LjbAeGEneGN1bN8g8wdV0ATDEneip11O6vXJVFjy/
-         fQMpNhenj/UFLDzuvNgWTrObwWwnuCbYBNZvTaq/RY9H7lMDorSYtgK9gj4kG8v/UvdM
-         n5+ttNbwMAoAbrnKcn1pkwsPvsNWxoRysh9whseTt5VIhOUi/y/IcdS4tiN/GmLfah6v
-         NchVZ8wgBXMk0oo9g1aTBR+kWGXS4xPlXI0f4tPe5rBoMwQW3Kg6bYba+9K4nDhTqiqg
-         GfUVaY34q86bFq8+bEaRsjms+KqBxEnf49gFuZoFK6k3EtFsBJiMeho9La1k+rAxPmOS
-         p8OA==
-X-Forwarded-Encrypted: i=1; AJvYcCXWxOTveDEUAN7vFsJch/BvFT3IoaT9ExAGv9j+D4kB5zYsWqLuQ6bqnqnWCo1JINLkvF/w6WoBt/s2ERqE5g==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyjvZ17GVSv9ELAHEsf0doyYexPkDNfD8+FTMYflsZI+CBNCSuQ
-	wkTjuQxSRcqFnTvZwG6Qy8QZbsgNcMs8zMBn/8z5X/jOhxrKlKLut6yH5bYp54ot2SFww67O5XJ
-	htiShgyEuN0Cs27Gw5093990hKFMNIFV3BLVLdkPFvIJebFlSvOrhfHEWtLY=
-X-Google-Smtp-Source: AGHT+IGnYULwd6+EAnWNTWM0zxMUrJYcKL/b/3KprQheG4Ilx0uvk8CYbzsaxTdqbvfzzzJnXsbooSyMhwtja4j4AVeD293W+Nb3
+	s=arc-20240116; t=1748001305; c=relaxed/simple;
+	bh=C35yRaL5tY0JLVLlAqHYlEZODlTqaIBr3GbgwbPcy+I=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=VK4SIt3+Q91+4OVJ7DkjcnvHtIufDAyh4YyjQgwPnL9CNfARg/jSjoxkCP5oHB8/w8R8s7ej/bzwywWCX70tFe2RL5oqpr2z5ZzEgQU0xd0iVfEhD8KmB1hPFR7fDSDsVgWF5cAfl53PyxA5aTM/roZYMzf0tRC4h/iXVx69GEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RPY3DcK4; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RPY3DcK4"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1748001288;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9181g7QwrmXTo7V8SLmNc23UjiXBHZW7pmfawKP0VaM=;
+	b=RPY3DcK4lVmBw4J/vHr2EFFo2A9uMjX5xoY/Oy3G7YbJA71h0SQV3xgn6DPdO7QEc1wCEV
+	ri+uOQClFA9te9nRpwfYQ0kjQHhJ/bdlbea19MUeY+SCICP2fxH1TSN5cKnqdx398FWNDz
+	GKo28c+A+/aQbYlYdtSC2Y29ZixIswk=
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: linux-fsdevel@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-unionfs@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Amir Goldstein <amir73il@gmail.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>
+Subject: [PATCH v2] fs: dcache exlusion between overlayfs, casefolding
+Date: Fri, 23 May 2025 07:54:42 -0400
+Message-ID: <20250523115442.3583342-1-kent.overstreet@linux.dev>
+In-Reply-To: <20250520051600.1903319-5-kent.overstreet@linux.dev>
+References: <20250520051600.1903319-5-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:174b:b0:3dc:7f3b:aca9 with SMTP id
- e9e14a558f8ab-3dc7f3bae28mr124342205ab.14.1747975594321; Thu, 22 May 2025
- 21:46:34 -0700 (PDT)
-Date: Thu, 22 May 2025 21:46:34 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <682ffdaa.a70a0220.253bc2.0061.GAE@google.com>
-Subject: [syzbot] [jfs?] [xfs?] [bcachefs?] INFO: task hung in sb_start_write (2)
-From: syzbot <syzbot+b3fba2e269970207b61d@syzkaller.appspotmail.com>
-To: brauner@kernel.org, cem@kernel.org, jack@suse.cz, 
-	jfs-discussion@lists.sourceforge.net, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, shaggy@kernel.org, 
-	syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
+Allow casefolding to be used on the same filesystem as overlayfs.
 
-syzbot found the following issue on:
+Overlayfs cannot handle a directory that has been casefolding, so this
+implements locking between enabling casefolding and overlayfs.
 
-HEAD commit:    a5806cd506af Linux 6.15-rc7
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11923f68580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3340af1a8845dd35
-dashboard link: https://syzkaller.appspot.com/bug?extid=b3fba2e269970207b61d
-compiler:       Debian clang version 20.1.2 (++20250402124445+58df0ef89dd6-1~exp1~20250402004600.97), Debian LLD 20.1.2
+The underlying filesystem mus also track, for each directory, whether
+casefolding has been enabled on any subdirectory, and provide this
+information to the VFS with the S_NO_CASEFOLD flag.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Since we can't inflate struct dentry for this, add a separate rhashtable
+that functions as a per-dentry "casefolding disabled" ref.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/652000eacd92/disk-a5806cd5.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/2b445a74e31e/vmlinux-a5806cd5.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/0a4ef01f165f/bzImage-a5806cd5.xz
+New helpers, for overlayfs:
+- d_casefold_disabled_put()
+- d_casefold_disabled_get()
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b3fba2e269970207b61d@syzkaller.appspotmail.com
+These acquire and release refs that check that S_NO_CASEFOLD is set on a
+directory, and prevent it from being cleared while the ref exists.
 
-INFO: task syz.9.533:10335 blocked for more than 143 seconds.
-      Not tainted 6.15.0-rc7-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz.9.533       state:D stack:24344 pid:10335 tgid:10334 ppid:7718   task_flags:0x400140 flags:0x00000004
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5382 [inline]
- __schedule+0x168f/0x4c70 kernel/sched/core.c:6767
- __schedule_loop kernel/sched/core.c:6845 [inline]
- schedule+0x165/0x360 kernel/sched/core.c:6860
- percpu_rwsem_wait+0x2ab/0x300 kernel/locking/percpu-rwsem.c:162
- __percpu_down_read+0xe3/0x120 kernel/locking/percpu-rwsem.c:177
- percpu_down_read include/linux/percpu-rwsem.h:66 [inline]
- __sb_start_write include/linux/fs.h:1783 [inline]
- sb_start_write+0x185/0x1c0 include/linux/fs.h:1919
- mnt_want_write+0x41/0x90 fs/namespace.c:556
- open_last_lookups fs/namei.c:3789 [inline]
- path_openat+0x85d/0x3830 fs/namei.c:4036
- do_filp_open+0x1fa/0x410 fs/namei.c:4066
- do_sys_openat2+0x121/0x1c0 fs/open.c:1429
- do_sys_open fs/open.c:1444 [inline]
- __do_sys_openat fs/open.c:1460 [inline]
- __se_sys_openat fs/open.c:1455 [inline]
- __x64_sys_openat+0x138/0x170 fs/open.c:1455
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xf6/0x210 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f8e2a18e969
-RSP: 002b:00007f8e2b0be038 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 00007f8e2a3b5fa0 RCX: 00007f8e2a18e969
-RDX: 000000000000275a RSI: 0000200000000100 RDI: ffffffffffffff9c
-RBP: 00007f8e2a210ab1 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 00007f8e2a3b5fa0 R15: 00007fffe529a348
- </TASK>
+For the underlying filesystem:
 
-Showing all locks held in the system:
-1 lock held by khungtaskd/31:
- #0: ffffffff8df3dee0 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:331 [inline]
- #0: ffffffff8df3dee0 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:841 [inline]
- #0: ffffffff8df3dee0 (rcu_read_lock){....}-{1:3}, at: debug_show_all_locks+0x2e/0x180 kernel/locking/lockdep.c:6764
-5 locks held by kworker/u8:2/36:
-2 locks held by kworker/u8:6/1089:
-2 locks held by getty/5583:
- #0: ffff88803055e0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
- #1: ffffc90002ffe2f0 (&ldata->atomic_read_lock){+.+.}-{4:4}, at: n_tty_read+0x43e/0x1400 drivers/tty/n_tty.c:2222
-1 lock held by udevd/9862:
-2 locks held by udevd/10189:
- #0: ffff888022a2e3a0 (&sb->s_type->i_mutex_key#7){++++}-{4:4}, at: inode_lock_shared include/linux/fs.h:877 [inline]
- #0: ffff888022a2e3a0 (&sb->s_type->i_mutex_key#7){++++}-{4:4}, at: blkdev_read_iter+0x2f8/0x440 block/fops.c:808
- #1: ffff8880b88399d8 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:605
-1 lock held by syz.9.533/10335:
- #0: ffff88802f0e0420 (sb_writers#25){++++}-{0:0}, at: mnt_want_write+0x41/0x90 fs/namespace.c:556
-3 locks held by syz-executor/12892:
- #0: ffff8880b89399d8 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:605
- #1: ffff8880b8923b08 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x39e/0x6d0 kernel/sched/psi.c:987
- #2: ffff88807a093758 (&sb->s_type->i_lock_key#9){+.+.}-{3:3}, at: spin_trylock include/linux/spinlock.h:361 [inline]
- #2: ffff88807a093758 (&sb->s_type->i_lock_key#9){+.+.}-{3:3}, at: lock_for_kill+0x84/0x210 fs/dcache.c:705
-2 locks held by syz.2.1023/13285:
-2 locks held by dhcpcd-run-hook/13307:
- #0: ffff8880b89399d8 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:605
- #1: ffff8880b8923b08 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x39e/0x6d0 kernel/sched/psi.c:987
+- d_casefolding_enable()
+- d_casefolding_enable_commit()
 
-=============================================
+This is for the underlying filesystem that implements casefolding, in
+settar and rename. d_casefolding_enable() checks for conflicting refs
+held by overlayfs and acquires refs while the rename or setatr is being
+done, d_casefolding_enable_commit() releases those refs and clears the
+S_NO_CASEFOLD flag.
 
-NMI backtrace for cpu 0
-CPU: 0 UID: 0 PID: 31 Comm: khungtaskd Not tainted 6.15.0-rc7-syzkaller #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
-Call Trace:
- <TASK>
- dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
- nmi_cpu_backtrace+0x39e/0x3d0 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x17a/0x300 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:158 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:274 [inline]
- watchdog+0xfee/0x1030 kernel/hung_task.c:437
- kthread+0x711/0x8a0 kernel/kthread.c:464
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:153
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 UID: 0 PID: 13310 Comm: rm Not tainted 6.15.0-rc7-syzkaller #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
-RIP: 0010:file_ref_inc include/linux/file_ref.h:121 [inline]
-RIP: 0010:get_file include/linux/fs.h:1133 [inline]
-RIP: 0010:__mmap_new_file_vma mm/vma.c:2352 [inline]
-RIP: 0010:__mmap_new_vma mm/vma.c:2417 [inline]
-RIP: 0010:__mmap_region mm/vma.c:2519 [inline]
-RIP: 0010:mmap_region+0xf23/0x1e50 mm/vma.c:2597
-Code: 24 18 01 00 00 48 89 44 24 50 49 8d be 60 01 00 00 be 08 00 00 00 e8 1c 3f 0e 00 41 bf 01 00 00 00 f0 4d 0f c1 be 60 01 00 00 <31> ff 4c 89 fe e8 83 6c ae ff 4d 85 ff 78 74 e8 99 67 ae ff 4c 8b
-RSP: 0018:ffffc9000418f2c0 EFLAGS: 00000202
-RAX: ffffc9000418f301 RBX: ffff88806733f2a0 RCX: ffffffff82118924
-RDX: 0000000000000001 RSI: 0000000000000008 RDI: ffff88807e407820
-RBP: ffffc9000418f730 R08: ffff88807e407827 R09: 1ffff1100fc80f04
-R10: dffffc0000000000 R11: ffffed100fc80f05 R12: ffff88806733f280
-R13: ffffc9000418f3d0 R14: ffff88807e4076c0 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8881261f6000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055aa8d186008 CR3: 000000007f374000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- do_mmap+0xc68/0x1100 mm/mmap.c:561
- vm_mmap_pgoff+0x31b/0x4c0 mm/util.c:579
- elf_map fs/binfmt_elf.c:387 [inline]
- elf_load+0x140/0x6c0 fs/binfmt_elf.c:414
- load_elf_interp+0x469/0xaf0 fs/binfmt_elf.c:681
- load_elf_binary+0x19d2/0x27a0 fs/binfmt_elf.c:1246
- search_binary_handler fs/exec.c:1778 [inline]
- exec_binprm fs/exec.c:1810 [inline]
- bprm_execve+0x999/0x1440 fs/exec.c:1862
- do_execveat_common+0x510/0x6a0 fs/exec.c:1968
- do_execve fs/exec.c:2042 [inline]
- __do_sys_execve fs/exec.c:2118 [inline]
- __se_sys_execve fs/exec.c:2113 [inline]
- __x64_sys_execve+0x94/0xb0 fs/exec.c:2113
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xf6/0x210 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f6e5ef70107
-Code: Unable to access opcode bytes at 0x7f6e5ef700dd.
-RSP: 002b:00007fff92965db8 EFLAGS: 00000246 ORIG_RAX: 000000000000003b
-RAX: ffffffffffffffda RBX: 00005577b8e42fe0 RCX: 00007f6e5ef70107
-RDX: 00005577b8e43000 RSI: 00005577b8e42fe0 RDI: 00005577b8e43088
-RBP: 00005577b8e43088 R08: 00007fff92968e28 R09: 0000000000000000
-R10: 0000000000000008 R11: 0000000000000246 R12: 00005577b8e43000
-R13: 00007f6e5f135e8b R14: 00005577b8e43000 R15: 0000000000000000
- </TASK>
+Implementation -
 
+We can't inflate struct dentry for this, so references are tracked in a
+separate rhashtable.
 
+To guard against races with rename(), d_casefolding_enable() must take
+refs (which in turn call dget()) on all dentries with inodes that need
+S_NO_CASEFOLD flipped; these dget() refs are released by commit().
+
+d_casefold_disabled_get/put take dget() refs for the duration of the
+union mount, but this is unchanged because unionfs already holds a path
+ref for the duration of the mount.
+
+Changes since v1:
+
+- Fix "walk up the tree" synchronization
+
+  s_vfs_rename_mutex is required: we can't allow an operation enabling
+  casefolding (via fileattr_set) to race with a rename moving it into a
+  tree exported by overlayfs.
+
+  d_casefold_enable() has a new @rename parameter: if set, we check that
+  s_vfs_rename_mutex is held, if not (called from fileattr_set), we
+  acquire it and release it in d_casefold_enable_commit().
+
+  Also, use dget_parent().
+
+- no_casefold_dentries_lock -> sb->s_casefold_enable_lock
+
+- d_casefold_enable() now bails out early if called on non-directory, or
+  if S_NO_CASEFOLD is not set.
+
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Jan Kara <jack@suse.cz>
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/dcache.c            | 266 +++++++++++++++++++++++++++++++++++++++++
+ fs/super.c             |   1 +
+ include/linux/dcache.h |  12 ++
+ include/linux/fs.h     |   4 +
+ 4 files changed, 283 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/fs/dcache.c b/fs/dcache.c
+index bd5aa136153a..d29faa6f9ec8 100644
+--- a/fs/dcache.c
++++ b/fs/dcache.c
+@@ -32,6 +32,8 @@
+ #include <linux/bit_spinlock.h>
+ #include <linux/rculist_bl.h>
+ #include <linux/list_lru.h>
++#include <linux/rhashtable.h>
++#include <linux/darray.h>
+ #include "internal.h"
+ #include "mount.h"
+ 
+@@ -3141,6 +3143,266 @@ ino_t d_parent_ino(struct dentry *dentry)
+ }
+ EXPORT_SYMBOL(d_parent_ino);
+ 
++static struct rhashtable no_casefold_dentries;
++
++enum no_casefold_dentry_ref {
++	ref_casefold_disable,
++	ref_casefold_enable,
++};
++
++struct no_casefold_dentry {
++	struct rhash_head	hash;
++	struct dentry		*dentry;
++	unsigned long		ref[2];
++};
++
++static const struct rhashtable_params no_casefold_dentries_params = {
++	.head_offset		= offsetof(struct no_casefold_dentry, hash),
++	.key_offset		= offsetof(struct no_casefold_dentry, dentry),
++	.key_len		= sizeof(struct dentry *),
++	.automatic_shrinking	= true,
++};
++
++static int no_casefold_dentry_get(struct dentry *dentry,
++				  enum no_casefold_dentry_ref ref)
++{
++	struct no_casefold_dentry *n =
++		rhashtable_lookup_fast(&no_casefold_dentries,
++				       &dentry,
++				       no_casefold_dentries_params);
++	if (n) {
++		if (n->ref[!ref])
++			return -EINVAL;
++
++		n->ref[ref]++;
++		return 0;
++	}
++
++	n = kzalloc(sizeof(*n), GFP_KERNEL);
++	if (!n)
++		return -ENOMEM;
++
++	n->dentry = dget(dentry);
++	n->ref[ref]++;
++
++	int ret = rhashtable_lookup_insert_fast(&no_casefold_dentries,
++				&n->hash, no_casefold_dentries_params);
++	if (WARN_ON(ret)) {
++		kfree(n);
++		return ret;
++	}
++
++	return 0;
++}
++
++static void no_casefold_dentry_put(struct dentry *dentry,
++				   enum no_casefold_dentry_ref ref)
++{
++	struct no_casefold_dentry *n =
++		rhashtable_lookup_fast(&no_casefold_dentries,
++				       &dentry,
++				       no_casefold_dentries_params);
++	if (WARN_ON(!n))
++		return;
++
++	if (--n->ref[ref])
++		return;
++
++	dput(n->dentry);
++	int ret = rhashtable_remove_fast(&no_casefold_dentries,
++					 &n->hash, no_casefold_dentries_params);
++	WARN_ON(ret);
++}
++
++/**
++ * d_casefold_disabled_put - drop a "casefold disabled" ref
++ *
++ * Only for overlayfs.
++ */
++void d_casefold_disabled_put(struct dentry *dentry)
++{
++	struct super_block *sb = dentry->d_sb;
++
++	if (!(sb->s_flags & SB_CASEFOLD))
++		return;
++
++	guard(mutex)(&sb->s_casefold_enable_lock);
++	no_casefold_dentry_put(dentry, ref_casefold_disable);
++}
++EXPORT_SYMBOL_GPL(d_casefold_disabled_put);
++
++/**
++ * d_casefold_disabled_get - attempt to disable casefold on a tree
++ *
++ * Only for overlayfs.
++ *
++ * Returns -EINVAL if casefolding is in use on any subdirectory; this must be
++ * tracked by the filesystem.
++ *
++ * On success, returns with a reference held that must be released by
++ * d_casefold_disabled_put(); this ref blocks casefold from being enabled
++ * by d_casefold_enable().
++ */
++int d_casefold_disabled_get(struct dentry *dentry)
++{
++	struct super_block *sb = dentry->d_sb;
++
++	if (!(sb->s_flags & SB_CASEFOLD))
++		return 0;
++
++	guard(mutex)(&sb->s_casefold_enable_lock);
++
++	if (!(dentry->d_inode->i_flags & S_NO_CASEFOLD))
++		return -EINVAL;
++
++	return no_casefold_dentry_get(dentry, ref_casefold_disable);
++}
++EXPORT_SYMBOL_GPL(d_casefold_disabled_get);
++
++/* Crabwalk: releases @dentry after getting ref on parent */
++static struct dentry *dget_parent_this_sb(struct dentry *dentry)
++{
++	struct dentry *parent = dentry != dentry->d_sb->s_root
++		? dget_parent(dentry)
++		: NULL;
++	dput(dentry);
++	return parent;
++}
++
++/**
++ * d_casefold_enable - check if casefolding may be enabled on a dentry
++ *
++ * @dentry:	dentry to enable casefolding on
++ * @e:		state object, released by d_casefold_enable_commit()
++ * @rename:	Are we in the rename path?
++ *		If so, we expect s_vfs_rename_mutex to be held, if not (called
++ *		from setflags), we aquire it if necessary, and release in
++ *		commit.
++ *
++ * The rename mutex is required because we're operating on a whole path,
++ * potentially up to the filesystem root, and we need it to be stable until
++ * commit (i.e. we don't want to be renamed into a tree overlayfs is exporting
++ * after we've returned success).
++ *
++ * For rename, this should only be called for cross-directory rename.
++ * S_NO_CASEFOLD doesn't need to change on rename within a directory, and
++ * s_vfs_rename_mutex won't be held on non cross-directory rename.
++ *
++ * Returns -EINVAL if casefolding has been disabled on any parent directory (by
++ * overlayfs).
++ *
++ * On success, the d_casefold_enable object must be committed with
++ * d_casefold_enable_commit(), after the filesystem has updated its internal
++ * state.
++ *
++ * Commit will clear S_NO_CASEFOLD on all inodes up to the filesystem root,
++ * informing overlayfs that this tree has casefolding enabled somewhere in it.
++ */
++int d_casefold_enable(struct dentry *dentry, struct d_casefold_enable *e,
++		      bool rename)
++{
++	int ret = 0;
++
++	memset(e, 0, sizeof(*e));
++	e->sb = dentry->d_sb;
++
++	if (!(e->sb->s_flags & SB_CASEFOLD))
++		return 0;
++
++	if (!S_ISDIR(dentry->d_inode->i_mode))
++		return 0;
++
++	/*
++	 * On rename, we're passed the dentry being renamed (the filesystem is
++	 * not passed the dentry of the directory we're renaming to), but it's
++	 * the parent that may need to have S_NO_CASEFOLD cleared:
++	 */
++	dentry = rename
++		? dget_parent(dentry)
++		: dget(dentry);
++
++	if (!(dentry->d_inode->i_flags & S_NO_CASEFOLD)) {
++		dput(dentry);
++		return 0;
++	}
++
++	if (rename) {
++		lockdep_assert_held(&e->sb->s_vfs_rename_mutex);
++	} else {
++		mutex_lock(&e->sb->s_vfs_rename_mutex);
++		e->rename_mutex_held = true;
++	}
++
++	guard(mutex)(&e->sb->s_casefold_enable_lock);
++
++	for (struct dentry *i = dentry; i; i = dget_parent_this_sb(i)) {
++		if (!(i->d_inode->i_flags & S_NO_CASEFOLD)) {
++			dput(i);
++			break;
++		}
++
++		ret = darray_push(&e->refs, i);
++		if (ret) {
++			dput(i);
++			goto err;
++		}
++
++		ret = no_casefold_dentry_get(i, ref_casefold_enable);
++		if (ret) {
++			dput(i);
++			--e->refs.nr;
++			goto err;
++		}
++	}
++
++	return 0;
++err:
++	darray_for_each(e->refs, i)
++		no_casefold_dentry_put(*i, ref_casefold_enable);
++	darray_exit(&e->refs);
++
++	if (e->rename_mutex_held)
++		mutex_unlock(&e->sb->s_vfs_rename_mutex);
++	e->rename_mutex_held = false;
++	return ret;
++}
++EXPORT_SYMBOL_GPL(d_casefold_enable);
++
++/**
++ * d_casefold_enable_commit - finish operation started by d_casefold_enable()
++ *
++ * @e:		state object, started by d_casefold_enable_commit()
++ * @ret:	Success or failure of the operation, from the filesystem
++ *
++ * On success (@ret == 0), clear S_NO_CASEFOLD on all inodes up to the
++ * filesystem root that have it set, which d_casefold_enable() previously took
++ * references to.
++ */
++void d_casefold_enable_commit(struct d_casefold_enable *e, int ret)
++{
++	if (e->refs.nr) {
++		guard(mutex)(&e->sb->s_casefold_enable_lock);
++
++		darray_for_each(e->refs, i) {
++			if (!ret) {
++				struct inode *inode = (*i)->d_inode;
++
++				spin_lock(&inode->i_lock);
++				inode->i_flags &= ~S_NO_CASEFOLD;
++				spin_unlock(&inode->i_lock);
++			}
++
++			no_casefold_dentry_put(*i, ref_casefold_enable);
++		}
++		darray_exit(&e->refs);
++	}
++
++	if (e->rename_mutex_held)
++		mutex_unlock(&e->sb->s_vfs_rename_mutex);
++	e->rename_mutex_held = false;
++}
++EXPORT_SYMBOL_GPL(d_casefold_enable_commit);
++
+ static __initdata unsigned long dhash_entries;
+ static int __init set_dhash_entries(char *str)
+ {
+@@ -3186,6 +3448,10 @@ static void __init dcache_init(void)
+ 		SLAB_RECLAIM_ACCOUNT|SLAB_PANIC|SLAB_ACCOUNT,
+ 		d_shortname.string);
+ 
++	int ret = rhashtable_init(&no_casefold_dentries, &no_casefold_dentries_params);
++	if (ret)
++		panic("error initializing no_casefold_dentries: %i\n", ret);
++
+ 	/* Hash may have been set up in dcache_init_early */
+ 	if (!hashdist)
+ 		return;
+diff --git a/fs/super.c b/fs/super.c
+index 97a17f9d9023..2ba3446f09d6 100644
+--- a/fs/super.c
++++ b/fs/super.c
+@@ -368,6 +368,7 @@ static struct super_block *alloc_super(struct file_system_type *type, int flags,
+ 	atomic_set(&s->s_active, 1);
+ 	mutex_init(&s->s_vfs_rename_mutex);
+ 	lockdep_set_class(&s->s_vfs_rename_mutex, &type->s_vfs_rename_key);
++	mutex_init(&s->s_casefold_enable_lock);
+ 	init_rwsem(&s->s_dquot.dqio_sem);
+ 	s->s_maxbytes = MAX_NON_LFS;
+ 	s->s_op = &default_op;
+diff --git a/include/linux/dcache.h b/include/linux/dcache.h
+index e9f07e37dd6f..fb78de44a929 100644
+--- a/include/linux/dcache.h
++++ b/include/linux/dcache.h
+@@ -3,6 +3,7 @@
+ #define __LINUX_DCACHE_H
+ 
+ #include <linux/atomic.h>
++#include <linux/darray_types.h>
+ #include <linux/list.h>
+ #include <linux/math.h>
+ #include <linux/rculist.h>
+@@ -604,4 +605,15 @@ static inline struct dentry *d_next_sibling(const struct dentry *dentry)
+ 	return hlist_entry_safe(dentry->d_sib.next, struct dentry, d_sib);
+ }
+ 
++void d_casefold_disabled_put(struct dentry *dentry);
++int d_casefold_disabled_get(struct dentry *dentry);
++
++struct d_casefold_enable {
++	DARRAY(struct dentry *)	refs;
++	struct super_block	*sb;
++	bool			rename_mutex_held;
++};
++int d_casefold_enable(struct dentry *dentry, struct d_casefold_enable *e, bool);
++void d_casefold_enable_commit(struct d_casefold_enable *e, int ret);
++
+ #endif	/* __LINUX_DCACHE_H */
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index ba942cd2fea1..7ee0cd7bc15b 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -48,6 +48,7 @@
+ #include <linux/rw_hint.h>
+ #include <linux/file_ref.h>
+ #include <linux/unicode.h>
++#include <linux/rhashtable-types.h>
+ 
+ #include <asm/byteorder.h>
+ #include <uapi/linux/fs.h>
+@@ -1397,6 +1398,7 @@ struct super_block {
+ 	 * even looking at it. You had been warned.
+ 	 */
+ 	struct mutex s_vfs_rename_mutex;	/* Kludge */
++	struct mutex s_casefold_enable_lock;
+ 
+ 	/*
+ 	 * Filesystem subtype.  If non-empty the filesystem type field
+@@ -1440,6 +1442,7 @@ struct super_block {
+ 
+ 	struct mutex		s_sync_lock;	/* sync serialisation lock */
+ 
++
+ 	/*
+ 	 * Indicates how deep in a filesystem stack this SB is
+ 	 */
+@@ -2345,6 +2348,7 @@ struct super_operations {
+ #define S_CASEFOLD	(1 << 15) /* Casefolded file */
+ #define S_VERITY	(1 << 16) /* Verity file (using fs/verity/) */
+ #define S_KERNEL_FILE	(1 << 17) /* File is in use by the kernel (eg. fs/cachefiles) */
++#define S_NO_CASEFOLD	(1 << 18) /* Directory, and all descendents, are not casefolded */
+ 
+ /*
+  * Note that nosuid etc flags are inode-specific: setting some file-system
+-- 
+2.49.0
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
