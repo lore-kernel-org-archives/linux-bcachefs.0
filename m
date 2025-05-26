@@ -1,95 +1,131 @@
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 335DA25B68A
-	for <linux-bcachefs@vger.kernel.org>; Sun, 25 May 2025 18:27:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F1F01E5B95
+	for <linux-bcachefs@vger.kernel.org>; Mon, 26 May 2025 08:50:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748197661; cv=none; b=NtTg5zjlmhwOua5EAQWFObtvvr21bKs4BfTIgTrDZW7J5dPj/yvsyncAsLk4CzI9HaaCSKqRgr5ayT9WiO/ffKuZjRRYE/8RAGBpCHMM01k725KoWr26cvTKwm8fOJFWKOMuhgBt0SPcHXJaLHfAjJ9fvW7ODsv5ajdtOtrRpmU=
+	t=1748249431; cv=none; b=opAu8Et7tscj5dmzqbxCcN3sbfMOAZ2HisoCUqV2wY0uR/O3CGFkii4aWtapSESMdc01eFZhhKkOeVxuaTKkpRHobg+ztpZVy/DE4fL8uCQh1yXuG9YrF+Fl+ytq+VXF+bXJUrtDuEzU4bX5jfyj8WQunhg8FcEPbX0T+Ie0rB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748197661; c=relaxed/simple;
-	bh=TBhcQpxz7HNWq/7nVSc0J8oZeSxGOWx2e0bMvNvC1HY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tXAsP1d0JkwQ3B21SquAqFo57t7ci5yQIsp59rzMBELfaUz5QSnYv9Aufi6YQVs3uZbyYtqdA7HG7e4usD+dzFWbVK+ep+qjfSf6S6xnR6jYVfGjCq47ggwdNRJCaHVaUb/gVV5N0yWG6rRi/bBCglFaDytvWmloOveHz+KDRGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VTNeKpGh; arc=none smtp.client-ip=91.218.175.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VTNeKpGh"
-Date: Sun, 25 May 2025 14:27:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1748197647;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DaNkSQWN9L/rebLJrHsK3RAWcKyWAZuOCXXaHlmCli0=;
-	b=VTNeKpGh5eZO4me4KEGZzpIp8ytJoyo6F5H4MqwexcUq02SKnpJUElSU/3u7zgzQQ5hkBZ
-	fC82w0rkkTiFsomzKAlzTJNheLV3DKuF66JEobgeJAXDINsq7iq3RfOP549KTp/1pQK2e9
-	W0IErYHlmCIIoHzW2msPGdx8hIwBJ0E=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org, 
-	Miklos Szeredi <miklos@szeredi.hu>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH 0/6] overlayfs + casefolding
-Message-ID: <yp4whk37id7s4za6fv3ifvqjupo6ikylu34wvgd3ytbyu3uz2c@t7h3ncg6pwtz>
-References: <CAOQ4uxjUC=1MinjDCOfY5t89N3ga6msLmpVXL1p23qdQax6fSg@mail.gmail.com>
- <gdvg6zswvq4zjzo6vntggoacrgxxh33zmejo72yusp7aqkqzic@kaibexik7lvh>
- <CAOQ4uxg9sKC_8PLARkN6aB3E_U62_S3kfnBuRbAvho9BNzGAsQ@mail.gmail.com>
- <rkbkjp7xvefmtutkwtltyd6xch2pbw47x5czx6ctldemus2bvj@2ukfdmtfjjbw>
- <CAOQ4uxgOM83u1SOd4zxpDmWFsGvrgqErKRwea=85_drpF6WESA@mail.gmail.com>
- <q6o6jrgwpdt67xsztsqjmewt66kjv6btyayazk7zlk4zjoww4n@2zzowgibx5ka>
- <CAOQ4uxisCFNuHtSJoP19525BDdfeN2ukehj_-7PxepSTDOte9w@mail.gmail.com>
- <CAOQ4uxhnOMPTBd+k4UVPvAWYLhJWOdV4FbyKa_+a=cqK9Chr2A@mail.gmail.com>
- <ltzdzvmycohkgvmr3bd6f2ve4a4faxuvkav3d7wt2zoo5gkote@47o5yfse2mzn>
- <CAOQ4uxjHb4B1YL2hSMHxd2Y0mMmfpHMzgbHO5wLF3=rMVxsHyQ@mail.gmail.com>
+	s=arc-20240116; t=1748249431; c=relaxed/simple;
+	bh=j3LtMtju26Q7ZyUO5+IEsDtEOmbWNVYY1y3nj7v1w/4=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=XTztgees057SoEAUGbpsx9fvjzmxvB86k3K+qwrDJOy4hFP6kdfzIYYvH4wCnUCVewmCtREgxqUSs72PNOZ5wdVxy08mWuQ7jdS8qBayDOIhnjHVLrA89+pc31D053LKQQNBbXpL1ZbEe7FKhg8W6DucGXzNZn6Y0gVxSDvKZHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-85e318dc464so359108239f.1
+        for <linux-bcachefs@vger.kernel.org>; Mon, 26 May 2025 01:50:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748249429; x=1748854229;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sTO5C53Lmd93U7NPZ4SLBFhzHibR0ihOHCl0ZMwbCwQ=;
+        b=wtfKjm5yxohK2vQdcCK0GcLMJG6x9EGk0n15kzxb/BoI0fUWc5jr309a9A9wNJZXUd
+         YyaQFe1oxbzNVwNRkBTSDvKLYJQO9z2W6VPXvq1rdj1l/ubVrPY1crQwhwCbtI7iYcSe
+         Nz7jnSkiH8ojO6fYfW/tR3eO5O59Rgyl2iBIodDARdB3c5DmCAD2ELjKc+C5jMvCE8fY
+         ifRSvjzMKajfLcRjEuOYIjr4Cg4UHLbgtHiWi1wipxvfXKODEnHiLpNyZ7QtICpXi2//
+         yku2EZvn4PJ64jhkVvSJU+/N5TadPIuTuNHkp2v1UeguPf/TSI5s+eeJl2DUo3VbRB2a
+         vsLA==
+X-Forwarded-Encrypted: i=1; AJvYcCXaVnGJQXbwAXp14kAgZ80xCQeEynQb0MipNQVCvpReuiRf57+J9/9zT7O2LMoJjwHmvq4tdLGsezEzD5DE5Q==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyjucx/vwDloB7iIhOMk1b1nNHFGUzUWos/fkKyZABuTdmAtuZX
+	2JGuL6A2kGv5yjB2BtNX2SedoxhM6GghQSRE5rPvgYs4Vqw1/Bh5zyDFE6kV5y1YLOxgqJ4xfKh
+	rk4qa082cNUJLRPX6xjYW/IXNvNZTZj7vM3wortK8DpU7MkC7BUcwW5MYxIs=
+X-Google-Smtp-Source: AGHT+IESN2vogO8FUPtWwAie9BKDAhBT+JvZIPb7syOHYs4J2/xkRaCtWXNMZJhkWv9Qdu2zGuxFQTTGeQvwQloCKYnyJb0jmEyd
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOQ4uxjHb4B1YL2hSMHxd2Y0mMmfpHMzgbHO5wLF3=rMVxsHyQ@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6602:3e85:b0:869:d4de:f7 with SMTP id
+ ca18e2360f4ac-86cbb905927mr880291039f.12.1748249429441; Mon, 26 May 2025
+ 01:50:29 -0700 (PDT)
+Date: Mon, 26 May 2025 01:50:29 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68342b55.a70a0220.253bc2.0092.GAE@google.com>
+Subject: [syzbot] [bcachefs?] WARNING in rhashtable_init_noprof
+From: syzbot <syzbot+bcc38a9556d0324c2ec2@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, May 24, 2025 at 03:01:44PM +0200, Amir Goldstein wrote:
-> On Fri, May 23, 2025 at 11:10 PM Kent Overstreet
-> <kent.overstreet@linux.dev> wrote:
-> >
-> > On Fri, May 23, 2025 at 10:30:16PM +0200, Amir Goldstein wrote:
-> >
-> > That makes fstests generic/631 pass.
-> 
-> Yes, that is not very surprising.
-> I meant if you could help test that:
-> 
-> 1. mounting case folder upperdir/lowerdir fails
-> 2. lookup a case folder subdir fails
-> 3. lookup in a dir that was empty and became case folder while ovl was
-> mounted fails
-> 
-> For me, I do not have any setup with case folding subtrees
-> so testing those use cases would take me time and
-> I think that you must have tested all those scenarios with your patch set?
-> and maybe already have some fstests for them?
+Hello,
 
-Unmount fauls after I test an overlayfs with a casefold subdir:
+syzbot found the following issue on:
 
-Testing an overlayfs on a casefold fs with non-casefolded dirs
-Test using casefolded dir - should fail
-overlayfs: failed to resolve '/mnt/casefold': -2
-mount: /mnt/merged: special device overlay does not exist.
-       dmesg(1) may have more information after failed mount system call.
-Test using a dir with a casefold subdir - should mount
-overlayfs: upperdir is in-use as upperdir/workdir of another mount, accessing files from both mounts will result in undefined behavior.
-overlayfs: workdir is in-use as upperdir/workdir of another mount, accessing files from both mounts will result in undefined behavior.
-ls: cannot access '/mnt/merged/dir/casefold': No such file or directory
-umount: /mnt: target is busy.
+HEAD commit:    176e917e010c Add linux-next specific files for 20250523
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13d555f4580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e7902c752bef748
+dashboard link: https://syzkaller.appspot.com/bug?extid=bcc38a9556d0324c2ec2
+compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07757-1~exp1~20250514183223.118), Debian LLD 20.1.6
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=145948e8580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13d6a170580000
 
-https://evilpiepirate.org/git/ktest.git/commit/?id=47d1f2a04d79bc4cbc843f81e71eb7d821fb8384
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/5f7692c642fa/disk-176e917e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/057a442d42d0/vmlinux-176e917e.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/8f8ebdb4dd96/bzImage-176e917e.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/d3d310848021/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bcc38a9556d0324c2ec2@syzkaller.appspotmail.com
+
+ODEBUG: object ffffc9000469fb90 is on stack ffffc90004698000, but NOT annotated.
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 5924 at lib/debugobjects.c:655 debug_object_is_on_stack lib/debugobjects.c:655 [inline]
+WARNING: CPU: 1 PID: 5924 at lib/debugobjects.c:655 lookup_object_or_alloc lib/debugobjects.c:688 [inline]
+WARNING: CPU: 1 PID: 5924 at lib/debugobjects.c:655 __debug_object_init+0x2c9/0x3c0 lib/debugobjects.c:743
+Modules linked in:
+CPU: 1 UID: 0 PID: 5924 Comm: bch-copygc/loop Not tainted 6.15.0-rc7-next-20250523-syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
+RIP: 0010:debug_object_is_on_stack lib/debugobjects.c:655 [inline]
+RIP: 0010:lookup_object_or_alloc lib/debugobjects.c:688 [inline]
+RIP: 0010:__debug_object_init+0x2c9/0x3c0 lib/debugobjects.c:743
+Code: cc cc cc 41 ff c7 44 89 3d a4 18 14 15 48 c7 c1 80 9b e2 8b 48 c7 c7 e0 9b e2 8b 84 c0 48 0f 45 f9 48 89 de e8 48 2b 61 fc 90 <0f> 0b 90 e9 c0 fe ff ff e8 3a 1c 00 00 8b 05 1c 9c c6 09 3b 05 1a
+RSP: 0018:ffffc9000469f6e0 EFLAGS: 00010046
+RAX: 0000000000000050 RBX: ffffc9000469fb90 RCX: 0aa01120dfd08500
+RDX: 0000000000000000 RSI: 0000000080000001 RDI: 0000000000000000
+RBP: ffff88802f5c9e20 R08: ffffc9000469f3c7 R09: 1ffff920008d3e78
+R10: dffffc0000000000 R11: fffff520008d3e79 R12: 0000000000000040
+R13: ffff8880771e5d20 R14: dffffc0000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff888125d56000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f1c5ee80000 CR3: 0000000077540000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ rhashtable_init_noprof+0x7c0/0xbb0 lib/rhashtable.c:1085
+ bch2_copygc_thread+0x116/0xdc0 fs/bcachefs/movinggc.c:355
+ kthread+0x711/0x8a0 kernel/kthread.c:464
+ ret_from_fork+0x3fc/0x770 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
