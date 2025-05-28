@@ -1,126 +1,107 @@
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from fout-a2-smtp.messagingengine.com (fout-a2-smtp.messagingengine.com [103.168.172.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E11022ACCE
-	for <linux-bcachefs@vger.kernel.org>; Wed, 28 May 2025 07:06:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC481274646;
+	Wed, 28 May 2025 09:00:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748415966; cv=none; b=rFmAw2G8ROEMS9FlXDHM1ojYPr8+CMMq5k/0p8ivCdQdWy7UC6vli+Ih0X0/bmvN5W5/YYmQwqZXk5Y6yTPtCcoJKLtbYDIEo2GmI0NcSSgEUv652f6mkr0CwSWA8UjdHO02YuUwlqH4+wWI/puHmD4tQQ0ZejuOA66D6Gc/4oY=
+	t=1748422835; cv=none; b=RVfASOL+y0lipf8rVGreFey0cTFqHHWkHyCP1i1BWoxoHT7Cs/5N7RZeFj9kzNoaRPlGDw/b8WPHTOYyKr9AkpfANkiLGMGZuIxCt67hHl/B0gdPUWucpulKqJlJSVbbJPMxllVr0is3dtdpJlUWGHEJG9hO5Ei2sXlco89rs1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748415966; c=relaxed/simple;
-	bh=PxugoUaBEvMbHjZ5AF8wfuv2CNvpLiUz+JxvLYSQRjA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JqdZtbKwddeGqfkxg7sOYxHiC9sArysGjHrW5M8vQfShYZAYtUsGTmc8G2s66y/dFD/4JaULw/JidQ1Yl0L/SXh3fGBtC5EpN+LtTeyQtf9Q6FkPgagApV8qBBkJD9tgAY9Ra079S1B3B+lb7otyBS/actQQf0g3qapSpcEBAoY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mZ2ARY2o; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1748422835; c=relaxed/simple;
+	bh=z6W/IJ2e+qbl9PkcC1h6jlkIMPh1FARrtaYFaS3okqs=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=UzZbtUk5rZ06ZFY35ADBUZuQb3p0+LnRXNmQbaDN2JG/BCkJlXD+OuSTxvPZawB7Gs59n947hkzdaKEM7Ft/i7L2hOd+xdfGx0B4LnbdYKpSqqq/jc1psDuGv/B+kVHMM0EM1Zltno1M90BVfzOf+C2528FYeMqD+RZuF+KenB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kode54.net; spf=pass smtp.mailfrom=kode54.net; dkim=pass (2048-bit key) header.d=kode54.net header.i=@kode54.net header.b=J+P6ryq+; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=eIbJAUhi; arc=none smtp.client-ip=103.168.172.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kode54.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kode54.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mZ2ARY2o"
-Date: Wed, 28 May 2025 03:05:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1748415952;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rGJ6H8rmj9CFZfW8rrkxY0Ph27SdcLA3QsZyFDgGUlU=;
-	b=mZ2ARY2o66+y0CoXGhCnaqXYhbCxcZzKjIguehyIQiao/3OMJZ1NeeOw2aSG93ztpDGrUs
-	jT/A7PVjtS2D9BJhgSKuUwLSsCKrzfwvpw9rOTvrzwx6UKbQxC70+PVGz/ApYuxsSKsqHg
-	fM1HNU62PtPP4+iM4JEaUtj48YdFPL0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: kernel test robot <oliver.sang@intel.com>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org, 
-	linux-bcachefs@vger.kernel.org
-Subject: Re: [linus:master] [bcachefs]  cd3cdb1ef7: last_state.incomplete
-Message-ID: <uab4hrzt77vunesxicyovjpqvoegqo6tozsb4lndj4c2udcq5f@dbicbg2jyw2i>
-References: <202505281410.cca50993-lkp@intel.com>
+	dkim=pass (2048-bit key) header.d=kode54.net header.i=@kode54.net header.b="J+P6ryq+";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="eIbJAUhi"
+Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
+	by mailfout.phl.internal (Postfix) with ESMTP id C6B9E1380B08;
+	Wed, 28 May 2025 05:00:31 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-02.internal (MEProxy); Wed, 28 May 2025 05:00:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kode54.net; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1748422831;
+	 x=1748509231; bh=Z1yOxaM2wfMvKI2kVWfHUYbkiPZ7bTZx5z+jZhW1zmw=; b=
+	J+P6ryq+XgBkSGADS8inZDprJWswloO7nEtlMXpix6eT51jG9p4g3FINCn02sUe9
+	MvD6gyJLHYSdmgCr0ZZPWVG2fvBjmTa4nJeDxzlCzqWwA741z3ob8CsvViLOu7t7
+	5dZIMF9z32YbFRBBqH6CsurGRPT10fVhn6LMSNWK4q2cXmkTEgqlweeOBEbNtciP
+	ZLpqZpSZ3IGMWMYHTqBS36fGXtLTNcotjI0y1fsrD2ZlRczbQPFOI7kKTFiL2Wwn
+	qdUOOPZkWlrIbZ2N5KDuVpCw7lj7Eh9eVKffZNRkidk2FrRDqG8CfBub0PV7Emxm
+	cs2/gaIsIKRwwwTyGaS6gw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1748422831; x=
+	1748509231; bh=Z1yOxaM2wfMvKI2kVWfHUYbkiPZ7bTZx5z+jZhW1zmw=; b=e
+	IbJAUhiQseVLDs7B308JF56W6tTO8SrEK/DjkDGeSwkBxseO+2Er3VLGXb0SkfIU
+	W4S8w8aREdTTANutogr6zBDDjIUjW2TPx3Db1m4es4MGTytDxKuW5E3kkJ7Hywia
+	wem/KRZVl9cehB6qVYfeq+T1kblQAytdfQ3EnXj2WOnSjay9FdoEvd3lnZQ+6Vcv
+	+ElI1jVYJej7KMOcAGrP6Jf6rXf+d7OIY3b0YncE/bGIjst7GVgr2Yk19GZXF788
+	dy+nuwLgi00mkcSUL7HqPUsJRJquzP/er8O7Z6Nms3gY6PAAe289+P18G1BMj5n3
+	qCUxE7qOEhDmIwZ0sPzjg==
+X-ME-Sender: <xms:rtA2aMDBQJ2j1EwDRAI8TbKCwfvqNydHRzNRuziiVT8JGhNxJgzQ6g>
+    <xme:rtA2aOgam4fH8dKn-4x1N4RLiJZwKV3qMX9buenG0HkgJCkdYSlYif_AMQgihUf3t
+    8Ger203jxuF-YdtkVA>
+X-ME-Received: <xmr:rtA2aPk8dwxb6YufPQzz6hmv21ELdBJj1BxB950mh2pax08B1fc-OpzlsGEXNkQoDn4sbJHnAEMlHEKNXlYmuBgDJoQXexu3qg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddtgddvvdekgeculddtuddrgeefvddrtd
+    dtmdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggft
+    fghnshhusghstghrihgsvgdpuffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftd
+    dtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpegggfgtfffkvefu
+    hffvofhfjgesthhqredtredtjeenucfhrhhomhepfdevhhhrihhsthhophhhvghrucfunh
+    hofihhihhllhdfuceotghhrhhisheskhhouggvheegrdhnvghtqeenucggtffrrghtthgv
+    rhhnpeeileetudejffegjeegfffhhffhkeefjefgtddujeehheevleevjeejffekieekve
+    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegthhhr
+    ihhssehkohguvgehgedrnhgvthdpnhgspghrtghpthhtohepiedpmhhouggvpehsmhhtph
+    houhhtpdhrtghpthhtohepjhhohhhnsehsthhofhhfvghlrdhorhhgpdhrtghpthhtohep
+    khgvnhhtrdhovhgvrhhsthhrvggvtheslhhinhhugidruggvvhdprhgtphhtthhopehtoh
+    hrvhgrlhgusheslhhinhhugidqfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtohep
+    lhhinhhugidqsggtrggthhgvfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpth
+    htoheplhhinhhugidqfhhsuggvvhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgt
+    phhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:rtA2aCwY_NeT4DE9OTqJY8rptC2V451djeBMBxTfOLF0AdLUeCQSCA>
+    <xmx:rtA2aBSX4SBlWIP-AFjclFMOKYMB4l7Ei2aGeMSezdFGZqErXMYI4A>
+    <xmx:rtA2aNbnH82s9MX5q6K4yRAKZ-bOrTocfVBC-1n1g4iMvQQMNm6d2w>
+    <xmx:rtA2aKSLxcAXVOZuMjIDQchC1NjET6839D0xgon-LtyzqWnV8twelw>
+    <xmx:r9A2aCvP1EHZIVkzUmeUR479AiDabuMllQHbU9Q0Xlc_fwh58kI6eK-e>
+Feedback-ID: i9ec6488d:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 28 May 2025 05:00:29 -0400 (EDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202505281410.cca50993-lkp@intel.com>
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 28 May 2025 02:00:29 -0700
+Message-Id: <DA7O5Z6M9D5H.2OX4U4K5YQ7C9@kode54.net>
+Cc: "Linus Torvalds" <torvalds@linux-foundation.org>,
+ <linux-bcachefs@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] bcachefs changes for 6.16
+From: "Christopher Snowhill" <chris@kode54.net>
+To: "John Stoffel" <john@stoffel.org>, "Kent Overstreet"
+ <kent.overstreet@linux.dev>
+X-Mailer: aerc 0.20.1-0-g2ecb8770224a
+References: <oxkibsokaa3jw2flrbbzb5brx5ere724f3b2nyr2t5nsqfjw4u@23q3ardus43h> <dmfrgqor3rfvjfmx7bp4m7h7wis4dt5m3kc2d3ilgkg4fb4vem@wytvcdifbcav> <26678.2527.611113.400746@quad.stoffel.home>
+In-Reply-To: <26678.2527.611113.400746@quad.stoffel.home>
 
-On Wed, May 28, 2025 at 02:31:37PM +0800, kernel test robot wrote:
-> 
-> 
-> Hello,
-> 
-> 
-> for this change, we reported
-> "[koverstreet-bcachefs:bcachefs-put-folio-assert] [bcachefs] 0718bafa21: last_state.incomplete"
-> in
-> https://lore.kernel.org/all/202505081551.92a07edd-lkp@intel.com/ [1]
-> upon Ice Lake.
-> 
-> now we notice the commit is in mainline, and we captured similar issue on
-> another platform.
-> 
-> below full report FYI.
-> 
-> 
-> kernel test robot noticed "last_state.incomplete" on:
-> 
-> commit: cd3cdb1ef706a1ac725194d81858d58375739b25 ("bcachefs: Single err message for btree node reads")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> [test failed on linus/master      914873bc7df913db988284876c16257e6ab772c6]
-> [test failed on linux-next/master fefff2755f2aa4125dce2a1edfe7e545c7c621f2]
-> 
-> in testcase: xfstests
-> version: xfstests-x86_64-e161fc34-1_20250526
-> with following parameters:
-> 
-> 	disk: 4HDD
-> 	fs: bcachefs
-> 	test: generic-group-67
-> 
-> 
-> 
-> config: x86_64-rhel-9.4-func
-> compiler: gcc-12
-> test machine: 8 threads 1 sockets Intel(R) Core(TM) i7-7700 CPU @ 3.60GHz (Kaby Lake) with 32G memory
-> 
-> (please refer to attached dmesg/kmsg for entire log/backtrace)
-> 
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <oliver.sang@intel.com>
-> | Closes: https://lore.kernel.org/oe-lkp/202505281410.cca50993-lkp@intel.com
-> 
-> 
-> The kernel config and materials to reproduce are available at:
-> https://download.01.org/0day-ci/archive/20250528/202505281410.cca50993-lkp@intel.com
-> 
-> 
-> similar as report [1], from the dmesg in above link, we still didn't see any
-> Call Trace, but below informations
-> 
-> 
-> [   41.372233][ T1447] bcachefs (sda1): starting version 1.13: inode_has_child_snapshots
-> [   41.372233][ T1447]   allowing incompatible features above 0.0: (unknown version)
-> [   41.387511][ T1447] bcachefs (sda1): recovering from clean shutdown, journal seq 20
-> [   41.395125][ T1447] bcachefs (sda1): Doing compatible version upgrade from 1.13: inode_has_child_snapshots to 1.25: extent_flags
-> [   41.395125][ T1447]   running recovery passes: check_allocations,check_extents_to_backpointers
-> [   41.418989][  T335] LKP: stdout: 307: Kernel tests: Boot OK!
-> [   41.418998][  T335] 
-> [   41.494922][ T1447] bcachefs (sda1): error reading btree root btree=accounting level=0: btree_node_read_error, fixing
-> [   41.505517][ T1447] bcachefs (sda1): bch2_fs_recovery(): error btree_node_read_error
-> [   41.513201][ T1447] bcachefs (sda1): bch2_fs_start(): error starting filesystem btree_node_read_error
-> [   41.874130][ T1447] bcachefs: bch2_fs_get_tree() error: btree_node_read_error
-> [   46.990004][  T335] LKP: stdout: 307: HOSTNAME lkp-kbl-d01, MAC 48:4d:7e:be:54:6f, kernel 6.15.0-rc4-00141-gcd3cdb1ef706 1
-> [   46.990016][  T335] 
-> [   47.103180][  T337] mount: /fs/sda1: can't read superblock on /dev/sda1.
-> [   47.103189][  T337] 
-> [   49.036739][  T337]        dmesg(1) may have more information after failed mount system call.
-> [   49.036751][  T337] 
+On Tue May 27, 2025 at 11:52 AM PDT, John Stoffel wrote:
+>>>>>> "Kent" =3D=3D Kent Overstreet <kent.overstreet@linux.dev> writes:
+>
+>> There was a feature request I forgot to mention - New option,
+>> 'rebalance_on_ac_only'. Does exactly what the name suggests, quite
+>> handy with background compression.
+>
+> LOL, only if you know what the _ac_ part stands for.  :-)
 
-Err, what is this?
-
-Is this a fuzz test, something from a test suite I've never heard of?
-The log certainly doesn't give any useful context.
+Would you have suggested perhaps _mains_ ? That may have rang better
+with some folks. I suppose, at least.
