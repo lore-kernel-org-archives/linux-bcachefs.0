@@ -1,77 +1,70 @@
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9C282B9A9;
-	Wed,  4 Jun 2025 06:45:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5AD525179A;
+	Wed,  4 Jun 2025 11:21:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749019523; cv=none; b=IjNIvq+NmCRcl416H9byz41wZqH1T/rLDMJEvDOz1JnB5zdZ9hut3mXY81zu81pHDyPklqi4MFbs3Yw6vJtq/f0MEVgeQkd03x/Bjt0YI0aeFXemJujpWee9BxTG7pLXwtXiDGOO+WTWMRloAkUsqTbeUEsKLKza0lVps7R0u3s=
+	t=1749036082; cv=none; b=NdKXZ4L413LMW7espPFrxfWUJHiKyoaPOWZ6JmpN07ajSJVQIEthAwUo8yOgMomU4BWdUwXaHK5uwdhLE2UTmBEtVn23Dii/vz8G07VSqBUP9+qusvRXKS5HkhnolVHfN1BBkMbMO7yy1Wxw5uwnWT78iC8VtSWaLJa+kOArMwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749019523; c=relaxed/simple;
-	bh=U0qSZcX1eMnzSURPmjzrUaCB0idOWAKgNjSiFCilZYQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qwUpNicOWIaYW2zwjcSBEI50rqklbnQOzxASJI/m6x4O53pP1uwEHOrgUFyyD70kD0bljHiAz++VgTfbNlAWRSZ+M1DEW+XjtBRhNboRfNjl/v37o6w5ulLdNvbjn28tY+h2H/+2DRXOBctQt3jNmEoKKOa1XuHWRdfhmIZjUQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=eh/a/ukK; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1749036082; c=relaxed/simple;
+	bh=xqm5cHFk20wFqyERODHx0A5Yo7HzFZcrbSgFQoBjAkQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Fz5sfAKkqci9c8sLlFlAx3Qoh+jJ0B+0+rlbeVpP9RlfYsQNBPvvl7GfeSWRiFFhDotM2bmBGzX9v1CwVPpu2LntSRGJjSEGr/N+v0isSWAnWNBDNe40MSlMDNh/Mak/gVpY98IvNul/+IXwvSUEdMepnik11G5IYdWif5zDcrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XjMjnOOc; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="eh/a/ukK"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description;
-	bh=ruGokqO2UBHjwJNIqqtEBXmDU7VQB8+HzDDuFNiwg8w=; b=eh/a/ukK6jQSx8HH/Hh/ayNuve
-	gA3UbB2Gej7KlpBwHW4ib3+gJcLAnwZ3+Ul11/ylQ/o9eRsui6lWA+LfUzYvSve2cRgb7os19keR2
-	mJO1tiqO1ZX29RJJ7kmQ8y/cdqZam2TjH/Owl6+jdBqI6ie/eFz5kVd9rEXErATuknNWyG/7k0m48
-	3aR+Mac564KavIfSWAiYzcFzvtXxWdE6Yx9J94pc4/SJkQPcBLWpJwu7qoSfwoKmSr1UkhdpmoLU5
-	pIecMpqOvV78Br5CpAScXJLQjJ/E0atF6tkqNyvN0Bhjkd4qB6kai9ROslvm8gsc+nT9Mjt9FYExi
-	e4i8V6lQ==;
-Received: from [50.53.25.54] (helo=[192.168.254.17])
-	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uMhsC-00000002ppD-3h1e;
-	Wed, 04 Jun 2025 06:45:17 +0000
-Message-ID: <c15ba8f1-4bf4-4b14-ba79-440a3b17a021@infradead.org>
-Date: Tue, 3 Jun 2025 23:45:14 -0700
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XjMjnOOc"
+Date: Wed, 4 Jun 2025 07:21:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1749036073;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=B6tNxQUm7SiMLlUyYYyUWjpyr8owNk6jHSf4TF5Pg7E=;
+	b=XjMjnOOc0hWHjQJHHVVufwJrf8aH7eM5YKXzzrR3q4EoLO9Kc6vjJh3r1iDoK0rRqiBa51
+	w+rF5p+hTTVqnXv37+TVNjU17atj6QugExvDXYQEQyr9S6UvHWObqv78OXx/MuG64gMP5s
+	QyQIC9nczpm+ovVfYO62LaiYxfsuFg0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	linux-bcachefs@vger.kernel.org
+Subject: Re: linux-next: Tree for Jun 4 (fs/bcachefs/dirent.o)
+Message-ID: <mhmmdwdgody7hmoltfdgyfhnmk5vyydgopzmru3wjmbnyydhkl@di4wpd3e3pvx>
+References: <20250604140235.2f14220f@canb.auug.org.au>
+ <c15ba8f1-4bf4-4b14-ba79-440a3b17a021@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: Tree for Jun 4 (fs/bcachefs/dirent.o)
-To: Stephen Rothwell <sfr@canb.auug.org.au>,
- Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org
-References: <20250604140235.2f14220f@canb.auug.org.au>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20250604140235.2f14220f@canb.auug.org.au>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c15ba8f1-4bf4-4b14-ba79-440a3b17a021@infradead.org>
+X-Migadu-Flow: FLOW_OUT
 
-
-
-On 6/3/25 9:02 PM, Stephen Rothwell wrote:
-> Hi all,
+On Tue, Jun 03, 2025 at 11:45:14PM -0700, Randy Dunlap wrote:
 > 
-> Please do not add any material destined for v6.17 to you rlinux-next
-> included branches until after v6.16-rc1 has been released.
 > 
-> Changes since 20250603:
+> On 6/3/25 9:02 PM, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Please do not add any material destined for v6.17 to you rlinux-next
+> > included branches until after v6.16-rc1 has been released.
+> > 
+> > Changes since 20250603:
+> > 
+> > The bacahefs tree lost its build failure.
+> > 
 > 
-> The bacahefs tree lost its build failure.
+> I am seeing on x86_64 when
+> # CONFIG_UNICODE is not set:
 > 
+> ld: fs/bcachefs/dirent.o: in function `bch2_dirent_init_name':
+> dirent.c:(.text+0x13bb): undefined reference to `utf8_casefold'
 
-I am seeing on x86_64 when
-# CONFIG_UNICODE is not set:
-
-ld: fs/bcachefs/dirent.o: in function `bch2_dirent_init_name':
-dirent.c:(.text+0x13bb): undefined reference to `utf8_casefold'
-
-
-
--- 
-~Randy
-
+thanks
