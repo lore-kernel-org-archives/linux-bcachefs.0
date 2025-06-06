@@ -1,76 +1,92 @@
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E48F27C879
-	for <linux-bcachefs@vger.kernel.org>; Thu,  5 Jun 2025 19:31:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 624148C0E
+	for <linux-bcachefs@vger.kernel.org>; Fri,  6 Jun 2025 01:16:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749151902; cv=none; b=DMG0Tt1rwZQqbKSft7ej1RraJpfEtwMKncFB8+uMgJfggJBJMxBDVAdCOcNoRbetGfZEog/2O4Blv3vnWYtkVT4mj/wyZOkxBOKQk7qH0lBRxwU7R/tkurMP7WDzw7crXhIYjOiTza1Q78oEwa8mXCnID8orkUOcFRSPnFsb8VQ=
+	t=1749172580; cv=none; b=YMeh0x+MHS6GIVaPzaSPLJHsZC+gvbTxyKN4R24yLwDt7pC5gYCDzhMEzq7AmPmuP9A/imrn/aAgAKlEUKI1OdpbATroaBcdYu06cj249PJGu9GyjhRzgEi9sSbGdsX0S8FBw6Gt87n30GL4L8XgD28HQ6gDHTws8NmQGd4zr4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749151902; c=relaxed/simple;
-	bh=kZPC/bU4FUO8Snlgdk/X+AXh3Tple8zWEBX/6jS43Zk=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=kUMd0ze3qrCLmDJk6TaJkVqpCJc4Tf67rYmv3YtdqYqQqqBcff4xi45cn4ZLm9kg54rFIVTXx+26tcuxe0411Hy4dWtZZZ4AlhFJj91olWS5kf3MJBseggowDFb/hwpHKD8HUDWe2zdmj8oy2BEqC/VJrXBztl8bk5uxjcM09lw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oNYTSUrU; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oNYTSUrU"
-Date: Thu, 5 Jun 2025 15:31:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1749151887;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=47NC+eUtASoUvob4ZWSGgly7GR6tZd5QJ0FRo18wtKM=;
-	b=oNYTSUrUppbjso7MGwtOZbIqBmfq9MsAxb6zwzVKUKwEJYeuEJO4Es2J0nGZ2WrvvLMgeg
-	eCtZsBP6oatmGKo/FHVFUD4ajxi9JJCyOWpeD93VZ6OMX0asJTQYV/W3SLIrLN/IUpufpG
-	poK25IrVX2wHGUYBkuOd6/QulijEb28=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-bcachefs@vger.kernel.org, stable@vger.kernel.org
-Subject: [GIT PULL] bcachefs fixes for 6.15 stable
-Message-ID: <xlnudv42ksgzhydnz4uefmiuh4f6ebtixwwjh2mwj5fivw24ll@tczlx6fmsu5k>
+	s=arc-20240116; t=1749172580; c=relaxed/simple;
+	bh=XoM1JKbfZTIybchpQDOwr96beTFnMZmM8fF6Th/K1h8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=cj8H7KC1NSCWLVAr7mUX+IH2SotlYi8H7StTAG7VDjfGYOaEm9ALjUkgKoq4SZovd8lgcNlQxum7MgFzFmfW2V0FNtpXY+tq9UiCXVCLCa5/N/FPAZhyejxevLWfHS5Xw3O7c/8+iz3KBvIfoXtfOzHUwytjAFHDfXnFXlx7Axs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4bD3Jh2hMwztRwd;
+	Fri,  6 Jun 2025 09:15:00 +0800 (CST)
+Received: from kwepemo500009.china.huawei.com (unknown [7.202.194.199])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0DE88180B6A;
+	Fri,  6 Jun 2025 09:16:13 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ kwepemo500009.china.huawei.com (7.202.194.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Fri, 6 Jun 2025 09:16:12 +0800
+Message-ID: <b7f8d9ea-36eb-4647-b238-615d7416a89b@huawei.com>
+Date: Fri, 6 Jun 2025 09:16:12 +0800
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: Size of directory entry 16 EiB according to "ls -l"
+To: Kent Overstreet <kent.overstreet@linux.dev>
+CC: <linux-bcachefs@vger.kernel.org>, Martin Steigerwald <martin@lichtvoll.de>
+References: <3009813.e9J7NaK4W3@lichtvoll.de>
+ <evvg4qltrboeynoj4j33zzrbr2atye6mywkhzy7l5i2ifehae6@ih62wyi2fsrr>
+ <74199382-7c0f-440c-b7b6-45eabc95e332@huawei.com>
+ <bhuiydsd4ovig4i2inltu4a325c35xc4zaxyaawdfrjzghgbtr@muphmxvcw7lq>
+Content-Language: en-US
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <bhuiydsd4ovig4i2inltu4a325c35xc4zaxyaawdfrjzghgbtr@muphmxvcw7lq>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
+ kwepemo500009.china.huawei.com (7.202.194.199)
 
-The following changes since commit 3ef49626da6dd67013fc2cf0a4e4c9e158bb59f7:
 
-  Linux 6.15.1 (2025-06-04 14:46:27 +0200)
 
-are available in the Git repository at:
+On 2025/5/31 23:03, Kent Overstreet wrote:
+> On Sat, May 31, 2025 at 10:00:55PM +0800, Hongbo Li wrote:
+>>
+>> 在 2025/5/31 7:16, Kent Overstreet 写道:
+>>> On Fri, May 30, 2025 at 11:19:32PM +0200, Martin Steigerwald wrote:
+>>>> Hi!
+>>>>
+>>>> Summary: I am curious why "ls -l" reports 16 EiB as the size of a
+>>>> directory entry. As to what I can see the filesystem is perfectly fine.
+>>>>
+>>>> Kernel 6.15, self compiled. 320 GiB BCacheFS on LUKS encrypted LVM.
+>>>> Checksums are xxhash. Filesystem was created recently on self compiled
+>>>> 6.15-rc7 with self-compiled bcachefs tools from git tag 1.25.2. "bcachefs"
+>>>> reports 1.25.1 as version number.
+>>>>
+>>>> I have a directory entry that according to ls -l is quite big:
+>>>>
+>>>> drwxrwxr-x 5 martin martin 18446744073709551400 DATE DIRECTORY
+>>> Yes, this is due to a leftover from the directory i_size patchset that
+>>> had to be reverted. As long as it's not causing issues it'll be a bit
+>>> before I get to it, I've got higher priority bugs I'm working on right
+>>> now (as usual).
+>>>
+>>> Hongbo, whatever happened to that patchset? I thought you were going to
+>>> fix it so we could get it back in later?
+>> I'm very sorry for the directory i_size problem. And this work has been
+>> postponed recently due to my other internal works. Yeah, I will get back to
+>> this work after this Dragon Boat festival. I'm really sorry I haven't dealt
+>> with it sooner.
+> 
+> Ok, don't worry about it, the rest of it isn't urgent, just the i_size
+> fixes for the revert - I'll try to get that out today.
 
-  git://evilpiepirate.org/bcachefs.git tags/bcachefs-for-6.15-2025-06-05
+Hi, Kent,
+Thank you, I noticed you have reverted the related patch. I've been to 
+busy with some internal matters recently, but I will continue to follow 
+up on this task.
 
-for you to fetch changes up to fc9459c9a888766c4c4adff59b072aad1bfbf6ad:
-
-  bcachefs: Fix subvol to missing root repair (2025-06-05 14:04:58 -0400)
-
-----------------------------------------------------------------
-bcachefs fixes for 6.15 stable
-
-----------------------------------------------------------------
-Kent Overstreet (5):
-      bcachefs: Kill un-reverted directory i_size code
-      bcachefs: Repair code for directory i_size
-      bcachefs: delete dead code from may_delete_deleted_inode()
-      bcachefs: Run may_delete_deleted_inode() checks in bch2_inode_rm()
-      bcachefs: Fix subvol to missing root repair
-
- fs/bcachefs/dirent.c           | 12 ++-----
- fs/bcachefs/dirent.h           |  4 +--
- fs/bcachefs/errcode.h          |  2 ++
- fs/bcachefs/fs.c               |  8 ++++-
- fs/bcachefs/fsck.c             |  8 +++++
- fs/bcachefs/inode.c            | 77 ++++++++++++++++++++++++++++--------------
- fs/bcachefs/namei.c            |  4 +--
- fs/bcachefs/sb-errors_format.h |  4 ++-
- fs/bcachefs/subvolume.c        | 19 ++++++++---
- 9 files changed, 92 insertions(+), 46 deletions(-)
+Thanks,
+Hongbo
