@@ -1,163 +1,155 @@
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A612284039;
-	Sat,  7 Jun 2025 08:52:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 974FD288DB;
+	Sat,  7 Jun 2025 14:12:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749286378; cv=none; b=mY8oHPdcmp8azKvqu4xxTAKX7/2diQbCh+6MiTjhfl42kNvfL70dBBlsQ18YfYod3mIf/xfXKRxO/XsDLt9VBxrIguhjI/LZtQsOG6k2BJt7BuQM4Bdlml7037yUjVGA/MoPV3Q0MhZ+ZUunmkFzosXlussnkZfsBNHXFC96ZJg=
+	t=1749305527; cv=none; b=ZhK7LiRoT+BM6bdvwxRkAz/1Q2yJg86bTzoJO5VF5On60IKcu2mt/7ncAaTU0JEeahkL+krb4Uk+0oROmRQczYAIi0WChuWaWMXwVGg/UR4RLwLllhfNoO6ypX2nzN3w/S8Txrpkfhxw5RhVdBWqbTdbmfEswEANYqg0AiGIpVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749286378; c=relaxed/simple;
-	bh=vyutQaTYXrN4bm09V9PWZFQHSh8YZLIkVVALBR7R7AQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NPjt3CF4UTejV6J416skxB6Gd4wL73niYYTd+JH8jN8eVcbwr257GXjfuK7FfRUXPTqsJhJanaxQah5EPmvM/fB+Rf2ofL8PabhCcyBk4WnbyxB1RsMiTtH3JtrfAeEbfl+ecTWufP1YK4oJbWRRBcaLjB/J1A9+KGfYg1u/alk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EgcbhFwG; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1749305527; c=relaxed/simple;
+	bh=tOsURfwpu5JIYYGzjKsueBWYxy8LFs6ja4Urw/zMLwY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=N6/VT96qd4sDPvdVJk/kgDHYUM23yI2iyTR7esEJLmaSINR1g9JGoqFVh5P8nCqpQMgh2zyt+7XSmKS2a1zCCceNEXfiy3boO8rczwKimvr/EoW2pSdWb3ZM6a5M2Bri3ULp78+jR9lyL42OHitvYVElUp9MjxpTJsJwVmKZOV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KpeVND0H; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EgcbhFwG"
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-3105ef2a06cso23333501fa.2;
-        Sat, 07 Jun 2025 01:52:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749286375; x=1749891175; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KFyeqit6vTlbw/r6iPxMrJhoHvnvByEOju0HOOfl2RQ=;
-        b=EgcbhFwG/Ev5vVX8ivr1hzdlo/7aJjpd3c/3JwqrptFbkXBoJQNy3PW/KUfL7fo72v
-         0PnghCzCGuWitC3teMgimhvRWYW+BK1aqoE1Qc+CUVoQ03+urOBPNRKaTFtCDG9+tJS9
-         ItYVQGO0ymULQ6ch/Ui2hlwkazplVB8+s5Pcivz/+vJuYfha7zsiNbZaiOnanPaEg7l+
-         z6Y+Ewkel/e5qHrelmgWRDISd2lEy2Z/ADBUDXTTsEDEXCfPGWD9JxnTeoLA0zCenq0P
-         1xyMFQHnpLTta/pafLXcTAyZAPNr4YilMnuMqGBvXz5c+M/MmHX+Vb/4XKcug2ofhL1r
-         WOxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749286375; x=1749891175;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KFyeqit6vTlbw/r6iPxMrJhoHvnvByEOju0HOOfl2RQ=;
-        b=jHPIN2wrIHlfJWYWQ/87n8YuEPhAsHLYzV5sodePoemwGY8ng+fQrmEZ6dcBROv0D6
-         kwPxjzQsU9LTR4zcP76Z9aHpfksOMlVgTPgTBXXRREWwQHow2BWdJXbRkmn0rAIkhBHo
-         TSkSTuoA8VJKcKJwfk3gAjqsEsZkZSTLPtBZfYhJ+bDfTn4UwQ72lhdAtjVJMuF+ePal
-         9tB8RFFDJVX7ai5j0wcfKqT8JXTvRSqzYSu1r4PSUOtZlb0EMzFrRMRtmVE6ZPSN42tN
-         OJ1Q979hTXWKuk3uuh1gZ+IvY9ILNab/jUvDtJLJ7JfVSaQoIbBBxdQh14E7+KYj9Jqy
-         3OvQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU3mTTT8vQceBFIhqm9GzSWzOw+KWNbm6b9cxeDZXnxVTJ/Fambfg4y9/deaPXW3j+iUD8FylUS@vger.kernel.org, AJvYcCV5RuNMsRPbjz56nPWAdOpzsrZ1MPbRsaHJA3SnLPQ8ZTi/3376qa2+LpHlhHamlgtxjtZ/7HZOgH1g@vger.kernel.org, AJvYcCW0xFUhTy2wXWBb0V0Strfrs3+HDNAQyAOcfMP3qwRW+zMulqoA13NqroN6aYvM1M1y9iYonZN66IjLPRZj+T0=@vger.kernel.org, AJvYcCWbJcdOn7HvA4ktNGmhw5rPA0d/6LBblgqkZeMkYIwM1PR6DZZrzchFaRrxKq6mk+xfEuJCiDoHOND8LF1l@vger.kernel.org
-X-Gm-Message-State: AOJu0YwDApWV1FRoSMcGNHN1j30h8YKbkOdPazdFEaSTvEFWE8SeOJOo
-	Pp3PpkpvG8mx1t/qX3V6uAO+nfib+hvNcoPTZ9ES50KgVBNj6ADHWupSWAeUQMPDSNLs3pEjhvZ
-	gHklUJluDHUnLqkuT3BO3NrxpQVr19LM=
-X-Gm-Gg: ASbGncuEKYXNBbzWst5l76qI5/rwUghPBpGCi5BGSCvPnAc2vyO8N3Ym99MvmBAr6au
-	EmdjrRJedidbvJwYu8YSu6UfmvQHh4qV1Hvl1JByQqDvRDff/kSbsN6LPx7CH8jxuI00kdfiDGI
-	JpVrGybFCNfIhSmyfiwB8Gl396ui7d2wvj
-X-Google-Smtp-Source: AGHT+IEv37WjEi+vaAOMeA5SgqO5lvoauaHOHnb329J/YwAGAVcoSaaoQm5IHeU+YLfaL/u+ZCEwVl2jWuJ6emEkASk=
-X-Received: by 2002:a05:651c:2125:b0:32a:613b:270e with SMTP id
- 38308e7fff4ca-32adfbd6680mr15634651fa.31.1749286374353; Sat, 07 Jun 2025
- 01:52:54 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KpeVND0H"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1749305526; x=1780841526;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=tOsURfwpu5JIYYGzjKsueBWYxy8LFs6ja4Urw/zMLwY=;
+  b=KpeVND0HpNdRdUWOOYhGagscfYV6c8q4anW6d0ispW3IIV7fRWKSszZ+
+   DD+5hNl/0L0xnplEKRQ/M407Ax9I6Ljawvc943FCziMJSV6tMzRLCBWTK
+   bPxIHT3RENY0wntHeNgWLYJvW3o//m6Egewr/rCU0BBtB5ajCt7GvpXVp
+   BRG9dzElXeuEToftc3s8UmGFsta38fjRFJwz9hOEU/pCo/BqVassX3tMt
+   +l+GPkndw415gLG2O/ai+pl2371B92beWyy2hLMDI0e/oM1sPWvGIVsD0
+   a0ASzR4w+GiaDsdt8m/7HEWWB4Qkmu5Rn1YAb7yCSn0SVy84QTwHOhYq6
+   w==;
+X-CSE-ConnectionGUID: J46COigUTqKLvFlqxTQSAA==
+X-CSE-MsgGUID: rO7rDcMkSHiJA61/bGG2Tg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11457"; a="55231460"
+X-IronPort-AV: E=Sophos;i="6.16,218,1744095600"; 
+   d="scan'208";a="55231460"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2025 07:12:05 -0700
+X-CSE-ConnectionGUID: tBMhaICIR3CN1VGkDijZZw==
+X-CSE-MsgGUID: QIrKOpfMQBC9VEoVh73s9Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,218,1744095600"; 
+   d="scan'208";a="169264059"
+Received: from msatwood-mobl.amr.corp.intel.com (HELO [10.125.111.75]) ([10.125.111.75])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2025 07:12:03 -0700
+Message-ID: <34a2bfa5-30e1-4ba0-ac36-bf07a0d60d97@intel.com>
+Date: Sat, 7 Jun 2025 07:12:02 -0700
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250127160709.80604-1-ubizjak@gmail.com> <20250127160709.80604-7-ubizjak@gmail.com>
- <02c00acd-9518-4371-be2c-eb63e5d11d9c@kernel.org> <b27d96fc-b234-4406-8d6e-885cd97a87f3@intel.com>
- <CAFULd4Ygz8p8rD1=c-S2MjJniP6vjVNMsWG_B=OjCVpthk0fBg@mail.gmail.com>
- <9767d411-81dc-491b-b6da-419240065ffe@kernel.org> <6412d84a-edc3-4723-89f1-b2017fb0d1ea@intel.com>
-In-Reply-To: <6412d84a-edc3-4723-89f1-b2017fb0d1ea@intel.com>
-From: Uros Bizjak <ubizjak@gmail.com>
-Date: Sat, 7 Jun 2025 10:52:51 +0200
-X-Gm-Features: AX0GCFvfdq2FOXmAZPfE7zBP4TMsOLROw_40PNuCe1ZfMVOzlSJ4vDSOaP8ertQ
-Message-ID: <CAFULd4asiDaj1OTrqWNMr5coyPeqM1NT6v2uEqKvJicRUhekSQ@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
 Subject: Re: Large modules with 6.15 [was: [PATCH v4 6/6] percpu/x86: Enable
  strict percpu checks via named AS qualifiers]
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: Jiri Slaby <jirislaby@kernel.org>, x86@kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
-	linux-arch@vger.kernel.org, netdev@vger.kernel.org, 
-	Nadav Amit <nadav.amit@gmail.com>, Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>, 
-	Christoph Lameter <cl@linux.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	"H. Peter Anvin" <hpa@zytor.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Shung-Hsi Yu <shung-hsi.yu@suse.com>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+To: Uros Bizjak <ubizjak@gmail.com>
+Cc: Jiri Slaby <jirislaby@kernel.org>, x86@kernel.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+ linux-arch@vger.kernel.org, netdev@vger.kernel.org,
+ Nadav Amit <nadav.amit@gmail.com>, Dennis Zhou <dennis@kernel.org>,
+ Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>,
+ Peter Zijlstra <peterz@infradead.org>, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+References: <20250127160709.80604-1-ubizjak@gmail.com>
+ <20250127160709.80604-7-ubizjak@gmail.com>
+ <02c00acd-9518-4371-be2c-eb63e5d11d9c@kernel.org>
+ <b27d96fc-b234-4406-8d6e-885cd97a87f3@intel.com>
+ <CAFULd4Ygz8p8rD1=c-S2MjJniP6vjVNMsWG_B=OjCVpthk0fBg@mail.gmail.com>
+ <9767d411-81dc-491b-b6da-419240065ffe@kernel.org>
+ <6412d84a-edc3-4723-89f1-b2017fb0d1ea@intel.com>
+ <CAFULd4asiDaj1OTrqWNMr5coyPeqM1NT6v2uEqKvJicRUhekSQ@mail.gmail.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Content-Language: en-US
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <CAFULd4asiDaj1OTrqWNMr5coyPeqM1NT6v2uEqKvJicRUhekSQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jun 6, 2025 at 5:44=E2=80=AFPM Dave Hansen <dave.hansen@intel.com> =
-wrote:
->
-> On 6/6/25 02:17, Jiri Slaby wrote:
-> > Given this is the second time I hit a bug with this, perhaps introduce
-> > an EXPERIMENTAL CONFIG option, so that random users can simply disable
-> > it if an issue occurs? Without the need of patching random userspace an=
-d
-> > changing random kernel headers?
->
-> What about something like the attached (untested) patch? That should at
-> least get folks back to the old, universal working behavior even when
-> using new compilers.
+On 6/7/25 01:52, Uros Bizjak wrote:
+> Let me reiterate what the patch brings to the table. It prevents
+> invalid references of per cpu variables to non-percpu locations.
 
-IMO the commit message is unnecessarily overly dramatic. The "nasty
-bugs" were in fact:
+Yes, it's a very useful mechanism. That's exactly why I want to preserve
+it for developers or things like 0day that do build tests and don't care
+about modules quadrupling in size.
 
-- unfortunate mix of clang < 19 and new gcc-14 [1], fixed by
-robustifying the  detection of typeof_unqual
+> Hiding these checks behind the CONFIG_EXPERT option breaks the
+> intention of the patch. IMO, it should be always enabled to avoid
+> errors, mentioned in the previous paragraph, already during the
+> development time.
 
-[1] https://lore.kernel.org/lkml/CA+G9fYuP2bHnDvJwfMm6+8Y8UYk74qCw-2HsFyRzJ=
-DFiQ5dbpQ@mail.gmail.com/
+I agree, it should always be enabled ... eventually. But now now. That's
+why we're having this conversation: it's breaking too many things and
+needs to be disabled.
 
-- sparse doesn't understand new keyword, patch at [2], but sparse is
-effectively unmaintained so a workaround is in place
+> I'm much more inclined to James' proposal. Maybe we can disable these
+> checks in v6.15 stable series, but leave them in v6.16? This would
+> leave a couple of months for distributions to update libbpf.
 
-[2] https://lore.kernel.org/linux-sparse/5b8d0dee-8fb6-45af-ba6c-7f74aff9a4=
-b8@stanley.mountain/
+I'd be worried that it will hit a whole bunch of folks doing 6.16 work.
+I was expecting to revert it _everywhere_ for now, if we go the revert
+route.
 
-- genksyms didn't understand the new keyword, fixed by [3].
-
-[3] https://lore.kernel.org/lkml/174461594538.31282.5752735096854392083.tip=
--bot2@tip-bot2/
-
-- a performance regression, again due to the unfortunate usage of old
-gcc-13 [4]. The new gcc-14 would break compilation due to the missing
-__percpu qualifier. This is one of the examples, where new checks
-would prevent the issue during the development. Fixed with the help of
-gcc-14.
-
-[4] https://lore.kernel.org/all/CAADnVQ+iFBxauKq99=3D-Xk+BdG+Lv=3DXgvwi1dC4=
-fpG0utmXJiiA@mail.gmail.com/
-
-- the issue in this thread, already fixed/worked around. Looking at
-the fix, I don't think gcc is at fault, but I speculate that there
-could be some invalid assumption about dwarf representation of
-variables in non-default address space at play. I'll look at this one
-in some more detail.
-
-Please also note that besides the above issues, the GCC type system
-and related checks around named address spaces was rock solid; there
-were *zero* bugs regarding __percpu variables, and the referred patch
-moves *all of them* to __seg_gs named address space. The patch builds
-off an equally stable and now well proven GCC named address space
-support, so in my opinion, it *is* ready for prime time. As
-demonstrated in the above list of issues, it was *never* the compiler
-at fault.
-
-Let me reiterate what the patch brings to the table. It prevents
-invalid references of per cpu variables to non-percpu locations. One
-missing percpu dereference can have disastrous consequences (all CPUs
-will access data in the shared space). Currently, the safety builds on
-checking sparse logs, but sparse errors don't break the build. With
-new checks in place, *every* invalid access is detected and breaks the
-build with some 50 lines of errors.
-
-Hiding these checks behind the CONFIG_EXPERT option breaks the
-intention of the patch. IMO, it should be always enabled to avoid
-errors, mentioned in the previous paragraph, already during the
-development time.
-
-I'm much more inclined to James' proposal. Maybe we can disable these
-checks in v6.15 stable series, but leave them in v6.16? This would
-leave a couple of months for distributions to update libbpf.
-
-Thanks,
-Uros.
+James, by partial revert, did you mean to revert in stable but not
+mainline? I assumed you meant to just revert patch 6/6 of the series
+(stable and mainline) but leave 1-5 in place so turning it back on later
+was easier.
