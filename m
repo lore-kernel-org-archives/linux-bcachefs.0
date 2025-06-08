@@ -1,173 +1,79 @@
-Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCDF8148857
-	for <linux-bcachefs@vger.kernel.org>; Sun,  8 Jun 2025 05:52:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C46318035
+	for <linux-bcachefs@vger.kernel.org>; Sun,  8 Jun 2025 06:58:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749361949; cv=none; b=szbH3qyNtPudzjdtviaiNTSkIWrbVUUWf4freU09c+8edpP9O/o271WjwaHeU2KCkPtID36E2LMDWphN+Fs/LFxMeX0WpaTe4IutIbro+v31cE3GjFgENzz5HTeEE+LI6bC6GQgtIuuDqk0KBZYeiuErSEbm6d54dkYq1dVRyA0=
+	t=1749365885; cv=none; b=rjjg87dVjRFQF/sgpQsfTf/5Dm5NY1L9T9CelU8a+jh0IlpQhwX5XyOFU8VkQkRdV5i7SEJoH67VIVn8+Ns0UoN0d8qfZBVeKd0Tg+Ryyhj0XTm5wV/CZrKqX0Yd8ZGk1iGNXoMV0lMon1uDrj9g9UC1WCMwNs8YOw3qps/F4NU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749361949; c=relaxed/simple;
-	bh=qKfRNG4CDlfDLTDcwYrI3sQenEFSFY+8eszH/djEgpw=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=LSBWXUFl6Y/DzL+7Cb+CJMIZxETeyec/Nhv9+A+3WAltyZ42d4Og/dljEIByJSbU/6VW1vYCm+2VIXIqNlo+sgAbnFbAiC7g2f5OXFZZgzwH9as4dbRtScCi0pZdqNxzlIw8cmaUGKQs6WyAt2At99oaXrMInLSZBV/qb1Pn/1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
+	s=arc-20240116; t=1749365885; c=relaxed/simple;
+	bh=hVWo4GD3VhvuKTf8CoKVWw7dN2hdQPhzrdo+CeBpT2A=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=oVeHihFJ4fhqqfIdcFKvsZrojBt2GpAtLuxSypAjCxM/YXuAD16Hqee/m0MKylttlWR7On/pCI2dFnmkowiiEyn92aMDvkjKv6K0447m0xdbt8ter3RNPYVi0QEysoWrZS0R3OL6HscesNm1KHs2LazCMyd98Kky7VeswW0hE64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3ddc9ee4794so43105415ab.0
-        for <linux-bcachefs@vger.kernel.org>; Sat, 07 Jun 2025 22:52:27 -0700 (PDT)
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3ddcc14b794so15842645ab.2
+        for <linux-bcachefs@vger.kernel.org>; Sat, 07 Jun 2025 23:58:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749361947; x=1749966747;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jcpD0WAjPXInoYOjIEM2gCgbdLZHAzXILaKBUQO5vQI=;
-        b=iHA+9+eSu8nLyjFDiDwgv8yBWNq5ulUNvimviHu31p0a2YCXGoebvsO3O1CtpRekQS
-         cdvZlqopypd+hmOdlvo5q27PZ65v3zMeK+7mD6B/3qIa0XI5RgluF0pVyKmbQy9h0aT9
-         KtjkIyMEC/iUm325Fi1PCe5YZr/B3KYyV+7hRpCzQ4UOH4J0YXhfS9iGG79ThVFBggIF
-         epDGkQh/geW4G0hjkgdeU+idyia+GESkgpJrQFZXNGrop5lqCdM3XzOQNVrUl9/x8qpK
-         Ldto746DG31LPKDqg0vwEGvHiYlBW+pQaNgoHqgMEpN7mc8hI78wLzpH4DnerHhaaHyT
-         IrFg==
-X-Forwarded-Encrypted: i=1; AJvYcCXs27bMyEhneKYWjHsjn9Iw1o6ZKw9MJPKvepbUMyFa8Hq1idAtUKStySv7Lz9BJI0V31062cwwz28BlqYIpA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzyTlldRFEGGfzc65Xp4wAkD2bsuEibLFJ7GCrsQeFsRcVKU1go
-	6PNn2/qdxfSVVlpyzDISEzi1DtGAPYwaNYnnYYxBblI9P7BBFsYd0tM/4ifWB0mJr2F9C0h7YGJ
-	gmcYZGviYap0YubnqPXUdUrfGcagf6I1X/CX1kclEHNxuunoLWTbr7tbhmmQ=
-X-Google-Smtp-Source: AGHT+IGxpDaJrmlySBLqlw/KI8UBV6V43VtsKHhfdAabbQN0gual+U7s2e4m87WT1EHQ12tptZaJOSaZvnkhB+iBsY25DpGpBVEc
+        d=1e100.net; s=20230601; t=1749365883; x=1749970683;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=84bg0eAOl4RoDt6abU4tGy6GN7YB+Z7N/qFLriE8C/s=;
+        b=WPOfy0cLgApcILmoasOggy4Q4x6TYS/BXhbhmhMvKD6C5P+PgnyX6o1FTAyz42Tgse
+         Ic3sWwwsuJXIHtjq8IXs6/mske6xR9VkoG5HTtXkfPP7aNYuzqU2MVMkfRpX7os4Wraq
+         atE9E/asiWzTGNp5TUoUFPJMF4sOUIuzyqj9E/S8zLfAMESAwfKxP2d3WV2aONziS/Iq
+         yjIntGg8xPiNZiPIbHSo+JRdoJ/jIJdk56rV3L+1KnfdD/XcpbAvS1yaousZFiKx/AOT
+         L78C86fofx90Zy25EgrS5rcuPkXmf2t+TZYqN678lksZhtW7KUiOTII8ENCg7ZcfZkMG
+         ahLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUHA0MWuA274wJ2Bkk24zDYhx4FXWRQu/5FfOhYkWAbvdOxPLVrtNqnMfZs3+DZs++eGn+wc9wkDQ/bDz+1jQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz3xOlLXpdA/9VKYgNEKv7boCki27uICJT8fNtrJQKqMJ3kgjtQ
+	hEc/GMEZElEbHPOeGuKyCgb/be0rlAdRbQAwyKRGMDfGvrJvtj6Fn87xj0rBoHXYcexyuS2XzOZ
+	oDHVYdNdDJ80bO9dV+KsiHy468NWIXbs2BONapnOfgBPkAuzt3nRi9vMp2nk=
+X-Google-Smtp-Source: AGHT+IFJAyOgYOZCDWobVWxcQYMe9z3fAwvKf43nlq/XKaJo+ZcNMRmq2P3CMhJgBiuXH0Nhtimb2FbWPDDWOEx1ZdgN0jVi4i3f
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1521:b0:3dc:7f17:72e6 with SMTP id
- e9e14a558f8ab-3ddce461b22mr106219555ab.5.1749361947068; Sat, 07 Jun 2025
- 22:52:27 -0700 (PDT)
-Date: Sat, 07 Jun 2025 22:52:27 -0700
+X-Received: by 2002:a05:6e02:17c9:b0:3dd:d365:78bf with SMTP id
+ e9e14a558f8ab-3ddd365790dmr80334435ab.22.1749365883085; Sat, 07 Jun 2025
+ 23:58:03 -0700 (PDT)
+Date: Sat, 07 Jun 2025 23:58:03 -0700
+In-Reply-To: <67a2b20a.050a0220.50516.0003.GAE@google.com>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6845251b.050a0220.daf97.0aed.GAE@google.com>
-Subject: [syzbot] [bcachefs?] kernel BUG in vfs_get_tree (2)
-From: syzbot <syzbot+10a214d962941493d1dd@syzkaller.appspotmail.com>
-To: brauner@kernel.org, jack@suse.cz, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	viro@zeniv.linux.org.uk
+Message-ID: <6845347b.050a0220.d8705.000c.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] [rcu?] BUG: unable to handle kernel NULL
+ pointer dereference in rcu_core (3)
+From: syzbot <syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, ayaanmirza.788@gmail.com, 
+	ayaanmirzabaig85@gmail.com, josh@joshtriplett.org, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, luto@kernel.org, paulmck@kernel.org, peterz@infradead.org, 
+	rcu@vger.kernel.org, syzkaller-bugs@googlegroups.com, tglx@linutronix.de
 Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+syzbot has bisected this issue to:
 
-syzbot found the following issue on:
-
-HEAD commit:    911483b25612 Add linux-next specific files for 20250604
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=161761d4580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=28859360c84ac63d
-dashboard link: https://syzkaller.appspot.com/bug?extid=10a214d962941493d1dd
-compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07757-1~exp1~20250514183223.118), Debian LLD 20.1.6
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1106940c580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10ce7c82580000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/1067df4a0ae9/disk-911483b2.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/1ec468cccc74/vmlinux-911483b2.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/02250b138a0f/bzImage-911483b2.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/ac45824a405f/mount_0.gz
-
-The issue was bisected to:
-
-commit ad7a2ae339342ce4721993e637ecd9f7dc654f3b
+commit 14152654805256d760315ec24e414363bfa19a06
 Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Mon Jun 2 00:22:17 2025 +0000
+Date:   Mon Nov 25 05:21:27 2024 +0000
 
-    bcachefs: Add missing restart handling to check_topology()
+    bcachefs: Bad btree roots are now autofix
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=162c2c0c580000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=152c2c0c580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=112c2c0c580000
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12fa0a82580000
+start commit:   99fa936e8e4f Merge tag 'affs-6.14-rc5-tag' of git://git.ke..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=11fa0a82580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16fa0a82580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=523d3ff8e053340a
+dashboard link: https://syzkaller.appspot.com/bug?extid=80e5d6f453f14a53383a
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119d35a8580000
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+10a214d962941493d1dd@syzkaller.appspotmail.com
-Fixes: ad7a2ae33934 ("bcachefs: Add missing restart handling to check_topology()")
+Reported-by: syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com
+Fixes: 141526548052 ("bcachefs: Bad btree roots are now autofix")
 
-bcachefs (loop0): error in recovery: ENOMEMemergency read only at seq 10
-bcachefs (loop0): bch2_fs_start(): error starting filesystem ENOMEM
-bcachefs (loop0): shutting down
-bcachefs (loop0): shutdown complete
-bcachefs: bch2_fs_get_tree() error: ENOMEM
-Filesystem bcachefs get_tree() didn't set fc->root, returned 12
-------------[ cut here ]------------
-kernel BUG at fs/super.c:1812!
-Oops: invalid opcode: 0000 [#1] SMP KASAN PTI
-CPU: 0 UID: 0 PID: 5842 Comm: syz-executor187 Not tainted 6.15.0-next-20250604-syzkaller #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
-RIP: 0010:vfs_get_tree+0x29f/0x2b0 fs/super.c:1812
-Code: 1b 48 89 d8 48 c1 e8 03 42 80 3c 28 00 74 08 48 89 df e8 14 8b ee ff 48 8b 33 48 c7 c7 00 31 99 8b 44 89 f2 e8 d2 42 f2 fe 90 <0f> 0b 66 66 66 66 66 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90
-RSP: 0018:ffffc9000437fd58 EFLAGS: 00010246
-RAX: 000000000000003f RBX: ffffffff8e7829a0 RCX: ad6f5de195933e00
-RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000003 R09: 0000000000000004
-R10: dffffc0000000000 R11: fffffbfff1bfa9ec R12: 1ffff1100ea3c216
-R13: dffffc0000000000 R14: 000000000000000c R15: 0000000000000000
-FS:  000055558ea4c380(0000) GS:ffff888125c4d000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005620027d9f60 CR3: 0000000075234000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- do_new_mount+0x24a/0xa40 fs/namespace.c:3874
- do_mount fs/namespace.c:4211 [inline]
- __do_sys_mount fs/namespace.c:4422 [inline]
- __se_sys_mount+0x317/0x410 fs/namespace.c:4399
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7ff57623fe2a
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffda26af7f8 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffda26af810 RCX: 00007ff57623fe2a
-RDX: 00002000000000c0 RSI: 0000200000000000 RDI: 00007ffda26af810
-RBP: 0000200000000000 R08: 00007ffda26af850 R09: 0000000000005972
-R10: 0000000000800000 R11: 0000000000000282 R12: 00002000000000c0
-R13: 00007ffda26af850 R14: 0000000000000003 R15: 0000000000800000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:vfs_get_tree+0x29f/0x2b0 fs/super.c:1812
-Code: 1b 48 89 d8 48 c1 e8 03 42 80 3c 28 00 74 08 48 89 df e8 14 8b ee ff 48 8b 33 48 c7 c7 00 31 99 8b 44 89 f2 e8 d2 42 f2 fe 90 <0f> 0b 66 66 66 66 66 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90
-RSP: 0018:ffffc9000437fd58 EFLAGS: 00010246
-RAX: 000000000000003f RBX: ffffffff8e7829a0 RCX: ad6f5de195933e00
-RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000003 R09: 0000000000000004
-R10: dffffc0000000000 R11: fffffbfff1bfa9ec R12: 1ffff1100ea3c216
-R13: dffffc0000000000 R14: 000000000000000c R15: 0000000000000000
-FS:  000055558ea4c380(0000) GS:ffff888125c4d000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffe40667f19 CR3: 0000000075234000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
