@@ -1,117 +1,122 @@
-Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A951325A353
-	for <linux-bcachefs@vger.kernel.org>; Mon,  9 Jun 2025 07:03:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA7A8BFF;
+	Mon,  9 Jun 2025 07:57:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749452604; cv=none; b=D6cZDtsMclEtZBz4r5BdnzzQHofyQmW1OOhxawsOIBmBG+rJJMyyzNDk+Flx8aGlVqRiROfcn4Q3p6LrSnoI+KL7j0PDxet5z2EvasIRX6ecpFQz7Rtfr4hWx+vc4Bn8DX52hLA4+QaKgle/EYaHEWBmM1qhas+f6YPdtYeJxTU=
+	t=1749455823; cv=none; b=W+v9yFH07xz6EI7YEKa+4mQU4Mxwyl+mgQV8Nghl7H829XvXqTrpQocq0e2MG/7Q8r1Aeyy76TPA79Y+lOfMBVn2nX+VUw9yzOoYaXtSd93vGNXjTiOJbOL7uvgRWFOQwK7bL/Oxaj6jzJ3mxxjc7vC0wlOvuQdl9g3VTvOX8Jc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749452604; c=relaxed/simple;
-	bh=rAIUwE+SteEONfGEH8/2EWu3SKgU8HvraH4SbnWqTn8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qGWCdSEXLNdUDxRAI6elSLOQRveKH19I4nyeOI4CEQegk3IYVF2hIirn+5tWrVxI64ZjC1VXD8yKpVT4HSVQRALjH54XqLvGnqwp4Urf37KaFLni3RPivfQtW9D4JH2BVgpKfvsGIIkqH4sxAbIfnGUAyXL8XkQG4jdQXIEsb8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Zf5ZTXqn; arc=none smtp.client-ip=209.85.166.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1749455823; c=relaxed/simple;
+	bh=p49F4iVDjLolb18i6c/cgcidS0xjY2Cgu6gC5AOYAnI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=J4KmFCXhcu4QloqBCGRCaE0NIHRZ6YE68UN3LaqajZkE7rgihlWZfy66eGwQuHKo/ew1jcODEEuFtFonLLxjpUP/oRBOeCfugwJtpP7IbxJ1HpdjxYKcXQEYU56ao15c/V7p5bKElW3PEaz7NS0QGZr1amN11TgHgZb2MrzIVgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=emnHqe1E; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Zf5ZTXqn"
-Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-3ddd2710d14so23798075ab.2
-        for <linux-bcachefs@vger.kernel.org>; Mon, 09 Jun 2025 00:03:22 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="emnHqe1E"
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-742c73f82dfso3115366b3a.2;
+        Mon, 09 Jun 2025 00:57:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1749452602; x=1750057402; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zxn0gf5DjkiekmGDoc8f+jiCNw9RjSzuhtY2t6W/Yig=;
-        b=Zf5ZTXqnNJBE1KGyvqh4XlHMy/+uL7dmvQkXaELcUTODzkSdIBxTAHuNhZ1CJTt2GX
-         ZbZPu6U1FmVkd9/5OlgHvmTtxY4ma/iKCZoGtQyAn/Ze26z+pS3QqfWukRX4QTOqn9dn
-         oKM3YHEGKAUSmunV+80sh8H78iaqjj+OnoKszKTaIekVfKoWtXlBtV/Zc4m+z6Kn4cQD
-         LH6erfXlj/AvbpDSWoZU48CpmRdAZ+rHZFA1/qKyq/FwEKqEuMyjXthysORfI4AUByeR
-         XZu+iF7b8U7sXm9DglXhG5q4ExXbU7KF5VaDxyI9UDqqiut8Xl6efd8CJVjh2qBpCuHd
-         Sz4g==
+        d=gmail.com; s=20230601; t=1749455822; x=1750060622; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9xCRdGyFV/qmREjSzVYn1llBGMmzLISDBHN00C5YP4U=;
+        b=emnHqe1EQuP98GYQSXl2r6uB8TIDjuh9yqM/fwDm0PTcmVFij201BPzWQFmB/iSJXQ
+         v+ccSRDyKUcdeK9zbUlNwKXpnehDGJ7C2cpssV41/G25ILn8HyWRU3DT+/eBJ7otmP3K
+         Zzn90rRSI4UFyhXiFtWMyJe1oYd+f2HeBNX38D82iiLwLYZM2cMwyi16iwEnh8Rt8J1m
+         V3vCCTZ+X65EtaRKibBOk7t2lqVKliLnGiGWM3CRxoFLeqcMI6K/R3tNJSEHnDVI89Zr
+         youHYE1j7OiUfkSlFLej957zXG5JYUzSHcS2Cwk05tyQFBuk3/LRV9tjBPffS4Cps1rr
+         sauw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749452602; x=1750057402;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zxn0gf5DjkiekmGDoc8f+jiCNw9RjSzuhtY2t6W/Yig=;
-        b=iZbjmX40BOVxQW6NnIE8WPA/ucmhgbTtxUhnVt8Cvhw0nonUiBxvNVfmEfxnkXk6bn
-         XArZQVkuCr/EmKN4MiqkVmo1S2D1rAsQAFAV0Pud4PVXHyqneA0FItGIaZyvME8/z/z5
-         qtUT4FVNX9XW0qC70iKnP3qTiZpRg6gnygYvNOWbAxKPl0EDw5rMWCcHhuB3Z8/Zf19U
-         iQyU8q0+bCnyXDHeronZi59O/vV5YivrXsjXleVndFlV6jV/VqyqDLqYkvzoCIRkFAPU
-         fyawCsdJqNYXvo8laqpMWSMzblXgwXMsQHIeOeGXbhuKPfajUrAdw/KVNCsgX00y6dwX
-         W+OQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVu8PlOldbeVuhAhn2vKF85kwjfYLCkUxWMkrDAtwDptLme4TJZxNh0mEU2h+HEBoQnaICr7iENDvj4v/i4Fw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzRYl5i9RhC8j2gWpW8odb3qkKKcRTMJ7zKquDdJIOVMHEVvWVn
-	K/1fpdeLKIMZ5TixODgcv627vMoC5oUcxIQOPrbTCkdIzuNvY2JaJgnkmjt9aSKKjQ5SfN43Z2z
-	keQQdK9fdDWCliXiS4ksb7qVuWyvmQ/AVVmkqNpZRY4eNpomiD4+neYKCw5w=
-X-Gm-Gg: ASbGncsQ5jXlJJm5ypog95oYGc2MV9C02CehjimRpWUsLUsSbqf3i9pDm3trpyZodkF
-	E569YKmdUghkyPhmfgomq8wIvcP0CxMapMaUn23GUFmwAeqlz2h3q/trDQXsPPTwcYMiw6MokQb
-	2BV3HzZak6chMgs/EYNR6DTVFSr8RgCPMZLip5qYIXalNXlN8KV/Do+qGEA4gIjLtiudOhae7+z
-	WnV
-X-Google-Smtp-Source: AGHT+IGe/4/44D/ghxEowOkcRodziGm99URjyJEhwDGnJ1beM5CL7lH4P2Iro03Zrvx61SWSJqecABON5p5OEInqeUs=
-X-Received: by 2002:a17:90b:224c:b0:311:e8cc:4248 with SMTP id
- 98e67ed59e1d1-31347797dc1mr18023465a91.33.1749452591283; Mon, 09 Jun 2025
- 00:03:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1749455822; x=1750060622;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9xCRdGyFV/qmREjSzVYn1llBGMmzLISDBHN00C5YP4U=;
+        b=WI5sYMyCItVUg+BIP9X9eXHez67ZfE5PjeHsBdxFFDxfw+VkalPlTwuRzTyLTeB7K+
+         F5u6iESo3mnCUJ3hheNFfVdDynZmi1vIqOeRGLHWKyVbtdshA02MD4gjNFuDOpmb/KOc
+         835HsgPQRJLD0MW/v4lLEl0kgSuFPPMTfKzF1JfZrUbNtiqUrJ0uCiwlaz7HrTNigoEB
+         sqqSYcpsCx8iN+ckI7zL6KscmtbQMDY+Blouo4YWUOF/UbXTk3ZmN5uEkL6qMAs8O561
+         NnWDoP9e9vqW5qK78S6k2ktmB1iVr7y5JIsXgWl054yW68PFFd6l/xTHkDgr2kY0rtLX
+         CLzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXG3rFqXgbJmL8GEaO/PG0wE7eWNar8jXLaO6a8E8X7hen1QVtHgrXkXL1L2v+82nPJ5ktaL2tTCbdfztE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzM5XVpyzDI9PnmhmPE0JP00+0lU5MLcklVLUN+4+FHlo/iFrsT
+	/9b0fRW9HX4mEit7g+4XBwYy/GLI7nuDO2c1uBFli+BudMgoBpKDyOvn
+X-Gm-Gg: ASbGncsZV0cKbRtWtPIqw3ThX6hSpAHz24grw+3LWlzKkBEgHhAMJDSEs1YLaV0k/4V
+	5eG7notojwazL5yobaxWN7LeGZHkBA4FYjSr28W0Wqdh1vqMDqAIOfTI8nJgZPu8VTaAUOdSO1u
+	ZNB4usp4gz5A+SC5QQLZlCX+4Pv7q/LJOpObCDLjRDPZiMNhOR6HHVzaPl9tIouuql9rKvIyc3S
+	qGnF+yMLRYOSzREFWT6i/+H5JrZ9uUpnxuTVYn1cxvDRXRFxSn3rsb7GOKdfeYZnEjvQYQuUDoR
+	UjxRanLG2+rCN2Yg/NOozhRW6NlMmny247ABIzYXsh0v/3zPisQZyQ==
+X-Google-Smtp-Source: AGHT+IFR+PbBitilbpBp7iEMdJfwlPWMhDklOZRnpHUxMAixPokz0lWagcCbzlcwioBQCxH5sPfs/g==
+X-Received: by 2002:a05:6a00:22d1:b0:742:3cc1:9485 with SMTP id d2e1a72fcca58-74827e9c914mr15067788b3a.12.1749455821518;
+        Mon, 09 Jun 2025 00:57:01 -0700 (PDT)
+Received: from pop-os.. ([2401:4900:1c97:ddea:418d:d481:617b:9b03])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7482b0c0138sm5146568b3a.110.2025.06.09.00.56.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Jun 2025 00:57:01 -0700 (PDT)
+From: Abhinav Ananthu <abhinav.ogl@gmail.com>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Abhinav Ananthu <abhinav.ogl@gmail.com>,
+	syzbot+5138f00559ffb3cb3610@syzkaller.appspotmail.com
+Subject: [PATCH] fix : slab-out-of-bounds Read in bch2_sb_members_v2_to_text
+Date: Mon,  9 Jun 2025 13:26:14 +0530
+Message-Id: <20250609075613.27146-1-abhinav.ogl@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <6745a8df.050a0220.1286eb.0015.GAE@google.com> <684650c6.050a0220.d8705.0018.GAE@google.com>
- <esjz6hewatxgaiqdluqf2sdorpybqxcwr4c77y2fozs6plj3yx@bkpt7rrtzdid>
-In-Reply-To: <esjz6hewatxgaiqdluqf2sdorpybqxcwr4c77y2fozs6plj3yx@bkpt7rrtzdid>
-From: Aleksandr Nogikh <nogikh@google.com>
-Date: Mon, 9 Jun 2025 09:02:59 +0200
-X-Gm-Features: AX0GCFu11bVvrlwk_kziMotGT1GDhGmAjiJrfo_A6N8T_GTNzVdIJee0BK1Gteg
-Message-ID: <CANp29Y5Ew-7FCrSmCXngSJ66SeWMMX=bgztUZP99i-tGX=jMbg@mail.gmail.com>
-Subject: Re: [syzbot] [kernfs?] general protection fault in kernfs_dop_revalidate
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: syzbot <syzbot+e37a1730d63d207fe403@syzkaller.appspotmail.com>, 
-	bfoster@redhat.com, gregkh@linuxfoundation.org, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, tj@kernel.org, 
-	syzkaller <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jun 9, 2025 at 5:19=E2=80=AFAM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
->
-> On Sun, Jun 08, 2025 at 08:11:02PM -0700, syzbot wrote:
-> > syzbot has bisected this issue to:
-> >
-> > commit f7643bc9749f270d487c32dc35b578575bf1adb0
-> > Author: Kent Overstreet <kent.overstreet@linux.dev>
-> > Date:   Wed Apr 17 05:26:02 2024 +0000
-> >
-> >     bcachefs: make btree read errors silent during scan
->
-> syzbot bisections have been looking _very_ unreliable
->
+BUG: KASAN: slab-out-of-bounds in members_v2_get fs/bcachefs/sb-members.c:68 [inline]
+BUG: KASAN: slab-out-of-bounds in bch2_sb_members_v2_to_text+0x1ae/0x310 fs/bcachefs/sb-members.c:347
 
-In the bisection log[1], syzbot has run the reproducer (that mounts a
-bcachefs image) on the original commit 20 times and it has got lots of
-very different crash titles. One of those was actually the original
-crash:
+bcachefs: fix slab-out-of-bounds read in bch2_sb_members_v2_to_text
 
-run #1: crashed: general protection fault in kernfs_dop_revalidate
+syzbot reported a slab-out-of-bounds read in bch2_sb_members_v2_to_text().
+This function parses superblock member entries from a serialized array,
+but did not properly validate the bounds of each entry before accessing it.
 
-but the others were in quite different subsystems (net, block,
-bcachefs). They look like different manifestations of some memory
-corruption caused by the mount of a corrupted bcachefs image.
+When the function iterated over v->entries[], it assumed each
+bch_sb_field_members_v2_entry was fully contained within the buffer.
+However, if the structure was truncated or malformed, this could lead to
+reads beyond the end of the allocated slab, triggering memory safety bugs
+under KASAN and potentially leading to undefined behavior.
 
-I don't see where the bisection could have derailed later during the
-process - on the tested commits, the kernel either crashed 100% of
-repro runs or none of them. So the result very likely is reasonable
-w.r.t. to some bcachefs bug, which has apparently been fixed since
-then. The reproducer no longer works on syzbot and the last "general
-protection fault in kernfs_dop_revalidate" crash was recorded almost
-100 days ago.
+This patch adds a bounds check to ensure the offset does not exceed the
+total size of the entries buffer before accessing each entry. This
+prevents out-of-bounds access and resolves the bug.
 
-[1] https://syzkaller.appspot.com/x/bisect.txt?x=3D17abb20c580000
+Reported-by: syzbot+5138f00559ffb3cb3610@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=<5138f00559ffb3cb3610>
+Fixes: 1c8dfd7ba50dbbb72113caf4fa7868512cdad2f4("KASAN: slab-out-of-bounds Read in bch2_sb_members_v2_to_text")
+Signed-off-by: Abhinav Ananthu <abhinav.ogl@gmail.com>
+---
+ fs/bcachefs/sb-members.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
---=20
-Aleksandr
+diff --git a/fs/bcachefs/sb-members.c b/fs/bcachefs/sb-members.c
+index 77809ee23c45..9f137cf7d33e 100644
+--- a/fs/bcachefs/sb-members.c
++++ b/fs/bcachefs/sb-members.c
+@@ -64,6 +64,12 @@ struct bch_member *bch2_members_v2_get_mut(struct bch_sb *sb, int i)
+ static struct bch_member members_v2_get(struct bch_sb_field_members_v2 *mi, int i)
+ {
+ 	struct bch_member ret, *p = __bch2_members_v2_get_mut(mi, i);
++	size_t array_size = le32_to_cpu(mi->field.u64s)*8-16;
++	size_t member_bytes = le16_to_cpu(mi->member_bytes);
++	if (i < 0 || (member_bytes && i >= array_size / member_bytes)) {
++		memset(&ret, 0, sizeof(ret));
++		return ret;
++	}
+ 	memset(&ret, 0, sizeof(ret));
+ 	memcpy(&ret, p, min_t(size_t, le16_to_cpu(mi->member_bytes), sizeof(ret)));
+ 	return ret;
+-- 
+2.34.1
+
