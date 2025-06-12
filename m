@@ -1,128 +1,127 @@
-Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37C9F21D3F4;
-	Thu, 12 Jun 2025 08:20:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2062422A804;
+	Thu, 12 Jun 2025 09:37:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749716432; cv=none; b=dYUG5CJNVp693ewlXLmm59YXK+LScYr0ZDt91+OzZqyWN4ApvMtC3CLsUDR9ji2nBSn71bMyfq0bHf7AaNQR6OWlA7wOPhdlzdVJYF5eqEz4DKH+XSuEz8VBTrRW6OeuwVSCrg5pXmY+DFBgB5eVaphs4W/gm7sDZScgc5UwhOQ=
+	t=1749721041; cv=none; b=IiWP0IqqMP/Mbl1iNI7yq7u0S9RzIz+E+PMimYbpBw+xfqEOmKz7vkO0qW/E4mHaJYP1CrBl3sUUOzMGzKca5JDEqWWKHxw92H/ogaz4+J5b95MLENftoAVP8VNNZ1+t+ZvEUh25t0tr5xwFCxwDY1T044K2AnRC6aplMu1Vzzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749716432; c=relaxed/simple;
-	bh=WVgG2tnnkYpGMxVKQjyY3rF80ora3aJX6lpro4BS+uo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=O4bkmgZDmH1aoayv++j/7xEIZQljpadpI3fiMne13W4eRTS+LRYbsL9r97FBEr+7bIHWlB966+TiYSqsq/w2HPSCrlPXwpBoQjFF9GeFtQSJLmElPzk6sBE5rfbCvmJLd1rSyDEQkgkolswluuyx69/WVAaTKmqCY0Tqa//FGxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iDRAKLMm; arc=none smtp.client-ip=209.85.167.177
+	s=arc-20240116; t=1749721041; c=relaxed/simple;
+	bh=VKQMD6iP+0w1E2dffmvUxlnEMT19ZCyMucFZHtYeZnY=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y43or5WG0TjALxiHbU4TctPzNgiapulXNK5y5XVDQ1DZkOQfqKj3puWZtJg4lQ7XYmEKB6+NNaVWxxENHkVGifvFEkZu3CIvF+c6LjnMtAp6ZV2LrwJUuTB3qLFYXi2Rxom97Jn7uSsrSF7rvLkRTJ8U1z9koCFhD7fmymFjNnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NN+tkTww; arc=none smtp.client-ip=209.85.167.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iDRAKLMm"
-Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-404e580bf09so172075b6e.1;
-        Thu, 12 Jun 2025 01:20:31 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NN+tkTww"
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5534edc6493so809210e87.1;
+        Thu, 12 Jun 2025 02:37:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749716430; x=1750321230; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iHaOjqwhY79rHl7CZbeFzNKnbLFycykRZVNCnsxTjBw=;
-        b=iDRAKLMmIfcWwJ8mhVQ3C35Ysd2kEYiNlM7t4MrGl0OzVjR5eGYxO3ELWdJEzc6czU
-         lSyIv5pUi1TGhaCACEv9a+un5PMx53mF2oTViitxJruWe4tsrbWX+LGeSx0zsQiHhiEL
-         XBuALKGj4xAL/ST6c9wRL6K48Qofe9eYve7V+8/FxSwIYZnPczywZ+Re4vFtxYjNjVV1
-         2ChOHuu7C3In6OZC2C+WMNLRAmJK59ENO1HxHIvnGGg7MFU+p1thi5UQN2chzSKvq9uO
-         L6M4DSyS5kAQoN5jwYSRVpTeR1jpWDS7ZV9rZePz9BbYfywSBw1RXPgqGNiB/hA3sTWx
-         IZKQ==
+        d=gmail.com; s=20230601; t=1749721037; x=1750325837; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Xk308O1KlvA6k3uBQDw8z50KFvPVgd1NjWS8ld81/fk=;
+        b=NN+tkTwwmEKFmbe8JXpuOrcKtmTgld6iZkQsUYxHtKhmyiYaSAjZItgDaQoHss7W87
+         U9IhX1DWYesSPc7FS1OzJSXxfoAVG+3f6FVqg0CJpbELMWgoYHEPOoohkY+mRRBsAXs6
+         lzLCQcLgImvbqiobT9adUZ+pSsyY/HouNAy4io3hWc805Ivoqy0SDxq+YdaKMhAPR09M
+         HL1njIjBhUO2eYYWT7V/KerdcR4RDyoDAs2vLqn7xYHfMvt13OOFQAO4b3g0EuJHiN41
+         3rnQpbjptIruHt0yRmEU+Bn+e8JZWrdi9SFmX/EXPlur2ppJXTYVUP06R6eQhffWxhLR
+         3hfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749716430; x=1750321230;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iHaOjqwhY79rHl7CZbeFzNKnbLFycykRZVNCnsxTjBw=;
-        b=pUzdv1mEQx9PMMpBG6BD9kBtSAYpbGYE8TVxywe0viH7PVSR0rFJCaHRC/ReibYfKz
-         4KfRijE+1hoQtlWySzjzDzHa5yNVxLekD+5UyqfIPfFziJBY+0PCs/X6DbSZWodbWtPj
-         YcwKQzeD+tFT+e1AHKtNz9a4ANqY7qPAAF5B1ezAOf4cfXIyQt67Uk+xKM5FKSGpuGQa
-         Ly1Ke1Er88S0jzZgujoMm1KdCui4B1vFBjDbi+gODHinbiECcR7EmJXgpMXXn1ophOmY
-         vZfkqUqZp0bidA1/46CVr2SQscWzJm7/PaKo3dJLABaKAcMErs9p2GIkcFYSWE1OHq4u
-         Odww==
-X-Forwarded-Encrypted: i=1; AJvYcCWcds0Kx8+RiE5HgsUgBuQ/vaKTpKk+i5F07t5W6HXS1wg0uLtbyrLw/sEvs06VSXNElK5mjWy+Mic0sO0Xsw==@vger.kernel.org, AJvYcCWkAmuoPxdWeQ9FDGnIMY2+hS/JxjGYuWv4iwXPshlbFw8V7waxQvZfL/46Omw/+uGiOCc3+ljqmGtZJfH4@vger.kernel.org
-X-Gm-Message-State: AOJu0YxgBDkmAtFdzUN4X90VkebeF8eRFLwspzL07OuJFw4/VpNOhpYM
-	yLvInIC2WYtW2m1NTesr4rkSSzHrOaUKEU/80C/K/rk/gApQl4dzlg7P5DU2s40Z
-X-Gm-Gg: ASbGnctqR6hXVpuRmx2rRXIi4JshofZ65eVMCCoUqnaC49GcMtfYAlqV58gXOKB+EVI
-	oNh1OwoRna1sbJInkrNqffQtwQCKEC8iDHj3uu6RlydywA9J0KVctdnCOFitBX2tpIU5xqHXbvI
-	TUxh1142ekCLqxtA/w2tDTrOA3naWr+z7+1u0oovbCltEinVaEFAe/qSc9GSv3a8rx3KUkBVjj9
-	Sr/oq1MqcOWGoYhpxXwKcBt4hxcrpDGIcr+Ero4/OtOnJDPDJMgePIH4sk31pv6BzybBKERHTrC
-	zNMUvicPC4qm3+E1u1k9rYB70UWwEag0ImuHQTzBU8iUUHExX0ckdHE33PhOnm4=
-X-Google-Smtp-Source: AGHT+IHgoouR9wdzwq9AQYrVJwXB6hntvSFWGTLZ5QK5PWgpDBD8wu5ti9LLCSM1L4N6sdRNdH53Ag==
-X-Received: by 2002:a05:6808:690c:b0:406:7186:5114 with SMTP id 5614622812f47-40a660ce8d6mr1224140b6e.36.1749716430280;
-        Thu, 12 Jun 2025 01:20:30 -0700 (PDT)
-Received: from s-machine2.. ([2806:2f0:5501:d07c:2c0e:c0ab:c58f:2cd])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-40a6830b980sm211965b6e.33.2025.06.12.01.20.29
+        d=1e100.net; s=20230601; t=1749721037; x=1750325837;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xk308O1KlvA6k3uBQDw8z50KFvPVgd1NjWS8ld81/fk=;
+        b=hdmGOL2GnyYihzjl0C6iR5NRECRUiGdqQle7Q6w12/ypQ/AkSiKq7LcB85VXKGeHJI
+         SjM7AAVHS015HFs+1IyYG0Uxcxk41yASJ+3g35dmAp9naU0spy2lKLSi8bUjn3fIzQoI
+         oEiebNZzCaZ44tt2vS5ajdOmluFW9JFsIADE4skVLrpAqaxBfKbDF//1YplBwU05bPD0
+         1sJXOkQIsVQyDLshXRLt5xfFGj7pfddXhy6xoB0i7uCMK+n1dMUqYbA5gqh4kuya40ri
+         zFeetfauCNthUjddSjxfsh9DaLpCufw91AE+AjrK6HhMj/gUBsoLXyzSodpjHjy6gv+d
+         8kZg==
+X-Forwarded-Encrypted: i=1; AJvYcCUKKyiBSfi/yqKQ1S0AJV3Te4vA6Fg9tjR+lqdcZFSrXNJeCCNH9JrfIM5A76B7NPLOSqIsK4/3c+vDx35E@vger.kernel.org, AJvYcCUaZbdhWl27u7crGDBnso2w1VBmxqoqJeocg4NW2nNom/qqfmO96S1qp94j3HkGfoJjf6Pe@vger.kernel.org, AJvYcCWuKDBbDpsT3dU4A5IayCEo5AGxqV2oT27M4xwF/SDGqbssZZtSdzZ9smdxKiERhrIF6Zq30gfW9NjibhsUSQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzLXon9iK+HW8y6h+n0VJxYAlskWaXCqA+V0yJyy0UmrK5/YW0Q
+	Z9SV5o94tOnBOtY4zO5JjABTDudsKlOkbU5HSYSSvHBNiEKXzu8mkVP0
+X-Gm-Gg: ASbGncuebTkJZSLHxLumEs/jmdd/rWOFgXiZ7v8VV15iOrlkMPRchQUQSRqRixyBvfl
+	pN85G5eYhwpzpIyGiJqGQdUxzvaorhZwUL8EjxsSNkjAfBSHl0Q9tRV441QUtdDfurn3flcqKzV
+	0N+K8bmmRc5fkiGkXD8f0zb/v4+Eul4t/P9Qeap+lORNPH865r6xSfMNDN32g+NZ4Hklxpn4IG9
+	TSpJMqupXaa/+HmfA3U1RVGU6hLGcFQjtz3dpLO+XDqKQo2PhZGO48y0plNtuPrUh/xFJqVz0hS
+	FcgF6wcyCF7u7zexC5lgDWvCaSIA/gJscw7evmn6zGpeOunRnIfFNIZRS6Lj2mUCmqiPqkLWcTP
+	WSqKzdrk1ylA=
+X-Google-Smtp-Source: AGHT+IEj5f77EREUpZ5E8w/EotPyfdIbWYVJo/+X7KstcTDOFCPPy6sZX4ZtpEWDZ+ZUxCfqDqiafA==
+X-Received: by 2002:a05:6512:3985:b0:553:5d00:be86 with SMTP id 2adb3069b0e04-553a55f7c07mr835838e87.41.1749721036987;
+        Thu, 12 Jun 2025 02:37:16 -0700 (PDT)
+Received: from pc636 (host-95-203-1-180.mobileonline.telia.com. [95.203.1.180])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-553ac1ab650sm52500e87.91.2025.06.12.02.37.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Jun 2025 01:20:29 -0700 (PDT)
-From: Sergio Perez Gonzalez <sperezglz@gmail.com>
-To: kent.overstreet@linux.dev,
-	linux-bcachefs@vger.kernel.org
-Cc: Sergio Perez Gonzalez <sperezglz@gmail.com>,
-	linux-kernel@vger.kernel.org,
-	shuah@kernel.org,
-	syzbot+e577022d4fba380653be@syzkaller.appspotmail.com
-Subject: [PATCH] bcachefs: fix size used to calculate `nr` of devices in member_to_text()
-Date: Thu, 12 Jun 2025 02:19:26 -0600
-Message-ID: <20250612081935.161598-1-sperezglz@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        Thu, 12 Jun 2025 02:37:16 -0700 (PDT)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Thu, 12 Jun 2025 11:37:13 +0200
+To: Aleksandr Nogikh <nogikh@google.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>,
+	syzbot <syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com>,
+	akpm@linux-foundation.org, josh@joshtriplett.org,
+	kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	paulmck@kernel.org, rcu@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com, urezki@gmail.com
+Subject: Re: [syzbot] [bcachefs?] [rcu?] BUG: unable to handle kernel NULL
+ pointer dereference in rcu_core (3)
+Message-ID: <aEqfySUeBHDbQ-96@pc636>
+References: <aEnVuzK7VhGSizWj@pc636>
+ <6849df90.a70a0220.cc01e.058d.GAE@google.com>
+ <aEnuAp5w6QSoSu_M@tardis.local>
+ <CANp29Y4d3de3cc9weuqHCw2sDMdtArOFz5B=783KZ4419Ux=Ag@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANp29Y4d3de3cc9weuqHCw2sDMdtArOFz5B=783KZ4419Ux=Ag@mail.gmail.com>
 
-In bch2_sb_members_v1_to_text() there is an incorrect size used to
-calculate the number of devices.
+On Thu, Jun 12, 2025 at 09:42:32AM +0200, Aleksandr Nogikh wrote:
+> On Wed, Jun 11, 2025 at 10:58 PM Boqun Feng <boqun.feng@gmail.com> wrote:
+> >
+> > On Wed, Jun 11, 2025 at 12:57:04PM -0700, syzbot wrote:
+> > > Hello,
+> > >
+> > > syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+> > >
+> > > Reported-by: syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com
+> > > Tested-by: syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com
+> > >
+> > > Tested on:
+> > >
+> > > commit:         488ef356 KEYS: Invert FINAL_PUT bit
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=129a660c580000
+> >
+> > Is there a way to see the whole console output? If Ulad's patch fixes
+> > the exact issue, we should be able to see a WARN_ON_ONCE() triggered.
+> 
+> If WARN_ON_ONCE() were triggered, the associated kernel panic output
+> would have been at the end of this log.
+> 
+> >
+> > Regards,
+> > Boqun
+> >
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=713d218acd33d94
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=80e5d6f453f14a53383a
+> 
+> FWIW the last time the bug was observed on syzbot was 100 days ago, so
+> it has likely been fixed since then or has become much harder to
+> reproduce.
+> 
+That is even worse, if it is last for 100 days already.
 
-The correct size should be `BCH_MEMBER_V1_BYTES` as implied by:
-
-static struct bch_member *members_v1_get_mut(struct bch_sb_field_members_v1 *mi, int i)
-{
-	return (void *) mi->_members + (i * BCH_MEMBER_V1_BYTES);
-}
-
-Also invert the pointers used in the calculation, given that they yield a
-negative number.
-
-Reported-by: syzbot+e577022d4fba380653be@syzkaller.appspotmail.com
-Signed-off-by: Sergio Perez Gonzalez <sperezglz@gmail.com>
----
- fs/bcachefs/sb-members.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/fs/bcachefs/sb-members.c b/fs/bcachefs/sb-members.c
-index c673e76ca27f..cc51313ebcf6 100644
---- a/fs/bcachefs/sb-members.c
-+++ b/fs/bcachefs/sb-members.c
-@@ -325,10 +325,10 @@ static void bch2_sb_members_v1_to_text(struct printbuf *out, struct bch_sb *sb,
- {
- 	struct bch_sb_field_members_v1 *mi = field_to_type(f, members_v1);
- 	struct bch_sb_field_disk_groups *gi = bch2_sb_field_get(sb, disk_groups);
--	int nr = (vstruct_end(&mi->field) - (void *) &gi->entries[0]) / sizeof(gi->entries[0]);
-+	int nr = ((void *) &gi->entries[0] - vstruct_end(&mi->field)) / BCH_MEMBER_V1_BYTES;
- 
- 	if (nr != sb->nr_devices)
--		prt_printf(out, "nr_devices mismatch: have %i entries, should be %u", nr, sb->nr_devices);
-+		prt_printf(out, "nr_devices mismatch: have %i entries, should be %u\n", nr, sb->nr_devices);
- 
- 	for (int i = 0; i < nr; i++)
- 		member_to_text(out, members_v1_get(mi, i), gi, sb, i);
-@@ -344,10 +344,10 @@ static void bch2_sb_members_v2_to_text(struct printbuf *out, struct bch_sb *sb,
- {
- 	struct bch_sb_field_members_v2 *mi = field_to_type(f, members_v2);
- 	struct bch_sb_field_disk_groups *gi = bch2_sb_field_get(sb, disk_groups);
--	int nr = (vstruct_end(&mi->field) - (void *) &gi->entries[0]) / le16_to_cpu(mi->member_bytes);
-+	int nr = ((void *) &gi->entries[0] - vstruct_end(&mi->field)) / le16_to_cpu(mi->member_bytes);
- 
- 	if (nr != sb->nr_devices)
--		prt_printf(out, "nr_devices mismatch: have %i entries, should be %u", nr, sb->nr_devices);
-+		prt_printf(out, "nr_devices mismatch: have %i entries, should be %u\n", nr, sb->nr_devices);
- 
- 	/*
- 	 * We call to_text() on superblock sections that haven't passed
--- 
-2.43.0
-
+--
+Uladzislau Rezki
