@@ -1,111 +1,83 @@
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from mail.lichtvoll.de (lichtvoll.de [37.120.160.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B8E829ACE4
-	for <linux-bcachefs@vger.kernel.org>; Thu, 12 Jun 2025 15:27:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAFA22989B5
+	for <linux-bcachefs@vger.kernel.org>; Thu, 12 Jun 2025 15:51:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.120.160.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749742061; cv=none; b=ZEvHRH2vvA3RsXXI+Q76OCvBSqFjsq8AcVIYkMSzdLW6yeIEU0//HEFJpIqEKZDinXFvzRC+CpR0U71M7m0RDpTNERjXsTvNwvQSsgcKsl+deqY849Px6TcdyyhWJOwPA42yD4DAFoXeW7bxbwKBkRvPfPHdZ06QUXj1xPVIh6w=
+	t=1749743494; cv=none; b=DdNv73kbUQ2TlEQwhI9y8ijo0l5Nr5fYrULWVK743nNGDUMf+DU6zrcfTJNLHFOAFiuIThevtRZGR+K9exqAzGvrGvRWHAJGnTAaV9rQXVFU3+mdQnSGGkqSAkHw/D1urdu7BcLAqj357+nd3wPR/Gqbx+Thd5HV/AupB6ps6D8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749742061; c=relaxed/simple;
-	bh=esuWoF4+5YSzorn3pD3qgA/Q6prQMzRn7YoirPdkwGE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ji19A5gtDmlFakuWbV/IzWit3qV4MAtsiqI3vGn+UbXOn8dFGvsaOmsgW7Cx0syVSIoUGlAqQ0dgXbeU8IV2Lb7QazaHp6LuBMBIsqrPG14UFzJmGVUWCUFu49PIn4V9D7SCEk5ouVMDnzt6AyVLqaHdRxfCApZiZInGFL3BwrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tQ2BBo8I; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tQ2BBo8I"
-Date: Thu, 12 Jun 2025 11:27:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1749742056;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=08IhqjOYS8NhpwOoqkODfXYHq76eNMAzxpdSMQvwlzE=;
-	b=tQ2BBo8IZP4++LYAWvzkW8nFdDKhmcM78bX6gkBqyb9LbN29WQ35Q31/RW6e+dAONNZrVq
-	92TnNzFy2I5mAp7RfSl7YINC/69Te+qD/3biYnw4SsANIZiRe+OSzsqnRuvZV+HXy2L6YI
-	YKbwu4MouK0vyWi8uCuUgZp7E0eCa1w=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Sergio Perez Gonzalez <sperezglz@gmail.com>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	shuah@kernel.org, syzbot+e577022d4fba380653be@syzkaller.appspotmail.com
-Subject: Re: [PATCH] bcachefs: fix size used to calculate `nr` of devices in
- member_to_text()
-Message-ID: <4n6rpfi4vi4gsrk3oiodqhjtjzaygkgg3yamsmn76trrw4o3zv@xxndklof3j6r>
-References: <20250612081935.161598-1-sperezglz@gmail.com>
+	s=arc-20240116; t=1749743494; c=relaxed/simple;
+	bh=yosVDrQdfuor1dnWGT5FAY1zR+YXQR6fzG7w0KMdNvA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=SadpJCkV0tVNPP3HmBUOHAfv2v/3CnR4XwZaXHQaMe/6wEVHJJL3XFGIE7ApBrXMy8rILq0+dg4I90RQjit/w8Nhg3My4wXu/DG5qJ6O2uKur4yFg5uhv2vD/c25Dr36nfDSeIVs0+zFGhFcfztRZDYIi//VNoV26j4z2vYkWnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de; spf=pass smtp.mailfrom=lichtvoll.de; arc=none smtp.client-ip=37.120.160.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lichtvoll.de
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+	(No client certificate requested)
+	by mail.lichtvoll.de (Postfix) with ESMTPSA id 2AE3F10AE3A;
+	Thu, 12 Jun 2025 15:51:29 +0000 (UTC)
+Authentication-Results: mail.lichtvoll.de;
+	auth=pass smtp.auth=martin@lichtvoll.de smtp.mailfrom=martin@lichtvoll.de
+From: Martin Steigerwald <martin@lichtvoll.de>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, Hongbo Li <lihongbo22@huawei.com>
+Subject: Re: Size of directory entry 16 EiB according to "ls -l"
+Date: Thu, 12 Jun 2025 17:51:26 +0200
+Message-ID: <2788356.mvXUDI8C0e@lichtvoll.de>
+In-Reply-To: <sckkunsdfsvkynpfh6rknpe3rggag6mcc5gkqypz3kvhi7x4cu@wkz2iepbn3o5>
+References:
+ <3009813.e9J7NaK4W3@lichtvoll.de> <3358454.aeNJFYEL58@lichtvoll.de>
+ <sckkunsdfsvkynpfh6rknpe3rggag6mcc5gkqypz3kvhi7x4cu@wkz2iepbn3o5>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250612081935.161598-1-sperezglz@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 
-On Thu, Jun 12, 2025 at 02:19:26AM -0600, Sergio Perez Gonzalez wrote:
-> In bch2_sb_members_v1_to_text() there is an incorrect size used to
-> calculate the number of devices.
-> 
-> The correct size should be `BCH_MEMBER_V1_BYTES` as implied by:
-> 
-> static struct bch_member *members_v1_get_mut(struct bch_sb_field_members_v1 *mi, int i)
-> {
-> 	return (void *) mi->_members + (i * BCH_MEMBER_V1_BYTES);
-> }
-> 
-> Also invert the pointers used in the calculation, given that they yield a
-> negative number.
-> 
-> Reported-by: syzbot+e577022d4fba380653be@syzkaller.appspotmail.com
-> Signed-off-by: Sergio Perez Gonzalez <sperezglz@gmail.com>
-> ---
->  fs/bcachefs/sb-members.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/bcachefs/sb-members.c b/fs/bcachefs/sb-members.c
-> index c673e76ca27f..cc51313ebcf6 100644
-> --- a/fs/bcachefs/sb-members.c
-> +++ b/fs/bcachefs/sb-members.c
-> @@ -325,10 +325,10 @@ static void bch2_sb_members_v1_to_text(struct printbuf *out, struct bch_sb *sb,
->  {
->  	struct bch_sb_field_members_v1 *mi = field_to_type(f, members_v1);
->  	struct bch_sb_field_disk_groups *gi = bch2_sb_field_get(sb, disk_groups);
-> -	int nr = (vstruct_end(&mi->field) - (void *) &gi->entries[0]) / sizeof(gi->entries[0]);
-> +	int nr = ((void *) &gi->entries[0] - vstruct_end(&mi->field)) / BCH_MEMBER_V1_BYTES;
->  
+Kent Overstreet - 12.06.25, 17:17:22 CEST:
+> On Thu, Jun 12, 2025 at 04:30:08PM +0200, Martin Steigerwald wrote:
+> > Kent Overstreet - 12.06.25, 15:45:23 CEST:
+> > > > I suppose I could just create a new directory and move over the
+> > > > files
+> > > > from the one with the odd size.
+> > > >=20
+> > > > However, keeping as is for now. Maybe I can help testing repair
+> > > > code.
+> > > > =F0=9F=99=82
+> > >=20
+> > > Well, I do need to work on making the rest of the fsck passes work
+> > > online, maybe I'll be able to start on that soon... fingers crossed
+> > > =F0=9F=99=82
+> >=20
+> > Would you like me to wait for that for testing?
+>=20
+> No, that won't be for ~months, most likely. You'll just need offline
+> fsck to repair this for now.
+>=20
+> (check_inodes() shouldn't be too bad to make work online, I've just got
+> filesystems to recover and projects to finish before I start new things)
 
-Actually, this shouldn't be referencing gi at all - brainfart on my end,
-that's a completely different superblock section. That's where the
-negative number came from.
+[x] done:
 
->  	if (nr != sb->nr_devices)
-> -		prt_printf(out, "nr_devices mismatch: have %i entries, should be %u", nr, sb->nr_devices);
-> +		prt_printf(out, "nr_devices mismatch: have %i entries, should be %u\n", nr, sb->nr_devices);
+bcachefs (DEV): directory 4096:4294967295 with nonzero i_size 75376, fixing
+bcachefs (DEV): directory 4098:4294967295 with nonzero i_size -856, fixing
+bcachefs (DEV): directory 4675:4294967295 with nonzero i_size 960, fixing
+bcachefs (DEV): directory 4676:4294967295 with nonzero i_size 160, fixing
+bcachefs (DEV): directory 8571:4294967295 with nonzero i_size 712, fixing
 
-Yeah, it should have a newline.
+Thanks.
 
-I'll fold that in.
+Sizes all zero again after mounting.
 
->  
->  	for (int i = 0; i < nr; i++)
->  		member_to_text(out, members_v1_get(mi, i), gi, sb, i);
-> @@ -344,10 +344,10 @@ static void bch2_sb_members_v2_to_text(struct printbuf *out, struct bch_sb *sb,
->  {
->  	struct bch_sb_field_members_v2 *mi = field_to_type(f, members_v2);
->  	struct bch_sb_field_disk_groups *gi = bch2_sb_field_get(sb, disk_groups);
-> -	int nr = (vstruct_end(&mi->field) - (void *) &gi->entries[0]) / le16_to_cpu(mi->member_bytes);
-> +	int nr = ((void *) &gi->entries[0] - vstruct_end(&mi->field)) / le16_to_cpu(mi->member_bytes);
->  
->  	if (nr != sb->nr_devices)
-> -		prt_printf(out, "nr_devices mismatch: have %i entries, should be %u", nr, sb->nr_devices);
-> +		prt_printf(out, "nr_devices mismatch: have %i entries, should be %u\n", nr, sb->nr_devices);
->  
->  	/*
->  	 * We call to_text() on superblock sections that haven't passed
-> -- 
-> 2.43.0
-> 
+Best,
+=2D-=20
+Martin
+
+
