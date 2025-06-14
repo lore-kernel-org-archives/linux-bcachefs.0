@@ -1,79 +1,118 @@
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F93A19D8AC
-	for <linux-bcachefs@vger.kernel.org>; Sat, 14 Jun 2025 17:58:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB8BA23814C;
+	Sat, 14 Jun 2025 19:00:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749923942; cv=none; b=t8V0ty/gWYGrLDqfhLAeRslzoLySxiFp5uXwP2bvugllWtPJSBLuJaJeUcA9IH0O89q+IEU43P1Ytff8MYOdVaG0oIDnn4lA42bP9E+Wp3wLUro10N/HsGBDAKzDPzOo5DbltJ2hOF4kfs7yj8/YuoRdiMDTy9Tjxxg9nDnDeyw=
+	t=1749927615; cv=none; b=lzIgtR0237kaSbvBcEf/5YqJEJPWKWztHJAlSOoJr6xBQXTSGMnF2SQxW1HsmaIPnAToYsSlVFxcbAdHUmbYb17dYTndM7ZpkIsplizheJY4yaWVYHp5byJPDAecoU4NF3GjWGs4FUTy7ypcu2rWI4YMiHGXPM8kKrnKGZwBhaE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749923942; c=relaxed/simple;
-	bh=/iP0hbdHdpufEEP2MdnSxNgvPbyqNsCHGlznFr6ODw0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dnjdObk6VimAGvE0mu6l8G3HeuaTt/ieugwGya53vtJ9Ybgj8T7eWmey0izzfa6NwI36JDaHdr2MQOh9ImdG7vzZVlWAv5LaotA3U7AVzuHIoWyjl39uEfwBQu5X+ddJ72AYr8wfG4E8qGmlnwEhedZJ4okTOKE1Yz/0WGvkCdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KRlCCNFP; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1749927615; c=relaxed/simple;
+	bh=dyw0wQTRbXjxi+0VWV/JMJdHvbVqiKc1LJw7c+OmfAI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=X8DGANl3OBk3D9mXt+OVsGpO94/h/IHv6WXH6zIrkEHG29lTV7V+eJu4/0tP+19mzbUPgm2HUv/DFuO/wXUx5W4eQi1GP0A4bMsaHVabDSPBGN8d3ZI1AXqInOApbhez0xmrj4nhsKutyg/AxKT4nGehMAabP0dk6YkZ4A4RCe0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g+dG6MDd; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KRlCCNFP"
-Date: Sat, 14 Jun 2025 13:58:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1749923937;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RwnMgHWh2yxYuot42Ei4j7qupSkFCPl25c1E4Kj8lS0=;
-	b=KRlCCNFPEjD/waEb8zAlL/wJL1cEL3/QaOQNdpc8NsrXdrm/fxeijH2Y4nEnb61+x6vZFT
-	NDwkZcXX5bllth+ImyLQJd4979B2Ym1tBAz0G+lnjbEsWpqqo67myNYs2cAIzxRQimfgNu
-	YSOiA7Q8t0Ra3DpkRhXjFhf04KA20/Q=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Alan Huang <mmpgouride@gmail.com>
-Cc: linux-bcachefs@vger.kernel.org, 
-	syzbot+2f3859bd28f20fa682e6@syzkaller.appspotmail.com
-Subject: Re: [PATCH] bcachefs: Fix pool->alloc NULL pointer dereference
-Message-ID: <sihjc7q7hylvplgghtcv5bzxpm5ikygm5y5csnhg24uisxwcze@tclvjhdpksmv>
-References: <20250614135505.406931-1-mmpgouride@gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g+dG6MDd"
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-312e747d2d8so3633587a91.0;
+        Sat, 14 Jun 2025 12:00:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749927612; x=1750532412; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=00PmhWqs3GR4JJ/AcsoM8Cgv6mtpTVTNbyQtFPJciNU=;
+        b=g+dG6MDdeeqvUTDgIGAOgkXi9D1z0U/UA64xgyk6sMR3PIXMcgfMQ3TDRaiIk57oru
+         7mPSURqJisDZiVYXPtRFimzxi61cbRG5mtNKtNQX9x1x5i7C5MxLc2jxvkEViGO6GXI5
+         +aBVnyfOzbN57Mv07jxsvxv1x82jlVVA3MwaIS6zHuOZ4nmSAL6mOX8UN+lWkI6dSHxB
+         bE65ZFiGfmGXTKs8hTeptXNw3JoHpCwLGcecym2PjCKxUCpWaX7yoQiM4yQf68JlXKmL
+         H9knylih//peyCf/YsOgoQ/2Ahnf6Yz/a2U8l2Su8EL9KvEhtBbZ7iiHuOzwHkrqHaJL
+         GASA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749927612; x=1750532412;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=00PmhWqs3GR4JJ/AcsoM8Cgv6mtpTVTNbyQtFPJciNU=;
+        b=VjxT0UR0q3Zt1uaO6omEJ8m8shxJUPn4I/Q7dsUIllHh/2HgSliV07N/XNSKn0odnD
+         FuC+Gz2YrJHMCfc+FTT98Ux8n/eBxzeUK2mtqKJPEbJWJAd8ebeaFZRaUSWz9FnjSanz
+         vydY+dszmaEL5D7Sr9scOUnJ0OQvUogvoJpqLCI9OuI/bcvLzjrN0bWeLZdYLJMiuz0G
+         ST/8jz3WB5YIB5qyRJ89rGd9XL9iJU/ikoLCPg9+ZuIKw2WO6nEYmB/EJvd8FipCWSqc
+         OxAsRlLUd63tB2wXKDLyqpS6Nl6pJSqJcQhWH7C6bc1APqHb6SJjsyfz+N72JFI3W6pJ
+         WLtw==
+X-Forwarded-Encrypted: i=1; AJvYcCWLuzmyy5Ea2wdJNA2Pe2TP03mcoi88Zb3nR7maH4mof7QnEDtdjco/pppEvebG0gIYwMD4d821uAEQMd53@vger.kernel.org, AJvYcCXVuERHu44tqSWZPyTpPz3khH+z4YNcwPBSxLwZsOG5q+AkjPfzxoXY0/I1G8mqZEqIBCOoVuO9XnJ7pP8HMg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwvootZYGqcR6F3H8pyRknkRpLlt0KUfeIYoBljLuRmubxYpCXy
+	Z3Yosg2gaXxeUJm0SeVnMi3gKDSlQGU7DKjzIPQQTqua1ldfGaJLKqH/
+X-Gm-Gg: ASbGncsfBgMhNT4Db8ZhC+1DR7PSc2bTAGSWgdio6wDGWxm+cat3Upcauc1B2+UKuEY
+	J7omGEtL7QMaVUmtXuvpuYe4zEL9knq9X74uCqo1h2PPe+cUEnr/n9pA89jpUrqFlWCC4D+MPaQ
+	EejovQNZfjEsQBh6xDho3ma8Ahp/oFnB+qozNmjBgE0bUaM91INv0X58hS2akCPfKv7uvHfpYd0
+	txuW5s58NvTyPpZpGq8xHxufZWLhO11FtTTKmPO+8ErcPxX7di+cwPZnzNzkecniNBs5XArhK2P
+	8jKaAMiYhSkBhQ8/p51cMSPG+GSAZC5TyodNv+y77UBNa2awUN08lgZfyoqmU304G2sBkE+FpE7
+	9V2GZKhjgUfCsoPkS1pU=
+X-Google-Smtp-Source: AGHT+IGMc1Tc/8jLJ/4AwpFgVCHjKd5rypH8VsIzJvSnR0TgQFtjv6rIwGGpuu4mWH25Z4bdJGbyBQ==
+X-Received: by 2002:a17:90b:4e90:b0:30e:3737:7c87 with SMTP id 98e67ed59e1d1-313f1bfebf6mr5605657a91.5.1749927611957;
+        Sat, 14 Jun 2025 12:00:11 -0700 (PDT)
+Received: from localhost.localdomain ([223.230.56.84])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-313c1bcbc9bsm5457987a91.9.2025.06.14.12.00.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Jun 2025 12:00:11 -0700 (PDT)
+From: Bharadwaj Raju <bharadwaj.raju777@gmail.com>
+To: kent.overstreet@linux.dev
+Cc: Bharadwaj Raju <bharadwaj.raju777@gmail.com>,
+	linux-bcachefs@vger.kernel.org,
+	shuah@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kernel-mentees@lists.linux.dev,
+	syzbot+cfd994b9cdf00446fd54@syzkaller.appspotmail.com
+Subject: [PATCH] bcachefs: don't return early from __btree_err for bad or incompatible node read errors
+Date: Sun, 15 Jun 2025 00:27:40 +0530
+Message-ID: <20250614185743.657564-1-bharadwaj.raju777@gmail.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250614135505.406931-1-mmpgouride@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Sat, Jun 14, 2025 at 09:55:05PM +0800, Alan Huang wrote:
-> btree_interior_update_pool has not been initialized before the
-> filesystem becomes read-write, thus mempool_alloc in bch2_btree_update_start
-> will trigger pool->alloc NULL pointer dereference in mempool_alloc_noprof
-> 
-> Reported-by: syzbot+2f3859bd28f20fa682e6@syzkaller.appspotmail.com
-> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
-> ---
->  fs/bcachefs/chardev.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
-> index fde3c2380e28..ec8d0719a543 100644
-> --- a/fs/bcachefs/chardev.c
-> +++ b/fs/bcachefs/chardev.c
-> @@ -378,6 +378,9 @@ static long bch2_ioctl_data(struct bch_fs *c,
->  	struct bch_data_ctx *ctx;
->  	int ret;
->  
-> +	if (!test_bit(BCH_FS_rw, &c->flags))
-> +		return -EINVAL;
-> +
+After cd3cdb1ef706 ("Single err message for btree node reads"),
+all errors caused __btree_err to return BCH_ERR_fsck_fix no matter what
+the actual error type was if the recovery pass was scanning for btree
+nodes. This lead to the code continuing despite things like bad node
+formats when they earlier would have caused a jump to fsck_err, because
+btree_err only jumps when the return from __btree_err does not match
+fsck_fix. Ultimately this lead to undefined behavior by attempting to
+unpack a key based on an invalid format.
 
-this isn't the right fix - we need to do a tryget and take a ref on
-c->writes
+Make errors of type BCH_ERR_btree_node_read_err_bad_node (only if
+__bch2_topology_error) or BCH_ERR_btree_node_read_err_incompatible go
+through the full __btree_err function instead of returning fsck_fix even
+when we are in that recovery phase.
 
->  	if (!capable(CAP_SYS_ADMIN))
->  		return -EPERM;
->  
-> -- 
-> 2.48.1
-> 
+Reported-by: syzbot+cfd994b9cdf00446fd54@syzkaller.appspotmail.com
+Fixes: cd3cdb1ef706 ("bcachefs: Single err message for btree node reads")
+Signed-off-by: Bharadwaj Raju <bharadwaj.raju777@gmail.com>
+---
+ fs/bcachefs/btree_io.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/fs/bcachefs/btree_io.c b/fs/bcachefs/btree_io.c
+index d8f3c4c65e90..e010ae94f1e1 100644
+--- a/fs/bcachefs/btree_io.c
++++ b/fs/bcachefs/btree_io.c
+@@ -556,7 +556,10 @@ static int __btree_err(int ret,
+ 		       struct printbuf *err_msg,
+ 		       const char *fmt, ...)
+ {
+-	if (c->recovery.curr_pass == BCH_RECOVERY_PASS_scan_for_btree_nodes)
++	if (c->recovery.curr_pass == BCH_RECOVERY_PASS_scan_for_btree_nodes &&
++	    !(ret == -BCH_ERR_btree_node_read_err_bad_node &&
++	      __bch2_topology_error(c, err_msg)) &&
++	    ret != -BCH_ERR_btree_node_read_err_incompatible)
+ 		return bch_err_throw(c, fsck_fix);
+ 
+ 	bool have_retry = false;
+-- 
+2.49.0
+
