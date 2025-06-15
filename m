@@ -1,106 +1,92 @@
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 954011487F4
-	for <linux-bcachefs@vger.kernel.org>; Sun, 15 Jun 2025 17:09:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AB5620ED
+	for <linux-bcachefs@vger.kernel.org>; Sun, 15 Jun 2025 17:17:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750007349; cv=none; b=dHMNMHC1ZSRYETmLqtWxPgHdQQyWKTIMEdsTT4O7eWC69QmVV130cYgeBLRuGwI151+87/ncuJJStMC3C207GopTSo0pyTf2pcE2Br8qmSyMdn42of2xD8tI9k03zJ2Okx4YfOHMJ/LFPg7FrXqxXSaDUujty5PFKEUJAnhTVxo=
+	t=1750007826; cv=none; b=LasqW0FWPB3Kfxa8163ubGxV16Ih247ga1rC9mpGNiNW5SDbo1TCVCqF1ISByl4rJwYlnvRh22Qh8X1caXSlqmNjeKUBrdoXRPa8fbENtb9T/Eb/Ji63AC9d8oO7XgrXiHB3rzIfhB/BA9esmkm4OtfCVl+xiGhpXgLEaiTJjXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750007349; c=relaxed/simple;
-	bh=pDHuhFfhNdoUzzNsgXHh6yZQXOR1uKnpg0rSYMX8fyQ=;
+	s=arc-20240116; t=1750007826; c=relaxed/simple;
+	bh=7ADFjAzFShv8nQgxBXisDG7fu58H1QWxVCWt5kTOu4k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SEYzbacVo26wQ+E+guu03WU1Yy2ZuiiJRhQrkGvpvvNCFgnGbdJa5v8WBlgq/GgDHtOXj9eb5aOCUYHn9S7nQzhe3q94LB4ycOHtHPwvXtETL/OGlb4bd9e9uqMyh080+CnaKsr4ogeuMYHZPKn7bE2RSyxxLqdJf05L6bielq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=U47AXWxR; arc=none smtp.client-ip=91.218.175.179
+	 Content-Type:Content-Disposition:In-Reply-To; b=KAZMn4Fk1ulO3/0ucxeAJ3x1vptkAt5/yuxFWVonWP/1c7Jy3Wo1M8EO1yC9j0ZE8rgUo9OSiJEJqrm3YLjF3QNN1KjdGXL40yWakD2DY3SlTWFzkgbVIsxiawXh8SvIfU6M8cBCId375SnyPmnmnXZ7FUe7KJODeAg9DKrtCz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Ri4NYucN; arc=none smtp.client-ip=95.215.58.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="U47AXWxR"
-Date: Sun, 15 Jun 2025 13:08:59 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Ri4NYucN"
+Date: Sun, 15 Jun 2025 13:16:44 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750007342;
+	t=1750007810;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=TRsRD5ygMJtY/DwL/0DdVUwQoURIs/e0mhX4hkSfM0I=;
-	b=U47AXWxRfUUGntOVfTg7yS/a5pSIYViM3blo2bqpoM/QlO3eu8BjKONppzyS6BCd1krWOy
-	3/Cg1oM8pU3Skes96Jewi4/nlWwV/nHT+aH8ez7Qd6kjlz8OXWpck4dvYsLiwJKQcGU8lH
-	8OTyhrh+1lHvxVI2Vi5o8O7P8V9LlpI=
+	bh=C7TjFeU6Cj9tBybVTwYxJkWNbfXrRrkW8083mmlv3fo=;
+	b=Ri4NYucNEIvCNAC6mDd93bwC+ClfpWmZf1Aywn6b6ile3ryKhBLF4yD0Cq++PUYsJO/KA4
+	XpeT8vwuOxjWdUWOW9Z7UPtkQUT6+S+5fJcVhr2kxaGxRuevXEvRNrPZrO+2UO7FJpYpTl
+	Jhae/TuEd9A54dJ9NpXg0RPJnFKkLWI=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Aaron Friel <mayreply@aaronfriel.com>
-Cc: "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
-Subject: Re: Issues setting durability on new devices in bcachefs
-Message-ID: <dsoyo2a3h2s52sznnujwqeebdzqxmjr4jgx2vjpknpvdfktnpw@7oxvl3ntjebk>
-References: <MW4PR05MB99934C43FB32313C921D7765B571A@MW4PR05MB9993.namprd05.prod.outlook.com>
- <qj5wzirldvxhd6om54mnzenq52hdh25zbvzhtirdgumo4zwh5o@hwccwflcdvyo>
- <MW4PR05MB9993BFE56AEF738F894D5586B571A@MW4PR05MB9993.namprd05.prod.outlook.com>
- <yfxm2uhmxqavi5p5q5l5hbcn5sgrl7tviccclav2qr65muvd4u@jawmmtvgljsd>
- <MW4PR05MB9993E5730DFC5449D826473BB571A@MW4PR05MB9993.namprd05.prod.outlook.com>
- <6v4xbwoewpmrl7uga24yjvft4dpeis65p42vez7tgi7eiuqpbq@4qvl64d3bwq3>
- <MW4PR05MB99933BF310D75964CC5FDAE7B571A@MW4PR05MB9993.namprd05.prod.outlook.com>
+To: Bharadwaj Raju <bharadwaj.raju777@gmail.com>
+Cc: linux-bcachefs@vger.kernel.org, shuah@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kernel-mentees@lists.linux.dev, 
+	syzbot+cfd994b9cdf00446fd54@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] bcachefs: don't return fsck_fix for unfixable node
+ errors in __btree_err
+Message-ID: <p5jd55daetpnpi6gmwn33uhmvz5rvbxlhwkjx454mq2fz7m4nk@pvijq3g7zopm>
+References: <20250615164547.11900-1-bharadwaj.raju777@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <MW4PR05MB99933BF310D75964CC5FDAE7B571A@MW4PR05MB9993.namprd05.prod.outlook.com>
+In-Reply-To: <20250615164547.11900-1-bharadwaj.raju777@gmail.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Sun, Jun 15, 2025 at 05:02:07PM +0000, Aaron Friel wrote:
-> > > > > I'm looking to see if I can submit a patch to fix this, but it seems
-> > > > > like the durability bit field for devices may be only 2 bits, is that
-> > > > > right?
-> > > > 
-> > > > That gets you values of 0-3. Why is that not enough?
-> > >
-> > > In bch2_mi_to_cpu, it looks like durability is encoded with a "bias" (default value) that maps {0,1,2,3} => {1,0,1,2}.
-> > >
-> > >             .durability = BCH_MEMBER_DURABILITY(mi)
-> > >                   ? BCH_MEMBER_DURABILITY(mi) - 1
-> > >                   : 1,
-> > >
-> > > This is pretty unfortunate, because it looks like if I want to use RAID6 (replicas=3), I can't represent a device as having inherent durability of RAID6 (durability=3).
-> > >
-> > > It doesn't look like too much work to add a feature flag `BCH_FEATURE_durability_bias_v2` which when set, modifies the bias to unconditionally add one to the 2-bit field, mapping {0,1,2,3} to {1,2,3,4}. That would support even very large erasure encoded arrays as well, where you might use something like RS (56,4) for a common 60 drive JBOD. Practically speaking though I don't think anyone uses stripes that wide in a single array. At least not for spinning rust, but it's been a long time since I've worked with enterprise storage and I understand the rules have changed with flash now.
-> > >
-> > > I can submit patches for implementing the feature if you want me to submit them as a PR. Not sure about your stance on LLM-authored code though.
-> > 
-> > Actually there's an easier way, which I've done a few different times
-> before. We can extend BCH_MEMBER_DURABILITY to 4 bits (should be
-> sufficient, no?), with the high bits going whenever we've got room in
-> bch_member.
-> > 
-> > Rename BCH_MEMBER_DURABILITY -> BCH_MEMBER_DURABILTIY_LO
-> > 
-> > BCH_MEMBER_DURABILITY_HI for the new two bits
-> > 
-> > Then write new get/set functions for BCH_MEMBER_DURABILITY that
-> reads/stores from the lo and hi fields.
-> > 
-> > But we'd still want a new on disk format version for this, and then use
-> bch2_request_incompat_feature() whenever attempting to set a durability
-> htat doesn't fit in the old 2 bit field.
+On Sun, Jun 15, 2025 at 10:15:38PM +0530, Bharadwaj Raju wrote:
+> After cd3cdb1ef706 ("Single err message for btree node reads"),
+> all errors caused __btree_err to return -BCH_ERR_fsck_fix no matter what
+> the actual error type was if the recovery pass was scanning for btree
+> nodes. This lead to the code continuing despite things like bad node
+> formats when they earlier would have caused a jump to fsck_err, because
+> btree_err only jumps when the return from __btree_err does not match
+> fsck_fix. Ultimately this lead to undefined behavior by attempting to
+> unpack a key based on an invalid format.
 > 
-> Do we want the new field to be additive after saturating BCH_MEMBER_DURABILITY_LO at 2, rather than treat it as a 4 bit field which could result in an older kernel seeing 0b01 and interpreting it as 0? So:
+> Make only errors of type -BCH_ERR_btree_node_read_err_fixable cause
+> __btree_err to return -BCH_ERR_fsck_fix when scanning for btree nodes.
 > 
-> LO    HI    VALUE
-> # existing range:
-> 00    00    1
-> 01    00    0
-> 10    00    1
-> 11    00    2
-> # expanded range:
-> 11    01    3
-> 11    10    4
-> 11    11    5
-> 
-> Then an older kernel will read any device with durability >2 as having durability=2, which is not ideal but I worry that durability=0 might result in undefined (or unspecified?) behavior.
+> Reported-by: syzbot+cfd994b9cdf00446fd54@syzkaller.appspotmail.com
+> Fixes: cd3cdb1ef706 ("bcachefs: Single err message for btree node reads")
+> Signed-off-by: Bharadwaj Raju <bharadwaj.raju777@gmail.com>
 
-No, just make it an incompat feature, it's way simpler - older kernels
-that don't understand durability > 2 will never see them
+Applied
+
+> ---
+> v2: Return the given ret for all errors which are not btree_node_read_err_fixable when in scan_for_btree_nodes
+> 
+>  fs/bcachefs/btree_io.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/bcachefs/btree_io.c b/fs/bcachefs/btree_io.c
+> index d8f3c4c65e90..940f7ce2e33e 100644
+> --- a/fs/bcachefs/btree_io.c
+> +++ b/fs/bcachefs/btree_io.c
+> @@ -557,7 +557,9 @@ static int __btree_err(int ret,
+>  		       const char *fmt, ...)
+>  {
+>  	if (c->recovery.curr_pass == BCH_RECOVERY_PASS_scan_for_btree_nodes)
+> -		return bch_err_throw(c, fsck_fix);
+> +		return ret == -BCH_ERR_btree_node_read_err_fixable
+> +			? bch_err_throw(c, fsck_fix)
+> +			: ret;
+>  
+>  	bool have_retry = false;
+>  	int ret2;
+> -- 
+> 2.49.0
+> 
