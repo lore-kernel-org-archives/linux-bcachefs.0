@@ -1,97 +1,155 @@
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05C96156C40
-	for <linux-bcachefs@vger.kernel.org>; Tue, 17 Jun 2025 14:04:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5115B2F432A
+	for <linux-bcachefs@vger.kernel.org>; Tue, 17 Jun 2025 14:07:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750169069; cv=none; b=N09t6FnmyD5mFmnhEYrq8L6OH6JXkgM/1KkOHt2TxE87SfzULo7Xq3RqIuEj8vcVqY+asppqpyO1LEPbYwd08DVLijtevcN/fITaf2xQZcJrgAfK/krOfn9O1sTUNuuZOk5svQIRFaQLzHDtankwyqBz12qgkCrF9AsNShqaEWg=
+	t=1750169234; cv=none; b=p9BUF+YdmKu+XSSBBoOIzapunDOYyHYeHZKYTha5uUNlTA50NdVvrTQPi9CvsEFKD/m1k3pA5+fyix6IrkIUxEol0Qvsjtb24VieERAcUOg/6hae6LbKBRdV84MDsWpmeQyJmHG+FFa4lROWEwu0QZ1Vu2m8+0e9se/u/STVWuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750169069; c=relaxed/simple;
-	bh=MeSN08kN4iEpmRo+/LDeT4Ejqx2lIGiFxZzlCnNvRWQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K6GCcvgUCw09eSYIkh/MreckMfFYQ2qu/H2RkN70/EN9VsisVqUu5ZlH9FGvqiam4W229aCXy9ARcXGa/Q9kyxg0Ph6d7PxSph7vw+HJS3F5I/9/JqO7Waqhluh8WI+csXV+da2SGgBIENleWgK2CkTfOTvTtpLzKJt9orvk1wY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AiOem3tw; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1750169234; c=relaxed/simple;
+	bh=lh4Wu179zCLjOtNueJK/Sz96qfLF/PqNel8O0RNTt9E=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=s7yEvtLBowJShr+uz/52zC83To6JPsHd9ZLxnIGkGJlXIxwAHcXS1tL4FMEDJeVpCGJuv4jAVFoH5rr3NwY5WYD08GkHfwXaVlEYQiH9rlvfJG4/85EO4ZbdHi/Wotu6cguV4P+qqlD4wzkfgdAHtyiEHsjG42HZz8/cwte///g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Mwv67mD+; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AiOem3tw"
-Date: Tue, 17 Jun 2025 10:04:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750169064;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Mwv67mD+"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1750169232;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=616kP2pL78gOdvWTUN76JFu4y0HvycKB3E7Ybr5Q7ag=;
-	b=AiOem3twK7OafF3Mf1wP5tNe/mWPzcf5EK99OlgWEZ2pi943LsVRX59v8wWGMe+LuZAfTr
-	qy6Rtz5SXciXGxbO4KZR5TQNBEw+sqwHeoUMxKxvrJmQVQVbIunXVSfK8D6lHTVYbc2UDv
-	7C4I80rr1vrl2k7k8k1sQxUqek3Q3k8=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Julian Sun <sunjunchao2870@gmail.com>
-Cc: linux-bcachefs@vger.kernel.org, 
-	syzbot+56edda805363e0a093b8@syzkaller.appspotmail.com
-Subject: Re: [PATCH] bcachefs: Return EROFS for BCH_IOCTL_DATA ioctl requests
- in ro mount mode.
-Message-ID: <vigtvcnui66u4h2btagyohhsg5zvvuxmk5snidenqs353dwiwm@sxex5z7pnwkg>
-References: <20250617134120.102668-1-sunjunchao2870@gmail.com>
+	bh=lh4Wu179zCLjOtNueJK/Sz96qfLF/PqNel8O0RNTt9E=;
+	b=Mwv67mD+sDLqhpuGZoIYV4p7ygg+jCvlZqyuBKlHInW3HY/dFze38F3c+KEYEiEvCQlCW1
+	JXsj42b/LrdjU1D6oyfXWfzGi1Nq7dQs5e3i4SebmpYgUov0ruvgOJOqy4sbPzAkDSrgQq
+	+EQL19dWAXn/o3ZRzcDzJmh851f0kE0=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-526-TESfps40ObWOGtY2RnRx3A-1; Tue,
+ 17 Jun 2025 10:07:07 -0400
+X-MC-Unique: TESfps40ObWOGtY2RnRx3A-1
+X-Mimecast-MFC-AGG-ID: TESfps40ObWOGtY2RnRx3A_1750169217
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 9793B1809C9B;
+	Tue, 17 Jun 2025 14:06:54 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.18])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 5C81A19560B0;
+	Tue, 17 Jun 2025 14:06:01 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
+References: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
+To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+    "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+    Jens Axboe <axboe@kernel.dk>,
+    Jani Nikula <jani.nikula@linux.intel.com>,
+    Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+    Rodrigo Vivi <rodrigo.vivi@intel.com>,
+    Tvrtko Ursulin <tursulin@ursulin.net>,
+    David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+    Eric Van Hensbergen <ericvh@kernel.org>,
+    Latchesar Ionkov <lucho@ionkov.net>,
+    Dominique Martinet <asmadeus@codewreck.org>,
+    Christian Schoenebeck <linux_oss@crudebyte.com>,
+    David Sterba <dsterba@suse.com>, David Howells <dhowells@redhat.com>,
+    Marc Dionne <marc.dionne@auristor.com>,
+    Alexander Viro <viro@zeniv.linux.org.uk>,
+    Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+    Benjamin LaHaise <bcrl@kvack.org>,
+    Miklos Szeredi <miklos@szeredi.hu>,
+    Amir Goldstein <amir73il@gmail.com>,
+    Kent Overstreet <kent.overstreet@linux.dev>,
+    "Tigran A
+ . Aivazian" <aivazian.tigran@gmail.com>,
+    Kees Cook <kees@kernel.org>, Chris Mason <clm@fb.com>,
+    Josef Bacik <josef@toxicpanda.com>, Xiubo Li <xiubli@redhat.com>,
+    Ilya Dryomov <idryomov@gmail.com>, Jan Harkes <jaharkes@cs.cmu.edu>,
+    coda@cs.cmu.edu, Tyler Hicks <code@tyhicks.com>,
+    Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
+    Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>,
+    Sandeep Dhavale <dhavale@google.com>,
+    Hongbo Li <lihongbo22@huawei.com>,
+    Namjae Jeon <linkinjeon@kernel.org>,
+    Sungjong Seo <sj1557.seo@samsung.com>,
+    Yuezhang Mo <yuezhang.mo@sony.com>, Theodore Ts'o <tytso@mit.edu>,
+    Andreas Dilger <adilger.kernel@dilger.ca>,
+    Jaegeuk Kim <jaegeuk@kernel.org>,
+    OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+    Viacheslav Dubeyko <slava@dubeyko.com>,
+    John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+    Yangtao Li <frank.li@vivo.com>, Richard Weinberger <richard@nod.at>,
+    Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+    Johannes Berg <johannes@sipsolutions.net>,
+    Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+    David Woodhouse <dwmw2@infradead.org>,
+    Dave Kleikamp <shaggy@kernel.org>,
+    Trond Myklebust <trondmy@kernel.org>,
+    Anna Schumaker <anna@kernel.org>,
+    Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+    Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+    Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+    Joseph Qi <joseph.qi@linux.alibaba.com>,
+    Bob Copeland <me@bobcopeland.com>,
+    Mike Marshall <hubcap@omnibond.com>,
+    Martin Brandenburg <martin@omnibond.com>,
+    Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.org>,
+    Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+    Bharath SM <bharathsm@microsoft.com>,
+    Zhihao Cheng <chengzhihao1@huawei.com>,
+    Hans de Goede <hdegoede@redhat.com>,
+    Carlos Maiolino <cem@kernel.org>,
+    Damien Le Moal <dlemoal@kernel.org>,
+    Naohiro Aota <naohiro.aota@wdc.com>,
+    Johannes Thumshirn <jth@kernel.org>,
+    Dan Williams <dan.j.williams@intel.com>,
+    Matthew Wilcox <willy@infradead.org>,
+    Vlastimil Babka <vbabka@suse.cz>, Jann Horn <jannh@google.com>,
+    Pedro Falcato <pfalcato@suse.de>, linux-block@vger.kernel.org,
+    linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+    dri-devel@lists.freedesktop.org, v9fs@lists.linux.dev,
+    linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
+    linux-aio@kvack.org, linux-unionfs@vger.kernel.org,
+    linux-bcachefs@vger.kernel.org, linux-mm@kvack.org,
+    linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+    codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+    linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+    linux-f2fs-devel@lists.sourceforge.net, linux-um@lists.infradead.org,
+    linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
+    linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
+    ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+    linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
+    linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+    linux-xfs@vger.kernel.org, nvdimm@lists.linux.dev
+Subject: Re: [PATCH 00/10] convert the majority of file systems to mmap_prepare
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250617134120.102668-1-sunjunchao2870@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <644215.1750169159.1@warthog.procyon.org.uk>
+Date: Tue, 17 Jun 2025 15:05:59 +0100
+Message-ID: <644216.1750169159@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-On Tue, Jun 17, 2025 at 09:41:20PM +0800, Julian Sun wrote:
-> Recently, syzkaller reported the following issue:
-> 
-> BUG: kernel NULL pointer dereference, address: 0000000000000000
-> Call Trace:
->  <TASK>
->  mempool_alloc_noprof+0x1a7/0x510 mm/mempool.c:402
->  bch2_btree_update_start+0x549/0x1480 fs/bcachefs/btree_update_interior.c:1194
->  bch2_btree_node_rewrite+0x17e/0x1120 fs/bcachefs/btree_update_interior.c:2208
->  bch2_move_btree+0x6f0/0xc70 fs/bcachefs/move.c:1093
->  bch2_scan_old_btree_nodes+0x95/0x240 fs/bcachefs/move.c:1215
->  bch2_data_job+0x646/0x910 fs/bcachefs/move.c:1354
->  bch2_data_thread+0x8f/0x1d0 fs/bcachefs/chardev.c:315
->  kthread+0x711/0x8a0 kernel/kthread.c:464
->  ret_from_fork+0x3fc/0x770 arch/x86/kernel/process.c:148
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
-> 
-> This is because after commit d4d71b58e513 ("bcachefs: RO mounts now use less memory"),
-> read-only mounts no longer initialize btree_interior_update_pool, which is required for
-> processing BCH_IOCTL_DATA requests.
+Lorenzo Stoakes <lorenzo.stoakes@oracle.com> wrote:
 
-Alan already gave me a better fix for this. You pretty much never want
-to just check if the filesystem is ro or rw - that would be racy, that
-can change at any time. If you need the filesystem to be rw, you do it
-by getting a write ref (which may fail).
+> This is preferred to the existing f_op->mmap() hook as it does require a
+> VMA to be established yet,
 
-Just checking SB_RDONLY here would be "technically" correct since we
-only need the mempool, which is's never deallocated until filesystem
-teardown, and the interior update path should get its own ref on
-c->writes before doing anything serious.
+Did you mean ".. doesn't require a VMA to be established yet, ..."
 
-But it's bad form, because then other code changes might go "ok, we've
-checked that we're RW, we're safe" - but we're actually not.
+David
 
-And, I'm just now noticing that bch2_btree_update_start() actually does
-not get a ref on c->writes, so we might want to fix that - or move.c
-needs to be getting a write ref, or both.
-
-c->writes is a percpu refcount, so it's dirt cheap, there's generally
-zero downside to taking a ref even if an upper layer already has one.
-The only exception is if it's an internal operation that needs to run
-when we're going RO - but we have a flag for that,
-BCH_TRANS_COMMIT_no_check_rw, which bch2_btree_update_start() can check.
-
-The other consideration with write refs is that we don't want to be
-holding them for an unbounded duration, because that will block going RO
-- so I think bch2_ioctl_data() actually wasn't the best place for this,
-we should be checking if we're RW in move.c, every time we kick off an
-op.
