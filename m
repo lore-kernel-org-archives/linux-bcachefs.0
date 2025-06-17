@@ -1,267 +1,135 @@
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 910522DE1F1;
-	Tue, 17 Jun 2025 14:18:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750169932; cv=fail; b=dvbFz5PCMXiFnWu8xhwh2l0A/8du7FcEKr8xbRbMfwHcN2gzSDg4yRXxK7KbtURo+gNb5pWmNr/qaiDmaotzb9z25PvVmKALwZ/6322G1iAxwI1rlTcJ/8svFmiEvWve23LJTtkHaywfPyGpO2JRJ3Tijs9FAuU6he5W3rKvjQ0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750169932; c=relaxed/simple;
-	bh=0KKCAZEUFhbQCsca+avSGS1Y+uYtGTT1Abh5klWQq2A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=BApw0JbMBbVRjpt3lYzZITYHQfq9vwZIBiIgkYjvuG653ERi6UvR24Ce890KWkoecqxuiGyYMa0U04sl8Z6wSEVIXUleB9JnqT8Tyx3hcGMveiKcksitR3uISNVHkvAylxa6UkLjtQLhMSoLwoH6BXjsVRymYJG7FxZ+pvmn+ho=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=SxAv+SEt; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=WcWMH4q5; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6536253F28
+	for <linux-bcachefs@vger.kernel.org>; Tue, 17 Jun 2025 14:56:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1750172179; cv=none; b=tSeYGywDxJyMIZE6r3pX3xTXg6tQ4PiXPQD+/y1z/yVPUif9EtJk0we1gK+IauKbqm9hvDyboFmthAzc1tBZaEd6CP+cKi9FzIpZfavgQ3s+R058+PK4oQKQ3bbuUhI2ofcDhtyoI3x0Zs26iBJESNIsQlm6395SgACEyWF65zk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1750172179; c=relaxed/simple;
+	bh=gV4DJ+lL/om03MXcXqS/UHC7yofM5m3b8Xka6Bu2AO8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JQngKaXDPfLH1CWC/1sbWnx3ac6xv8ZpAtaQMSay3tP/T+DiNB9DQopoI6KrV+PQHrGkJX1TT6lUIyAdf4vmTxMm/8Yrg7w8PV14UzuEhp+3n2xKzhKtlvGc40rsguR7kiGxDxwEXq/aNsGZa3GByzr3NYjcevXJlRGAsd6HqVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ho7vWd55; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="SxAv+SEt";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="WcWMH4q5"
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55H8tag9025365;
-	Tue, 17 Jun 2025 14:17:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2025-04-25; bh=0KKCAZEUFhbQCsca+a
-	vSGS1Y+uYtGTT1Abh5klWQq2A=; b=SxAv+SEtqUOU0h701EBu4d9UWPJvyrkQYQ
-	FQ8d+crsMTyDaO0YeEHtzMjfy/VQyrHjPNp7DpaNB1YZIqJBnkohtA8WIeYRt568
-	653QGs/i/lNFyJNPfMwhtpdTDIhcUeOPPVO0Q45GIwa/T+05MM/lZ2lkOZiX8XIK
-	Efs2uqOxYN6zTawaR7uEvafQfUO/C+Wj8DW/c7SEmqxCjbvrwIVkKqtgKfqX8leF
-	VjX2n/r/OyCCgT5Ry+kb4VLirx0JiWwKqrcYQKKFt5qkUEuxJ8fO0+vJhwPYgxTp
-	zCZNwEobqxSmHh645YXMNwxHwMJJGdWwul0hlV+ZaXSie0vXTzxQ==
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 479q8r4fkh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 17 Jun 2025 14:17:29 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 55HCfvce031679;
-	Tue, 17 Jun 2025 14:17:28 GMT
-Received: from byapr05cu005.outbound.protection.outlook.com (mail-westusazon11010004.outbound.protection.outlook.com [52.101.85.4])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 478yh9205h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 17 Jun 2025 14:17:27 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=OANMc17JzxDskYEip3VAZr31cYXNnaFRcdViaMzntv6YdG70v32ah3YOjbV2vn47MaNkJKHF1i6Q9+WCtx2to0eIoB2MZqpnvkBrJIyZPt7cAxsNoitRpJoQZQ7XWqxPSr/NNQF9BlNyumpmSLygqPjTZgWypsQMgBy2WklM3+JNTbbBWDBSsHVB5WRwQd+DElCRPgqKxLO0Z5co9BlhmY0ptZHZJTrO/cwW1q/73STutKTSYQnv9UNowKDsmT4NPMYopQnTpPHCYSshJiGWEYJHDZlqDzNieuhUacIGHzlXkZY1nI6lb1/1aiSUKpEReOiuK+05yYs0UKGe1p8Wog==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0KKCAZEUFhbQCsca+avSGS1Y+uYtGTT1Abh5klWQq2A=;
- b=FluvaqAPeB2OsDxtC2023QeG7diBBOk11IQFzdmfBz0EbkV5FTNWEinZtHa+g+zvUalAzE9+ClEhAo5kqFfznTOkbar04ldiGmTluntjLsdYU+M3f3MPmQauOHzxGObVuZaHHB++d1KC7B6TxTHsxJXbRP+hzfmDGgP11IyahYlLgcQdWFoNNFzGzis57hY1y9KPJnqd/d6e6dbmpITZY8Ea9T5mpB6/uA2IQRxHSppEqm1aDZFBYlCUHgb1YzuQd17N3PkkSxlQXxqw1afRJvjv01uGTONdViEa/6JT4Gn/QtJs2xDsuJYKWfIHDMgW/izF6Ye1hwuC+SXpoJM5JQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ho7vWd55"
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-32918fe5334so53548851fa.1
+        for <linux-bcachefs@vger.kernel.org>; Tue, 17 Jun 2025 07:56:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0KKCAZEUFhbQCsca+avSGS1Y+uYtGTT1Abh5klWQq2A=;
- b=WcWMH4q5SW1p4rbO3adGeCYWG3DQFJpHpcZsl20aUf5yehkCNMaDk9rXHPbvCMLqiOFiTIJly+Qi6jWtYbNipOUFBR41vRI2AWZRdjGIr+gteJ3ov9QTWB2V8dHjVfyeYESA78jejhuMC7+qcEKm6P3CZC1vFaopWSag8Dy9Tn4=
-Received: from DM4PR10MB8218.namprd10.prod.outlook.com (2603:10b6:8:1cc::16)
- by SJ0PR10MB4574.namprd10.prod.outlook.com (2603:10b6:a03:2dd::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8835.29; Tue, 17 Jun
- 2025 14:17:23 +0000
-Received: from DM4PR10MB8218.namprd10.prod.outlook.com
- ([fe80::2650:55cf:2816:5f2]) by DM4PR10MB8218.namprd10.prod.outlook.com
- ([fe80::2650:55cf:2816:5f2%6]) with mapi id 15.20.8835.026; Tue, 17 Jun 2025
- 14:17:23 +0000
-Date: Tue, 17 Jun 2025 15:17:20 +0100
-From: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-To: David Howells <dhowells@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tursulin@ursulin.net>,
-        David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Sterba <dsterba@suse.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-        Benjamin LaHaise <bcrl@kvack.org>, Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        "Tigran A . Aivazian" <aivazian.tigran@gmail.com>,
-        Kees Cook <kees@kernel.org>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>, Jan Harkes <jaharkes@cs.cmu.edu>,
-        coda@cs.cmu.edu, Tyler Hicks <code@tyhicks.com>,
-        Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
-        Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Sandeep Dhavale <dhavale@google.com>,
-        Hongbo Li <lihongbo22@huawei.com>, Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Yuezhang Mo <yuezhang.mo@sony.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Viacheslav Dubeyko <slava@dubeyko.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Yangtao Li <frank.li@vivo.com>, Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Bob Copeland <me@bobcopeland.com>, Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.org>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-        Bharath SM <bharathsm@microsoft.com>,
-        Zhihao Cheng <chengzhihao1@huawei.com>,
-        Hans de Goede <hdegoede@redhat.com>, Carlos Maiolino <cem@kernel.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Vlastimil Babka <vbabka@suse.cz>,
-        Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-afs@lists.infradead.org, linux-aio@kvack.org,
-        linux-unionfs@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        linux-mm@kvack.org, linux-btrfs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu,
-        ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-um@lists.infradead.org, linux-mtd@lists.infradead.org,
-        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@lists.linux.dev, linux-karma-devel@lists.sourceforge.net,
-        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-xfs@vger.kernel.org,
-        nvdimm@lists.linux.dev
-Subject: Re: [PATCH 00/10] convert the majority of file systems to
- mmap_prepare
-Message-ID: <45cf6357-2614-4aef-8674-f7bc77be2dcf@lucifer.local>
-References: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
- <644216.1750169159@warthog.procyon.org.uk>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <644216.1750169159@warthog.procyon.org.uk>
-X-ClientProxiedBy: LO4P123CA0424.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:18b::15) To DM4PR10MB8218.namprd10.prod.outlook.com
- (2603:10b6:8:1cc::16)
+        d=gmail.com; s=20230601; t=1750172176; x=1750776976; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g/58cyerKIrPENNnMiGeRWubbnaxbktVEBpqtUFfVao=;
+        b=ho7vWd55zWahQAe9mZgc2an+p7DTCLjK0Rbu6uy5uEVKWUSb+d49lSfUD9GDyh0fw6
+         mZtmUBgeVS0x5xFkhDWQh37t4gRO+bl+Ba0tV0uf9MqCb8lUmsYlmPn/DH7or/EMCCYl
+         Vu+7360dwhWFbkNGRTb5v651A0R3ajm5PMoyprT7DUW0e0hyQZEQHr6c4V5DX08inC4Y
+         KccA3F46QaetvIWny3xNgkN/9tAX/htFII41y5l7IpJi+gt0RmF43XzalXnVjSxTHBHy
+         Dj3rS0QS8EKOKcMEf5wABDH9l3UY3CmYP5JldSO0BaA6FD9tiERnfdaRMVL8CSZ2sI3L
+         GxXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750172176; x=1750776976;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g/58cyerKIrPENNnMiGeRWubbnaxbktVEBpqtUFfVao=;
+        b=IKo3BRgj+XfiAgITO7wcsJOYhwsoiz3AUTYv+lBTPM7gumJ91lqTwO9Odln2GKhr6M
+         rRWIUvyPysuwC/p69VKZkpe3w5xjAHlPZHmcHdXUOCrjhQOAqsySDCegSF+5uKma34rW
+         jUbA2YvkeBP1TDFqCE5fvwS1VYehk/ajGNHZTRbQmiZx3dKYHvzA4HmqEdmqQdN/IWWY
+         liSc6ToA8PcpszgLHgTABYFAJla91vWhJzIW+ROt2ybXS/ZlRcofkz9h1EG8F2ugJVol
+         S2ALnUFKsf4X5E8RC5H1wzeMeFo3vuEAYXbbhVYH8HyLMJnbRW3Sb3M/iHiIfWf6ATgw
+         CtnA==
+X-Gm-Message-State: AOJu0YyKjqFmGI0eCoA4KzlcGEG6p5FlEAvFf6X9fr3n8AUJrgPfVZyh
+	CKZ5G3LYlrgQRDxc3ftddnFXHFWRdGew+x2rrE7KsWVsv847pFA54RWV1y8pSR+J7MoFqV02exA
+	pFUmTpRehoBwIyadIlz7wBKV446yUqGc=
+X-Gm-Gg: ASbGncsDv/jhswx5uJ5UG5I7Kchbcd19gZmohoQmcw2zqnwFCsJqQaWZDj6bw75+KAm
+	k2P4ojVJSLmhm+EOhEbaJ7Fz48gVHbbaIOw4c4rti3DkDsnfbF2BKo/opImExGB09Cq+2RdxCH/
+	H3UGcXDckNNpz3k+DNJxOnIAWKGEm958mmYUbg4+9USQ==
+X-Google-Smtp-Source: AGHT+IFfQWlILoLjQ1htLTHkvk0RnqWGOY9sfhQsr5vQH2idsIDzR//qvv/3MKTs1raSMOumD8t3h1SuR+DtXLmc3A4=
+X-Received: by 2002:a05:651c:305a:b0:32b:7389:583 with SMTP id
+ 38308e7fff4ca-32b73890aaamr4580941fa.17.1750172175625; Tue, 17 Jun 2025
+ 07:56:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR10MB8218:EE_|SJ0PR10MB4574:EE_
-X-MS-Office365-Filtering-Correlation-Id: bb8921db-b5af-45ec-8b3a-08ddada9adbd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?AaN3sI5uxeiW90s/+6kc8DyyTfZjyoHTiFtYoeOiuatlWRZmQNpkSwgmuU6i?=
- =?us-ascii?Q?9pRVe99iWFoecHLVwU+wsyybt7xDiWKAh6giH9R86WOG1I02Apc0BgT3HMGO?=
- =?us-ascii?Q?P8KTAftNsSPsxdwkieWzPOannzuNwsrEQIMCU4Jd/cKWg3UonDtfMDLl9yaA?=
- =?us-ascii?Q?nEcv0111gfjKdCnTFlij2dWHiRx68z4U0sSoG5tfVGPNuFKzjON1/SVsaBgl?=
- =?us-ascii?Q?EXIjL8RmiXZVLnfWZ7QwQbbWGpgXGxYyBveMohtxjOh9T1iuo2cUUzFQx1Og?=
- =?us-ascii?Q?jb9d56RswZb4YWiMKlFAhNlfKaUXsdSvY7XQlnz3GVpiqki7bbEyjLJSnNj8?=
- =?us-ascii?Q?9wH4NhgCPH9Xxph3e5vEvRxyXPFwazKOGGqeg6ylo+hSxNIw9tmMSEhfCQCj?=
- =?us-ascii?Q?uibSQfEemw93/69CU7C4fhSB/TigMqt0IdxIVOm/B0LHQMsHuWkhHWutpV9U?=
- =?us-ascii?Q?+nLwW28tPyXVnb+wZKyCXLRtRAtcUTkPCUzC4zsXL143xqcoel/du/Isq/nC?=
- =?us-ascii?Q?rIyNOaIJRFe2Y260zwUQ/nMyve6HJF5bbiYzjengUco9R4dTLeGRCV/2m34l?=
- =?us-ascii?Q?QQXbBMNwJYkSg90g6xXCmb1x6+so1wyrQ43J1km22UtM+GwgQyYViaT/Tgei?=
- =?us-ascii?Q?hwq+ZC7H9j132iZaXBSkGSvXmWz6VPBL01/L653ePmpMlfYnKAWHsqJuC97M?=
- =?us-ascii?Q?XKtzxfGSdW68h+bsjFa9+T6wi4N9yM83aUdO8kgxMyIdxNdAkjokQcxrBn8v?=
- =?us-ascii?Q?ctnhC2sg2pBUqic1B6ALGiQTB7RHKq0qUiISU1KGlQS6u3S2ccYuDGUHq1MF?=
- =?us-ascii?Q?eQCOk31xsFT8CoxZOHT5eaERC9BsN5vIE3Wm3oHjO4Omi4N6TAgePFRWAB3k?=
- =?us-ascii?Q?u+CUGUJvbKHjfjnknsTGeI3vFENB918Vp7QvONylH054BlQ/0r2H65ylZF4u?=
- =?us-ascii?Q?wqROFm0zU0WZhMpLhCEieK+iSYgfvAAo4bVwmWs9Cd7toIqelMWvqOJYpMYZ?=
- =?us-ascii?Q?JMV3G7Ct02jzmRGtAGCOC5QoiQ3x7EG22UNcw7/MFn9R8XTlPoPzdzoGwq16?=
- =?us-ascii?Q?NhQ8UzXSd3Bsz3xhDoVT5WCSF7HlqCKrWhgPm4oQAtO9PSQC+G1RDvkQnwXv?=
- =?us-ascii?Q?1MQyBSrD7TuyYoCJIL+60cWgwPmECLjf1UD5eITFsN6S455vy3aRjlNo+X5o?=
- =?us-ascii?Q?gZ6hpg27KTQXuAad20TAh/LrhDBoi+5NExH2JukLLgBgkFLH67eCO4Hv0hJy?=
- =?us-ascii?Q?UZ0N4VdeGw0TPvbpLG7/rRhtTUam+42H6BZBNJJYiqxtm5Ab8SyOg8uZGsBE?=
- =?us-ascii?Q?pyRB0qoI6Yo75lZ7J7yuzWu3LI+hOKksOx4lgA46ijG3NEBAl1ELDsMHsNQT?=
- =?us-ascii?Q?kHDBQvtibnV83Qzoro1p1e13sab4Yee6irPWIsP04dZaK2RXZJcFjQX8XcZc?=
- =?us-ascii?Q?E+mtFlnCSxY=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR10MB8218.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?YpUIN0eiEHR1IqDPdI0DKV6HVg1NpfHhaBLy/kZtIXMLcCRXv15nBWdu+Gwp?=
- =?us-ascii?Q?cRtSh7k/iCS9I9SdjFeSVKFEURHatRR0VKn3ZVXpyDjcBIh/EXc8KMbHAlb0?=
- =?us-ascii?Q?V0sS3D4Ueum9YZNRNGRj2/Io2OfyPJ7r4aSDIfo4nPG7HvKYaXCd3vw6VQyk?=
- =?us-ascii?Q?6pCvioe63lOYcS3PxIOyfiTkmwxVYk5sK6kbGQS5V2OPPUjYgH6cDl7bvJ7y?=
- =?us-ascii?Q?JkRv6L/o9+h3PP813iyKofG21CBAaYExjg9LDzsPitSJSuyXlhmuIL3XwVly?=
- =?us-ascii?Q?3ctEdXxAYqzLOPzUWsHxwhd/QV/QE9tf2VTRRflvRs21yQK99H19szrDlaxa?=
- =?us-ascii?Q?I76GgOvcCuce3wW2A9sJ3Ot10anl0+ND6o4f+ljakNJjsg3Uy/HTjF+U7x2y?=
- =?us-ascii?Q?IkWLfFh+qjiym4qauv8kGiXMfQtsWpngz134Ih1ZiYoWFG03Aq4R+rSVVXUK?=
- =?us-ascii?Q?FgnTOkmdsbFBmNscDXHuzRC1CXmN2D7wJetxnhV0IoyNpJaG4k0V3GG4dB2W?=
- =?us-ascii?Q?UGzsI+ZuUsBhlbxBrVWN4cNpAFz7JUUpIKaKxuRr1USmKYMb4YudDOAImoxe?=
- =?us-ascii?Q?VigBhobbGzxlj3hG20rSYWWQ/LtbJndGVPOI3OadobC4OZXSU2Zdq02ZmABl?=
- =?us-ascii?Q?zplUw81HCgN4rHEYjc+dNAVpaMWR0knmoTlD0Dwv/iH/3sFGlAa2jG4Yvy1S?=
- =?us-ascii?Q?//Pxijkp5cj35mxOIJf+JqvClrJVtea50Ake55fGeae8ZFdFRFoBqEWtK4X8?=
- =?us-ascii?Q?zApE39VdhCb7aMJgWukN1RtDiBxG35WUWpS1KR57MgPhvDtvjciGej/kVeCo?=
- =?us-ascii?Q?ZSzFtLvBNH8aw/Eavc3BrsRb+1nzrHamDSA44ELYAn4UCkgeOchEV8PkIMaA?=
- =?us-ascii?Q?U+/8y2Yybhma5yRUiEGTI5855TJNq4WwdBr5Xmntq7gQ6/VEt4tcAu8bqZhb?=
- =?us-ascii?Q?6SDOIm++wvP9jDLtv/39TsiYKSFMw8AjMLlkshGGorign+ThnUS4ASa6SXJ3?=
- =?us-ascii?Q?8weTWlo+AK7uW6YNYKyUeP97QPZRqEMD2bdw8EN8sRsoG7YIz/PTHTVWMLkK?=
- =?us-ascii?Q?hjs3EcvUPPrj1buzqRvLXAQsyDkLL8lm+6KXNfPfrrtBe0CuzoFSVlPBb6mt?=
- =?us-ascii?Q?+xEfP3IhHmtVonhrrB/s62DrjWMEhg33Y996Kb5997Za5ZC4gYyCgMkb7nRm?=
- =?us-ascii?Q?L2lIubJ2YHw0xSRlI/6G+rr/RuDvh1PExk00sOLOjQEh2JEvP7QYy9WoLnlJ?=
- =?us-ascii?Q?XoY4DgfJlgPXqiQDQ2lJp6dAs7b4OstEtyAlxGuPQYWZh/oG9LwY38FGA+MQ?=
- =?us-ascii?Q?19c+XsZ7/H1UH1mJM44PAAFjQvrymNMJ6BQwUH5ikrw3PBwOwMWcrpDWFFB6?=
- =?us-ascii?Q?NtgxcsZun6fOqfI04a5CvyKWSs4jTrnC6+P9PdIOtn8W9SRStqv1+g1sqYHa?=
- =?us-ascii?Q?DgLRYsuP24D2nCVEAFEEfCt5EI8HVMQQWp+9yhAiQJ+FD6vd7yEuDSOhCKD7?=
- =?us-ascii?Q?+eF+Y50ljARaIFx0np7JPZBBZgt59BQmlf1BeXe8Pn/UHMqhod3ALmVSy/tI?=
- =?us-ascii?Q?cCsfA/aSUf25iqwT+EhuRTLXWb9vI2ws0jGUWGf+YZNjMHSCdnslJaqS+5JV?=
- =?us-ascii?Q?Ag=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	QBDRQjWETd6/m3CejgBVpyVWCnusB/UWF9U+oqpTK0a6F4KCFxkoct90AXRodhXohG8bOQj/+jyKphhEC2VZCnEfH3oK4kIAxzkn6Bm594gW+lz1QZZLec2STuNplAHrM1TUINHIO7ytmyJXPSIEt+AyCp9sH0E6aUuOfSU6H76MP4yxqqVaGJI7ehw/WIkkedq2rHwwCYWSJmY+a6iaaDQqP+Op9Dg1jQ7/cgx4DbVStmtWQuvxi+9vqeM50OBoU1k/jRIdV41snwJjmJy7NrXsiMwvGnqkVCoYYEs1W34c6QZQzDOqPLEW9Twi03TpmC3oE1DuzYJCnaLQ+PyF06fIa190pwDf0uKq2W29Sg1OYZWb91Rx7ihtJHL7Gllt0Hlx26DA/KIzrTudyGtP0bNFs+CcB2jqy5IZw/prKssX7+c9rxD0+lJShbpjUXBZq0UItW5tSbynBdmrLDiUqhDALt/DdgW7XBxd1+eUMlopyLgV5/IXayvJgMstq1vJXd/zEHXfKhBK6goy9UsIFDprmbmnuV2iY6HJGUQGVlsAtdDfyY875GjU+ChgQayNDmkN7LQBzV8Cqhpk2iiaRw7A32VGpq47GoL97BMC1bs=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bb8921db-b5af-45ec-8b3a-08ddada9adbd
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR10MB8218.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2025 14:17:23.3401
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4ghwvxifeqDis2+M9YYGHbNIbWg1bDN1rNvEWD28HL19Otdrs1AkUIn56FThJtEcwstA4sMaqLPy1dbTWtiaCPBMKXivB6TKwcp+87esXSM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4574
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-06-17_06,2025-06-13_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 adultscore=0
- mlxlogscore=999 spamscore=0 mlxscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2505160000
- definitions=main-2506170111
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjE3MDExMSBTYWx0ZWRfX5ZzlpAp0kbN6 98Calk+SvXfzIYj5Ke75yBlRHYwdQ+AIjUAYtTZ4R0kezDKadidgziqPF2wXnUsPPYjHySd565R C+buSQ+AKYXwt8ohDlxe8/4ELFryq0AksrRFSdpfHPpYI3rP4I+US8H3a4U1tJTOAA2a68Meap3
- f5w+3w3iC3z2DbrGe9XvoLz7GgD0tGOmTyQJGJgsrxJXSCQAc+j07zFTUbVjCdR+vIPrpO2IdML n9eIGpEWnP+Zq0l5U1M8V4li6hAD9IGyGOWHXeo0ZspTqY5YdgLzduad18MSs3GTtBS5BFhyr+O 3/gEwft2yHIXR4CG9Xeid0pwRtjPfK5cskbCvONL9gCUWxxt7NDgouK6wkVil+GbKTCNIrtAJ2k
- w8oZdeyX3tPa6x89VpzaXq7HForJOGQacvFabDSV0U6J4Ahi8AJlkxu/wDzun0rEsI6cfGh4
-X-Proofpoint-GUID: RxntZxdAm8nWHdzoxwobwSyZjUt3_-je
-X-Proofpoint-ORIG-GUID: RxntZxdAm8nWHdzoxwobwSyZjUt3_-je
-X-Authority-Analysis: v=2.4 cv=dvLbC0g4 c=1 sm=1 tr=0 ts=685178f9 cx=c_pps a=XiAAW1AwiKB2Y8Wsi+sD2Q==:117 a=XiAAW1AwiKB2Y8Wsi+sD2Q==:17 a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
- a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10 a=6IFa9wvqVegA:10 a=GoEa3M9JfhUA:10 a=yPCof4ZbAAAA:8 a=MA-42675piwLz8QlgOoA:9 a=CjuIK1q_8ugA:10 a=Qzt0FRFQUfIA:10
+References: <20250617134120.102668-1-sunjunchao2870@gmail.com> <vigtvcnui66u4h2btagyohhsg5zvvuxmk5snidenqs353dwiwm@sxex5z7pnwkg>
+In-Reply-To: <vigtvcnui66u4h2btagyohhsg5zvvuxmk5snidenqs353dwiwm@sxex5z7pnwkg>
+From: Julian Sun <sunjunchao2870@gmail.com>
+Date: Tue, 17 Jun 2025 22:56:03 +0800
+X-Gm-Features: AX0GCFtAJqQKfr3bJGGO5CDWJbjMyoJDl4PKwTvWuKtJysiFg6Pyc6JeXt3x0O4
+Message-ID: <CAHB1Nais7Hgu+oQSjptXj1w8c6CJPqJhYrah-wVASCCL_+oODw@mail.gmail.com>
+Subject: Re: [PATCH] bcachefs: Return EROFS for BCH_IOCTL_DATA ioctl requests
+ in ro mount mode.
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, 
+	syzbot+56edda805363e0a093b8@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 17, 2025 at 03:05:59PM +0100, David Howells wrote:
-> Lorenzo Stoakes <lorenzo.stoakes@oracle.com> wrote:
+On Tue, Jun 17, 2025 at 10:04=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
 >
-> > This is preferred to the existing f_op->mmap() hook as it does require a
-> > VMA to be established yet,
+> On Tue, Jun 17, 2025 at 09:41:20PM +0800, Julian Sun wrote:
+> > Recently, syzkaller reported the following issue:
+> >
+> > BUG: kernel NULL pointer dereference, address: 0000000000000000
+> > Call Trace:
+> >  <TASK>
+> >  mempool_alloc_noprof+0x1a7/0x510 mm/mempool.c:402
+> >  bch2_btree_update_start+0x549/0x1480 fs/bcachefs/btree_update_interior=
+.c:1194
+> >  bch2_btree_node_rewrite+0x17e/0x1120 fs/bcachefs/btree_update_interior=
+.c:2208
+> >  bch2_move_btree+0x6f0/0xc70 fs/bcachefs/move.c:1093
+> >  bch2_scan_old_btree_nodes+0x95/0x240 fs/bcachefs/move.c:1215
+> >  bch2_data_job+0x646/0x910 fs/bcachefs/move.c:1354
+> >  bch2_data_thread+0x8f/0x1d0 fs/bcachefs/chardev.c:315
+> >  kthread+0x711/0x8a0 kernel/kthread.c:464
+> >  ret_from_fork+0x3fc/0x770 arch/x86/kernel/process.c:148
+> >  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+> >
+> > This is because after commit d4d71b58e513 ("bcachefs: RO mounts now use=
+ less memory"),
+> > read-only mounts no longer initialize btree_interior_update_pool, which=
+ is required for
+> > processing BCH_IOCTL_DATA requests.
 >
-> Did you mean ".. doesn't require a VMA to be established yet, ..."
+> Alan already gave me a better fix for this. You pretty much never want
+> to just check if the filesystem is ro or rw - that would be racy, that
+> can change at any time. If you need the filesystem to be rw, you do it
+> by getting a write ref (which may fail).
 >
-> David
+> Just checking SB_RDONLY here would be "technically" correct since we
+> only need the mempool, which is's never deallocated until filesystem
+> teardown, and the interior update path should get its own ref on
+> c->writes before doing anything serious.
 >
+> But it's bad form, because then other code changes might go "ok, we've
+> checked that we're RW, we're safe" - but we're actually not.
+>
+> And, I'm just now noticing that bch2_btree_update_start() actually does
+> not get a ref on c->writes, so we might want to fix that - or move.c
+> needs to be getting a write ref, or both.
+>
+> c->writes is a percpu refcount, so it's dirt cheap, there's generally
+> zero downside to taking a ref even if an upper layer already has one.
+> The only exception is if it's an internal operation that needs to run
+> when we're going RO - but we have a flag for that,
+> BCH_TRANS_COMMIT_no_check_rw, which bch2_btree_update_start() can check.
+>
+> The other consideration with write refs is that we don't want to be
+> holding them for an unbounded duration, because that will block going RO
+> - so I think bch2_ioctl_data() actually wasn't the best place for this,
+> we should be checking if we're RW in move.c, every time we kick off an
+> op.
 
-Yeah apologies, indeed I did :)
+Thanks for your detailed explanation, this makes sense to me.
+
+--=20
+Julian Sun <sunjunchao2870@gmail.com>
