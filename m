@@ -1,177 +1,211 @@
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C3238528E
-	for <linux-bcachefs@vger.kernel.org>; Tue, 17 Jun 2025 08:11:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C898291C13
+	for <linux-bcachefs@vger.kernel.org>; Tue, 17 Jun 2025 10:05:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750147894; cv=none; b=l2hu6uj6m+/lCvfBwY7Txn+zGfNgFhtc8FAQimplMWbYQJTGrxYEyvw/SjrbhIk2B1XmRNsOXubKPcg+WMCzUxYG48fnHVt1ZfjPtPCfwziY7OLQ7eiZrPfSt5deOHahS8N0qniguWdLYlsZ8XwTZSzpyZoRm3n2F1AaMH0oDWQ=
+	t=1750154744; cv=none; b=sAyqCBh2rLQxvhYlm2zAVhiZl4qLDi5cPyVWY8zYOhpWQ2SUqryKiQAsiwDCnvLoW1bpRIUwXTv0f9WYM8tDX1h5kKkNxYnMav2UXtbQmUt2OyB98DWuVAEmCWA6xuAg6uwFUP5+oFA5v6Btabwa9Nuc+TZ81ljWouvm9/Zi6o4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750147894; c=relaxed/simple;
-	bh=aJDMKLvSD4FsH9IzZ8n5o90Yxqp4mzXt9RIHIAdAX/s=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=opE69qRqgZi7wh5GOLRVUROXi81IITzMHg9Myb9ZR31SK3aiNqlWprFqukTk3bH5xpav4Rel+95yi2XmKXbyo4RuACpePOOEE7eRDTYJZGGZgNLLVVYOdX2GotmPzXDYxavOPvDxfUCovsdbqh14Xsin2HEFqy6Gxt/T++hA9FM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3de0f73f9e0so21630215ab.1
-        for <linux-bcachefs@vger.kernel.org>; Tue, 17 Jun 2025 01:11:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750147891; x=1750752691;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aYzFrCMb6kG6IH/YxFgUA1tFuW21p0F2EED3xtBQjvE=;
-        b=R8fYVXSyRpUq5BCbQ2S/1DQSo3dcx2h37KWctN3jtmAZdMYY6z4zoUUU7S2wbZC7ks
-         4OA1EeV4+y4EmMTRNhC0vhFY+wPaqgFYS7xhqNyjf2CtG4DAjtX079ukrMVogfLlrMUs
-         5fG1izDecqBd9vulf0bRHGqEIpJZfrjbptSkGfUWxmU75JaIyXnRm7RNNZyeGhx0ls+b
-         aWK+Bp0tmOctE6bKEa0hI25SkrG0MizM87YogzNw1kkd0gwKBP6FQwvaR2NbJpivaGeF
-         /4w3kmDuZz41A4Py4O2RKZ4xnNZl5ctHjLcANrMFs3YWJIu8rf5PGtKUIoQCRRlqAxJq
-         GaFw==
-X-Forwarded-Encrypted: i=1; AJvYcCXOwYLipWNaqdHhzsGAW6IfYWT4WrvG8C69Ze2Fd3nZ/DRv/l8gY3El8P6ODuGR29WeqeyBNtnld+Z5OIQp/Q==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxfAgFMuY+/1lLuJRtWN2pmMO6Y7mH3pdl18P4s6TlhMHMSmbjK
-	mZYl00KCpkh3pPfR754Y7QaaNbSJrMKKJH/lS4NW+Wogo2hwGjYycubjQUpAyzNGsb0C70AapaW
-	deMyxdYf+dZuQl00hEwP0jRwMzMPyHDvLnOAEJTUrtnk0TtD/FagO/CZqdSY=
-X-Google-Smtp-Source: AGHT+IGNguvuLEC/zxZL/TOlNFNAS8BFX0Utgu1krU1KL/N49/lokGZz8LJNMOEzaujIQUutWHecFwJTuUypvDV+MUPxUSoS2ZJq
+	s=arc-20240116; t=1750154744; c=relaxed/simple;
+	bh=rPStzkCl6qwemTB+6mSst/YjbOm5vkQaiQ5G3hNJ1WQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=E0d+67ljhydOToh0tj+b0PPGsWdt0d6XPyMnsLWD8Pa3FDwCIt7vt5Pqxu7k4Cv71vsY2UoMQtKVe1iXIg/eUawQr05wSvXbDxa8mO+HslRdXWf8mnRWewEdFoGU+vsmPY9zz8/S69jsfxi5RqnBiN5N/ygfAUBrkVQs+8sKksg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=WQDfhpwm; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NrBo2tY1; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=WQDfhpwm; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NrBo2tY1; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="WQDfhpwm";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NrBo2tY1";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="WQDfhpwm";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NrBo2tY1"
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 0C73A1F766;
+	Tue, 17 Jun 2025 10:05:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1750154740; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C/1izpnjb4TYfec4R1JpDo8StS/h7UWyf7xuC9Z4Hyw=;
+	b=WQDfhpwm6V87NT9z/A204y/3daztxVfitFICfHOJXVLDwuByiO2e6vsTYBDE6FG4qqCUJX
+	3HzGzjWxaQtyqKsXL+IvjDNtRiiJiJLsgvCFneuBuoU1vbXUzQkZ8tq3BMjIC8HSg5ocP3
+	Gay+RGH2nYC05chnnbilbsgAdzN2LlQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1750154740;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C/1izpnjb4TYfec4R1JpDo8StS/h7UWyf7xuC9Z4Hyw=;
+	b=NrBo2tY17T6YGKPQqIdgrtSHngXWXYF5et4lwD2HsUZ61mZfDbx42vWdF6Fc5le8jO5HvC
+	BvGwhDZ7rlXldwCQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1750154740; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C/1izpnjb4TYfec4R1JpDo8StS/h7UWyf7xuC9Z4Hyw=;
+	b=WQDfhpwm6V87NT9z/A204y/3daztxVfitFICfHOJXVLDwuByiO2e6vsTYBDE6FG4qqCUJX
+	3HzGzjWxaQtyqKsXL+IvjDNtRiiJiJLsgvCFneuBuoU1vbXUzQkZ8tq3BMjIC8HSg5ocP3
+	Gay+RGH2nYC05chnnbilbsgAdzN2LlQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1750154740;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C/1izpnjb4TYfec4R1JpDo8StS/h7UWyf7xuC9Z4Hyw=;
+	b=NrBo2tY17T6YGKPQqIdgrtSHngXWXYF5et4lwD2HsUZ61mZfDbx42vWdF6Fc5le8jO5HvC
+	BvGwhDZ7rlXldwCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EA00B13AE1;
+	Tue, 17 Jun 2025 10:05:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id rKyOOPM9UWi3FgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 17 Jun 2025 10:05:39 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 9891DA29F0; Tue, 17 Jun 2025 12:05:39 +0200 (CEST)
+Date: Tue, 17 Jun 2025 12:05:39 +0200
+From: Jan Kara <jack@suse.cz>
+To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>, Jens Axboe <axboe@kernel.dk>, 
+	Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, 
+	Rodrigo Vivi <rodrigo.vivi@intel.com>, Tvrtko Ursulin <tursulin@ursulin.net>, 
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
+	Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, 
+	Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, 
+	David Sterba <dsterba@suse.com>, David Howells <dhowells@redhat.com>, 
+	Marc Dionne <marc.dionne@auristor.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Benjamin LaHaise <bcrl@kvack.org>, 
+	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
+	Kent Overstreet <kent.overstreet@linux.dev>, "Tigran A . Aivazian" <aivazian.tigran@gmail.com>, 
+	Kees Cook <kees@kernel.org>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
+	Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, 
+	Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Tyler Hicks <code@tyhicks.com>, 
+	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>, 
+	Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>, 
+	Hongbo Li <lihongbo22@huawei.com>, Namjae Jeon <linkinjeon@kernel.org>, 
+	Sungjong Seo <sj1557.seo@samsung.com>, Yuezhang Mo <yuezhang.mo@sony.com>, 
+	Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, 
+	Jaegeuk Kim <jaegeuk@kernel.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
+	Viacheslav Dubeyko <slava@dubeyko.com>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+	Yangtao Li <frank.li@vivo.com>, Richard Weinberger <richard@nod.at>, 
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
+	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, David Woodhouse <dwmw2@infradead.org>, 
+	Dave Kleikamp <shaggy@kernel.org>, Trond Myklebust <trondmy@kernel.org>, 
+	Anna Schumaker <anna@kernel.org>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, 
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, 
+	Joseph Qi <joseph.qi@linux.alibaba.com>, Bob Copeland <me@bobcopeland.com>, 
+	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, 
+	Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.org>, 
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, 
+	Tom Talpey <tom@talpey.com>, Bharath SM <bharathsm@microsoft.com>, 
+	Zhihao Cheng <chengzhihao1@huawei.com>, Hans de Goede <hdegoede@redhat.com>, 
+	Carlos Maiolino <cem@kernel.org>, Damien Le Moal <dlemoal@kernel.org>, 
+	Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, 
+	Dan Williams <dan.j.williams@intel.com>, Matthew Wilcox <willy@infradead.org>, 
+	Vlastimil Babka <vbabka@suse.cz>, Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
+	linux-afs@lists.infradead.org, linux-aio@kvack.org, linux-unionfs@vger.kernel.org, 
+	linux-bcachefs@vger.kernel.org, linux-mm@kvack.org, linux-btrfs@vger.kernel.org, 
+	ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org, 
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, linux-um@lists.infradead.org, linux-mtd@lists.infradead.org, 
+	jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org, 
+	ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, 
+	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org, linux-cifs@vger.kernel.org, 
+	samba-technical@lists.samba.org, linux-xfs@vger.kernel.org, nvdimm@lists.linux.dev
+Subject: Re: [PATCH 02/10] mm/nommu: use file_has_valid_mmap_hooks() helper
+Message-ID: <gtjkxyljepqjjahbxic5xulqdxqresuuyfdr2i2vcc4tewy5yp@ziyb3wcdlvyw>
+References: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
+ <5f120b644b5890d1b50202d0f0d4c9f0d6b62873.1750099179.git.lorenzo.stoakes@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1449:b0:3dd:d7ea:ae4c with SMTP id
- e9e14a558f8ab-3de07d34057mr158515775ab.21.1750147891443; Tue, 17 Jun 2025
- 01:11:31 -0700 (PDT)
-Date: Tue, 17 Jun 2025 01:11:31 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68512333.a70a0220.395abc.0206.GAE@google.com>
-Subject: [syzbot] [bcachefs?] KMSAN: uninit-value in __bch2_alloc_v4_to_text
-From: syzbot <syzbot+8eb51728519f6659ef7b@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5f120b644b5890d1b50202d0f0d4c9f0d6b62873.1750099179.git.lorenzo.stoakes@oracle.com>
+X-Spamd-Result: default: False [-0.30 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	FORGED_RECIPIENTS(2.00)[m:akpm@linux-foundation.org,m:axboe@kernel.dk,m:rodrigo.vivi@intel.com,m:airlied@gmail.com,m:simona@ffwll.ch,m:ericvh@kernel.org,m:lucho@ionkov.net,m:asmadeus@codewreck.org,m:linux_oss@crudebyte.com,m:marc.dionne@auristor.com,m:viro@zeniv.linux.org.uk,m:brauner@kernel.org,m:bcrl@kvack.org,m:amir73il@gmail.com,m:aivazian.tigran@gmail.com,m:kees@kernel.org,m:clm@fb.com,m:idryomov@gmail.com,m:jaharkes@cs.cmu.edu,m:coda@cs.cmu.edu,m:xiang@kernel.org,m:chao@kernel.org,m:zbestahu@gmail.com,m:dhavale@google.com,m:lihongbo22@huawei.com,m:linkinjeon@kernel.org,m:adilger.kernel@dilger.ca,m:jaegeuk@kernel.org,m:slava@dubeyko.com,m:frank.li@vivo.com,m:anton.ivanov@cambridgegreys.com,m:mikulas@artax.karlin.mff.cuni.cz,m:dwmw2@infradead.org,m:shaggy@kernel.org,m:trondmy@kernel.org,m:anna@kernel.org,m:konishi.ryusuke@gmail.com,m:mark@fasheh.com,m:jlbec@evilplan.org,m:me@bobcopeland.com,m:ronniesahlberg@gmail.com,m:chengzhihao1@huawei.com,m:cem@kernel.org,m:dlemoal@kernel.or
+ g,m:naohiro.aota@wdc.com,m:jth@kernel.org,m:dan.j.williams@intel.com,m:willy@infradead.org,m:jannh@google.com,m:linux-aio@kvack.org,m:linux-mm@kvack.org,m:codalist@coda.cs.cmu.edu,s:linux-mtd@lists.infradead.org,s:linux-um@lists.infradead.org,s:ntfs3@lists.linux.dev,s:nvdimm@lists.linux.dev,s:ocfs2-devel@lists.linux.dev,s:devel@lists.orangefs.org,s:samba-technical@lists.samba.org,s:jfs-discussion@lists.sourceforge.net,s:linux-f2fs-devel@lists.sourceforge.net,s:linux-karma-devel@lists.sourceforge.net];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	ARC_NA(0.00)[];
+	FREEMAIL_CC(0.00)[linux-foundation.org,oracle.com,kernel.dk,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,kernel.org,ionkov.net,codewreck.org,crudebyte.com,suse.com,redhat.com,auristor.com,zeniv.linux.org.uk,suse.cz,kvack.org,szeredi.hu,linux.dev,fb.com,toxicpanda.com,cs.cmu.edu,tyhicks.com,linux.alibaba.com,google.com,huawei.com,samsung.com,sony.com,mit.edu,dilger.ca,mail.parknet.co.jp,dubeyko.com,physik.fu-berlin.de,vivo.com,nod.at,cambridgegreys.com,sipsolutions.net,artax.karlin.mff.cuni.cz,infradead.org,paragon-software.com,fasheh.com,evilplan.org,bobcopeland.com,omnibond.com,samba.org,manguebit.org,microsoft.com,talpey.com,wdc.com,suse.de,vger.kernel.org,lists.freedesktop.org,lists.linux.dev,lists.infradead.org,coda.cs.cmu.edu,lists.ozlabs.org,lists.sourceforge.net,lists.orangefs.org,lists.samba.org];
+	RCVD_COUNT_THREE(0.00)[3];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	R_RATELIMIT(0.00)[to_ip_from(RLb58ib84xst5oy51ju4zaburj)];
+	TO_MATCH_ENVRCPT_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[113];
+	RCVD_TLS_LAST(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -0.30
 
-Hello,
+On Mon 16-06-25 20:33:21, Lorenzo Stoakes wrote:
+> Since commit c84bf6dd2b83 ("mm: introduce new .mmap_prepare() file
+> callback"), the f_op->mmap() hook has been deprecated in favour of
+> f_op->mmap_prepare().
+> 
+> Therefore, update the check for file operations supporting mmap() by using
+> the file_has_valid_mmap_hooks() helper function, which checks for either
+> f_op->mmap or f_op->mmap_prepare rather than checking only for f_op->mmap
+> directly.
+> 
+> Signed-off-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
 
-syzbot found the following issue on:
+Looks good. Feel free to add:
 
-HEAD commit:    e04c78d86a96 Linux 6.16-rc2
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16fdc90c580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=db26f33438d76de9
-dashboard link: https://syzkaller.appspot.com/bug?extid=8eb51728519f6659ef7b
-compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07757-1~exp1~20250514183223.118), Debian LLD 20.1.6
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11fdc90c580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=132995d4580000
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/c0f064a5f302/disk-e04c78d8.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b71205c143e3/vmlinux-e04c78d8.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/2abdee22b79e/bzImage-e04c78d8.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/3838d178b843/mount_2.gz
+Maybe Fixes tag would be appropriate here?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8eb51728519f6659ef7b@syzkaller.appspotmail.com
+								Honza
 
-    cached_sectors       0
-    stripe               0
-    stripe_redundancy    0
-    io_time[READ]        1
-    io_time[WRITE]       1024
-    fragmentation     0
-    bp_start          7
-  
-  incorrectly set at freespace:0:37:0 (free 0, genbits 0 should be 0), fixing
-=====================================================
-BUG: KMSAN: uninit-value in __bch2_alloc_v4_to_text+0x7a4/0xdf0 fs/bcachefs/alloc_background.c:355
- __bch2_alloc_v4_to_text+0x7a4/0xdf0 fs/bcachefs/alloc_background.c:355
- bch2_alloc_v4_to_text+0x181/0x1f0 fs/bcachefs/alloc_background.c:380
- bch2_val_to_text fs/bcachefs/bkey_methods.c:321 [inline]
- bch2_bkey_val_to_text+0x1e8/0x280 fs/bcachefs/bkey_methods.c:331
- bch2_check_discard_freespace_key+0xe35/0x1a30 fs/bcachefs/alloc_background.c:1436
- try_alloc_bucket fs/bcachefs/alloc_foreground.c:272 [inline]
- bch2_bucket_alloc_freelist fs/bcachefs/alloc_foreground.c:420 [inline]
- bch2_bucket_alloc_trans+0x225d/0x3a40 fs/bcachefs/alloc_foreground.c:544
- bch2_bucket_alloc_set_trans+0xebb/0x1c10 fs/bcachefs/alloc_foreground.c:728
- __open_bucket_add_buckets+0x21f8/0x37b0 fs/bcachefs/alloc_foreground.c:925
- open_bucket_add_buckets+0x347/0x580 fs/bcachefs/alloc_foreground.c:957
- bch2_alloc_sectors_start_trans+0x1de1/0x3560 fs/bcachefs/alloc_foreground.c:-1
- __bch2_btree_node_alloc fs/bcachefs/btree_update_interior.c:320 [inline]
- bch2_btree_reserve_get+0x9fd/0x2120 fs/bcachefs/btree_update_interior.c:534
- bch2_btree_update_start+0x2cf3/0x3620 fs/bcachefs/btree_update_interior.c:1289
- bch2_btree_node_rewrite+0x1cd/0x1b50 fs/bcachefs/btree_update_interior.c:2245
- bch2_btree_node_rewrite_key fs/bcachefs/btree_update_interior.c:2311 [inline]
- async_btree_node_rewrite_work+0x6e8/0x10d0 fs/bcachefs/btree_update_interior.c:2368
- process_one_work kernel/workqueue.c:3238 [inline]
- process_scheduled_works+0xb91/0x1d80 kernel/workqueue.c:3321
- worker_thread+0xedf/0x1590 kernel/workqueue.c:3402
- kthread+0xd5c/0xf00 kernel/kthread.c:464
- ret_from_fork+0x1e0/0x310 arch/x86/kernel/process.c:148
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
-
-Uninit was created at:
- slab_post_alloc_hook mm/slub.c:4154 [inline]
- slab_alloc_node mm/slub.c:4197 [inline]
- __do_kmalloc_node mm/slub.c:4327 [inline]
- __kmalloc_noprof+0x95f/0x1310 mm/slub.c:4340
- kmalloc_noprof include/linux/slab.h:909 [inline]
- __bkey_cached_alloc fs/bcachefs/btree_key_cache.c:139 [inline]
- bkey_cached_alloc fs/bcachefs/btree_key_cache.c:162 [inline]
- btree_key_cache_create fs/bcachefs/btree_key_cache.c:231 [inline]
- btree_key_cache_fill+0x784/0x4780 fs/bcachefs/btree_key_cache.c:344
- bch2_btree_path_traverse_cached+0x10d7/0x1870 fs/bcachefs/btree_key_cache.c:399
- bch2_btree_path_traverse_one+0x6db/0x4060 fs/bcachefs/btree_iter.c:1179
- bch2_btree_path_traverse fs/bcachefs/btree_iter.h:250 [inline]
- bch2_btree_iter_peek_slot+0xd74/0x3910 fs/bcachefs/btree_iter.c:2781
- __bch2_bkey_get_iter fs/bcachefs/btree_iter.h:632 [inline]
- bch2_bkey_get_iter fs/bcachefs/btree_iter.h:646 [inline]
- bch2_check_discard_freespace_key+0x321/0x1a30 fs/bcachefs/alloc_background.c:1414
- try_alloc_bucket fs/bcachefs/alloc_foreground.c:272 [inline]
- bch2_bucket_alloc_freelist fs/bcachefs/alloc_foreground.c:420 [inline]
- bch2_bucket_alloc_trans+0x225d/0x3a40 fs/bcachefs/alloc_foreground.c:544
- bch2_bucket_alloc_set_trans+0xebb/0x1c10 fs/bcachefs/alloc_foreground.c:728
- __open_bucket_add_buckets+0x21f8/0x37b0 fs/bcachefs/alloc_foreground.c:925
- open_bucket_add_buckets+0x347/0x580 fs/bcachefs/alloc_foreground.c:957
- bch2_alloc_sectors_start_trans+0x1de1/0x3560 fs/bcachefs/alloc_foreground.c:-1
- __bch2_btree_node_alloc fs/bcachefs/btree_update_interior.c:320 [inline]
- bch2_btree_reserve_get+0x9fd/0x2120 fs/bcachefs/btree_update_interior.c:534
- bch2_btree_update_start+0x2cf3/0x3620 fs/bcachefs/btree_update_interior.c:1289
- bch2_btree_node_rewrite+0x1cd/0x1b50 fs/bcachefs/btree_update_interior.c:2245
- bch2_btree_node_rewrite_key fs/bcachefs/btree_update_interior.c:2311 [inline]
- async_btree_node_rewrite_work+0x6e8/0x10d0 fs/bcachefs/btree_update_interior.c:2368
- process_one_work kernel/workqueue.c:3238 [inline]
- process_scheduled_works+0xb91/0x1d80 kernel/workqueue.c:3321
- worker_thread+0xedf/0x1590 kernel/workqueue.c:3402
- kthread+0xd5c/0xf00 kernel/kthread.c:464
- ret_from_fork+0x1e0/0x310 arch/x86/kernel/process.c:148
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
-
-CPU: 1 UID: 0 PID: 4181 Comm: kworker/u8:21 Not tainted 6.16.0-rc2-syzkaller #0 PREEMPT(undef) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
-Workqueue: btree_node_rewrite async_btree_node_rewrite_work
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> ---
+>  mm/nommu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/nommu.c b/mm/nommu.c
+> index b624acec6d2e..38c22ea0a95c 100644
+> --- a/mm/nommu.c
+> +++ b/mm/nommu.c
+> @@ -719,7 +719,7 @@ static int validate_mmap_request(struct file *file,
+>  
+>  	if (file) {
+>  		/* files must support mmap */
+> -		if (!file->f_op->mmap)
+> +		if (!file_has_valid_mmap_hooks(file))
+>  			return -ENODEV;
+>  
+>  		/* work out if what we've got could possibly be shared
+> -- 
+> 2.49.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
