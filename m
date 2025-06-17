@@ -1,210 +1,121 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51B6E2E2EED;
-	Tue, 17 Jun 2025 12:00:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02D582E7167
+	for <linux-bcachefs@vger.kernel.org>; Tue, 17 Jun 2025 13:41:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750161613; cv=none; b=Fs/uJGexitASToujes1COkDDwMnIFxKXTlqTMadwGmfb29cEmJv8owNZX9WBdmKu+sNbe8h+3trujKTezUZjlRIDokDYzgNRUjrCCHe8n6cPuqaw2YjnOuxeIW7UVu2tH1bQJH0m3RqVtYBd2aEwYGI+rapOZgXFkSsq1I7XVxE=
+	t=1750167690; cv=none; b=JS87IywOTWPbjgrQvOl7Yx1B6Us1ii3EpPb9binhxL0AvCAcFTdZx29qBELKBn8ygWX4ZQJI0MzOAbUY8E6eN/3HYK2+mKFjhmFZ5NySJadc2PkIHwDPaKdwHbChmyRhNZNbw7UvOLPvQ+7WDw8ZF6Kw69yyy8aeshJutdhEYWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750161613; c=relaxed/simple;
-	bh=d7N8Br27sigUm6RwJ6QKDyuMIfLKb482gs0GJECdYqY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TpoxnDu7k7Zh0jsZP89zkOSHC40Q6MNfKBXNp4X8xu/Oka5Ml1WdAuFLBzDzXGrl1pr7xPq7TTxS1KxiplImQK3YFc5/N1j5wty6mzbfdkSHtnv2Xse7GJVbzCv6PJ6NvdJUKHZBepvCPjY3D1DYVDr2WZxIB9R/36VlehvrqW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cbm6eSpO; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1750167690; c=relaxed/simple;
+	bh=HrO8lxt3LBt/AWADIEh5uZQ4mKKsaoNO1gAWGUkXYhM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=EgYwyixOmK/Oj5slH2fIGbTDifCaLBsb7XAY++uZ0Tksu0mnvivASc+N2OWloGjXQXKQ9P0AYPl3TWUqKwWqyJiVxc8gTIqgwwmixv8hkYsp++cFynOa34+at0cXW8lcupRqU7WkvzoWYiqiIusuof7KXvyQpUEv9HW6kila7Qk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hExaoHu5; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cbm6eSpO"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F729C4CEE3;
-	Tue, 17 Jun 2025 11:59:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750161613;
-	bh=d7N8Br27sigUm6RwJ6QKDyuMIfLKb482gs0GJECdYqY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cbm6eSpOXnYTKVf24fD5wSecYeYAtaJSPLtzA/cg7YuA4PJRPYSNZqoHGrOB9vedO
-	 xE+Kw4QDbA/4jdsP7oXbPhVrMP5XKHSj57b+LizHRuDadEPqGBM+ZxF2QhTJG4KKld
-	 niMYuWEWwMHm5apCVpkqg1uA/sm57a3OJs6XP47Q03JuvcLdBMJ4BZLJME8mGFpquF
-	 OAV54y1YNZFqwgygvgnolLyQkxdfAP1bT54VMRT4yd/LwvYOK0H78h2s/9FU+jHgJZ
-	 /1P5yb/ScvLTgMkRASvu83CdtUFgXaGEFmmqSgC4JGFIOk41SmtzQEJEUL45wKXKIE
-	 copUCuL9W6X/w==
-From: Christian Brauner <brauner@kernel.org>
-To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Tvrtko Ursulin <tursulin@ursulin.net>,
-	David Airlie <airlied@gmail.com>,
-	Simona Vetter <simona@ffwll.ch>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	David Sterba <dsterba@suse.com>,
-	David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Jan Kara <jack@suse.cz>,
-	Benjamin LaHaise <bcrl@kvack.org>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Tigran A . Aivazian" <aivazian.tigran@gmail.com>,
-	Kees Cook <kees@kernel.org>,
-	Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Xiubo Li <xiubli@redhat.com>,
-	Ilya Dryomov <idryomov@gmail.com>,
-	Jan Harkes <jaharkes@cs.cmu.edu>,
-	coda@cs.cmu.edu,
-	Tyler Hicks <code@tyhicks.com>,
-	Gao Xiang <xiang@kernel.org>,
-	Chao Yu <chao@kernel.org>,
-	Yue Hu <zbestahu@gmail.com>,
-	Jeffle Xu <jefflexu@linux.alibaba.com>,
-	Sandeep Dhavale <dhavale@google.com>,
-	Hongbo Li <lihongbo22@huawei.com>,
-	Namjae Jeon <linkinjeon@kernel.org>,
-	Sungjong Seo <sj1557.seo@samsung.com>,
-	Yuezhang Mo <yuezhang.mo@sony.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	Viacheslav Dubeyko <slava@dubeyko.com>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Yangtao Li <frank.li@vivo.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Dave Kleikamp <shaggy@kernel.org>,
-	Trond Myklebust <trondmy@kernel.org>,
-	Anna Schumaker <anna@kernel.org>,
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-	Mark Fasheh <mark@fasheh.com>,
-	Joel Becker <jlbec@evilplan.org>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>,
-	Bob Copeland <me@bobcopeland.com>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Steve French <sfrench@samba.org>,
-	Paulo Alcantara <pc@manguebit.org>,
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-	Shyam Prasad N <sprasad@microsoft.com>,
-	Tom Talpey <tom@talpey.com>,
-	Bharath SM <bharathsm@microsoft.com>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Carlos Maiolino <cem@kernel.org>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Naohiro Aota <naohiro.aota@wdc.com>,
-	Johannes Thumshirn <jth@kernel.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Jann Horn <jannh@google.com>,
-	Pedro Falcato <pfalcato@suse.de>,
-	linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	intel-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	v9fs@lists.linux.dev,
-	linux-fsdevel@vger.kernel.org,
-	linux-afs@lists.infradead.org,
-	linux-aio@kvack.org,
-	linux-unionfs@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-btrfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org,
-	codalist@coda.cs.cmu.edu,
-	ecryptfs@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-um@lists.infradead.org,
-	linux-mtd@lists.infradead.org,
-	jfs-discussion@lists.sourceforge.net,
-	linux-nfs@vger.kernel.org,
-	linux-nilfs@vger.kernel.org,
-	ntfs3@lists.linux.dev,
-	ocfs2-devel@lists.linux.dev,
-	linux-karma-devel@lists.sourceforge.net,
-	devel@lists.orangefs.org,
-	linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org,
-	linux-xfs@vger.kernel.org,
-	nvdimm@lists.linux.dev,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 00/10] convert the majority of file systems to mmap_prepare
-Date: Tue, 17 Jun 2025 13:58:21 +0200
-Message-ID: <20250617-neugliederung-erarbeiten-58c2ad93db83@brauner>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
-References: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hExaoHu5"
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-235e1d710d8so70448625ad.1
+        for <linux-bcachefs@vger.kernel.org>; Tue, 17 Jun 2025 06:41:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750167687; x=1750772487; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IHsQDpxWPUefcRM3L/XKDZaVWFn7gw3H5defpON5D0k=;
+        b=hExaoHu58qJh7As+qCVFbfvD++HT9Ez2jDNxEouLvTxac4WrCRFEAgunnajj+7vGbR
+         0pzAeu+/4URD6UhYdO7wVguiBh9ko/YH1SI6PC0/3jxqNpZBxJlwjtQlLnXIAniRZKD3
+         HBHdE8fMTug3EcBzO2YslHlFUcYZC5IJk8mdAqz3wDvcV4tACHT97/1/prXGUrm74Wbp
+         EwLUADkD8P1UNfjQDvCSwW51gXBfLU24UH8GoDkR0O+YsvjT5H8bEtc1RC+lSlwuAFim
+         aXdLNNtwRXYGoCjlKuDw8fhg45AnTWU4+3fuftQh+Mq46pdJ3ZyyMUxb/2tu1yT5+dYo
+         Yglg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750167687; x=1750772487;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IHsQDpxWPUefcRM3L/XKDZaVWFn7gw3H5defpON5D0k=;
+        b=YJnl12G/7niEnW4FYI3HTe8c1+jMfzYW721CC+VNM+VAGqwFQADkc4subT5knJAXRm
+         F0VlAwNa3HX4CuFAwhhUmadrUpmOj8N07gIaEiTsqaWVeBXdGCJ4HWG7Kdr/JspYsEaB
+         KrQNP5vRFe15yDhxhBGhVigYOGGYlfFYO+N1fuxgM8zl20C8DVRVRDYE7Ml0CAGr/z6R
+         mChFX1B0M/eeSMcDFhAVrCjd8LajnGOskXRO9zeQiZdZ8bJDxNvz85hnq5d3dqmynpOp
+         2JNBxnIDHvJJTAzWwyuKhDGsvPuCrFihz74zIrCvljwVb4V/GpkCLRW0yN/5VAHyOdPf
+         e0uA==
+X-Gm-Message-State: AOJu0Yzsnom8ZlU31FQvkdrLcoB+bGXs9VGTbB6w0qIBJngM1WifbRP8
+	TkBF+VFFhwX/+SQ2an2xaD+S05/mdPC59WnofWOdhYfWDpASshYIk6e3CfWxb76Ieb6I4Q==
+X-Gm-Gg: ASbGncsE9ZG4vewk+49Y2Z6UaKHGot+8nf8psNpo+RUPMuYdZwlF8LKJy4qCf4TCDH/
+	XTxIp9LxHI8DPgYL4W5yAFV+vlS8TDxJv97d3moUKf0jd6YJR6BfkbGFeHXctgL96jbeQSnIYkS
+	AFfVRf9H4bz0tN4Riz1HjqdNICK7Uza7SxT0cpW8LCN3niKYNW38BvApp6s+TwYRh+HVKxxS1+2
+	ibMO2QMnpIYLFsL426o3KwO6q7I2lYabaVbG5K3RulCT0Ul3MufVvlGtAyrQXLFGI7XKumcPNLD
+	egC69+AcHwBwoh14yYyomqFGVvc+SSVSzxKtDpeLJha9Wrq7FFjzMQU9yg42uA/ihk9gp/zvW7d
+	m
+X-Google-Smtp-Source: AGHT+IFs6mtXTgeYdA98LmW75mTApZjajvGw58XlXCylxmv1I+X7eLi5Idp6LTMIl5Mi3x5UJnfd5A==
+X-Received: by 2002:a17:902:ebd2:b0:234:cb4a:bc48 with SMTP id d9443c01a7336-2366b3de5e5mr189518845ad.31.1750167686449;
+        Tue, 17 Jun 2025 06:41:26 -0700 (PDT)
+Received: from localhost ([36.110.131.130])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2369d2eafedsm1636025ad.133.2025.06.17.06.41.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Jun 2025 06:41:26 -0700 (PDT)
+From: Julian Sun <sunjunchao2870@gmail.com>
+To: linux-bcachefs@vger.kernel.org
+Cc: kent.overstreet@linux.dev,
+	Julian Sun <sunjunchao2870@gmail.com>,
+	syzbot+56edda805363e0a093b8@syzkaller.appspotmail.com
+Subject: [PATCH] bcachefs: Return EROFS for BCH_IOCTL_DATA ioctl requests in ro mount mode.
+Date: Tue, 17 Jun 2025 21:41:20 +0800
+Message-Id: <20250617134120.102668-1-sunjunchao2870@gmail.com>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2454; i=brauner@kernel.org; h=from:subject:message-id; bh=d7N8Br27sigUm6RwJ6QKDyuMIfLKb482gs0GJECdYqY=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQERqz1Wd3by3g/duuF6rmP/N/MPRV+t8Tf5qpaV67t4 jKOJ7rXO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACaysIiRYfKb1+w2vf8O/mdg vPFO8PHqRzML+F0vTZYp4bqm1fwkeyXDP4PuJqblPl9UmcRtf/n65jge6ap97PLc+43T4+kid/k fMgMA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-On Mon, 16 Jun 2025 20:33:19 +0100, Lorenzo Stoakes wrote:
-> REVIEWER'S NOTES
-> ================
-> 
-> I am basing this on the mm-new branch in Andrew's tree, so let me know if I
-> should rebase anything here. Given the mm bits touched I did think perhaps
-> we should take it through the mm tree, however it may be more sensible to
-> take it through an fs tree - let me know!
-> 
-> [...]
+Recently, syzkaller reported the following issue:
 
-This looks good. I fixed up the minor review comments.
-Looking forward to further cleanups in this area.
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+Call Trace:
+ <TASK>
+ mempool_alloc_noprof+0x1a7/0x510 mm/mempool.c:402
+ bch2_btree_update_start+0x549/0x1480 fs/bcachefs/btree_update_interior.c:1194
+ bch2_btree_node_rewrite+0x17e/0x1120 fs/bcachefs/btree_update_interior.c:2208
+ bch2_move_btree+0x6f0/0xc70 fs/bcachefs/move.c:1093
+ bch2_scan_old_btree_nodes+0x95/0x240 fs/bcachefs/move.c:1215
+ bch2_data_job+0x646/0x910 fs/bcachefs/move.c:1354
+ bch2_data_thread+0x8f/0x1d0 fs/bcachefs/chardev.c:315
+ kthread+0x711/0x8a0 kernel/kthread.c:464
+ ret_from_fork+0x3fc/0x770 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
 
+This is because after commit d4d71b58e513 ("bcachefs: RO mounts now use less memory"),
+read-only mounts no longer initialize btree_interior_update_pool, which is required for
+processing BCH_IOCTL_DATA requests.
+
+Since all BCH_IOCTL_DATA requests involve writing data, EROFS should be returned in this scenario.
+
+Reported-by: syzbot+56edda805363e0a093b8@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/683bede4.a00a0220.d8eae.002a.GAE@google.com
+Fixes: d4d71b58e513 ("bcachefs: RO mounts now use less memory")
+Signed-off-by: Julian Sun <sunjunchao2870@gmail.com>
 ---
+ fs/bcachefs/chardev.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Applied to the vfs-6.17.mmap_prepare branch of the vfs/vfs.git tree.
-Patches in the vfs-6.17.mmap_prepare branch should appear in linux-next soon.
+diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
+index fde3c2380e28..ba9859fc9f24 100644
+--- a/fs/bcachefs/chardev.c
++++ b/fs/bcachefs/chardev.c
+@@ -384,6 +384,9 @@ static long bch2_ioctl_data(struct bch_fs *c,
+ 	if (arg.op >= BCH_DATA_OP_NR || arg.flags)
+ 		return -EINVAL;
+ 
++	if (c->vfs_sb->s_flags & SB_RDONLY)
++		return -EROFS;
++
+ 	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
+ 	if (!ctx)
+ 		return -ENOMEM;
+-- 
+2.39.5
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
-
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs-6.17.mmap_prepare
-
-[01/10] mm: rename call_mmap/mmap_prepare to vfs_mmap/mmap_prepare
-        https://git.kernel.org/vfs/vfs/c/20ca475d9860
-[02/10] mm/nommu: use file_has_valid_mmap_hooks() helper
-        https://git.kernel.org/vfs/vfs/c/c6900f227f89
-[03/10] fs: consistently use file_has_valid_mmap_hooks() helper
-        https://git.kernel.org/vfs/vfs/c/b013ed403197
-[04/10] fs/dax: make it possible to check dev dax support without a VMA
-        https://git.kernel.org/vfs/vfs/c/0335f6afd348
-[05/10] fs/ext4: transition from deprecated .mmap hook to .mmap_prepare
-        https://git.kernel.org/vfs/vfs/c/8c90ae8fe5e3
-[06/10] fs/xfs: transition from deprecated .mmap hook to .mmap_prepare
-        https://git.kernel.org/vfs/vfs/c/6528d29b46d8
-[07/10] mm/filemap: introduce generic_file_*_mmap_prepare() helpers
-        https://git.kernel.org/vfs/vfs/c/5b44297bcfa4
-[08/10] fs: convert simple use of generic_file_*_mmap() to .mmap_prepare()
-        https://git.kernel.org/vfs/vfs/c/951ea2f4844c
-[09/10] fs: convert most other generic_file_*mmap() users to .mmap_prepare()
-        https://git.kernel.org/vfs/vfs/c/a5ee9a82981d
-[10/10] fs: replace mmap hook with .mmap_prepare for simple mappings
-        https://git.kernel.org/vfs/vfs/c/a1e5b36c4034
