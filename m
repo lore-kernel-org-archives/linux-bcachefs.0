@@ -1,594 +1,310 @@
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
+Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 222212F2375
-	for <linux-bcachefs@vger.kernel.org>; Tue, 17 Jun 2025 15:56:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EA4B2FA62D
+	for <linux-bcachefs@vger.kernel.org>; Tue, 17 Jun 2025 16:52:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750175790; cv=none; b=I9N4DFr/WGDUBjAiaUR5avevd1lbo36C8+f+FLugI2sj2MUjEUr6aefVFLLfIxiUQtxpJu03eecMoajfO8QgHyHzcveS0U3Gpz9oQ5cHigmmMDeMS84iptolfFrom79R13Wyk2QrBuKVUOE7NcFtJaUahpyrsv4C+bA3aB2M3k8=
+	t=1750179156; cv=none; b=BUWCvM6f1pMWM5D3GsEdA0JN+q4Gsfa87frEz/3VtG1pzBbrmAhYhCsMSgcwEYzbJH77DDvcjI2EQXFlBlFX2bIhp2WCp6XiOp84kb4mBxZligNU271fUEyh967jVfN0UPH5pLAai7grhwOO1kUvJg61hjIWKjT1mAnRrQSvyxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750175790; c=relaxed/simple;
-	bh=RGRnkECr5n3/DDT27ZVZu7IMiTSokd33b4A2E+dwDMQ=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=UystUOZIPORvIylWQJWgfMgjz2I/rAMFdqlgl023Ktq5Qi5WuTm7BqThWnpf8PSaZwwUW7YMNv8PmldesKch94RaiWQIJtUpO0tUcRVmYJo+aefelN5G/FJ+7qH4bOXd+Khqnf+49upF0jaE8jNeJBxEQ/4EZZMPTYCX/ZCTZ2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
+	s=arc-20240116; t=1750179156; c=relaxed/simple;
+	bh=G9XN6Gxa4InNZ46I4lpQdvj1omBjcsp0ZqmGGWMJ7hk=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=dD0S4aq3jcThNTVWzsH19hfzEdwZozLd4M09TBXnIQiLgjGdGBOhbvRQdrZaSIBLX8Go2bsaVwTh5ak7CZCOX+SJjZTQLboY1YyE0bfMRJTNHexNLqU+TqpSmHHQrZtBvpl+jOi5S3uTiD4odzGTwhTxISbRyU3JcQtXntwlwDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3ddd03db21cso101373075ab.1
-        for <linux-bcachefs@vger.kernel.org>; Tue, 17 Jun 2025 08:56:27 -0700 (PDT)
+Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3ddd01c6f9bso67132385ab.1
+        for <linux-bcachefs@vger.kernel.org>; Tue, 17 Jun 2025 09:52:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750175787; x=1750780587;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LIgPSCKjElwDdYYwEQMlrvQkf1oqMpFPHHeVWEqnJOQ=;
-        b=TFFMr25vIFL3z9Qx12XLPCANZCQwwnq+xSr2uldRle2lYz62WgH3zoV2M3oKTwoyRC
-         IRuMiaU02LHN1YJFPNqZfJOcfrM2lQjyu9NIm95Dmt9ng+kKg/cP9f4OlsU88db4am0j
-         mvDnk8ViWMBtOgzsDAfQo5dQenJL4sT+Bm8jebKRzo/lyCzCrTQdp+KmxdOPCFERx4r8
-         Rh+u7qjP8EhEP8OS5GHMxMmX18gum23ytUzQyjxGFDOuanTkF2V6AI/j+fye6iZ/hvWN
-         a9qNBpp2PlhzBmEGEN/V9UOR+zZIjtZpK6IvumnOm05HpUwDfBv1BuE4c8YXkVFNPy0M
-         k7mA==
-X-Forwarded-Encrypted: i=1; AJvYcCXQakP5D8S0ksNfSZ99N4213p2/WkqI8ukYTrzGZrLkPugFQ0Ns8QVtwsyK+adxMrfBgivapQGyxO51XwvG9g==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy2VeAAR0A3kCiChlscmBdTGQnAKLsn7Beu4mbJAY8zJ0c3pxWZ
-	260RMl62QywwGT/87HdrJbLvbePWu2KbpRQ1EGLvYKCVqRj5qvB91w0Mi3VgvVQjiGXDDAba4SR
-	YSz4PrvHBH52O2pWFCX/8TXp4mlV9P17l5Ayzdynxk7Dql7Hs4/UzpFfR2kY=
-X-Google-Smtp-Source: AGHT+IEUi7GFMDpl47GaU3HqBMpHHwtQ82OzDls8DjvbcpguVzeHDyvfJzY5F8Y2yIljaOGbV/Wn6TWn5H1ywN4pYKoTD2MJpFW1
+        d=1e100.net; s=20230601; t=1750179153; x=1750783953;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=q+5VXpGlrY62/ocw7acqgxcfz5xjkFrvsB9lRHjYsok=;
+        b=jabAJ86VvyuS/NZQCjT07ZqDCVzltID+TZq00yKCXk+c0KepGkwz5eearmqO8dn0ee
+         2VZAtuMgh0qwiLM6ViEWeWGrFDlVMqTNhnqRiM09uxK9jZnO2E/tOXY77STfu/WiUHWw
+         y/8ae12cT+8i7w8x1J8NyJow85T4u3sxM241Jis1MYoddfUcrgjS83GGn/H7snX4sISC
+         T4Ub6uv0YqXdWTsi2AIgm8hyNx4fVn4qTOiMNVWZCbrmbc5kewKEVRukJJjjiuiTnlTM
+         A1oeZs3SKS+YBMyUdUkxKNU39kkdoWvuPvG7ItcbPwvzGU1QwASAWmTIsmfxUPQYMcsm
+         09OA==
+X-Forwarded-Encrypted: i=1; AJvYcCV+oD34jPSn0yIwkx5uMJ1Kgsi2edKxlmyXa6IPh6Ojypmk8jhZ+1bm34LXwAE/cX5ruODkaNmcSkhIPchoUg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyL4EkCHXHjlKqI5gWUN9zUFM3wpD3kwKzMeA5Lb9GBt+Z404lX
+	piOl8sJpasrV7dlYVcvu6TaLM20eFuNMZvIfTqZc8tgBWQ6h/KLcOk4JYXR70Hs1r4FUyh/5cPL
+	lEuEPOzZsfdAqW9Qw6tM5dUk1cV/5R3DQLuiaX6p4fIeLSHAHCBX9PkEu57k=
+X-Google-Smtp-Source: AGHT+IEWrRhyWUiQDDE1iWrXRdNzKbiOjV28trpWuh5l7vDLuqorG2+kbBOciA76C/z/u/56Gu3hur92SJuLa4WMGJ5micoY1V1i
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:198e:b0:3dc:7a9a:44d5 with SMTP id
- e9e14a558f8ab-3de07ced270mr156209075ab.22.1750175787196; Tue, 17 Jun 2025
- 08:56:27 -0700 (PDT)
-Date: Tue, 17 Jun 2025 08:56:27 -0700
+X-Received: by 2002:a92:ca48:0:b0:3de:12ce:d832 with SMTP id
+ e9e14a558f8ab-3de22d0b292mr37593335ab.10.1750179153237; Tue, 17 Jun 2025
+ 09:52:33 -0700 (PDT)
+Date: Tue, 17 Jun 2025 09:52:33 -0700
+In-Reply-To: <675cb812.050a0220.37aaf.00b6.GAE@google.com>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6851902b.a70a0220.395abc.0223.GAE@google.com>
-Subject: [syzbot] [bcachefs?] KASAN: slab-out-of-bounds Write in bch2_dirent_init_name
-From: syzbot <syzbot+894877f2c4dd5fdea634@syzkaller.appspotmail.com>
+Message-ID: <68519d51.050a0220.2608ac.001d.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] INFO: task hung in bch2_page_fault
+From: syzbot <syzbot+32415e0466b02533303c@syzkaller.appspotmail.com>
 To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+syzbot has found a reproducer for the following issue on:
 
-syzbot found the following issue on:
-
-HEAD commit:    39dfc971e42d arm64/ptrace: Fix stack-out-of-bounds read in..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=14e965d4580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=941e423b930a32dc
-dashboard link: https://syzkaller.appspot.com/bug?extid=894877f2c4dd5fdea634
+HEAD commit:    9afe652958c3 Merge tag 'x86_urgent_for_6.16-rc3' of git://..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11665e82580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6a237c32900fc479
+dashboard link: https://syzkaller.appspot.com/bug?extid=32415e0466b02533303c
 compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07757-1~exp1~20250514183223.118), Debian LLD 20.1.6
-userspace arch: arm64
-
-Unfortunately, I don't have any reproducer for this issue yet.
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=130d790c580000
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ee1a7942f1b9/disk-39dfc971.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5b94ed3d0f7e/vmlinux-39dfc971.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/9ce219d3314e/Image-39dfc971.gz.xz
+disk image: https://storage.googleapis.com/syzbot-assets/ca235ca5eaeb/disk-9afe6529.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ce4a880751fe/vmlinux-9afe6529.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a7c651092242/bzImage-9afe6529.xz
+mounted in repro #1: https://storage.googleapis.com/syzbot-assets/eae8507e16f4/mount_0.gz
+mounted in repro #2: https://storage.googleapis.com/syzbot-assets/9464fbe325ac/mount_4.gz
+mounted in repro #3: https://storage.googleapis.com/syzbot-assets/5eac8f4c23dc/mount_6.gz
+  fsck result: OK (log: https://syzkaller.appspot.com/x/fsck.log?x=16665e82580000)
+mounted in repro #4: https://storage.googleapis.com/syzbot-assets/6901c045125d/mount_15.gz
+  fsck result: failed (log: https://syzkaller.appspot.com/x/fsck.log?x=137355d4580000)
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+894877f2c4dd5fdea634@syzkaller.appspotmail.com
+Reported-by: syzbot+32415e0466b02533303c@syzkaller.appspotmail.com
 
-bcachefs (loop3): bucket 0:11 gen 0 data type journal has wrong dirty_sectors: got 0, should be 256, fixing
-  Ratelimiting new instances of previous error
-BUG: MAX_LOCKDEP_CHAINS too low!
-turning off the locking correctness validator.
-CPU: 1 UID: 0 PID: 9405 Comm: syz.3.515 Not tainted 6.16.0-rc1-syzkaller-g39dfc971e42d #0 PREEMPT 
+INFO: task syz.4.25:6211 blocked for more than 143 seconds.
+      Not tainted 6.16.0-rc2-syzkaller-00024-g9afe652958c3 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.4.25        state:D stack:24616 pid:6211  tgid:6211  ppid:5990   task_flags:0x400040 flags:0x00004004
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5396 [inline]
+ __schedule+0x16a2/0x4cb0 kernel/sched/core.c:6785
+ __schedule_loop kernel/sched/core.c:6863 [inline]
+ schedule+0x165/0x360 kernel/sched/core.c:6878
+ __bch2_two_state_lock+0x1ea/0x370 fs/bcachefs/two_state_shared_lock.c:7
+ bch2_two_state_lock fs/bcachefs/two_state_shared_lock.h:55 [inline]
+ bch2_page_fault+0x2f6/0x7a0 fs/bcachefs/fs-io-pagecache.c:592
+ __do_fault+0x138/0x390 mm/memory.c:5189
+ do_shared_fault mm/memory.c:5674 [inline]
+ do_fault mm/memory.c:5748 [inline]
+ do_pte_missing mm/memory.c:4251 [inline]
+ handle_pte_fault mm/memory.c:6089 [inline]
+ __handle_mm_fault+0x198b/0x5620 mm/memory.c:6232
+ handle_mm_fault+0x2d5/0x7f0 mm/memory.c:6401
+ do_user_addr_fault+0xa81/0x1390 arch/x86/mm/fault.c:1336
+ handle_page_fault arch/x86/mm/fault.c:1476 [inline]
+ exc_page_fault+0x76/0xf0 arch/x86/mm/fault.c:1532
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
+RIP: 0033:0x7efe53d567c7
+RSP: 002b:00007ffd198848c8 EFLAGS: 00010203
+RAX: 0000200000002500 RBX: 0000000000000004 RCX: 0000200000002500
+RDX: 00002000000036e8 RSI: 00007efe53825cad RDI: 0000200000002520
+RBP: 00007efe53fb7ba0 R08: 0000000000000000 R09: 0000000000000049
+R10: 0000000000000000 R11: 0000000000000001 R12: 00007efe53fb616c
+R13: 00007efe53fb6160 R14: fffffffffffffffe R15: 00007ffd198849e0
+ </TASK>
+INFO: task syz.4.25:6212 blocked for more than 144 seconds.
+      Not tainted 6.16.0-rc2-syzkaller-00024-g9afe652958c3 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.4.25        state:D stack:17736 pid:6212  tgid:6211  ppid:5990   task_flags:0x440140 flags:0x00004006
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5396 [inline]
+ __schedule+0x16a2/0x4cb0 kernel/sched/core.c:6785
+ __schedule_loop kernel/sched/core.c:6863 [inline]
+ schedule+0x165/0x360 kernel/sched/core.c:6878
+ __bch2_two_state_lock+0x1ea/0x370 fs/bcachefs/two_state_shared_lock.c:7
+ bch2_two_state_lock fs/bcachefs/two_state_shared_lock.h:55 [inline]
+ bch2_readahead+0x94f/0x1100 fs/bcachefs/fs-io-buffered.c:296
+ read_pages+0x17a/0x580 mm/readahead.c:160
+ page_cache_ra_order+0xa24/0xc70 mm/readahead.c:515
+ filemap_readahead mm/filemap.c:2571 [inline]
+ filemap_get_pages+0xb22/0x1ea0 mm/filemap.c:2616
+ filemap_splice_read+0x4fc/0xbc0 mm/filemap.c:2990
+ do_splice_read fs/splice.c:979 [inline]
+ splice_direct_to_actor+0x4a6/0xcc0 fs/splice.c:1083
+ do_splice_direct_actor fs/splice.c:1201 [inline]
+ do_splice_direct+0x181/0x270 fs/splice.c:1227
+ vfs_copy_file_range+0xabc/0x1310 fs/read_write.c:1627
+ __do_sys_copy_file_range fs/read_write.c:1677 [inline]
+ __se_sys_copy_file_range+0x2fb/0x470 fs/read_write.c:1644
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7efe53d8e929
+RSP: 002b:00007efe54b68038 EFLAGS: 00000246 ORIG_RAX: 0000000000000146
+RAX: ffffffffffffffda RBX: 00007efe53fb5fa0 RCX: 00007efe53d8e929
+RDX: 0000000000000006 RSI: 0000000000000000 RDI: 0000000000000007
+RBP: 00007efe53e10b39 R08: 0000000000400000 R09: 0000000000000000
+R10: 00002000000000c0 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007efe53fb5fa0 R15: 00007ffd19884768
+ </TASK>
+INFO: task syz.4.25:6264 blocked for more than 145 seconds.
+      Not tainted 6.16.0-rc2-syzkaller-00024-g9afe652958c3 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.4.25        state:D stack:25976 pid:6264  tgid:6211  ppid:5990   task_flags:0x400040 flags:0x00004006
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5396 [inline]
+ __schedule+0x16a2/0x4cb0 kernel/sched/core.c:6785
+ __schedule_loop kernel/sched/core.c:6863 [inline]
+ schedule+0x165/0x360 kernel/sched/core.c:6878
+ io_schedule+0x81/0xe0 kernel/sched/core.c:7723
+ folio_wait_bit_common+0x6b0/0xb90 mm/filemap.c:1317
+ folio_lock include/linux/pagemap.h:1114 [inline]
+ invalidate_inode_pages2_range+0x557/0xa80 mm/truncate.c:690
+ bch2_write_invalidate_inode_pages_range+0xc5/0x110 fs/bcachefs/fs-io-pagecache.c:68
+ bch2_direct_write+0x2a62/0x2ce0 fs/bcachefs/fs-io-direct.c:662
+ bch2_write_iter+0x18f/0x2b90 fs/bcachefs/fs-io-buffered.c:1064
+ do_iter_readv_writev+0x56b/0x7f0 fs/read_write.c:-1
+ vfs_writev+0x31a/0x960 fs/read_write.c:1057
+ do_pwritev fs/read_write.c:1153 [inline]
+ __do_sys_pwritev2 fs/read_write.c:1211 [inline]
+ __se_sys_pwritev2+0x179/0x290 fs/read_write.c:1202
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7efe53d8e929
+RSP: 002b:00007efe54b47038 EFLAGS: 00000246 ORIG_RAX: 0000000000000148
+RAX: ffffffffffffffda RBX: 00007efe53fb6080 RCX: 00007efe53d8e929
+RDX: 0000000000000001 RSI: 0000200000000240 RDI: 0000000000000005
+RBP: 00007efe53e10b39 R08: 0000000000000000 R09: 0000000000000003
+R10: 0000000000007000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000001 R14: 00007efe53fb6080 R15: 00007ffd19884768
+ </TASK>
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/31:
+ #0: ffffffff8e13eda0 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:331 [inline]
+ #0: ffffffff8e13eda0 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:841 [inline]
+ #0: ffffffff8e13eda0 (rcu_read_lock){....}-{1:3}, at: debug_show_all_locks+0x2e/0x180 kernel/locking/lockdep.c:6770
+3 locks held by kworker/0:2/1214:
+2 locks held by getty/5584:
+ #0: ffff88803543a0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
+ #1: ffffc9000332b2f0 (&ldata->atomic_read_lock){+.+.}-{4:4}, at: n_tty_read+0x43e/0x1400 drivers/tty/n_tty.c:2222
+3 locks held by syz-executor/5975:
+ #0: ffff88805c16a0e0 (&type->s_umount_key#54){++++}-{4:4}, at: __super_lock fs/super.c:57 [inline]
+ #0: ffff88805c16a0e0 (&type->s_umount_key#54){++++}-{4:4}, at: __super_lock_excl fs/super.c:72 [inline]
+ #0: ffff88805c16a0e0 (&type->s_umount_key#54){++++}-{4:4}, at: deactivate_super+0xa9/0xe0 fs/super.c:506
+ #1: ffff8880ae700278 (&c->state_lock){+.+.}-{4:4}, at: __bch2_fs_stop+0xf8/0x900 fs/bcachefs/super.c:677
+ #2: ffffffff8e1448b8 (rcu_state.exp_mutex){+.+.}-{4:4}, at: exp_funnel_lock kernel/rcu/tree_exp.h:336 [inline]
+ #2: ffffffff8e1448b8 (rcu_state.exp_mutex){+.+.}-{4:4}, at: synchronize_rcu_expedited+0x3b9/0x730 kernel/rcu/tree_exp.h:998
+3 locks held by kworker/0:4/5981:
+1 lock held by syz.4.25/6211:
+ #0: ffff88805a860a88 (vm_lock){++++}-{0:0}, at: do_user_addr_fault+0x2d9/0x1390 arch/x86/mm/fault.c:1327
+1 lock held by syz.4.25/6212:
+ #0: ffff8880564d1218 (mapping.invalidate_lock#3){.+.+}-{4:4}, at: filemap_invalidate_lock_shared include/linux/fs.h:934 [inline]
+ #0: ffff8880564d1218 (mapping.invalidate_lock#3){.+.+}-{4:4}, at: page_cache_ra_order+0x445/0xc70 mm/readahead.c:491
+1 lock held by syz.4.25/6264:
+ #0: ffff88802457a428 (sb_writers#13){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:3096 [inline]
+ #0: ffff88802457a428 (sb_writers#13){.+.+}-{0:0}, at: vfs_writev+0x288/0x960 fs/read_write.c:1055
+1 lock held by syz.3.63/6745:
+ #0: ffff888047965948 (vm_lock){++++}-{0:0}, at: do_user_addr_fault+0x2d9/0x1390 arch/x86/mm/fault.c:1327
+1 lock held by syz.3.63/6746:
+ #0: ffff888056663810 (mapping.invalidate_lock#3){.+.+}-{4:4}, at: filemap_invalidate_lock_shared include/linux/fs.h:934 [inline]
+ #0: ffff888056663810 (mapping.invalidate_lock#3){.+.+}-{4:4}, at: page_cache_ra_order+0x445/0xc70 mm/readahead.c:491
+1 lock held by syz.3.63/6801:
+ #0: ffff88802a336428 (sb_writers#13){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:3096 [inline]
+ #0: ffff88802a336428 (sb_writers#13){.+.+}-{0:0}, at: vfs_writev+0x288/0x960 fs/read_write.c:1055
+3 locks held by syz-executor/6934:
+ #0: ffff88807577a0e0 (&type->s_umount_key#54){++++}-{4:4}, at: __super_lock fs/super.c:57 [inline]
+ #0: ffff88807577a0e0 (&type->s_umount_key#54){++++}-{4:4}, at: __super_lock_excl fs/super.c:72 [inline]
+ #0: ffff88807577a0e0 (&type->s_umount_key#54){++++}-{4:4}, at: deactivate_super+0xa9/0xe0 fs/super.c:506
+ #1: ffff8880b3780278 (&c->state_lock){+.+.}-{4:4}, at: __bch2_fs_stop+0xf8/0x900 fs/bcachefs/super.c:677
+ #2: ffff8880b3780918 (&c->sb_lock){+.+.}-{4:4}, at: bch2_fs_mark_clean+0x44/0x380 fs/bcachefs/sb-clean.c:292
+1 lock held by syz.5.115/7450:
+ #0: ffff888054ecf808 (vm_lock){++++}-{0:0}, at: do_user_addr_fault+0x2d9/0x1390 arch/x86/mm/fault.c:1327
+1 lock held by syz.5.115/7451:
+ #0: ffff8880564e5e08 (mapping.invalidate_lock#3){.+.+}-{4:4}, at: filemap_invalidate_lock_shared include/linux/fs.h:934 [inline]
+ #0: ffff8880564e5e08 (mapping.invalidate_lock#3){.+.+}-{4:4}, at: page_cache_ra_order+0x445/0xc70 mm/readahead.c:491
+1 lock held by syz.5.115/7498:
+ #0: ffff888030e24428 (sb_writers#13){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:3096 [inline]
+ #0: ffff888030e24428 (sb_writers#13){.+.+}-{0:0}, at: vfs_writev+0x288/0x960 fs/read_write.c:1055
+1 lock held by syz.7.130/7767:
+ #0: ffff888048694bc8 (vm_lock){++++}-{0:0}, at: do_user_addr_fault+0x2d9/0x1390 arch/x86/mm/fault.c:1327
+1 lock held by syz.7.130/7768:
+ #0: ffff8880564e3fa8 (mapping.invalidate_lock#3){.+.+}-{4:4}, at: filemap_invalidate_lock_shared include/linux/fs.h:934 [inline]
+ #0: ffff8880564e3fa8 (mapping.invalidate_lock#3){.+.+}-{4:4}, at: page_cache_ra_order+0x445/0xc70 mm/readahead.c:491
+1 lock held by syz.7.130/7816:
+ #0: ffff888032802428 (sb_writers#13){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:3096 [inline]
+ #0: ffff888032802428 (sb_writers#13){.+.+}-{0:0}, at: vfs_writev+0x288/0x960 fs/read_write.c:1055
+3 locks held by syz-executor/7973:
+ #0: ffff88807b4300e0 (&type->s_umount_key#54){++++}-{4:4}, at: __super_lock fs/super.c:57 [inline]
+ #0: ffff88807b4300e0 (&type->s_umount_key#54){++++}-{4:4}, at: __super_lock_excl fs/super.c:72 [inline]
+ #0: ffff88807b4300e0 (&type->s_umount_key#54){++++}-{4:4}, at: deactivate_super+0xa9/0xe0 fs/super.c:506
+ #1: ffff888097700278 (&c->state_lock){+.+.}-{4:4}, at: __bch2_fs_stop+0xf8/0x900 fs/bcachefs/super.c:677
+ #2: ffff888097700918 (&c->sb_lock){+.+.}-{4:4}, at: bch2_fs_mark_clean+0x44/0x380 fs/bcachefs/sb-clean.c:292
+2 locks held by syz.2.173/8269:
+
+=============================================
+
+NMI backtrace for cpu 0
+CPU: 0 UID: 0 PID: 31 Comm: khungtaskd Not tainted 6.16.0-rc2-syzkaller-00024-g9afe652958c3 #0 PREEMPT(full) 
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
-Call trace:
- show_stack+0x2c/0x3c arch/arm64/kernel/stacktrace.c:466 (C)
- __dump_stack+0x30/0x40 lib/dump_stack.c:94
- dump_stack_lvl+0xd8/0x12c lib/dump_stack.c:120
- dump_stack+0x1c/0x28 lib/dump_stack.c:129
- add_chain_cache kernel/locking/lockdep.c:-1 [inline]
- lookup_chain_cache_add kernel/locking/lockdep.c:3858 [inline]
- validate_chain kernel/locking/lockdep.c:3879 [inline]
- __lock_acquire+0xf9c/0x30a4 kernel/locking/lockdep.c:5240
- lock_acquire+0x14c/0x2e0 kernel/locking/lockdep.c:5871
- percpu_down_write+0x6c/0x2f0 kernel/locking/percpu-rwsem.c:232
- bch2_gc_accounting_done+0xe64/0x190c fs/bcachefs/disk_accounting.c:625
- bch2_check_allocations+0x3a38/0x3c34 fs/bcachefs/btree_gc.c:1063
- bch2_run_recovery_pass fs/bcachefs/recovery_passes.c:477 [inline]
- __bch2_run_recovery_passes+0x29c/0xd18 fs/bcachefs/recovery_passes.c:532
- bch2_run_recovery_passes+0x174/0x1f4 fs/bcachefs/recovery_passes.c:603
- bch2_fs_recovery+0x1db8/0x2fd4 fs/bcachefs/recovery.c:974
- bch2_fs_start+0x914/0xbc0 fs/bcachefs/super.c:1200
- bch2_fs_get_tree+0x890/0xfd0 fs/bcachefs/fs.c:2489
- vfs_get_tree+0x90/0x28c fs/super.c:1802
- do_new_mount+0x228/0x814 fs/namespace.c:3885
- path_mount+0x5b4/0xde0 fs/namespace.c:4209
- do_mount fs/namespace.c:4222 [inline]
- __do_sys_mount fs/namespace.c:4433 [inline]
- __se_sys_mount fs/namespace.c:4410 [inline]
- __arm64_sys_mount+0x3e8/0x468 fs/namespace.c:4410
- __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
- el0_svc+0x58/0x17c arch/arm64/kernel/entry-common.c:767
- el0t_64_sync_handler+0x78/0x108 arch/arm64/kernel/entry-common.c:786
- el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
- done
-bcachefs (loop3): going read-write
-bcachefs (loop3): journal_replay...
- done
-bcachefs (loop3): check_alloc_info... done
-bcachefs (loop3): check_lrus... done
-bcachefs (loop3): check_btree_backpointers... done
-bcachefs (loop3): check_backpointers_to_extents... done
-bcachefs (loop3): check_extents_to_backpointers...
-bcachefs (loop3): scanning for missing backpointers in 4/128 buckets
- done
-bcachefs (loop3): check_alloc_to_lru_refs... done
-bcachefs (loop3): bucket_gens_init... done
-bcachefs (loop3): check_snapshot_trees... done
-bcachefs (loop3): check_snapshots...
-bcachefs (loop3): snapshot points to missing/incorrect tree:
-  u64s 8 type snapshot 0:4294967295:0 len 0 ver 0: subvol parent          0 children          0          0 subvol 1 tree 0, fixing
- done
-bcachefs (loop3): check_subvols... done
-bcachefs (loop3): check_subvol_children... done
-bcachefs (loop3): delete_dead_snapshots... done
-bcachefs (loop3): check_inodes...
-bcachefs (loop3): inode points to missing dirent
-  inum: 4099:4294967295 
-    mode=100755
-    flags=(15300000)
-    journal_seq=5
-    hash_seed=fc917866faeb7b5b
-    hash_type=siphash
-    bi_size=1050
-    bi_sectors=8
-    bi_version=0
-    bi_atime=2770562249
-    bi_ctime=2770562249
-    bi_mtime=2770562249
-    bi_otime=2770562249
-    bi_uid=0
-    bi_gid=0
-    bi_nlink=0
-    bi_generation=0
-    bi_dev=0
-    bi_data_checksum=0
-    bi_compression=0
-    bi_project=0
-    bi_background_compression=0
-    bi_data_replicas=0
-    bi_promote_target=0
-    bi_foreground_target=0
-    bi_background_target=0
-    bi_erasure_code=0
-    bi_fields_set=0
-    bi_dir=4098
-    bi_dir_offset=8977922886548783724
-    bi_subvol=0
-    bi_parent_subvol=0
-    bi_nocow=0
-    bi_depth=0
-    bi_inodes_32bit=0
-    bi_casefold=0, fixing
-bcachefs (loop3): inode points to missing dirent
-  inum: 4100:4294967295 
-    mode=120777
-    flags=(15300000)
-    journal_seq=4
-    hash_seed=f4891abdd5c0cd85
-    hash_type=siphash
-    bi_size=38
-    bi_sectors=8
-    bi_version=0
-    bi_atime=2770562249
-    bi_ctime=2780562352
-    bi_mtime=2770562249
-    bi_otime=2770562249
-    bi_uid=0
-    bi_gid=0
-    bi_nlink=0
-    bi_generation=0
-    bi_dev=0
-    bi_data_checksum=0
-    bi_compression=0
-    bi_project=0
-    bi_background_compression=0
-    bi_data_replicas=0
-    bi_promote_target=0
-    bi_foreground_target=0
-    bi_background_target=0
-    bi_erasure_code=0
-    bi_fields_set=0
-    bi_dir=4098
-    bi_dir_offset=5675548428000973578
-    bi_subvol=0
-    bi_parent_subvol=0
-    bi_nocow=0
-    bi_depth=0
-    bi_inodes_32bit=0
-    bi_casefold=0, fixing
- done
-bcachefs (loop3): check_extents... done
-bcachefs (loop3): check_indirect_extents... done
-bcachefs (loop3): check_dirents...
-bcachefs (loop3): dirent casefold does not match dir casefold
-  u64s 7 type dirent 4096:189491840996961599:U32_MAX len 0 ver 0: file0 -> 4098 type dir, fixing
-==================================================================
-BUG: KASAN: slab-out-of-bounds in bch2_dirent_init_name+0x28c/0x670 fs/bcachefs/dirent.c:271
-Write of size 1985 at addr ffff0000ce7a8041 by task syz.3.515/9405
-
-CPU: 0 UID: 0 PID: 9405 Comm: syz.3.515 Tainted: G        W           6.16.0-rc1-syzkaller-g39dfc971e42d #0 PREEMPT 
-Tainted: [W]=WARN
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
+ nmi_cpu_backtrace+0x39e/0x3d0 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x17a/0x300 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:158 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:307 [inline]
+ watchdog+0xfee/0x1030 kernel/hung_task.c:470
+ kthread+0x70e/0x8a0 kernel/kthread.c:464
+ ret_from_fork+0x3f9/0x770 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 UID: 0 PID: 23 Comm: ksoftirqd/1 Not tainted 6.16.0-rc2-syzkaller-00024-g9afe652958c3 #0 PREEMPT(full) 
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
-Call trace:
- show_stack+0x2c/0x3c arch/arm64/kernel/stacktrace.c:466 (C)
- __dump_stack+0x30/0x40 lib/dump_stack.c:94
- dump_stack_lvl+0xd8/0x12c lib/dump_stack.c:120
- print_address_description+0xa8/0x254 mm/kasan/report.c:408
- print_report+0x68/0x84 mm/kasan/report.c:521
- kasan_report+0xb0/0x110 mm/kasan/report.c:634
- check_region_inline mm/kasan/generic.c:-1 [inline]
- kasan_check_range+0x264/0x2a4 mm/kasan/generic.c:189
- __asan_memset+0x34/0x64 mm/kasan/shadow.c:84
- bch2_dirent_init_name+0x28c/0x670 fs/bcachefs/dirent.c:271
- bch2_dirent_create_key+0x1b4/0x434 fs/bcachefs/dirent.c:316
- check_dirent fs/bcachefs/fsck.c:2223 [inline]
- bch2_check_dirents+0x1d1c/0x27ac fs/bcachefs/fsck.c:2326
- bch2_run_recovery_pass fs/bcachefs/recovery_passes.c:477 [inline]
- __bch2_run_recovery_passes+0x29c/0xd18 fs/bcachefs/recovery_passes.c:532
- bch2_run_recovery_passes+0x174/0x1f4 fs/bcachefs/recovery_passes.c:603
- bch2_fs_recovery+0x1db8/0x2fd4 fs/bcachefs/recovery.c:974
- bch2_fs_start+0x914/0xbc0 fs/bcachefs/super.c:1200
- bch2_fs_get_tree+0x890/0xfd0 fs/bcachefs/fs.c:2489
- vfs_get_tree+0x90/0x28c fs/super.c:1802
- do_new_mount+0x228/0x814 fs/namespace.c:3885
- path_mount+0x5b4/0xde0 fs/namespace.c:4209
- do_mount fs/namespace.c:4222 [inline]
- __do_sys_mount fs/namespace.c:4433 [inline]
- __se_sys_mount fs/namespace.c:4410 [inline]
- __arm64_sys_mount+0x3e8/0x468 fs/namespace.c:4410
- __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
- el0_svc+0x58/0x17c arch/arm64/kernel/entry-common.c:767
- el0t_64_sync_handler+0x78/0x108 arch/arm64/kernel/entry-common.c:786
- el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
-
-Allocated by task 9405:
+RIP: 0010:__orc_find arch/x86/kernel/unwind_orc.c:100 [inline]
+RIP: 0010:orc_find arch/x86/kernel/unwind_orc.c:227 [inline]
+RIP: 0010:unwind_next_frame+0x12e3/0x2390 arch/x86/kernel/unwind_orc.c:494
+Code: 18 48 8b 10 48 c7 c7 00 3a 88 8b 89 de e8 55 de b4 ff e9 43 06 00 00 49 89 d5 48 89 d5 48 89 d8 48 29 e8 48 89 c1 48 c1 f9 02 <48> c1 e8 3f 48 01 c8 48 83 e0 fe 4c 8d 3c 45 00 00 00 00 49 01 ef
+RSP: 0018:ffffc900001d7398 EFLAGS: 00000202
+RAX: 0000000000000004 RBX: ffffffff8fb37924 RCX: 0000000000000001
+RDX: ffffffff8fb37904 RSI: ffffffff902e9bf0 RDI: ffffffff8be1b7a0
+RBP: ffffffff8fb37920 R08: 0000000000000009 R09: ffffffff81729af5
+R10: ffffc900001d74c8 R11: fffff5200003aea5 R12: ffffffff8172c397
+R13: ffffffff8fb3791c R14: ffffc900001d74c8 R15: ffffffff8fb3791c
+FS:  0000000000000000(0000) GS:ffff888125d85000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc7ecf3d000 CR3: 000000002fea8000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __unwind_start+0x5b9/0x760 arch/x86/kernel/unwind_orc.c:758
+ unwind_start arch/x86/include/asm/unwind.h:64 [inline]
+ arch_stack_walk+0xe4/0x150 arch/x86/kernel/stacktrace.c:24
+ stack_trace_save+0x9c/0xe0 kernel/stacktrace.c:122
  kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x40/0x78 mm/kasan/common.c:68
- kasan_save_alloc_info+0x44/0x54 mm/kasan/generic.c:562
- poison_kmalloc_redzone mm/kasan/common.c:377 [inline]
- __kasan_kmalloc+0x9c/0xb4 mm/kasan/common.c:394
- kasan_kmalloc include/linux/kasan.h:260 [inline]
- __do_kmalloc_node mm/slub.c:4328 [inline]
- __kmalloc_node_track_caller_noprof+0x304/0x4d0 mm/slub.c:4347
- __do_krealloc mm/slub.c:4905 [inline]
- krealloc_noprof+0x11c/0x2f0 mm/slub.c:4958
- __bch2_trans_kmalloc+0x1f4/0xb8c fs/bcachefs/btree_iter.c:3187
- bch2_trans_kmalloc_ip fs/bcachefs/btree_iter.h:604 [inline]
- bch2_trans_kmalloc+0x10c/0x160 fs/bcachefs/btree_iter.h:616
- bch2_dirent_create_key+0x50/0x434 fs/bcachefs/dirent.c:299
- check_dirent fs/bcachefs/fsck.c:2223 [inline]
- bch2_check_dirents+0x1d1c/0x27ac fs/bcachefs/fsck.c:2326
- bch2_run_recovery_pass fs/bcachefs/recovery_passes.c:477 [inline]
- __bch2_run_recovery_passes+0x29c/0xd18 fs/bcachefs/recovery_passes.c:532
- bch2_run_recovery_passes+0x174/0x1f4 fs/bcachefs/recovery_passes.c:603
- bch2_fs_recovery+0x1db8/0x2fd4 fs/bcachefs/recovery.c:974
- bch2_fs_start+0x914/0xbc0 fs/bcachefs/super.c:1200
- bch2_fs_get_tree+0x890/0xfd0 fs/bcachefs/fs.c:2489
- vfs_get_tree+0x90/0x28c fs/super.c:1802
- do_new_mount+0x228/0x814 fs/namespace.c:3885
- path_mount+0x5b4/0xde0 fs/namespace.c:4209
- do_mount fs/namespace.c:4222 [inline]
- __do_sys_mount fs/namespace.c:4433 [inline]
- __se_sys_mount fs/namespace.c:4410 [inline]
- __arm64_sys_mount+0x3e8/0x468 fs/namespace.c:4410
- __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
- el0_svc+0x58/0x17c arch/arm64/kernel/entry-common.c:767
- el0t_64_sync_handler+0x78/0x108 arch/arm64/kernel/entry-common.c:786
- el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
-
-The buggy address belongs to the object at ffff0000ce7a8000
- which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 65 bytes inside of
- allocated 2048-byte region [ffff0000ce7a8000, ffff0000ce7a8800)
-
-The buggy address belongs to the physical page:
-page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x10e7a8
-head: order:3 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0x5ffc00000000040(head|node=0|zone=2|lastcpupid=0x7ff)
-page_type: f5(slab)
-raw: 05ffc00000000040 ffff0000c0002000 dead000000000100 dead000000000122
-raw: 0000000000000000 0000000080080008 00000000f5000000 0000000000000000
-head: 05ffc00000000040 ffff0000c0002000 dead000000000100 dead000000000122
-head: 0000000000000000 0000000080080008 00000000f5000000 0000000000000000
-head: 05ffc00000000003 fffffdffc339ea01 00000000ffffffff 00000000ffffffff
-head: ffffffffffffffff 0000000000000000 00000000ffffffff 0000000000000008
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff0000ce7a8700: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff0000ce7a8780: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff0000ce7a8800: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                   ^
- ffff0000ce7a8880: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff0000ce7a8900: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
-bcachefs (loop3): dirent casefold does not match dir casefold
-  u64s 7 type dirent 4096:1896155912177158345:U32_MAX len 0 ver 0: file3 -> 536870913 type reg, fixing
-bcachefs (loop3): dirent casefold does not match dir casefold
-  u64s 7 type dirent 4096:2695648408715017799:U32_MAX len 0 ver 0: file2 -> 536870913 type reg, fixing
-bcachefs (loop3): dirent casefold does not match dir casefold
-  u64s 7 type dirent 4096:4330382808765833931:U32_MAX len 0 ver 0: file1 -> 536870912 type reg, fixing
-bcachefs (loop3): dirent casefold does not match dir casefold
-  u64s 8 type dirent 4096:8130059955150870709:U32_MAX len 0 ver 0: lost+found -> 4097 type dir, fixing
-bcachefs (loop3): dirent casefold does not match dir casefold
-  u64s 8 type dirent 4096:9097378837824744618:U32_MAX len 0 ver 0: file.cold -> 536870914 type reg, fixing
-bcachefs (loop3): directory 4096:4294967295 with wrong i_nlink: got 2, should be 0, fixing
- done
-bcachefs (loop3): check_xattrs... done
-bcachefs (loop3): check_root... done
-bcachefs (loop3): check_unreachable_inodes...
-bcachefs (loop3): unreachable inode:
-  inum: 4099:4294967295 
-    mode=100755
-    flags=(4300000)
-    journal_seq=22
-    hash_seed=fc917866faeb7b5b
-    hash_type=siphash
-    bi_size=1050
-    bi_sectors=8
-    bi_version=0
-    bi_atime=2770562249
-    bi_ctime=2770562249
-    bi_mtime=2770562249
-    bi_otime=2770562249
-    bi_uid=0
-    bi_gid=0
-    bi_nlink=0
-    bi_generation=0
-    bi_dev=0
-    bi_data_checksum=0
-    bi_compression=0
-    bi_project=0
-    bi_background_compression=0
-    bi_data_replicas=0
-    bi_promote_target=0
-    bi_foreground_target=0
-    bi_background_target=0
-    bi_erasure_code=0
-    bi_fields_set=0
-    bi_dir=0
-    bi_dir_offset=0
-    bi_subvol=0
-    bi_parent_subvol=0
-    bi_nocow=0
-    bi_depth=0
-    bi_inodes_32bit=0
-    bi_casefold=0, fixing
-bcachefs (loop3): creating //lost+found in subvol 1 snapshot 4294967295
-bcachefs (loop3): creating //lost+found in subvol 1 snapshot 4294967295
-bcachefs (loop3): creating //lost+found in subvol 1 snapshot 4294967295
-bcachefs (loop3): unreachable inode:
-  inum: 4100:4294967295 
-    mode=120777
-    flags=(4300000)
-    journal_seq=22
-    hash_seed=f4891abdd5c0cd85
-    hash_type=siphash
-    bi_size=38
-    bi_sectors=8
-    bi_version=0
-    bi_atime=2770562249
-    bi_ctime=2780562352
-    bi_mtime=2770562249
-    bi_otime=2770562249
-    bi_uid=0
-    bi_gid=0
-    bi_nlink=0
-    bi_generation=0
-    bi_dev=0
-    bi_data_checksum=0
-    bi_compression=0
-    bi_project=0
-    bi_background_compression=0
-    bi_data_replicas=0
-    bi_promote_target=0
-    bi_foreground_target=0
-    bi_background_target=0
-    bi_erasure_code=0
-    bi_fields_set=0
-    bi_dir=0
-    bi_dir_offset=0
-    bi_subvol=0
-    bi_parent_subvol=0
-    bi_nocow=0
-    bi_depth=0
-    bi_inodes_32bit=0
-    bi_casefold=0, fixing
-bcachefs (loop3): unreachable inode:
-  inum: 536870913:4294967295 
-    mode=100755
-    flags=(15300000)
-    journal_seq=23
-    hash_seed=b68791a594a6d5ae
-    hash_type=siphash
-    bi_size=25769812776
-    bi_sectors=24
-    bi_version=0
-    bi_atime=2780562352
-    bi_ctime=2780562352
-    bi_mtime=2780562352
-    bi_otime=2780562352
-    bi_uid=0
-    bi_gid=0
-    bi_nlink=1
-    bi_generation=0
-    bi_dev=0
-    bi_data_checksum=0
-    bi_compression=0
-    bi_project=0
-    bi_background_compression=0
-    bi_data_replicas=0
-    bi_promote_target=1
-    bi_foreground_target=0
-    bi_background_target=0
-    bi_erasure_code=0
-    bi_fields_set=0
-    bi_dir=0
-    bi_dir_offset=2695648408715017799
-    bi_subvol=0
-    bi_parent_subvol=0
-    bi_nocow=0
-    bi_depth=0
-    bi_inodes_32bit=0
-    bi_casefold=0, fixing
-bcachefs (loop3): unreachable inode:
-  inum: 536870914:4294967295 
-    mode=100755
-    flags=(15300000)
-    journal_seq=23
-    hash_seed=d483206f1ed95abf
-    hash_type=siphash
-    bi_size=100
-    bi_sectors=8
-    bi_version=1126999418470400
-    bi_atime=0
-    bi_ctime=0
-    bi_mtime=0
-    bi_otime=2780562352
-    bi_uid=2780562352
-    bi_gid=0
-    bi_nlink=2780562352
-    bi_generation=0
-    bi_dev=0
-    bi_data_checksum=0
-    bi_compression=0
-    bi_project=0
-    bi_background_compression=0
-    bi_data_replicas=0
-    bi_promote_target=0
-    bi_foreground_target=0
-    bi_background_target=0
-    bi_erasure_code=0
-    bi_fields_set=0
-    bi_dir=0
-    bi_dir_offset=9097378837824744618
-    bi_subvol=0
-    bi_parent_subvol=0
-    bi_nocow=0
-    bi_depth=0
-    bi_inodes_32bit=0
-    bi_casefold=0, fixing
- done
-bcachefs (loop3): check_subvolume_structure... done
-bcachefs (loop3): check_directory_structure...
-bcachefs (loop3): inode points to dirent that does not point back:
-u64s 10 type dirent 4096:8130059955150870709:U32_MAX len 0 ver 0: lost+found (casefold lost+found) -> 4101 type dir
-inum: 4097:4294967295 
-  mode=40700
-  flags=has_case_insensitive(15300400)
-  journal_seq=23
-  hash_seed=a9fcff247692d1ca
-  hash_type=siphash
-  bi_size=0
-  bi_sectors=0
-  bi_version=0
-  bi_atime=200535484
-  bi_ctime=200535484
-  bi_mtime=200535484
-  bi_otime=200535484
-  bi_uid=0
-  bi_gid=0
-  bi_nlink=0
-  bi_generation=0
-  bi_dev=0
-  bi_data_checksum=0
-  bi_compression=0
-  bi_project=0
-  bi_background_compression=0
-  bi_data_replicas=0
-  bi_promote_target=0
-  bi_foreground_target=0
-  bi_background_target=0
-  bi_erasure_code=0
-  bi_fields_set=0
-  bi_dir=4096
-  bi_dir_offset=8130059955150870709
-  bi_subvol=0
-  bi_parent_subvol=0
-  bi_nocow=0
-  bi_depth=0
-  bi_inodes_32bit=0
-  bi_casefold=0
-bcachefs (loop3): unreachable inode in check_directory_structure: ENOENT_dirent_doesnt_match_inode
-u64s 17 type inode_v3 0:4097:U32_MAX len 0 ver 0: 
-  mode=40700
-  flags=has_case_insensitive(15300400)
-  journal_seq=23
-  hash_seed=a9fcff247692d1ca
-  hash_type=siphash
-  bi_size=0
-  bi_sectors=0
-  bi_version=0
-  bi_atime=200535484
-  bi_ctime=200535484
-  bi_mtime=200535484
-  bi_otime=200535484
-  bi_uid=0
-  bi_gid=0
-  bi_nlink=0
-  bi_generation=0
-  bi_dev=0
-  bi_data_checksum=0
-  bi_compression=0
-  bi_project=0
-  bi_background_compression=0
-  bi_data_replicas=0
-  bi_promote_target=0
-  bi_foreground_target=0
-  bi_background_target=0
-  bi_erasure_code=0
-  bi_fields_set=0
-  bi_dir=4096
-  bi_dir_offset=8130059955150870709
-  bi_subvol=0
-  bi_parent_subvol=0
-  bi_nocow=0
-  bi_depth=0
-  bi_inodes_32bit=0
-  bi_casefold=0
-bcachefs (loop3): check_path_loop(): error ENOENT_dirent_doesnt_match_inode
-bcachefs (loop3): bch2_check_directory_structure(): error ENOENT_dirent_doesnt_match_inode
-bcachefs (loop3): error in recovery: ENOENT_dirent_doesnt_match_inodeemergency read only at seq 25
-bcachefs (loop3): bch2_fs_start(): error starting filesystem ENOENT_dirent_doesnt_match_inode
-bcachefs (loop3): shutting down
-bcachefs (loop3): shutdown complete
-bcachefs: bch2_fs_get_tree() error: ENOENT_dirent_doesnt_match_inode
+ kasan_save_track+0x3e/0x80 mm/kasan/common.c:68
+ kasan_save_free_info+0x46/0x50 mm/kasan/generic.c:576
+ poison_slab_object mm/kasan/common.c:247 [inline]
+ __kasan_slab_free+0x62/0x70 mm/kasan/common.c:264
+ kasan_slab_free include/linux/kasan.h:233 [inline]
+ slab_free_hook mm/slub.c:2381 [inline]
+ slab_free mm/slub.c:4643 [inline]
+ kfree+0x18e/0x440 mm/slub.c:4842
+ slab_free_after_rcu_debug+0x60/0x2a0 mm/slub.c:4680
+ rcu_do_batch kernel/rcu/tree.c:2576 [inline]
+ rcu_core+0xca8/0x1710 kernel/rcu/tree.c:2832
+ handle_softirqs+0x286/0x870 kernel/softirq.c:579
+ run_ksoftirqd+0x9b/0x100 kernel/softirq.c:968
+ smpboot_thread_fn+0x53f/0xa60 kernel/smpboot.c:164
+ kthread+0x70e/0x8a0 kernel/kthread.c:464
+ ret_from_fork+0x3f9/0x770 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
 
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
