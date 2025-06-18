@@ -1,21 +1,21 @@
 Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFF8821CFEF
-	for <linux-bcachefs@vger.kernel.org>; Wed, 18 Jun 2025 21:55:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6784828682
+	for <linux-bcachefs@vger.kernel.org>; Wed, 18 Jun 2025 21:55:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750283707; cv=none; b=V0y1y3dytNKNJsI5YnqIM+tAfjIa6gUiXFrcOQeaXXwYeLIJ3fBDUA2qDc0BJyKyd+1aOTnqX5qQ4jBPjDZXgp1vA/iJU9xG6aRgqUWNLrTi5Ob6ETAt8Bcv2BhzLiSmob9XgkUHcjw1SqbqG2YwLo70ZIpIcPpkPLTcw9HyxZU=
+	t=1750283708; cv=none; b=qKCy3erTGqBqUbYrBRCHoq0ejpysMdqpGJoFMdvNCqTMQa88stWhzCkXLy8QvSLmpNbS5149GfyIRfsYdstPeEP1p11J6EUFxSog81Iolz+hRinWmJEffqInXrwYduJU49U9aM+lzCcxBeG4/YjRjRjRKnRVxKt7CQKAEK1dZKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750283707; c=relaxed/simple;
-	bh=ZtGQ68sZ8/vO15YMOh95cHWu9A8fO30qtTNaC/quyPc=;
+	s=arc-20240116; t=1750283708; c=relaxed/simple;
+	bh=sABytz30/0ipPWV4zHIUp/lHZjMGvjcLpAZLXfIple0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bt16m2IHIqRRU1q1I5tzk/zM6+oj+zL4fudOBzuZpJUjXVsnEId+Rfy0ZfnYuhezGOVZb5j6Hj4MTXqxPz/zEPCofoB/9CLOSYDfaOfV+9FH4O8hkoOCsX7I72yUG2TuAv0cfgp9HXZGbvua72BLoQxpRQ2vP35ashwU9Lf4pDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aIytNsZE; arc=none smtp.client-ip=95.215.58.189
+	 MIME-Version; b=s5y4xJBh3TdGJBuPWwEhr/P3ahrBwrbB3b3+cHPgYwnxI55J4C2ry44ja0EGIiya4jN0ZPdboWwcOpQtN49bJv5eXNlT31TTMx0anYbl/9r1kN9MWuDMKaCFprUehjVrE5e+AROfXuKqDtw7WpowJq+rPEhKB8wlgkvtIcOBfMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TYRuC2/F; arc=none smtp.client-ip=95.215.58.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aIytNsZE"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TYRuC2/F"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
 	t=1750283703;
@@ -23,16 +23,16 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=k51shgWI6apcPtCWOgP8yMIftRbpigZSljrIarkrkPE=;
-	b=aIytNsZEVJeun0YpF6zFYBz5oR9z+uye+Z/KSNR9QYAP1i8IZVoDJuQOGcFV774Z62/UZc
-	3zFMSfsYIR++pPlj9lfPWU15nDj8Hjo8ERQ5c2DyVmpUarAb0dnHT/0cFFG1x+bYdwUnew
-	/dtzmVewnwi64o3+6i7z3l8S02WtNyo=
+	bh=k70mUizpwUhfG8eHWYKBHXCeLaA+F4CkSQarX1q5HXg=;
+	b=TYRuC2/FEyaqwtoN5HzfkJkpaWXHYiJpkK2Lom7QMe6i/NqnL7luLrGef45jKyXNq4Ezpe
+	YvwN5y21MWUt21SbYcB6HAQD8MQwTEfJ7sHkq4s/zcjDLTTJN3Xdxa4dsQg+MOmw9U7vrc
+	38LdY8gG5nR/FifcQKo5etb6dKFM4Ic=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 23/37] bcachefs: Fix __bch2_inum_to_path() when crossing subvol boundaries
-Date: Wed, 18 Jun 2025 17:54:14 -0400
-Message-ID: <20250618215431.738317-24-kent.overstreet@linux.dev>
+Subject: [PATCH 24/37] bcachefs: fsck: Print path when we find a subvol loop
+Date: Wed, 18 Jun 2025 17:54:15 -0400
+Message-ID: <20250618215431.738317-25-kent.overstreet@linux.dev>
 In-Reply-To: <20250618215431.738317-1-kent.overstreet@linux.dev>
 References: <20250618215431.738317-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,81 +44,43 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-The bch2_subvolume_get_snapshot() call needs to happen before the dirent
-lookup - the dirent is in the parent subvolume.
-
-Also, check for loops.
-
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/namei.c | 27 ++++++++++++++++++++++-----
- 1 file changed, 22 insertions(+), 5 deletions(-)
+ fs/bcachefs/fsck.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/fs/bcachefs/namei.c b/fs/bcachefs/namei.c
-index 779c22eb3979..7d1068aa998f 100644
---- a/fs/bcachefs/namei.c
-+++ b/fs/bcachefs/namei.c
-@@ -625,14 +625,26 @@ static int __bch2_inum_to_path(struct btree_trans *trans,
- {
- 	unsigned orig_pos = path->pos;
- 	int ret = 0;
-+	DARRAY(subvol_inum) inums = {};
-+
-+	if (!snapshot) {
-+		ret = bch2_subvolume_get_snapshot(trans, subvol, &snapshot);
-+		if (ret)
-+			goto disconnected;
-+	}
+diff --git a/fs/bcachefs/fsck.c b/fs/bcachefs/fsck.c
+index f25d33fb3e23..0d87aa9b4f23 100644
+--- a/fs/bcachefs/fsck.c
++++ b/fs/bcachefs/fsck.c
+@@ -2578,6 +2578,11 @@ static int check_subvol_path(struct btree_trans *trans, struct btree_iter *iter,
+ 	if (k.k->type != KEY_TYPE_subvolume)
+ 		return 0;
  
- 	while (true) {
--		if (!snapshot) {
--			ret = bch2_subvolume_get_snapshot(trans, subvol, &snapshot);
--			if (ret)
--				goto disconnected;
-+		subvol_inum n = (subvol_inum) { subvol ?: snapshot, inum };
++	subvol_inum start = {
++		.subvol = k.k->p.offset,
++		.inum	= le64_to_cpu(bkey_s_c_to_subvolume(k).v->inode),
++	};
 +
-+		if (darray_find_p(inums, i, i->subvol == n.subvol && i->inum == n.inum)) {
-+			prt_str_reversed(path, "(loop)");
-+			break;
- 		}
- 
-+		ret = darray_push(&inums, n);
-+		if (ret)
-+			goto err;
-+
- 		struct bch_inode_unpacked inode;
- 		ret = bch2_inode_find_by_inum_snapshot(trans, inum, snapshot, &inode, 0);
+ 	while (k.k->p.offset != BCACHEFS_ROOT_SUBVOL) {
+ 		ret = darray_push(&subvol_path, k.k->p.offset);
  		if (ret)
-@@ -650,7 +662,9 @@ static int __bch2_inum_to_path(struct btree_trans *trans,
- 		inum = inode.bi_dir;
- 		if (inode.bi_parent_subvol) {
- 			subvol = inode.bi_parent_subvol;
--			snapshot = 0;
-+			ret = bch2_subvolume_get_snapshot(trans, inode.bi_parent_subvol, &snapshot);
+@@ -2596,11 +2601,11 @@ static int check_subvol_path(struct btree_trans *trans, struct btree_iter *iter,
+ 
+ 		if (darray_u32_has(&subvol_path, parent)) {
+ 			printbuf_reset(&buf);
+-			prt_printf(&buf, "subvolume loop:\n");
++			prt_printf(&buf, "subvolume loop: ");
+ 
+-			darray_for_each_reverse(subvol_path, i)
+-				prt_printf(&buf, "%u ", *i);
+-			prt_printf(&buf, "%u", parent);
++			ret = bch2_inum_to_path(trans, start, &buf);
 +			if (ret)
-+				goto disconnected;
- 		}
++				goto err;
  
- 		struct btree_iter d_iter;
-@@ -662,6 +676,7 @@ static int __bch2_inum_to_path(struct btree_trans *trans,
- 			goto disconnected;
- 
- 		struct qstr dirent_name = bch2_dirent_get_name(d);
-+
- 		prt_bytes_reversed(path, dirent_name.name, dirent_name.len);
- 
- 		prt_char(path, '/');
-@@ -677,8 +692,10 @@ static int __bch2_inum_to_path(struct btree_trans *trans,
- 		goto err;
- 
- 	reverse_bytes(path->buf + orig_pos, path->pos - orig_pos);
-+	darray_exit(&inums);
- 	return 0;
- err:
-+	darray_exit(&inums);
- 	return ret;
- disconnected:
- 	if (bch2_err_matches(ret, BCH_ERR_transaction_restart))
+ 			if (fsck_err(trans, subvol_loop, "%s", buf.buf))
+ 				ret = reattach_subvol(trans, s);
 -- 
 2.50.0
 
