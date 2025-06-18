@@ -1,38 +1,38 @@
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29AC63085CC
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F11821CFEF
 	for <linux-bcachefs@vger.kernel.org>; Wed, 18 Jun 2025 21:55:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750283709; cv=none; b=TvPLYsueU1N80TCvoUdO06dEDxcO6YLdwCHv5Yhm6W1FbvWtoNDXjSIbM332uwmnl8wkpa0/Jz2oknhH8qNBx7JY94TYOahg1ICmUR1FSQmtfeNEhDYHDmYuAp/32xEWwS1v3/lyHRdYeYwbqi2TapePrwGmVu8GvSZ64rQpE7M=
+	t=1750283709; cv=none; b=NUdXeM5Aq1RRJJ7QtxZaullG9VuslqY8oB+CZN81vs3hxldtwmgvFOjVtgZbaVXQLZYXyLoQxtpL4vv3jM9NhLotDjG886DSwgvo1eCx+eQbsNXaPuNjIA7LCHqS+9gUDEdVcwzZJQ/ZCldkson6lxjZ7MUrYLnHi2HbFzsoGDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1750283709; c=relaxed/simple;
-	bh=0m6QmJmCY0tTzpzv8x44FAkEq2RGhlH53TBrioAxjL0=;
+	bh=ZZsjcby8i3o30JT9m7apwtnw8eibsusjBUQF6Pan+mk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tSCcH6iWBDdguVMoBl1ltZq6n1A6VUD8gfm74ZkLT56xy81tfrfqWLQHRXrCvpXmMclVCssllWXgfmtTmL1/WHMK9abh855dAAusaHoRQlAS3ymaqehX4lw5albRNRJ6XznmGUPyvzLCNGGlFKQ4rvqMKGEIX4X87HDOVncU9ak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jBvrEjOV; arc=none smtp.client-ip=95.215.58.171
+	 MIME-Version; b=snAgOrH9j3KipZ5R/RzveaZcww3LVR5y8mrbyXvWmPUFm/TXkho5vi+Bfp2EilNIU0JKul4XzXmOeb+vQE+sIjzq9qy9PysKlU+aXuCjc903UHIcAl9jmuRDpCqPqPxA0uTx0y1x4+PF4aynKe6xB7hN29Zx4KLHXPGefiGtZzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ESHO/3c/; arc=none smtp.client-ip=95.215.58.183
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jBvrEjOV"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ESHO/3c/"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750283705;
+	t=1750283706;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2aSVj8G+UNjs78bi2h3tIMOtzA+cg2I4Xm5wSysHdfQ=;
-	b=jBvrEjOVLJeV5axoirXloQUxADhgs2LT1I8OLdZJNsXnrT9Xj/d0mUK+LxU2B75KTvSrAg
-	X9oz1v75yJOZ/TrC7uqbAhqrPBSVtg0HZdLfkMAfy0pkwB5KIMKkvqIkGsoPEtGruZ4Yo6
-	5nI0a5zJsZjiQlSWR9T2COYRttM2XCE=
+	bh=3LTYjUj0c7ofQNEvdXSrkBMm8KBZisxOqdxQV9YwZCk=;
+	b=ESHO/3c/6wm7zKZF8NVjmlA1pf3t6hXLHQEHrKAt5HA33CTpmz8/det3InYnhEMWgNmdY/
+	YMq05icvLH3OAqmT96OJzQniGwT364u4gzAAf+R1oMBdNUYH9/p/8ozAlcO4GM+MZG/yty
+	hDVCnHu6hZ6ayPzy5WT5SWMFUZF2Jsg=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 26/37] bcachefs: fsck: Fix reattach_inode() for subvol roots
-Date: Wed, 18 Jun 2025 17:54:17 -0400
-Message-ID: <20250618215431.738317-27-kent.overstreet@linux.dev>
+Subject: [PATCH 28/37] bcachefs: fsck: additional diagnostics for reattach_inode()
+Date: Wed, 18 Jun 2025 17:54:19 -0400
+Message-ID: <20250618215431.738317-29-kent.overstreet@linux.dev>
 In-Reply-To: <20250618215431.738317-1-kent.overstreet@linux.dev>
 References: <20250618215431.738317-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,8 +44,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-bch_subvolume.fs_path_parent needs to be updated as well, it should
-match inode.bi_parent_subvol.
+Log the inode's new path.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
@@ -53,28 +52,35 @@ Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
  1 file changed, 12 insertions(+)
 
 diff --git a/fs/bcachefs/fsck.c b/fs/bcachefs/fsck.c
-index a3f73e7a2113..6e64af4ccc36 100644
+index 7414a16af990..f2c8e904acab 100644
 --- a/fs/bcachefs/fsck.c
 +++ b/fs/bcachefs/fsck.c
-@@ -372,6 +372,18 @@ static int reattach_inode(struct btree_trans *trans, struct bch_inode_unpacked *
- 	if (inode->bi_subvol) {
- 		inode->bi_parent_subvol = BCACHEFS_ROOT_SUBVOL;
+@@ -399,6 +399,8 @@ static int reattach_inode(struct btree_trans *trans, struct bch_inode_unpacked *
+ 	if (ret)
+ 		return ret;
  
-+		struct btree_iter subvol_iter;
-+		struct bkey_i_subvolume *subvol =
-+			bch2_bkey_get_mut_typed(trans, &subvol_iter,
-+						BTREE_ID_subvolumes, POS(0, inode->bi_subvol),
-+						0, subvolume);
-+		ret = PTR_ERR_OR_ZERO(subvol);
++	bch_verbose(c, "got lostfound inum %llu", lostfound.bi_inum);
++
+ 	lostfound.bi_nlink += S_ISDIR(inode->bi_mode);
+ 
+ 	/* ensure lost+found inode is also present in inode snapshot */
+@@ -435,6 +437,16 @@ static int reattach_inode(struct btree_trans *trans, struct bch_inode_unpacked *
+ 	if (ret)
+ 		return ret;
+ 
++	{
++		CLASS(printbuf, buf)();
++		ret = bch2_inum_snapshot_to_path(trans, inode->bi_inum,
++						 inode->bi_snapshot, NULL, &buf);
 +		if (ret)
 +			return ret;
 +
-+		subvol->v.fs_path_parent = BCACHEFS_ROOT_SUBVOL;
-+		bch2_trans_iter_exit(trans, &subvol_iter);
++		bch_info(c, "reattached at %s", buf.buf);
++	}
 +
- 		u64 root_inum;
- 		ret = subvol_lookup(trans, inode->bi_parent_subvol,
- 				    &dirent_snapshot, &root_inum);
+ 	/*
+ 	 * Fix up inodes in child snapshots: if they should also be reattached
+ 	 * update the backpointer field, if they should not be we need to emit
 -- 
 2.50.0
 
