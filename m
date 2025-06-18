@@ -1,38 +1,38 @@
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 290C721CC48
-	for <linux-bcachefs@vger.kernel.org>; Wed, 18 Jun 2025 21:54:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0073921CA0D
+	for <linux-bcachefs@vger.kernel.org>; Wed, 18 Jun 2025 21:54:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750283694; cv=none; b=VV0OMHAFEeBb49GWj4p4IKNY0nh9/+CrFwMCDDJIYGbVBqnxU3c8cz7MQ9iPlpcBipgsQdrhrLyhUG1NMXGPB721+uOu5gp5KTADvTnads5EOPZdmccj881q2PyJJfuh9w9AVNpci5th5Qb+LO/Dr6N3slTH2zoukj1iK4Jvj6g=
+	t=1750283695; cv=none; b=d8MtcLFFHLCBSX/P0rKewdZlM2EBqgcEWuh9Wm6JMusrmmUYGBzvC26L6lLivszS7Ykss346k2GblwPtH98TR4VkyPO6aFJdLuyPqmEB9PQBlYwyBhbVfwsf1oMRrOVkOoGLKUazfw+jgTXmO50oePDT+qOaiIdUtCKtrzOaMnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750283694; c=relaxed/simple;
-	bh=zjOc2gNdsWhQgJk6KdCAHOx6U1O25BjqcFweg/ParUg=;
+	s=arc-20240116; t=1750283695; c=relaxed/simple;
+	bh=9l4ZMAXiZidLEY3qjnu8h7mYlIx6/EVFYzgdYGmRgko=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iTx0td5/qJPBSOlU/gAhALYobFfMeJv60Uc6NQKtuFlduu+HufD+5YprdBCzjGJ2f1F60MyN/l9D3SzvM3w1QyHyHgR1l1L1WjPZtgLSZPS9yH+OAbwkk5R69ZL8OPRTqHgNN+kULKlubKM1gyGy7ulK2Uyl1CG8Gmd7R7hIc8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Bw2CKA/J; arc=none smtp.client-ip=95.215.58.183
+	 MIME-Version; b=HAE9CLgUjXldiP8fMAgPxeEmSYuBd4epkS1vj2A8Fcdtt5D4SSD6ggWYbnK+iJDdTZbuXn2XyVn4xjEQep6/TCsrDXqkYOt3G5yzOpmhmPeoxkdLfXG+CyEozF7CtCjvhYIQIYrTXJESz85Pnpx1sQi5D9tI4TwdjriglxftX1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PqDdNjc8; arc=none smtp.client-ip=95.215.58.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Bw2CKA/J"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PqDdNjc8"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750283691;
+	t=1750283692;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8YzJp11n2+Ppc79wopAm7TsaMykA9hUTaMli1pzCPnk=;
-	b=Bw2CKA/J0QH9Rdv0TfcxsaHBZPdjI/8eTsCdHemrXVGq4lOTgDIxk2a2w+ISSPd/PXdzC7
-	vAhrjTbxaXB9K0t8yksi6LcBK5rvr0HZeFuMsJ50Opu3VLKIoSyI5ac8br0NTXUbSjh4GG
-	qMjIsOcHC6K+7BNpi6aZBvzz+gPjW5A=
+	bh=rG5BUUOOEjvhKu+pvEYkcL2kpBByWgMaS26klQZBu0I=;
+	b=PqDdNjc8npUp32ZP1fc/oZ7mt9mDGFkmkitdi27VgkDelC8WZA6rqqAZk6GB5ps8qS0sy+
+	013mEjZcum3eIlmCUIu5c9LWr9WwUsOxcO5NPQEmPkPGEr8cvtAmESnsIimG8TGZDIPCrv
+	c2fDRlFK6UCxtnnoXO0FwZDGe/btyns=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 11/37] bcachefs: Fix "now allowing incompatible features" message
-Date: Wed, 18 Jun 2025 17:54:02 -0400
-Message-ID: <20250618215431.738317-12-kent.overstreet@linux.dev>
+Subject: [PATCH 12/37] bcachefs: Fix snapshot_key_missing_inode_snapshot repair
+Date: Wed, 18 Jun 2025 17:54:03 -0400
+Message-ID: <20250618215431.738317-13-kent.overstreet@linux.dev>
 In-Reply-To: <20250618215431.738317-1-kent.overstreet@linux.dev>
 References: <20250618215431.738317-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,26 +44,40 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Check against version_incompat_allowed, not version_incompat.
+When the inode was a whiteout, we were inserting a new whiteout at the
+wrong (old) snapshot.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/recovery.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/bcachefs/fsck.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
-index 6aef8b101820..820249e9c5ea 100644
---- a/fs/bcachefs/recovery.c
-+++ b/fs/bcachefs/recovery.c
-@@ -692,7 +692,7 @@ static bool check_version_upgrade(struct bch_fs *c)
- 		ret = true;
- 	}
- 
--	if (new_version > c->sb.version_incompat &&
-+	if (new_version > c->sb.version_incompat_allowed &&
- 	    c->opts.version_upgrade == BCH_VERSION_UPGRADE_incompatible) {
- 		struct printbuf buf = PRINTBUF;
- 
+diff --git a/fs/bcachefs/fsck.c b/fs/bcachefs/fsck.c
+index 68ed69a255e1..b80a56e19b40 100644
+--- a/fs/bcachefs/fsck.c
++++ b/fs/bcachefs/fsck.c
+@@ -903,17 +903,15 @@ lookup_inode_for_snapshot(struct btree_trans *trans, struct inode_walker *w, str
+ 			 w->last_pos.inode, k.k->p.snapshot, i->inode.bi_snapshot,
+ 			 (bch2_bkey_val_to_text(&buf, c, k),
+ 			  buf.buf))) {
+-		struct bch_inode_unpacked new = i->inode;
+-		struct bkey_i whiteout;
+-
+-		new.bi_snapshot = k.k->p.snapshot;
+-
+ 		if (!i->whiteout) {
++			struct bch_inode_unpacked new = i->inode;
++			new.bi_snapshot = k.k->p.snapshot;
+ 			ret = __bch2_fsck_write_inode(trans, &new);
+ 		} else {
++			struct bkey_i whiteout;
+ 			bkey_init(&whiteout.k);
+ 			whiteout.k.type = KEY_TYPE_whiteout;
+-			whiteout.k.p = SPOS(0, i->inode.bi_inum, i->inode.bi_snapshot);
++			whiteout.k.p = SPOS(0, i->inode.bi_inum, k.k->p.snapshot);
+ 			ret = bch2_btree_insert_nonextent(trans, BTREE_ID_inodes,
+ 							  &whiteout,
+ 							  BTREE_UPDATE_internal_snapshot_node);
 -- 
 2.50.0
 
