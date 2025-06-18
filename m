@@ -1,38 +1,38 @@
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5094C28682
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2133221CA0D
 	for <linux-bcachefs@vger.kernel.org>; Wed, 18 Jun 2025 21:54:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750283696; cv=none; b=aaw2sFQoREu3Ioo6yX5ecqeNkmOFSRsw4rDeUJPLJVSykRrxxv4hVb6bgxuTcyy86bVGNvaQn10FU4rUCEM7mUaTFrLEZMuhWDj0CmugX9gOE7OYXeCTqRJzvgmfrQBql8iHeyFDTQYajHvpjbEywOxgDAvHvg3FPIweAKMk07s=
+	t=1750283698; cv=none; b=Ye/qX939my1s22cmzCdCrplSgLePtZhKLmvU+VtODe9ZkBY3/1GXtg9ym2BpT0s07GXA9KvbNlwc580ely/xahNxpCXjqrHPBmfE+DBlRHeX4kI92Coh+B7bYabKHNhLOqMs852NkrJm+IzuiS2YqVCrv2FqM0fZ56fUwIkEijc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750283696; c=relaxed/simple;
-	bh=Lss+ch1fpRmKs1mSWQqFDa31OdqxedTwsE0eEwf33xU=;
+	s=arc-20240116; t=1750283698; c=relaxed/simple;
+	bh=KQ1xJA/UquHpdzdhlVYV9LE4q87IJduk9me23ADYvuI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bBJVPMA2N/NarQQptQYvNFTZ0elvA9Ubm6DcN6ONQgImPrKA/DgLRNuppX83Pk4s1D2iy9EVlMlYv7UvYH2/xzW7xXZh3clV1sFIaMvByuqrdYuyMEVtjVliIAkO/FUQe7o9YcZvlIHdIzrI1f5QB3Xcj3yVErmIs3m6Ji6a+Ss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=P9psPwu0; arc=none smtp.client-ip=95.215.58.187
+	 MIME-Version; b=Z+aPz+m1kVF1dnvYoicFxMPqmFPg1yWU92NFbfRFRrxiCZtAM0qF4f3WUaFSf4A8sCDXnN/E0cSnq4Wo7EBNuSMvhaPBXKweKs/FvpLURrTrSzXp8S+JPmI7hw6rEv76rKxHeeQdWkQZaVGIYaiI0eaE9u4rSKCmUc4ml4JbUdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sngXhaWB; arc=none smtp.client-ip=95.215.58.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="P9psPwu0"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sngXhaWB"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750283693;
+	t=1750283694;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=hpd7b8xC84ACppWBtwMfA7+/VALO08bNcvkltig477A=;
-	b=P9psPwu0EqKS6Wbwjzk+2AvgyBGT4jQNsTNjAGiJQNgOwezeYzAag/tjzJMGA9/VCgeby5
-	Th4PLrXwsqZWh/CFBdzN0Y1AH8rd+DdljM1eo0vqOVQZNutRw+nVKi7GJQqkoHxiw5HwUz
-	H1IuOoUFLJ4Qv5lm/qg5r48jSD8yQNM=
+	bh=pb43PZ+gYMdiuxbn2IYG9Z6ZbITmz8g3lyiED0UVZHQ=;
+	b=sngXhaWBbxPXBovTS60FyafKrFyekeAc6ANDYww+6Mxdo+5MM/gllMMFjgIF/TMSHeakLD
+	mhMKHrywQCkgiQhdDxb8AaByJK7O1zEQTLrr7xPdVN/4tFwAm5HAWuiAMUsIY6c5RStbOG
+	NBCg2lZF31RHnc4kjS54VrMtsOa48aY=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 14/37] bcachefs: fsck: fix extent past end of inode repair
-Date: Wed, 18 Jun 2025 17:54:05 -0400
-Message-ID: <20250618215431.738317-15-kent.overstreet@linux.dev>
+Subject: [PATCH 15/37] bcachefs: opts.journal_rewind
+Date: Wed, 18 Jun 2025 17:54:06 -0400
+Message-ID: <20250618215431.738317-16-kent.overstreet@linux.dev>
 In-Reply-To: <20250618215431.738317-1-kent.overstreet@linux.dev>
 References: <20250618215431.738317-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,66 +44,253 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Fix the case where we're deleting in a different snapshot and need to
-emit a whiteout - that requires a regular BTREE_ITER_filter_snapshots
-iterator.
+Add a mount option for rewinding the journal, bringing the entire
+filesystem to where it was at a previous point in time.
 
-Also, only delete the part of the extent that extents past i_size.
+This is for extreme disaster recovery scenarios - it's not intended as
+an undelete operation.
+
+The option takes a journal sequence number; the desired sequence number
+can be determined with 'bcachefs list_journal'
+
+Caveats:
+
+- The 'journal_transaction_names' option must have been enabled (it's on
+  by default). The option controls emitting of extra debug info in the
+  journal, so we can see what individual transactions were doing;
+  It also enables journalling of keys being overwritten, which is what
+  we rely on here.
+
+- A full fsck run will be automatically triggered since alloc info will
+  be inconsistent. Only leaf node updates to non-alloc btrees are
+  rewound, since rewinding interior btree updates isn't possible or
+  desirable.
+
+- We can't do anything about data that was deleted and overwritten.
+
+  Lots of metadata updates after the point in time we're rewinding to
+  shouldn't cause a problem, since we segragate data and metadata
+  allocations (this is in order to make repair by btree node scan
+  practical on larger filesystems; there's a small 64-bit per device
+  bitmap in the superblock of device ranges with btree nodes, and we try
+  to keep this small).
+
+  However, having discards enabled will cause problems, since buckets
+  are discarded as soon as they become empty (this is why we don't
+  implement fstrim: we don't need it).
+
+  Hopefully, this feature will be a one-off thing that's never used
+  again: this was implemented for recovering from the "vfs i_nlink 0 ->
+  subvol deletion" bug, and that bug was unusually disastrous and
+  additional safeguards have since been implemented.
+
+  But if it does turn out that we need this more in the future, I'll
+  have to implement an option so that empty buckets aren't discarded
+  immediately - lagging by perhaps 1% of device capacity.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/fsck.c | 31 ++++++++++++++++++++++++++-----
- 1 file changed, 26 insertions(+), 5 deletions(-)
+ fs/bcachefs/btree_journal_iter.c       | 60 +++++++++++++++++---------
+ fs/bcachefs/btree_journal_iter_types.h |  5 ++-
+ fs/bcachefs/journal_io.c               | 21 +++++++--
+ fs/bcachefs/opts.h                     |  5 +++
+ fs/bcachefs/recovery.c                 |  5 +++
+ 5 files changed, 69 insertions(+), 27 deletions(-)
 
-diff --git a/fs/bcachefs/fsck.c b/fs/bcachefs/fsck.c
-index 28ca07c0e029..48810a8e5d4b 100644
---- a/fs/bcachefs/fsck.c
-+++ b/fs/bcachefs/fsck.c
-@@ -1820,18 +1820,39 @@ static int check_extent(struct btree_trans *trans, struct btree_iter *iter,
- 			    !key_visible_in_snapshot(c, s, i->inode.bi_snapshot, k.k->p.snapshot))
- 				continue;
+diff --git a/fs/bcachefs/btree_journal_iter.c b/fs/bcachefs/btree_journal_iter.c
+index de996c848e43..a41fabd06332 100644
+--- a/fs/bcachefs/btree_journal_iter.c
++++ b/fs/bcachefs/btree_journal_iter.c
+@@ -641,10 +641,11 @@ static int journal_sort_key_cmp(const void *_l, const void *_r)
+ {
+ 	const struct journal_key *l = _l;
+ 	const struct journal_key *r = _r;
++	int rewind = l->rewind && r->rewind ? -1 : 1;
  
--			if (fsck_err_on(k.k->p.offset > round_up(i->inode.bi_size, block_bytes(c)) >> 9 &&
-+			u64 last_block = round_up(i->inode.bi_size, block_bytes(c)) >> 9;
-+
-+			if (fsck_err_on(k.k->p.offset > last_block &&
- 					!bkey_extent_is_reservation(k),
- 					trans, extent_past_end_of_inode,
- 					"extent type past end of inode %llu:%u, i_size %llu\n%s",
- 					i->inode.bi_inum, i->inode.bi_snapshot, i->inode.bi_size,
- 					(bch2_bkey_val_to_text(&buf, c, k), buf.buf))) {
--				struct btree_iter iter2;
-+				struct bkey_i *whiteout = bch2_trans_kmalloc(trans, sizeof(*whiteout));
-+				ret = PTR_ERR_OR_ZERO(whiteout);
-+				if (ret)
-+					goto err;
+ 	return  journal_key_cmp(l, r) ?:
+-		cmp_int(l->journal_seq, r->journal_seq) ?:
+-		cmp_int(l->journal_offset, r->journal_offset);
++		((cmp_int(l->journal_seq, r->journal_seq) ?:
++		  cmp_int(l->journal_offset, r->journal_offset)) * rewind);
+ }
  
--				bch2_trans_copy_iter(trans, &iter2, iter);
--				bch2_btree_iter_set_snapshot(trans, &iter2, i->inode.bi_snapshot);
-+				bkey_init(&whiteout->k);
-+				whiteout->k.p = SPOS(k.k->p.inode,
-+						     last_block,
-+						     i->inode.bi_snapshot);
-+				bch2_key_resize(&whiteout->k,
-+						min(KEY_SIZE_MAX & (~0 << c->block_bits),
-+						    U64_MAX - whiteout->k.p.offset));
+ void bch2_journal_keys_put(struct bch_fs *c)
+@@ -713,6 +714,8 @@ int bch2_journal_keys_sort(struct bch_fs *c)
+ 	struct journal_keys *keys = &c->journal_keys;
+ 	size_t nr_read = 0;
+ 
++	u64 rewind_seq = c->opts.journal_rewind ?: U64_MAX;
 +
+ 	genradix_for_each(&c->journal_entries, iter, _i) {
+ 		i = *_i;
+ 
+@@ -721,28 +724,43 @@ int bch2_journal_keys_sort(struct bch_fs *c)
+ 
+ 		cond_resched();
+ 
+-		for_each_jset_key(k, entry, &i->j) {
+-			struct journal_key n = (struct journal_key) {
+-				.btree_id	= entry->btree_id,
+-				.level		= entry->level,
+-				.k		= k,
+-				.journal_seq	= le64_to_cpu(i->j.seq),
+-				.journal_offset	= k->_data - i->j._data,
+-			};
+-
+-			if (darray_push(keys, n)) {
+-				__journal_keys_sort(keys);
+-
+-				if (keys->nr * 8 > keys->size * 7) {
+-					bch_err(c, "Too many journal keys for slowpath; have %zu compacted, buf size %zu, processed %zu keys at seq %llu",
+-						keys->nr, keys->size, nr_read, le64_to_cpu(i->j.seq));
+-					return bch_err_throw(c, ENOMEM_journal_keys_sort);
++		vstruct_for_each(&i->j, entry) {
++			bool rewind = !entry->level &&
++				!btree_id_is_alloc(entry->btree_id) &&
++				le64_to_cpu(i->j.seq) >= rewind_seq;
 +
-+				/*
-+				 * Need a normal (not BTREE_ITER_all_snapshots)
-+				 * iterator, if we're deleting in a different
-+				 * snapshot and need to emit a whiteout
-+				 */
-+				struct btree_iter iter2;
-+				bch2_trans_iter_init(trans, &iter2, BTREE_ID_extents,
-+						     bkey_start_pos(&whiteout->k),
-+						     BTREE_ITER_intent);
- 				ret =   bch2_btree_iter_traverse(trans, &iter2) ?:
--					bch2_btree_delete_at(trans, &iter2,
-+					bch2_trans_update(trans, &iter2, whiteout,
- 						BTREE_UPDATE_internal_snapshot_node);
- 				bch2_trans_iter_exit(trans, &iter2);
- 				if (ret)
++			if (entry->type != (rewind
++					    ? BCH_JSET_ENTRY_overwrite
++					    : BCH_JSET_ENTRY_btree_keys))
++				continue;
++
++			if (!rewind && le64_to_cpu(i->j.seq) < c->journal_replay_seq_start)
++				continue;
++
++			jset_entry_for_each_key(entry, k) {
++				struct journal_key n = (struct journal_key) {
++					.btree_id	= entry->btree_id,
++					.level		= entry->level,
++					.rewind		= rewind,
++					.k		= k,
++					.journal_seq	= le64_to_cpu(i->j.seq),
++					.journal_offset	= k->_data - i->j._data,
++				};
++
++				if (darray_push(keys, n)) {
++					__journal_keys_sort(keys);
++
++					if (keys->nr * 8 > keys->size * 7) {
++						bch_err(c, "Too many journal keys for slowpath; have %zu compacted, buf size %zu, processed %zu keys at seq %llu",
++							keys->nr, keys->size, nr_read, le64_to_cpu(i->j.seq));
++						return bch_err_throw(c, ENOMEM_journal_keys_sort);
++					}
++
++					BUG_ON(darray_push(keys, n));
+ 				}
+ 
+-				BUG_ON(darray_push(keys, n));
++				nr_read++;
+ 			}
+-
+-			nr_read++;
+ 		}
+ 	}
+ 
+diff --git a/fs/bcachefs/btree_journal_iter_types.h b/fs/bcachefs/btree_journal_iter_types.h
+index 8b773823704f..86aacb254fb2 100644
+--- a/fs/bcachefs/btree_journal_iter_types.h
++++ b/fs/bcachefs/btree_journal_iter_types.h
+@@ -11,8 +11,9 @@ struct journal_key {
+ 	u32			journal_offset;
+ 	enum btree_id		btree_id:8;
+ 	unsigned		level:8;
+-	bool			allocated;
+-	bool			overwritten;
++	bool			allocated:1;
++	bool			overwritten:1;
++	bool			rewind:1;
+ 	struct journal_key_range_overwritten __rcu *
+ 				overwritten_range;
+ 	struct bkey_i		*k;
+diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
+index 0b15d71a8d2d..afbf12e8f0c5 100644
+--- a/fs/bcachefs/journal_io.c
++++ b/fs/bcachefs/journal_io.c
+@@ -160,6 +160,9 @@ static int journal_entry_add(struct bch_fs *c, struct bch_dev *ca,
+ 	struct printbuf buf = PRINTBUF;
+ 	int ret = JOURNAL_ENTRY_ADD_OK;
+ 
++	if (last_seq && c->opts.journal_rewind)
++		last_seq = min(last_seq, c->opts.journal_rewind);
++
+ 	if (!c->journal.oldest_seq_found_ondisk ||
+ 	    le64_to_cpu(j->seq) < c->journal.oldest_seq_found_ondisk)
+ 		c->journal.oldest_seq_found_ondisk = le64_to_cpu(j->seq);
+@@ -1430,11 +1433,21 @@ int bch2_journal_read(struct bch_fs *c,
+ 	printbuf_reset(&buf);
+ 	prt_printf(&buf, "journal read done, replaying entries %llu-%llu",
+ 		   *last_seq, *blacklist_seq - 1);
++
++	/*
++	 * Drop blacklisted entries and entries older than last_seq (or start of
++	 * journal rewind:
++	 */
++	u64 drop_before = *last_seq;
++	if (c->opts.journal_rewind) {
++		drop_before = min(drop_before, c->opts.journal_rewind);
++		prt_printf(&buf, " (rewinding from %llu)", c->opts.journal_rewind);
++	}
++
++	*last_seq = drop_before;
+ 	if (*start_seq != *blacklist_seq)
+ 		prt_printf(&buf, " (unflushed %llu-%llu)", *blacklist_seq, *start_seq - 1);
+ 	bch_info(c, "%s", buf.buf);
+-
+-	/* Drop blacklisted entries and entries older than last_seq: */
+ 	genradix_for_each(&c->journal_entries, radix_iter, _i) {
+ 		i = *_i;
+ 
+@@ -1442,7 +1455,7 @@ int bch2_journal_read(struct bch_fs *c,
+ 			continue;
+ 
+ 		seq = le64_to_cpu(i->j.seq);
+-		if (seq < *last_seq) {
++		if (seq < drop_before) {
+ 			journal_replay_free(c, i, false);
+ 			continue;
+ 		}
+@@ -1455,7 +1468,7 @@ int bch2_journal_read(struct bch_fs *c,
+ 		}
+ 	}
+ 
+-	ret = bch2_journal_check_for_missing(c, *last_seq, *blacklist_seq - 1);
++	ret = bch2_journal_check_for_missing(c, drop_before, *blacklist_seq - 1);
+ 	if (ret)
+ 		goto err;
+ 
+diff --git a/fs/bcachefs/opts.h b/fs/bcachefs/opts.h
+index 2a02606254b3..b0a76bd6d6f5 100644
+--- a/fs/bcachefs/opts.h
++++ b/fs/bcachefs/opts.h
+@@ -379,6 +379,11 @@ enum fsck_err_opts {
+ 	  OPT_BOOL(),							\
+ 	  BCH2_NO_SB_OPT,		false,				\
+ 	  NULL,		"Exit recovery immediately prior to journal replay")\
++	x(journal_rewind,		u64,				\
++	  OPT_FS|OPT_MOUNT,						\
++	  OPT_UINT(0, U64_MAX),						\
++	  BCH2_NO_SB_OPT,		0,				\
++	  NULL,		"Rewind journal")				\
+ 	x(recovery_passes,		u64,				\
+ 	  OPT_FS|OPT_MOUNT,						\
+ 	  OPT_BITFIELD(bch2_recovery_passes),				\
+diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
+index 820249e9c5ea..37f2cc1ec2f8 100644
+--- a/fs/bcachefs/recovery.c
++++ b/fs/bcachefs/recovery.c
+@@ -757,6 +757,11 @@ int bch2_fs_recovery(struct bch_fs *c)
+ 	if (c->opts.nochanges)
+ 		c->opts.read_only = true;
+ 
++	if (c->opts.journal_rewind) {
++		bch_info(c, "rewinding journal, fsck required");
++		c->opts.fsck = true;
++	}
++
+ 	mutex_lock(&c->sb_lock);
+ 	struct bch_sb_field_ext *ext = bch2_sb_field_get(c->disk_sb.sb, ext);
+ 	bool write_sb = false;
 -- 
 2.50.0
 
