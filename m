@@ -1,38 +1,38 @@
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F11821CFEF
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F12D227EC6F
 	for <linux-bcachefs@vger.kernel.org>; Wed, 18 Jun 2025 21:55:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750283709; cv=none; b=NUdXeM5Aq1RRJJ7QtxZaullG9VuslqY8oB+CZN81vs3hxldtwmgvFOjVtgZbaVXQLZYXyLoQxtpL4vv3jM9NhLotDjG886DSwgvo1eCx+eQbsNXaPuNjIA7LCHqS+9gUDEdVcwzZJQ/ZCldkson6lxjZ7MUrYLnHi2HbFzsoGDg=
+	t=1750283710; cv=none; b=sK3LnKrZDFHrQ37XgE7UyxOUVx1LOgzz7m+de8NgydC3Cm1OOKumTN2Cqe1hHcyHWLjQi75qEYhc+lFc8/a3t+y0LNvrPx0MFHOJSZRWr+z1WYo72Omax1d9h6e99KzlkkNUnReYpIixjmRCtb01GW+ZFUiGQ+N0TB/2jBTqAas=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750283709; c=relaxed/simple;
-	bh=ZZsjcby8i3o30JT9m7apwtnw8eibsusjBUQF6Pan+mk=;
+	s=arc-20240116; t=1750283710; c=relaxed/simple;
+	bh=UDkFMer1ufhLQ8LwNchPvp7CEB2E4ErLwDcMwza6tq8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=snAgOrH9j3KipZ5R/RzveaZcww3LVR5y8mrbyXvWmPUFm/TXkho5vi+Bfp2EilNIU0JKul4XzXmOeb+vQE+sIjzq9qy9PysKlU+aXuCjc903UHIcAl9jmuRDpCqPqPxA0uTx0y1x4+PF4aynKe6xB7hN29Zx4KLHXPGefiGtZzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ESHO/3c/; arc=none smtp.client-ip=95.215.58.183
+	 MIME-Version; b=VUC+yw/fl0L1bRX85j58A2yWdIE0HkpI2KkYQyJnK/ui/sfS6W5hNW1qeYpLLJbMnjphk+gRbWe1dRZpcetr5wCJylRT3X2MurAAbj05ZLg9vfBTLFRuhSWkec0k8RY8rn6sa+zddLqDlz2wAdCkKC3KZvrk8euReLSEZ1Rnizg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=E4363rN7; arc=none smtp.client-ip=95.215.58.186
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ESHO/3c/"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="E4363rN7"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750283706;
+	t=1750283707;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3LTYjUj0c7ofQNEvdXSrkBMm8KBZisxOqdxQV9YwZCk=;
-	b=ESHO/3c/6wm7zKZF8NVjmlA1pf3t6hXLHQEHrKAt5HA33CTpmz8/det3InYnhEMWgNmdY/
-	YMq05icvLH3OAqmT96OJzQniGwT364u4gzAAf+R1oMBdNUYH9/p/8ozAlcO4GM+MZG/yty
-	hDVCnHu6hZ6ayPzy5WT5SWMFUZF2Jsg=
+	bh=v508P+vti/FZRw19zFMNDMOHwpyj7CMRUdxGE/joKwk=;
+	b=E4363rN7DZaGqbfjzzuKJklAu7FmU/GcR+ZPctHf5Jv638eLf8CS2z36+qvc76Uyb9mdgg
+	qnNcJ6DReHGHvgEbeGt/tm0Q3fLRT8kX8UsilGHADnY5nZmGPeoiz5n07hs2zusuExoJRj
+	5yjjIRG5Gs9FioVQYk05r5saxqICHbw=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 28/37] bcachefs: fsck: additional diagnostics for reattach_inode()
-Date: Wed, 18 Jun 2025 17:54:19 -0400
-Message-ID: <20250618215431.738317-29-kent.overstreet@linux.dev>
+Subject: [PATCH 29/37] bcachefs: fsck: check_subdir_count logs path
+Date: Wed, 18 Jun 2025 17:54:20 -0400
+Message-ID: <20250618215431.738317-30-kent.overstreet@linux.dev>
 In-Reply-To: <20250618215431.738317-1-kent.overstreet@linux.dev>
 References: <20250618215431.738317-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,43 +44,49 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Log the inode's new path.
+We can easily go from inode number -> path now, which makes for more
+useful log messages.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/fsck.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ fs/bcachefs/fsck.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
 diff --git a/fs/bcachefs/fsck.c b/fs/bcachefs/fsck.c
-index 7414a16af990..f2c8e904acab 100644
+index f2c8e904acab..96b9ea58705f 100644
 --- a/fs/bcachefs/fsck.c
 +++ b/fs/bcachefs/fsck.c
-@@ -399,6 +399,8 @@ static int reattach_inode(struct btree_trans *trans, struct bch_inode_unpacked *
- 	if (ret)
- 		return ret;
+@@ -2066,14 +2066,22 @@ static int check_subdir_count_notnested(struct btree_trans *trans, struct inode_
+ 				continue;
+ 		}
  
-+	bch_verbose(c, "got lostfound inum %llu", lostfound.bi_inum);
+-		if (fsck_err_on(i->inode.bi_nlink != i->count,
+-				trans, inode_dir_wrong_nlink,
+-				"directory %llu:%u with wrong i_nlink: got %u, should be %llu",
+-				w->last_pos.inode, i->inode.bi_snapshot, i->inode.bi_nlink, i->count)) {
+-			i->inode.bi_nlink = i->count;
+-			ret = bch2_fsck_write_inode(trans, &i->inode);
+-			if (ret)
+-				break;
++		if (i->inode.bi_nlink != i->count) {
++			CLASS(printbuf, buf)();
 +
- 	lostfound.bi_nlink += S_ISDIR(inode->bi_mode);
- 
- 	/* ensure lost+found inode is also present in inode snapshot */
-@@ -435,6 +437,16 @@ static int reattach_inode(struct btree_trans *trans, struct bch_inode_unpacked *
- 	if (ret)
- 		return ret;
- 
-+	{
-+		CLASS(printbuf, buf)();
-+		ret = bch2_inum_snapshot_to_path(trans, inode->bi_inum,
-+						 inode->bi_snapshot, NULL, &buf);
-+		if (ret)
-+			return ret;
++			lockrestart_do(trans,
++				       bch2_inum_snapshot_to_path(trans, w->last_pos.inode,
++								  i->inode.bi_snapshot, NULL, &buf));
 +
-+		bch_info(c, "reattached at %s", buf.buf);
-+	}
-+
- 	/*
- 	 * Fix up inodes in child snapshots: if they should also be reattached
- 	 * update the backpointer field, if they should not be we need to emit
++			if (fsck_err_on(i->inode.bi_nlink != i->count,
++					trans, inode_dir_wrong_nlink,
++					"directory with wrong i_nlink: got %u, should be %llu\n%s",
++					i->inode.bi_nlink, i->count, buf.buf)) {
++				i->inode.bi_nlink = i->count;
++				ret = bch2_fsck_write_inode(trans, &i->inode);
++				if (ret)
++					break;
++			}
+ 		}
+ 	}
+ fsck_err:
 -- 
 2.50.0
 
