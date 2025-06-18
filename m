@@ -1,38 +1,38 @@
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ED4F25F97D
-	for <linux-bcachefs@vger.kernel.org>; Wed, 18 Jun 2025 21:54:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0DDA27E1B1
+	for <linux-bcachefs@vger.kernel.org>; Wed, 18 Jun 2025 21:54:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750283693; cv=none; b=FRARQBQqMnQWGssUQv1SLEV15FQCkSGDD2O0UzHRZeYM99VihnNvl+DIudq21F5CpsDE/aOHH0gqh0gdiABR2IAm1SEHRFCo1KmN1jOIFVJY6NBytjxNa5PSx9JtEj9K2n3pPJdCwUfwS+0sL+d3/BuC0te1uRULRtGZ+3sr3iA=
+	t=1750283694; cv=none; b=jTFH9LkxEWwUNs2IvYh1xJ/pVd5aVFuPwk9M/6pPyjgGADoEgkKEMcjLTdDyvMX5gf10yhVjBq4cDj4Wq6TkHhV1UsMo1j4kMBw2IL3Xw2f2Duxu7sMyl/eoiTtd1K6pmP1mMEfQFX05IvW2IIAyb7c2SzS1tVy7aZuA4d/kXy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750283693; c=relaxed/simple;
-	bh=4Uno3XgivXeYCi6IkHi3IzrwwNSIohfZFfab+ttjWxg=;
+	s=arc-20240116; t=1750283694; c=relaxed/simple;
+	bh=KIxBfLcUWWAHSl5fE4Y9e8e/DqrzSRjAaQAyJWdRJc4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=B+EBk6KAcpz1ocLz0xcap6rai2fFq/hPwiUmgLz6yzko6tfbOJy7+jRy09djccIVguKu4OAiaThS5DTllqKudzzyABLUaTFrv1UI85t/5BAkxQWsimhcqEfuSJ5CwBrwx75hMOrAUI/kfVPBswnj936Y3fggJpcjQXZeLjpn2lM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YQhcCbW4; arc=none smtp.client-ip=95.215.58.183
+	 MIME-Version; b=rcrIcsec10zx/aAydn6KzJvXIyGblgHzobu/P74dmXQQOHSbU9684KljKv8MCd0J+IZSQBltiXSPmm8naVJGFQrXdrlFzgOy6Um2dsK+5tPAQ1F/HXwXjukZ8zrXfncs6WjHgJ2S9WdqthzoekHsGuRgOw73l+q6DxeuRZBTZN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=o/RBu/hk; arc=none smtp.client-ip=95.215.58.186
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YQhcCbW4"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="o/RBu/hk"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750283689;
+	t=1750283690;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vNy6bOeiV9dnI5Yh/W2lFZywqiuOQM5lAy1pUwuI9LE=;
-	b=YQhcCbW4rsrj7+j8Uu+koMeOqNHGPmhNsMrDwbbKAzyQLvA8ezyUDw0Bo4W/OTCyZsB25F
-	n/RpJzfaH9Lagonf/PA6/tGCRVu4V7ru7voVIZNFjsBnDuO+/YQT7104kFPRCCCx/iia1n
-	b3/4f1PZJ019jLWos5U0PGF3i2gzbZ8=
+	bh=dgcdfP1te8GBYHEh0j3x9G8yjA/vV0REMvl1KYIxKog=;
+	b=o/RBu/hkbrJs1P8YUytaOZtxogJhstdtP5rZOeJZbi3bazVTFWjdfj3gJsFJjeVoceyJo1
+	m6TTtitq9Jpqx6KJ+XTqS/CPc5oNIpSdkI9h0/Ci7hd7t675qoPchf2N6IHFuJFr7EHTgu
+	6o0+uuRcMF267HSqUE9vwBAqmYxJxNo=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 09/37] bcachefs: better __bch2_snapshot_is_ancestor() assert
-Date: Wed, 18 Jun 2025 17:54:00 -0400
-Message-ID: <20250618215431.738317-10-kent.overstreet@linux.dev>
+Subject: [PATCH 10/37] bcachefs: pass last_seq into fs_journal_start()
+Date: Wed, 18 Jun 2025 17:54:01 -0400
+Message-ID: <20250618215431.738317-11-kent.overstreet@linux.dev>
 In-Reply-To: <20250618215431.738317-1-kent.overstreet@linux.dev>
 References: <20250618215431.738317-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,42 +44,100 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Previously, we weren't checking the result of the skiplist walk, just
-the is_ancestor bitmap.
+Prep work for journal rewind, where the seq we're replaying from may be
+different than the last journal entry's last_seq.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/snapshot.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ fs/bcachefs/journal.c  | 18 ++++++------------
+ fs/bcachefs/journal.h  |  2 +-
+ fs/bcachefs/recovery.c |  4 ++--
+ 3 files changed, 9 insertions(+), 15 deletions(-)
 
-diff --git a/fs/bcachefs/snapshot.c b/fs/bcachefs/snapshot.c
-index 23a332d76b32..38aeaa128d27 100644
---- a/fs/bcachefs/snapshot.c
-+++ b/fs/bcachefs/snapshot.c
-@@ -135,7 +135,9 @@ static bool test_ancestor_bitmap(struct snapshot_table *t, u32 id, u32 ancestor)
- 
- bool __bch2_snapshot_is_ancestor(struct bch_fs *c, u32 id, u32 ancestor)
- {
--	bool ret;
-+#ifdef CONFIG_BCACHEFS_DEBUG
-+	u32 orig_id = id;
-+#endif
- 
- 	guard(rcu)();
- 	struct snapshot_table *t = rcu_dereference(c->snapshots);
-@@ -147,11 +149,11 @@ bool __bch2_snapshot_is_ancestor(struct bch_fs *c, u32 id, u32 ancestor)
- 		while (id && id < ancestor - IS_ANCESTOR_BITMAP)
- 			id = get_ancestor_below(t, id, ancestor);
- 
--	ret = id && id < ancestor
-+	bool ret = id && id < ancestor
- 		? test_ancestor_bitmap(t, id, ancestor)
- 		: id == ancestor;
- 
--	EBUG_ON(ret != __bch2_snapshot_is_ancestor_early(t, id, ancestor));
-+	EBUG_ON(ret != __bch2_snapshot_is_ancestor_early(t, orig_id, ancestor));
- 	return ret;
+diff --git a/fs/bcachefs/journal.c b/fs/bcachefs/journal.c
+index dda802a656cf..df71af0013ba 100644
+--- a/fs/bcachefs/journal.c
++++ b/fs/bcachefs/journal.c
+@@ -1474,14 +1474,13 @@ void bch2_fs_journal_stop(struct journal *j)
+ 		clear_bit(JOURNAL_running, &j->flags);
  }
+ 
+-int bch2_fs_journal_start(struct journal *j, u64 cur_seq)
++int bch2_fs_journal_start(struct journal *j, u64 last_seq, u64 cur_seq)
+ {
+ 	struct bch_fs *c = container_of(j, struct bch_fs, journal);
+ 	struct journal_entry_pin_list *p;
+ 	struct journal_replay *i, **_i;
+ 	struct genradix_iter iter;
+ 	bool had_entries = false;
+-	u64 last_seq = cur_seq, nr, seq;
+ 
+ 	/*
+ 	 *
+@@ -1495,17 +1494,11 @@ int bch2_fs_journal_start(struct journal *j, u64 cur_seq)
+ 		return -EINVAL;
+ 	}
+ 
+-	genradix_for_each_reverse(&c->journal_entries, iter, _i) {
+-		i = *_i;
+-
+-		if (journal_replay_ignore(i))
+-			continue;
++	/* Clean filesystem? */
++	if (!last_seq)
++		last_seq = cur_seq;
+ 
+-		last_seq = le64_to_cpu(i->j.last_seq);
+-		break;
+-	}
+-
+-	nr = cur_seq - last_seq;
++	u64 nr = cur_seq - last_seq;
+ 
+ 	/*
+ 	 * Extra fudge factor, in case we crashed when the journal pin fifo was
+@@ -1532,6 +1525,7 @@ int bch2_fs_journal_start(struct journal *j, u64 cur_seq)
+ 	j->pin.back		= cur_seq;
+ 	atomic64_set(&j->seq, cur_seq - 1);
+ 
++	u64 seq;
+ 	fifo_for_each_entry_ptr(p, &j->pin, seq)
+ 		journal_pin_list_init(p, 1);
+ 
+diff --git a/fs/bcachefs/journal.h b/fs/bcachefs/journal.h
+index 83734fe4331f..977907038d98 100644
+--- a/fs/bcachefs/journal.h
++++ b/fs/bcachefs/journal.h
+@@ -453,7 +453,7 @@ int bch2_fs_journal_alloc(struct bch_fs *);
+ void bch2_dev_journal_stop(struct journal *, struct bch_dev *);
+ 
+ void bch2_fs_journal_stop(struct journal *);
+-int bch2_fs_journal_start(struct journal *, u64);
++int bch2_fs_journal_start(struct journal *, u64, u64);
+ void bch2_journal_set_replay_done(struct journal *);
+ 
+ void bch2_dev_journal_exit(struct bch_dev *);
+diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
+index 0b21fa6ff062..6aef8b101820 100644
+--- a/fs/bcachefs/recovery.c
++++ b/fs/bcachefs/recovery.c
+@@ -965,7 +965,7 @@ int bch2_fs_recovery(struct bch_fs *c)
+ 
+ 	ret =   bch2_journal_log_msg(c, "starting journal at entry %llu, replaying %llu-%llu",
+ 				     journal_seq, last_seq, blacklist_seq - 1) ?:
+-		bch2_fs_journal_start(&c->journal, journal_seq);
++		bch2_fs_journal_start(&c->journal, last_seq, journal_seq);
+ 	if (ret)
+ 		goto err;
+ 
+@@ -1181,7 +1181,7 @@ int bch2_fs_initialize(struct bch_fs *c)
+ 	 * journal_res_get() will crash if called before this has
+ 	 * set up the journal.pin FIFO and journal.cur pointer:
+ 	 */
+-	ret = bch2_fs_journal_start(&c->journal, 1);
++	ret = bch2_fs_journal_start(&c->journal, 1, 1);
+ 	if (ret)
+ 		goto err;
  
 -- 
 2.50.0
