@@ -1,38 +1,38 @@
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6259B27E7C1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6E7A27EC6F
 	for <linux-bcachefs@vger.kernel.org>; Wed, 18 Jun 2025 21:55:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750283715; cv=none; b=noENVrtCQuCRrclItlDu3GBCCDRyM8Fv1KEESsFiJkhZHx5ygBzFFRpW6U55sTh52ziZtVNsU7ewqf9VkIZOVKyivGefc0KeNAHvQgcUx70d5xMjeMrnKyYrxF1Rv9k7y0goR/kqAMWeXjP+7hsbOj7QbjfphbNJ/YkmF8Om9z0=
+	t=1750283715; cv=none; b=foGFsyO6Tt8yBfWAQLrV+jYNfq0MMpy/OCdzMsnSGKG/Lq7SAbNB6VW8BlfDovu5Xwn6A1HgqNciy6Pu0Vk85DdML3mABK+8OFIO+knJnHBDJuZaXwDA5n1CxrqSX+wZIZz8kVkfqk0IyQVkxe5YJ6fTlCtbvn6NnyNEyWrzWr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1750283715; c=relaxed/simple;
-	bh=8Zi+ycVUY9PPeD9FbbYr3lzhMURDZcbu8OfecXoFArY=;
+	bh=mAu6ASj7DxxnKF906Xn0SU9Is/D+jgg2PrSrLdbio+8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rC3Yjimk/MJnmQrklnmn/xT2L2oYA7zFQ9Alu7Nov7Cm7rAhh1Yu5JT5pqxLzISUj2b4DQZxRkjJfFK/MaOJe9u4rtEcJ8QlfXz3yCuwIN1JK782oItVvYysIL1MUd2F5IfFO8GSWOWEvQxozSNopSCA1i/BuPRIjGWUEqKycok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xaORRc3d; arc=none smtp.client-ip=95.215.58.170
+	 MIME-Version; b=UUBgvAfjjNZhxyHcE9JtMuSH+PM5uSlMXKqQXndo4mJnoOMskxwpvgYTO+LTL06l4uYT7YiZO98Rca2fLyoZPZf8L1hNaONj/RwlZC52H8Jq+zojfK3ncdMlUyoRuvPQw5vVk4qObYbuQiajfX/vp5Gl186CAM0fE6jNGt0MG94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Gi5s4qXY; arc=none smtp.client-ip=95.215.58.183
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xaORRc3d"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Gi5s4qXY"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750283711;
+	t=1750283712;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gXdm5P2tCNVAanD3d9i43I+A4/emB61pO72f3olKjDY=;
-	b=xaORRc3d6wRXFeVSbkTVoVtcn1XwYsdcfz2ewQQLJpO9I9tDJL2mwy07XTtCyCPohMJbSs
-	af+cwyNSUScmLQaKaUUnyju6x32IjjNzaS6aeDqBrsV6Y7xZpVZknJEFP0gNgE+wBc4U+j
-	j7RU5Ha1yEh4h+e+lAmgbvpGnhimc/Y=
+	bh=S3GB9RyHo1htDe+Bkk159Ilntg0/eHZRixJI72iLm1g=;
+	b=Gi5s4qXYi3q00P8aFJ/fQglc0VD/nE+ntup0ws1LegtFkhjOmNKrs1wAzOigtKP0bI/3s0
+	yhJsw3VyXa+p380OKJaiwMPSvbGpCH31vsmMMafEnRCKTUlD8D6iNJ59boguAAWDu+1p+v
+	r/i4gSdSgubeqLZocbIwhzTeiAsmK6Y=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 35/37] bcachefs: fsck: Fix oops in key_visible_in_snapshot()
-Date: Wed, 18 Jun 2025 17:54:26 -0400
-Message-ID: <20250618215431.738317-36-kent.overstreet@linux.dev>
+Subject: [PATCH 36/37] bcachefs: fix spurious error in read_btree_roots()
+Date: Wed, 18 Jun 2025 17:54:27 -0400
+Message-ID: <20250618215431.738317-37-kent.overstreet@linux.dev>
 In-Reply-To: <20250618215431.738317-1-kent.overstreet@linux.dev>
 References: <20250618215431.738317-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,50 +44,23 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-The normal fsck code doesn't call key_visible_in_snapshot() with an
-empty list of snapshot IDs seen (the current snapshot ID will always be
-on the list), but str_hash_repair_key() ->
-bch2_get_snapshot_overwrites() can, and that's totally fine as long as
-we check for it.
-
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/fsck.c | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ fs/bcachefs/recovery.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/bcachefs/fsck.c b/fs/bcachefs/fsck.c
-index 57ddc20a5cce..9920f1affc5b 100644
---- a/fs/bcachefs/fsck.c
-+++ b/fs/bcachefs/fsck.c
-@@ -728,14 +728,8 @@ static int snapshots_seen_update(struct bch_fs *c, struct snapshots_seen *s,
- static bool key_visible_in_snapshot(struct bch_fs *c, struct snapshots_seen *seen,
- 				    u32 id, u32 ancestor)
- {
--	ssize_t i;
--
- 	EBUG_ON(id > ancestor);
+diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
+index fa5d1ef5bea6..e0d824471bff 100644
+--- a/fs/bcachefs/recovery.c
++++ b/fs/bcachefs/recovery.c
+@@ -607,6 +607,7 @@ static int read_btree_roots(struct bch_fs *c)
+ 					buf.buf, bch2_err_str(ret))) {
+ 			if (btree_id_is_alloc(i))
+ 				r->error = 0;
++			ret = 0;
+ 		}
+ 	}
  
--	/* @ancestor should be the snapshot most recently added to @seen */
--	EBUG_ON(ancestor != seen->pos.snapshot);
--	EBUG_ON(ancestor != darray_last(seen->ids));
--
- 	if (id == ancestor)
- 		return true;
- 
-@@ -751,11 +745,8 @@ static bool key_visible_in_snapshot(struct bch_fs *c, struct snapshots_seen *see
- 	 * numerically, since snapshot ID lists are kept sorted, so if we find
- 	 * an id that's an ancestor of @id we're done:
- 	 */
--
--	for (i = seen->ids.nr - 2;
--	     i >= 0 && seen->ids.data[i] >= id;
--	     --i)
--		if (bch2_snapshot_is_ancestor(c, id, seen->ids.data[i]))
-+	darray_for_each_reverse(seen->ids, i)
-+		if (*i != ancestor && bch2_snapshot_is_ancestor(c, id, *i))
- 			return false;
- 
- 	return true;
 -- 
 2.50.0
 
