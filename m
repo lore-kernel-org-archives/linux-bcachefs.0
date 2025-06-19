@@ -1,70 +1,95 @@
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAF3923AB8B
-	for <linux-bcachefs@vger.kernel.org>; Thu, 19 Jun 2025 17:24:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BE6B28B7DF
+	for <linux-bcachefs@vger.kernel.org>; Thu, 19 Jun 2025 17:33:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750353870; cv=none; b=gSQVUkXz80jcHIe5SIhffuFuMnuZf60LOt3WaOTtpScSjpSyfTO+zgNrMFxnGzFCo/e0YrnFOalMIIMV4dUhGmSunSh5o/j+3ihJBoj4+c9VtUiwRk0Slynmdg4OcWF3Br37mQ0Y2AyvVNjPAvCa/lECINHSQ7gNRAs4zz0ttQs=
+	t=1750354403; cv=none; b=E6f8YkaJv2bitslX4V/D6Hb9vel+AtutjYGK+WgIo7NSBkebbdZfc1o+m+rRwDQPxbELQdGFPexPfxRqN4bqoRE46A6mLevJspshkspE3iUnR5vBLNnsrld7zLSkvnP5B2MQlgnxDpeMvi3sSBHHqYFokvzcOZ/b8wrBCZKpT84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750353870; c=relaxed/simple;
-	bh=aLWc2B6bzjZ3fntYBh3tjK14z/DJjvNDESgA4cUVikk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b+MulJ1wJLFd2tNM4avnXtmNCfij6Vnh3WnN3illZcjPdIceKaTXaQy+HwKcMVN04jUZxv7GJfU83LotRlkm4Tc2XpLkxCyzrMHYeQQ9Agqhw+0VCKsVlLl2kAyapFVcOgGZ/vAW/k6stZrnbl1/qp/NdyG4fgPtrYUy7+Bo7M8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Y1Ufdvsf; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1750354403; c=relaxed/simple;
+	bh=v/Ybzsbf7zULIkst16v/pf9eCDHQO7RaPON9sVH5Lro=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=l6glTw7akCPjKhZM/yqQix42prZdJHe3lkSp75CGokRKN2ehmOWRqn/xkHMSdWokOXtM/JJVOY44HgjeO1HTEdUHlxMDDYaty8A50zD/Riw3ZOsOzLL13TsiZnrcdY2njX6feO0CTxg9Vhw3b6D/dIXrq50ERwpbKSE4jwOkH6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZCtglBOg; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Y1Ufdvsf"
-Date: Thu, 19 Jun 2025 13:24:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750353864;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vQWJ7IstV3NPZFL+fZTipCccwMi0nFQmgk3DZljiHYE=;
-	b=Y1UfdvsfCYgcAEiZMUFoIm97D31fjvrJPR2S3mLB8URHQNmuzl6Txc4G2lesLV3u6Hrn0H
-	ezMFWKpk2oWzPcN3sOtWw7SeDGJQ4scza7ndRauUcBOYTmnBQC9doiLxpoAM4qVafAMULf
-	QttM2g1BQbnRPKR3rcCo837c8sPskdo=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Johannes =?utf-8?B?V2llc2LDtmNr?= <johannes.wiesboeck@aisec.fraunhofer.de>
-Cc: linux-bcachefs@vger.kernel.org, 
-	Michael Weiss <michael.weiss@aisec.fraunhofer.de>
-Subject: Re: Maximum extended attribute size
-Message-ID: <ukg6svc2xp344mgx6ybkxuy7q6yxrk3jj7z3l3kgnioxf3sxq7@ur4ppfvkfcmd>
-References: <8403cdae-bb70-4622-ada7-4b959dd4d33d@aisec.fraunhofer.de>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZCtglBOg"
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-7399a2dc13fso1062407b3a.2
+        for <linux-bcachefs@vger.kernel.org>; Thu, 19 Jun 2025 10:33:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750354401; x=1750959201; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Xm+V3y3No8fE1cUJryS7WMi/4bNdNjJ3dBF6P8TF0I=;
+        b=ZCtglBOgoR/IOUeOiHsy8WlPqploNIN6+4/0KRcDSjNMXg65iv6lNWupY5dV3HqwGj
+         1UnIuqlIsrkptLD8xqK6VfueP4ZC8ZW8XY9hCaFzDGMPWm3rnIYJNpl0YmLJF3jCvjdX
+         oo21MBF0IZeJKC9PX1uAGsE2BJAhSEuDUiW+mB7fdXMe12y08YCRlkCS7vDNnn7qswC+
+         7z1w8DCVm26FANNkBXLGmxn6rFIZsW4o7w0PG7TkF2qyJ+9SydpM3ZvB4yemNONO3X7g
+         sRIudoSieW8Fa6WF13K73vO/inH8ZrCBZ43H8mekfziL7+VzaOsglstOYTlT7uC28Bv1
+         N0XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750354401; x=1750959201;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+Xm+V3y3No8fE1cUJryS7WMi/4bNdNjJ3dBF6P8TF0I=;
+        b=q2kdK9eSbJBvHhgDoiKW4PofhyEIWEkTF82PZVWXO/9m9ObS4fXriC4gpUHQ3+LUjK
+         Whr0qKqNwDORUMIh/6uTUhmMKqZM8Uvhmy4nTcBB+NauaDcMGwKdXsYuJN20ShBAshq9
+         g7fMs1cTgEj+pORYzZtm5KHp2Yn4ZKR9rYGhDiXhNg1lHxTuGfFYylN4z8UYTHn6+spu
+         3lKiR2ulSHk4crqdqLMAddyTD4xROtt6SIcbDAhZc2NOTeaSD3EQjIHovtN928hekYyM
+         9OK5PHgq6wBiBWmUxIa9I5UXPJQRUqca31LrN+LNyDotwOVfM8ALvEWQv55JCRBJyxzt
+         2ACQ==
+X-Gm-Message-State: AOJu0YzBG29oj6gEWqVqiyMSaZgk9otztX86HONSM9NzRPeRqIWWlfFh
+	sYpqGYE8I/olcqPTShf4alDr23sBfZXMBsYacppel9HZjfMeOYUQ5Lvn
+X-Gm-Gg: ASbGnctUobAZnbwtBUPQDZnENqtlz1fHPyhnriez+1LGqTFw70eXrVQZ6SC8S+acq/l
+	OJKAK0sl8/PMcOlkTPNOaWiNDl9WTGJ2yGtuoz4KmRQqozPEkB7nIiTmmHeGAEcm2kd9/AHsPHv
+	0YREZ9yL4er4+QZZU0Hb83eEN21ten2UH/RcK36jc45FHTVUC+nB1jLXA1+ERhZ7d+zc3RVoYC1
+	HCk6A/sFS1FRZ/WM+3BAX4gToerdgT9oR4FEfXdWGqjxHuRtAcZ8ubo6GAhInFsUDlJE9pI/Zfz
+	WeEPMhJ8VtFWYgUNyW8vBD+uP/VTE7ptP3j5pAHLQalBGIs=
+X-Google-Smtp-Source: AGHT+IEcy5Lnffpkf2BV23l2QenXsrhvZmxWwKEePNHIi7TO37r83lP9PHC7ln/q+M58vITTTwHy7w==
+X-Received: by 2002:a05:6a21:3941:b0:1ee:ef0b:7bf7 with SMTP id adf61e73a8af0-21fbd550dfcmr32302117637.19.1750354401174;
+        Thu, 19 Jun 2025 10:33:21 -0700 (PDT)
+Received: from localhost ([2402:d0c0:11:86::1])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b2fe169205dsm13308239a12.74.2025.06.19.10.33.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Jun 2025 10:33:20 -0700 (PDT)
+From: Alan Huang <mmpgouride@gmail.com>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	Alan Huang <mmpgouride@gmail.com>
+Subject: [PATCH] bcachefs: Don't memcpy more than needed
+Date: Fri, 20 Jun 2025 01:33:17 +0800
+Message-ID: <20250619173317.975223-1-mmpgouride@gmail.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <8403cdae-bb70-4622-ada7-4b959dd4d33d@aisec.fraunhofer.de>
-X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jun 19, 2025 at 04:53:08PM +0200, Johannes Wiesböck wrote:
-> Hello everyone,
-> 
-> while experimenting with large values for extended file attributes, i
-> noticed that in bcachefs, i can only set xattrs up to a size of around
-> 2KB. This size is limited by a check in bch2_xattr_set that ensures that
-> the combined bkey+name+value size does not exceed
-> U8_MAX*sizeof(u64)=2040B, which would overflow the bkey's maximum size.
-> Therefore, the xattr size seems to be always limited by the maximum size
-> of the bkey.
-> 
-> Is there a way in bcachefs that allows setting xattrs larger than the
-> aforementioned 2KB? For comparison, ext4 provides the EA_INODE feature,
-> that allows you to store xattrs in a dedicated inode and, thus use the
-> full 64KB xattr size allowed by the kernel. Is something similar
-> available/planned/imaginable in bcachefs?
+buf->u64s is all we used.
 
-We do want that at some point, yes. Would be happy to take patches and
-provide some guidance, but we need to wait for debugging and
-stabilization to settle down before I want to devote attention to that
-sort of thing.
+Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+---
+ fs/bcachefs/btree_update.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/bcachefs/btree_update.c b/fs/bcachefs/btree_update.c
+index ee657b9f4b96..d9a17d523db1 100644
+--- a/fs/bcachefs/btree_update.c
++++ b/fs/bcachefs/btree_update.c
+@@ -566,7 +566,7 @@ void *__bch2_trans_subbuf_alloc(struct btree_trans *trans,
+ 	if (buf->u64s)
+ 		memcpy(n,
+ 		       btree_trans_subbuf_base(trans, buf),
+-		       buf->size * sizeof(u64));
++		       buf->u64s * sizeof(u64));
+ 	buf->base = (u64 *) n - (u64 *) trans->mem;
+ 	buf->size = new_size;
+ 
+-- 
+2.48.1
+
