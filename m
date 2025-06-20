@@ -1,103 +1,152 @@
-Received: from mailrelay.tugraz.at (mailrelay.tugraz.at [129.27.2.202])
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 562FE12A177;
-	Fri, 20 Jun 2025 15:26:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.27.2.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D380221DAD
+	for <linux-bcachefs@vger.kernel.org>; Fri, 20 Jun 2025 23:35:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750433193; cv=none; b=O4fUTSQmDUPgzoqIonOXmVXjSPABvA3Bddw5eY6/UJjoViaMzBzCoAgCLrr8jGiTvenLdIBTjDOjimyQxmTMwqbldssEpNzGAwVjbvWedvCqkWXfX8nM2JfE4/HZTFI4y6kM0x4f2QPRENRv4bPcYitUvL/OizuFm3oSJs5DUJU=
+	t=1750462519; cv=none; b=B5mq8yt19vhnbWAdMzef4NwN7BAPpg/2WbCJqUZBQ2DETFXFP2I27pfkEoGrC1nKM2QYSQUEiT4kRKBV1Fj7HTyBTuB/6LWF7Yvw/h+NPlQs2GshwNtGc0fZmTj3raRZfH7JV1AR+J3gkUYo0+Aw5LFdAO0IMoRoCm6EVuK+mN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750433193; c=relaxed/simple;
-	bh=E4agwpxGFwqFeVJHeOCM9PGifChpw9gXLh90YWEsmCM=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=XVs9FfIZbNlW3Sc3s/NsmqKkarNpcL7ytDN8MexQNcIron30SQ60+qQ+2Y+cTASSypaOVWzJv04YTsHN5cr2v1KN8LNIkXjVOq0rVNAWJoeiaJzvo2j5PCMgGVCGZsYk8xWQaC6T8bQJAcWL+CqTOYMPNjOKvnL34t/SfypMyJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=student.tugraz.at; spf=pass smtp.mailfrom=student.tugraz.at; dkim=pass (1024-bit key) header.d=tugraz.at header.i=@tugraz.at header.b=eR29HlEw; arc=none smtp.client-ip=129.27.2.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=student.tugraz.at
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=student.tugraz.at
+	s=arc-20240116; t=1750462519; c=relaxed/simple;
+	bh=ggKAh9KSeQLXZX5dOy0m9MvnoCxk0k7vlIpT/uNzad4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T5gQ0/vygv0kzTwob/hnl0l+6dgfytDJjUNoJDnpPu1L5RCs5P4+Qc4ndWePBAkDb1ri3+u3fSYsoi2J7BKExTGrLCR4to/tF1HSYlPjMij6O8SoyUuw4uJwjyESbBZWHDfKAJl6zBCeS+Zhb8zQtjalj7VNZMeWJK7PSZRJUWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=r2sfE72B; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tugraz.at header.i=@tugraz.at header.b="eR29HlEw"
-Received: from [10.0.0.5] (178-189-174-90.adsl.highway.telekom.at [178.189.174.90])
-	by mailrelay.tugraz.at (Postfix) with ESMTPSA id 4bP1L86r7hz1LQwm;
-	Fri, 20 Jun 2025 17:17:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailrelay.tugraz.at 4bP1L86r7hz1LQwm
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tugraz.at;
-	s=mailrelay; t=1750432641;
-	bh=9ajYOC1IbfhtjE7fvp73fh+D1VdWRvU4dVnosjwrY8k=;
-	h=Date:To:Cc:References:Subject:From:In-Reply-To:From;
-	b=eR29HlEwJg3v3GBMZqac+sDtM+0wyFt3SvPD0p9LjNopg1EjYMM0M6vyLdnqvrXNt
-	 35fZmhTZBygX5vK75wqZ2aMzAnVr7vm8arNSxdn5dFxuVfJWXHB29VqZ6kEH4F7Ne+
-	 AFKhQBOUAlWjx4yGSaa6kq1o1y0ZNhADwCGN5hS0=
-Message-ID: <46b1a3d8-c77d-44bc-9d92-edc32d7b88eb@student.tugraz.at>
-Date: Fri, 20 Jun 2025 17:17:20 +0200
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="r2sfE72B"
+Date: Fri, 20 Jun 2025 19:34:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1750462503;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2tWsslxXZGVlg403xFDlb7Ii0ML959zqGzVWwgzj70s=;
+	b=r2sfE72B/Sxqb0ZNBuGVSks29lZrQhRdObDlt+h3v5grpc87o9nRSMntWn0gdU4roVVN96
+	E2ofOlXCc9kO05PKfpPEtDyttNFLoo6BHYSKXNxkg6YakqY+SYphJ+yl9WcHh9VhlpU3Kw
+	kp6+JNI625UPNgVsEy87LptY23nKDOc=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: Martin Steigerwald <martin@lichtvoll.de>, 
+	Jani Partanen <jiipee@sotapeli.fi>, Linus Torvalds <torvalds@linux-foundation.org>, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs fixes for 6.16-rc3
+Message-ID: <bwhemajjrh7hao5nzs5t2jwcgit6bwyw42ycjbdi5nobjgyj7n@4nscl4fp6cjo>
+References: <4xkggoquxqprvphz2hwnir7nnuygeybf2xzpr5a4qtj4cko6fk@dlrov4usdlzm>
+ <06f75836-8276-428e-b128-8adffd0664ee@sotapeli.fi>
+ <ep4g2kphzkxp3gtx6rz5ncbbnmxzkp6jsg6mvfarr5unp5f47h@dmo32t3edh2c>
+ <3366564.44csPzL39Z@lichtvoll.de>
+ <hewwxyayvr33fcu5nzq4c2zqbyhcvg5ryev42cayh2gukvdiqj@vi36wbwxzhtr>
+ <20250620124346.GB3571269@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: tytso@mit.edu
-Cc: jiipee@sotapeli.fi, kent.overstreet@linux.dev,
- linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, martin@lichtvoll.de,
- torvalds@linux-foundation.org
-References: <20250620124346.GB3571269@mit.edu>
-Subject: Re: [GIT PULL] bcachefs fixes for 6.16-rc3
-Content-Language: en-US
-From: Christoph Heinrich <christoph.heinrich@student.tugraz.at>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <20250620124346.GB3571269@mit.edu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TUG-Backscatter-control: gmwzW8oMfNreqDqbcncFhA
-X-Spam-Scanner: SpamAssassin 3.003001 
-X-Spam-Score-relay: 0.0
-X-Scanned-By: MIMEDefang 2.74 on 129.27.10.117
+X-Migadu-Flow: FLOW_OUT
 
+On Fri, Jun 20, 2025 at 08:43:46AM -0400, Theodore Ts'o wrote:
 > On Fri, Jun 20, 2025 at 04:14:24AM -0400, Kent Overstreet wrote:
->> 
->> There is a time and a place for rules, and there is a time and a place
->> for using your head and exercising some common sense and judgement.
->> 
->> I'm the one who's responsible for making sure that bcachefs users have a
->> working filesystem. That means reading and responding to every bug
->> report and keeping track of what's working and what's not in
->> fs/bcachefs/. Not you, and not Linus.
+> > 
+> > There is a time and a place for rules, and there is a time and a place
+> > for using your head and exercising some common sense and judgement.
+> > 
+> > I'm the one who's responsible for making sure that bcachefs users have a
+> > working filesystem. That means reading and responding to every bug
+> > report and keeping track of what's working and what's not in
+> > fs/bcachefs/. Not you, and not Linus.
 > 
 > Kent, the risk as always of adding features after the merge window is
 > that you might introduce regressions.  This is especially true if you
 > are making changes to relatively sensitive portions of any file system
 > --- such as journalling.
-> > The rules around the merge window is something which the vast majority
+
+Ted, you know better than most how long I've been shipping storage code.
+
+You also know just as well as I do that when to include a patch is very
+much a judgement call, so I'm quite curious why you and Linus think
+yourselves better able to make that judgement call than I.
+
+> The rules around the merge window is something which the vast majority
 > of the kernel developers have agreeded upon for well over a decade.
 > And it is Linus's responsibility to *enforce* those rules.
-While bcachefs is marked as experimental, perhaps the rules should be
-somewhat relaxed. After all those rules were made in the context of
-"stable" parts of the kernel and thus might not be the best strategy
-for parts explicitly marked as experimental.
 
-After following bcachefs development for a while now, I'd be totally
-fine with him pushing new features up to rc5 or so.
-Of course such a relaxed rule set should be agreed upon _before_
-sending something.
+And those rules are _always_ flexible when there's a reason for them to
+be, and here we do have a very good reason for including that code -
+making sure people don't lose filesystems.
 
 > If, as you say, bcachefs is experimental, and no sane person should be
-> trusting their data on it, then perhaps this shouldn't be urgent.  On
-> the flip side, perhaps if you are claiming that people should be using
-> it for critical data, then perhaps your care for user's data safety
-> should be.... revisted.
+> trusting their data on it, then perhaps this shouldn't be urgent. 
 
-Considering bcachefs's track record of not loosing data, it shouldn't
-be surprising that some people start trusting it, despite being marked
-experimental. With that one fs being saved by journal rewind, I guess
-we're back to nobody ever loosing any data to bcachefs, which is quite
-impressive.
+I don't see how that follows.
 
-FWIW I'm running two multi device filesystems with bcachefs right
-now. They are purely for bulk storage so far, so I'm not the best
-advocate for daily use stability. However I've been lurking in IRC ever
-since Kent saved my ass after I screwed up one of those filesystems
-(100% user error, wouldn't have blamed it on the fs for loosing it),
-and after watching him work his magic for other users, I'd trust
-bcachefs more to not permanently eat my data then other filesystems.
+Firstly, we're not defining what the "experimental" label, and since I
+am the one who put that label on bcachefs, I'll define that now.
 
-- Christoph
+Primarily:
+
+- Bugs are still outstanding, so users should not expect the same level
+  of polish as other filesystems - but that does _not_ mean that it's
+  not supported to the same degree as other filesystems. Bug reports are
+  triaged, and anything that effects the filesystem as a whole will be
+  fixed with great immediacy: "polish" issues or bugs that only affect a
+  specific application, or a new feature, might have to wait.
+
+- Stable backports are only happening for the most critical bugs, due to
+  the volume of bugfixing. Users are expected to stick close to the
+  latest release if they want a fix, and often run rc kernels if there's
+  something specific they need. This has been working well, because the
+  rate of _regressions_ has been quite low.
+
+And that's basically it.
+
+This isn't btrfs, which took off the experimental label, as I recall,
+when the on disk format was frozen. bcachefs's on disk format hasn't
+been making incompatible changes in years, and as of 6.15 the last of
+the required on disk format upgrades is done.
+
+I'll be taking off the experimental label when I believe bcachefs ready
+for widespread deployment by the distributions, not before.
+
+Again, that _does not mean_ that I'm not supporting it like any other
+production filesystem is supported. I think user reports should have
+made that clear by now.
+
+The talk about "no sane person should trust their data to it" is
+entirely baseless - I honestly don't know where you and Linus are
+getting that from. It's certainly not based on user reports or anything
+I've seen.
+
+bcachefs has been used in production for years, by a small but growing
+number of users, and at this point 100+tb filesystems in production are
+commonplace. I have one user I work with closely who can rattle off a
+long list of workloads he's got on bcachefs, and the only reason he
+isn't moving more stuff off of btrfs is send/recv - it'll be a long time
+before we have that.
+
+> On the flip side, perhaps if you are claiming that people should be
+> using it for critical data, then perhaps your care for user's data
+> safety should be.... revisted.
+
+This seems entirely backwards. Whatever I'm claiming is besides the
+point: bcachefs has users, and I actively support them.
+
+Now, onwards:
+
+It's _entirely_ unclear why you and Linus are bringing up the
+experimental label of bcachefs.
+
+If bcachefs were seen as a widely deployed, non-experimental filesystem
+(despite the fact that for all purposes it is), I have to think - I have
+to hope - that you'd be taking a more pragmatic approach here.
+
+But I think I and myself would assume that having an experimental label
+would mean _looser_ rules, so that development can move more quickly.
+
+So it's hard to fathom what's going on here.
