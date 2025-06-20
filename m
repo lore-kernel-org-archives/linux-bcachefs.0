@@ -1,99 +1,111 @@
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from se.sotapeli.fi (se.sotapeli.fi [206.168.212.219])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D71B615A8
-	for <linux-bcachefs@vger.kernel.org>; Fri, 20 Jun 2025 01:09:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 319367DA93;
+	Fri, 20 Jun 2025 01:35:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=206.168.212.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750381765; cv=none; b=oniaPqqSssfm0H+xVG0ZCwZWN44FQ13Pv5r+U18Ud2bfF97/MCKAhmIzgiPFpXtMjfT19F0yxmW+1GwR6v9ycVOu3QbV6/Pt/g7Nap1PWj/4b8gzcmHxhxjodHI26DX/9pkL0uL/rtSku6L13yGAeZcH0LEVZOzjV+x5y6MVYUw=
+	t=1750383344; cv=none; b=sR2OFuAzOPpemW6x+Ih8dDL2z0DhdDGZU6iFariEJW4ZWt2jjfkgPCJz4XujVCTAFKgJXcw2Ozx9z0/QWP5jdCTKluuhFolTRwTJXyEjpyR5n0yOIEs0+L5nuJjRT0IFYUyeZUHBLzgkKMCzgr1qpQkLI14bbZWR9D9TRgvWFwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750381765; c=relaxed/simple;
-	bh=T9/dbE1XcmP5MYTC2zfBvSun+GxsjXPmh5iICV/KTHs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CF42OxsWug/3lOiv53AqD2FCWzzlNG1SNGCHZ9dKs4nF0XBudGsrwn05ha+g2RMeufFY/zz2KGWpjQc285JiiWw5uRsfk0d7b6YTUK/r/ex/gBxxdXDxStgYcHqf4Yqu5Ur0uWYCLvYqijSuJj1N0QscuIPgSFQJsbY0QOiikfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WfQjaHEK; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1750383344; c=relaxed/simple;
+	bh=DRdl5eR/UzuOYgEY5RDTATzbmynKlsuhFRQmTGemV9U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BnM1Mp78EkJ1GceNi1htETx9xIp124mrmRimbpizYGGzvgJmxrI03jClmajhuPqLhkjM5rFaWdyaGhL5R0SDZU0QzNodZTGo/rvZTBh5F/nlcSgQc7+kdrFR37JV55xmWFPalptaxSZw/rzYwpCiaWagduP3kMtCrIJJ+ZzK17E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sotapeli.fi; spf=pass smtp.mailfrom=sotapeli.fi; dkim=pass (2048-bit key) header.d=sotapeli.fi header.i=@sotapeli.fi header.b=HvFIseGN; arc=none smtp.client-ip=206.168.212.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sotapeli.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sotapeli.fi
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WfQjaHEK"
-Date: Thu, 19 Jun 2025 21:09:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750381760;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KT0iTunCunFXn9vRXltLaWe5/WhqrdVMi7w3nPYDva8=;
-	b=WfQjaHEK+CHC1XjZVFMkgJzTSqtJ0/SLnf41jLFFtDF56GSkPeqPD6kH7vehLTMhPoBcF7
-	BN1XRRs/T3fAd002iJJ0Hy2TUwWYloZVGs9iFJxGouJ1aR90YHfz71sBVQg2NoKQca4np9
-	E7s9cQGXN1I7+1sctEbcCOt2LCdwJEM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs fixes for 6.16-rc3
-Message-ID: <lyvczhllyn5ove3ibecnacu323yv4sm5snpiwrddw7tyjxo55z@6xea7oo5yqkn>
-References: <4xkggoquxqprvphz2hwnir7nnuygeybf2xzpr5a4qtj4cko6fk@dlrov4usdlzm>
- <CAHk-=wi2ae794_MyuW1XJAR64RDkDLUsRHvSemuWAkO6T45=YA@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=sotapeli.fi header.i=@sotapeli.fi header.b="HvFIseGN"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 49B1A181AA1D;
+	Fri, 20 Jun 2025 03:26:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sotapeli.fi; s=dkim;
+	t=1750382766; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:content-language:in-reply-to:references:autocrypt;
+	bh=9cKmbQfCWsEv39A0uvZFeauocHYAx0z8D51a+ocIPcI=;
+	b=HvFIseGNxePtnQLkZKUNx/IfS9Z+jjO37zG5wuXlotlfEQsDmSCHIW710AIfk6vBLf6A6K
+	083oKeh67N2PVlG5C7sEsvswB3YsSRu464eY4IdIH3l74isbetD4QQCqcYEigJ3enGc0/4
+	tKpRKZNTeoFGPRcyw0EE3Fe7qL0lAQYRZFTaAcKrKZQy5Pr2ip4Vivx0Mw1jssx3Aoie95
+	2yXrQvve3cBly0+2q9pJZ3bowbdcwyVZqsBV2D7+fDcUBB1FN0L6fNZFkB0oyJFH/G0WL0
+	6iCCeR3pwZfsIBkLESYZZqFrsbD9iCL63U3mYcKCWQyF1A3VwRiBQc0LoMKbbQ==
+Message-ID: <06f75836-8276-428e-b128-8adffd0664ee@sotapeli.fi>
+Date: Fri, 20 Jun 2025 04:25:58 +0300
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wi2ae794_MyuW1XJAR64RDkDLUsRHvSemuWAkO6T45=YA@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [GIT PULL] bcachefs fixes for 6.16-rc3
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+ Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <4xkggoquxqprvphz2hwnir7nnuygeybf2xzpr5a4qtj4cko6fk@dlrov4usdlzm>
+ <CAHk-=wi2ae794_MyuW1XJAR64RDkDLUsRHvSemuWAkO6T45=YA@mail.gmail.com>
+ <lyvczhllyn5ove3ibecnacu323yv4sm5snpiwrddw7tyjxo55z@6xea7oo5yqkn>
+Content-Language: en-US
+From: Jani Partanen <jiipee@sotapeli.fi>
+Autocrypt: addr=jiipee@sotapeli.fi; keydata=
+ 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
+In-Reply-To: <lyvczhllyn5ove3ibecnacu323yv4sm5snpiwrddw7tyjxo55z@6xea7oo5yqkn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Last-TLS-Session-Version: TLSv1.3
 
-On Thu, Jun 19, 2025 at 05:51:17PM -0700, Linus Torvalds wrote:
-> On Thu, 19 Jun 2025 at 16:06, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> >
-> > - New option: journal_rewind
-> >
-> >   This lets the entire filesystem be reset to an earlier point in time.
-> >
-> >   Note that this is only a disaster recovery tool, and right now there
-> >   are major caveats to using it (discards should be disabled, in
-> >   particular), but it successfully restored the filesystem of one of the
-> >   users who was bit by the subvolume deletion bug and didn't have
-> >   backups. I'll likely be making some changes to the discard path in the
-> >   future to make this a reliable recovery tool.
-> 
-> You seem to have forgotten what the point of the merge window was again.
 
-The goal is to get users _code that works_, is it not?
+On 20/06/2025 4.09, Kent Overstreet wrote:
+> I'm not seeing that _you_ get that.
 
-> We don't start adding new features just because you found other bugs.
-> 
-> I remain steadfastly convinced that anybody who uses bcachefs is
-> expecting it to be experimental. They had better.
 
-Honestly, most of the people using bcachefs from what I've seen just
-want something that works.
+How hard it is?
 
-There are a _lot_ of people who've been burned by btrfs. I've even been
-seeing more and more people in recent discussions talking about
-unrecoverable filesystems with XFS (!).
+New feature window for 6.16 was 2 weeks ago.
 
-That last one has been a surprise to me (and I don't think it's anything
-to do with the quality of the code), but it honestly should serve as a
-wakeup call as to how much is falling through the cracks and how badly
-we've been failing.
+rc<insert number here> is purely for fixing bugs, not adding new 
+features and potential new bugs.
 
-There are still a lot of people who don't want to move off ext4... and I
-can't really blame them.
 
-If you go looking, you won't find those stories about bcachefs - except
-from me, when I'm telling people what to watch out for.
+But I am not a coder, thats how I see it just by following.
 
-And that's because of a lot of hard work, and because I'm dead set on
-not repeating past mistakes; I actively hunt down bug reports and I
-frequently tell people - "I don't care if you think it's a hardware
-issue or pebcak, it's the filesystem's job to not lose data; get me the
-info I need and I'll get it sorted and get it working again".
-
-That's the goal here, delivering something that users can trust and rely
-on.
-
-I'm not seeing that _you_ get that.
