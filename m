@@ -1,97 +1,188 @@
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD277257444
-	for <linux-bcachefs@vger.kernel.org>; Tue, 24 Jun 2025 07:39:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C523299AA1
+	for <linux-bcachefs@vger.kernel.org>; Tue, 24 Jun 2025 16:36:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750750769; cv=none; b=H4Lc5q4LbyvfjDPSJQTs8LbfzZ1kLqE34y4Y97shU7yqcEMF6PGdb0Y4W3b7PI7RnnqEQA0GXyFya4k7xhZeEBXe9EZhde16wNC1hus9cmd0pu2wJJjsk5tGDsIQN+4q7+DBbhpZ+zw6DpJYEPabLqLLi/I5l7o1kx66kVHXOWM=
+	t=1750783004; cv=none; b=Ve69/UPZUtdZ7UFhuKjUHfJ2EGQS+MHUmsGIt7TIifPrVo5WwtBSZLnr5HAeGPc+BcboJMLANg+Mrsicb5bkZIpM66BeZ4nENytz4A/gv+UCOQoU7vjk+Z/0LGSrl4nVW/md36KpdQwqEasNI3F8BWIhoUCR/hUkcys9IEaf2Ec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750750769; c=relaxed/simple;
-	bh=a6oobmMbbLmXxDodUwUDAwLX8SKoHjCZKCLEg90QAvw=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=bpnnSOZh91I9h0oH+5DuQP5GqZIiJY+7rBP1l9/YKx7SxjQhS//cin+GPmhzcyX5aBduO5OLRRsYGokm+0UW5bUjZgYryVzhdiwDpA2QhBSv0NsAuM928R6GwwRW3hObIsQAeTW6p7Nh/4ADAh+O/mrXJstq2q29vSBzedUVSUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3ddc0a6d4bdso59612805ab.0
-        for <linux-bcachefs@vger.kernel.org>; Tue, 24 Jun 2025 00:39:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750750767; x=1751355567;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bNZSwviUAqdlVKcJU3jTW73z109ojP3I9ScGRGhRgNo=;
-        b=VwCjKIDfTAZ+EprTfkfQoSOcj/gunEr95RaYW4X8Q97s+yGrWGephffZwAuvgoe5pw
-         VMA/uqEtmCISPQmTX1RaZrNtAIWXUDU2tkCrpM2Du3IhqV5+X9hpnqXEfBqueqv+xFYv
-         jn87opDicKm/PyOZM1YSoCeXemeH718hyk3+QHUYODee0AVzMe2KpWV6VwaPaQqwtzSR
-         zzhmzFykjJ3eFQO4KHLHkebzSvZQHNSZ0GjcVI/RGB2lnwGPqL7Ftc58UBi2FaHxo/tP
-         KI9zFysAzhESm6laCeyWiR5FeF0rcFZsajX3WIf83d+oFqc4hDtDhrmlR1VA6dSE/Gum
-         7dgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWrDLI6GLHfHqxOoQDEz2M6XbvTcJPvL1pgS3ivpNRHCPOJ8Wq4mMH2O1AH0KKUicy/sUBQ+ls+VpcMGs2pSg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz16UDobAwS/tc3Sktv4b4TM40fN6Km4ucn0FjtEQtghO7oOXpc
-	5BW1Pt6yE8g4ZatA1wftRc8x5h5od3GceLchaJQMHLk+U7ao18FQuO1KckUJ7BZnw47VnYuVpdw
-	98HzSrfLklV1KH/mnR1tTtMQnvIOZoSPF0ee1beErdegXzA4VIUKpKr74Nd8=
-X-Google-Smtp-Source: AGHT+IFyInFWEBbVw2N5MQTm9By6qznwzejgcs6L/Llgsb+r+EW4WxRX5fTN/oHNarQoPm8zzEubK4fCCZJlqSsyt4DpyO8F3Dtj
+	s=arc-20240116; t=1750783004; c=relaxed/simple;
+	bh=58hAIIEH8vdKwKRSPiNFRmCes12SI6DNJtHwR+6x1f4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=b9Vn/tbcgW2OqxdW8aVNQIMN7jgs1KDrbgWsJ7plFvnC3rMDaYdGoI520giDQ9dUtk2argnCxto9rzZaCEscchV1SiK8ef/7VkgndbMa+SgAwlxMp4GAiUj41takWvHZQ8EALJQUUmI74RKR6vweiJZXqYWzEWlND6XVhwkeFTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GGhE1DEZ; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GGhE1DEZ"
+Date: Tue, 24 Jun 2025 12:36:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1750782997;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fBu1gwPvass4crFXwZYzD7wJ2DFGje+U2ElxT+bgfSE=;
+	b=GGhE1DEZ4SZlK40CT/mHK4pKB/CY+/e+Zz6SfvQkxmF9XX83UehzLdTRL2IeQKFs2N3K5a
+	HvOu8Ck+7+SQLPs7sIz62HOtowdGLVVmCaRkqDX+QKuJu0zGgP+H0uZqVFrpeNfdxbtTrD
+	aMOm4Kixj0CpZtBgNUp1EgluTEr5hvg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: syzbot <syzbot+listdc301befec0a5cb43b3e@syzkaller.appspotmail.com>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] Monthly bcachefs report (Jun 2025)
+Message-ID: <tbin6tz26snfbzztmhixz236hkyezv35honrdzzpi3rkgu4toq@kahnaeehxnul>
+References: <685a562f.a00a0220.2e5631.005e.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c02:b0:3df:2e87:7190 with SMTP id
- e9e14a558f8ab-3df2e87757dmr226155ab.20.1750750767042; Tue, 24 Jun 2025
- 00:39:27 -0700 (PDT)
-Date: Tue, 24 Jun 2025 00:39:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <685a562f.a00a0220.2e5631.005e.GAE@google.com>
-Subject: [syzbot] Monthly bcachefs report (Jun 2025)
-From: syzbot <syzbot+listdc301befec0a5cb43b3e@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <685a562f.a00a0220.2e5631.005e.GAE@google.com>
+X-Migadu-Flow: FLOW_OUT
 
-Hello bcachefs maintainers/developers,
+On Tue, Jun 24, 2025 at 12:39:27AM -0700, syzbot wrote:
+> Hello bcachefs maintainers/developers,
+> 
+> This is a 31-day syzbot report for the bcachefs subsystem.
+> All related reports/information can be found at:
+> https://syzkaller.appspot.com/upstream/s/bcachefs
+> 
+> During the period, 15 new issues were detected and 8 were fixed.
+> In total, 102 issues are still open and 190 have already been fixed.
+> 
+> Some of the still happening issues:
 
-This is a 31-day syzbot report for the bcachefs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/bcachefs
+Most of these are not terribly concerning, but...
 
-During the period, 15 new issues were detected and 8 were fixed.
-In total, 102 issues are still open and 190 have already been fixed.
+> 
+> Ref  Crashes Repro Title
+> <1>  30829   Yes   INFO: task hung in bch2_copygc_stop
+>                    https://syzkaller.appspot.com/bug?extid=c6fd966ebbdea1e8ff08
+> <2>  7874    Yes   INFO: task hung in __closure_sync
+>                    https://syzkaller.appspot.com/bug?extid=7bf808f7fe4a6549f36e
+> <3>  3875    Yes   WARNING in bch2_trans_srcu_unlock
+>                    https://syzkaller.appspot.com/bug?extid=1e515cab343dbe5aa38a
+> <4>  1497    Yes   INFO: task hung in __bch2_fs_stop
+>                    https://syzkaller.appspot.com/bug?extid=6d3e28b33490b3085412
+> <5>  1236    Yes   INFO: task hung in bch2_journal_reclaim_thread (2)
+>                    https://syzkaller.appspot.com/bug?extid=820dc3b465c69f766a57
+> <6>  442     Yes   WARNING in bch2_trans_put
 
-Some of the still happening issues:
 
-Ref  Crashes Repro Title
-<1>  30829   Yes   INFO: task hung in bch2_copygc_stop
-                   https://syzkaller.appspot.com/bug?extid=c6fd966ebbdea1e8ff08
-<2>  7874    Yes   INFO: task hung in __closure_sync
-                   https://syzkaller.appspot.com/bug?extid=7bf808f7fe4a6549f36e
-<3>  3875    Yes   WARNING in bch2_trans_srcu_unlock
-                   https://syzkaller.appspot.com/bug?extid=1e515cab343dbe5aa38a
-<4>  1497    Yes   INFO: task hung in __bch2_fs_stop
-                   https://syzkaller.appspot.com/bug?extid=6d3e28b33490b3085412
-<5>  1236    Yes   INFO: task hung in bch2_journal_reclaim_thread (2)
-                   https://syzkaller.appspot.com/bug?extid=820dc3b465c69f766a57
-<6>  442     Yes   WARNING in bch2_trans_put
-                   https://syzkaller.appspot.com/bug?extid=291aef749c5cbb9ca2fd
-<7>  361     Yes   kernel panic: trans should be locked, unlocked by bch2_btree_update_start
-                   https://syzkaller.appspot.com/bug?extid=d540192e763531d307ff
-<8>  343     Yes   UBSAN: shift-out-of-bounds in __bch2_btree_node_hash_insert
-                   https://syzkaller.appspot.com/bug?extid=029d1989099aa5ae3e89
-<9>  326     Yes   WARNING in __bch2_truncate_folio
-                   https://syzkaller.appspot.com/bug?extid=3d11e35eeafe176a6c5b
-<10> 324     Yes   INFO: task hung in bch2_readahead
-                   https://syzkaller.appspot.com/bug?extid=a6060114362257e9798a
+this one
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+>                    https://syzkaller.appspot.com/bug?extid=291aef749c5cbb9ca2fd
+> <7>  361     Yes   kernel panic: trans should be locked, unlocked by bch2_btree_update_start
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+we want these locking bugs gone.
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+ok this one is a bug users hit - I thought locking was fully sorted in
+6.16, but apparently not.
 
-You may send multiple commands in a single email message.
+Previously, the locking bugs (especially in 6.14) were showing up in
+bch2_dev_metadata_drop(), which uses old style btree node iterators that
+do a DFS btree walk.
+
+Modern code just walks one level of the btree at a time, using
+bch2_btree_iter_peek() - there's much less special purpose code and
+strange corner cases this way.
+
+So it looks like this is another instance of that - bch2_move_btree() is
+using the old bch2_btree_iter_peek_node() code.
+
+Perhaps it's time to just delete all that stuff.
+
+bch2_move_btree() can probably be deleted and replaced with a call to
+bch2_move_data_btree() - that's part of the main data move path, and it
+recently gained the ability to walk keys in interior btree nodes.
+
+Looking at the stace, we have
+[   91.068473][ T5330] Kernel panic - not syncing: trans should be locked, unlocked by bch2_btree_update_start+0x1700/0x1dc0
+[   91.074232][ T5330] CPU: 0 UID: 0 PID: 5330 Comm: syz.0.0 Not tainted 6.16.0-rc1-syzkaller-00203-g4774cfe3543a #0 PREEMPT(full) 
+[   91.079637][ T5330] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+[   91.085068][ T5330] Call Trace:
+[   91.086510][ T5330]  <TASK>
+[   91.087883][ T5330]  dump_stack_lvl+0x99/0x250
+[   91.090102][ T5330]  ? __asan_memcpy+0x40/0x70
+[   91.092501][ T5330]  ? __pfx_dump_stack_lvl+0x10/0x10
+[   91.095374][ T5330]  ? __pfx__printk+0x10/0x10
+[   91.097423][ T5330]  panic+0x2db/0x790
+[   91.099118][ T5330]  ? bch2_btree_update_start+0x1700/0x1dc0
+[   91.101917][ T5330]  ? bch2_move_btree+0x44e/0xc60
+[   91.104349][ T5330]  ? __pfx_panic+0x10/0x10
+[   91.106602][ T5330]  ? __closure_wake_up+0xa2/0xb0
+[   91.109239][ T5330]  ? bch2_btree_update_free+0x39e/0x3f0
+[   91.111867][ T5330]  ? bch2_btree_update_start+0x1700/0x1dc0
+[   91.114541][ T5330]  bch2_trans_unlocked_or_in_restart_error+0xb0/0x110
+[   91.117731][ T5330]  bch2_path_get+0x108c/0x1540
+[   91.120398][ T5330]  ? bch2_btree_node_rewrite+0x17e/0x1120
+[   91.123155][ T5330]  ? __pfx_bch2_btree_update_start+0x10/0x10
+[   91.125844][ T5330]  ? bch2_move_btree+0x44e/0xc60
+[   91.128330][ T5330]  ? __pfx_bch2_path_get+0x10/0x10
+[   91.131060][ T5330]  ? rcu_is_watching+0x15/0xb0
+[   91.135248][ T5330]  ? bch2_trans_downgrade+0x228/0x360
+[   91.137691][ T5330]  ? rcu_is_watching+0x15/0xb0
+[   91.139975][ T5330]  ? __bch2_btree_path_downgrade+0x35a/0x5e0
+[   91.143245][ T5330]  ? bch2_trans_node_iter_init+0x2d7/0x5e0
+[   91.146160][ T5330]  bch2_trans_node_iter_init+0x348/0x5e0
+
+So the real bug is that we're in a restart when we call
+bch2_trans_node_iter_init(), meaning we didn't call bch2_trans_begin()
+after we got a restart error.
+
+I do not see the bug on a cursory glance, but the code is trickier that
+it should be.
+
+We're aiming to get rid of this sort of open coded restart handling and
+bch2_trans_begin(0 calls; modern code generally uses lockrestart_do(),
+commit_do(), or a looping macro that does the restart handling itself -
+e.g. for_each_btree_key()
+
+        for (btree = start.btree;                                                                                                                                                                                                                                                                                                 
+             btree <= min_t(unsigned, end.btree, btree_id_nr_alive(c) - 1);                                                                                                                                                                                                                                                       
+             btree ++) {                                                                                                                                                                                                                                                                                                          
+                stats->pos = BBPOS(btree, POS_MIN);                                                                                                                                                                                                                                                                               
+                                                                                                                                                                                                                                                                                                                                  
+                if (!bch2_btree_id_root(c, btree)->b)                                                                                                                                                                                                                                                                             
+                        continue;                                                                                                                                                                                                                                                                                                 
+                                                                                                                                                                                                                                                                                                                                  
+                bch2_trans_node_iter_init(trans, &iter, btree, POS_MIN, 0, 0,                                                                                                                                                                                                                                                     
+                                          BTREE_ITER_prefetch);                                                                                                                                                                                                                                                                   
+retry:                                                                                                                                                                                                                                                                                                                            
+                ret = 0;                                                                                                                                                                                                                                                                                                          
+                while (bch2_trans_begin(trans),                                                                                                                                                                                                                                                                                   
+                       (b = bch2_btree_iter_peek_node(trans, &iter)) &&                                                                                                                                                                                                                                                           
+                       !(ret = PTR_ERR_OR_ZERO(b))) {                                                                                                                                                                                                                                                                             
+                        if (kthread && kthread_should_stop())                                                                                                                                                                                                                                                                     
+                                break;                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                  
+                        if ((cmp_int(btree, end.btree) ?:                                                                                                                                                                                                                                                                         
+                             bpos_cmp(b->key.k.p, end.pos)) > 0)                                                                                                                                                                                                                                                                  
+                                break;                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                  
+                        stats->pos = BBPOS(iter.btree_id, iter.pos);                                                                                                                                                                                                                                                              
+                                                                                                                                                                                                                                                                                                                                  
+                        if (!pred(c, arg, b, &io_opts, &data_opts))                                                                                                                                                                                                                                                               
+                                goto next;                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                                  
+                        ret = bch2_btree_node_rewrite(trans, &iter, b, 0, 0) ?: ret;                                                                                                                                                                                                                                              
+                        if (bch2_err_matches(ret, BCH_ERR_transaction_restart))                                                                                                                                                                                                                                                   
+                                continue;                                                                                                                                                                                                                                                                                         
+                        if (ret)                                                                                                                                                                                                                                                                                                  
+                                break;                                                                                                                                                                                                                                                                                            
+next:                                                                                                                                                                                                                                                                                                                             
+                        bch2_btree_iter_next_node(trans, &iter);                                                                                                                                                                                                                                                                  
+                }                                                                                                                                                                                                                                                                                                                 
+                if (bch2_err_matches(ret, BCH_ERR_transaction_restart))                                                                                                                                                                                                                                                           
+                        goto retry;                                                                                                                                                                                                                                                                                               
+                                                                                                                                                                                                                                                                                                                                  
+                bch2_trans_iter_exit(trans, &iter);                                                                                                                                                                                                                                                                               
+                                                                                                                                                                                                                                                                                                                                  
+                if (kthread && kthread_should_stop())                                                                                                                                                                                                                                                                             
+                        break;                                                                                                                                                                                                                                                                                                    
+        }
