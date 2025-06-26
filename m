@@ -1,79 +1,96 @@
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3AC01A2545
-	for <linux-bcachefs@vger.kernel.org>; Tue, 24 Jun 2025 20:28:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53F48175A5
+	for <linux-bcachefs@vger.kernel.org>; Thu, 26 Jun 2025 03:04:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750796882; cv=none; b=aJvfa1OAF1n7uX0x59VQQL0klatRWHa1AJp4nkPY+Hhw83Ran9yaB/uIpGcab8xzBwa7NWjIzxSZAA+4IdBN5iuFnmz5UCFoq5DUC9rbybhbuZ3S9LGA02O9fr1s+AYEuHh9SrWEjY+m5JwDkBOxjLE8V16WhCYLE+R84GxAx3Q=
+	t=1750907091; cv=none; b=mJvDFMlHI/COCXD06Xi1pHdS+zVDlpzh+kXhKzMaT252IjhgTssqcGZHumrf1rqcOVaVtDUYjZZL1xD18cUMSEHYfuUDJcZlkGt/w2yK771e7IuXRwCGt+TWwRan0Azr+mIHJF0W8+5blBqABA5qzMOOtnb2kjL3BD6TNDtbGVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750796882; c=relaxed/simple;
-	bh=tB/Xo74wrLATid+uzHvf+EZvYvDwEWW4foo7I0mIE9Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jmKmVzzL8CBKZ/eXBtUnGDC2wUiYCdkRC5jeInR3KxtoT7CRYjp5MuS2TASfEPwQdY1lwUsemCiAoPQHaXBcf5vDOe7ckLSBegirraupppK6FizOxzxV6h9zhlcHbQZ+RjvFPKyi6rqCK8ECaxeqM4tO2WP653aY62typOzA9v8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fU0Ucq2Z; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1750907091; c=relaxed/simple;
+	bh=a/RaF0bZ7vf0jAjmyF+jUw4IChCnaHop4gWxD+Kfre4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gD37xs1Oo7SC9+5yFXWtQNWC4+7oKP/mDnyqfE3CXjtiSDTBlKcy5H6qooYs7jTKEk7BHvgPkfv8FvwFcUFcr0OSAEnfuhlh8gN5zvollTCamCHVFk6NQsAExMVQfFRwuis4dPMwxQgQiog62QqxlJo3VEs52g3pYiIT3EgpouM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j4PuVynd; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fU0Ucq2Z"
-Date: Tue, 24 Jun 2025 16:27:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750796879;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Y+6/N6ENV/cVQH4C6mItQ2XGZILmk3Caqn91cFnyZ+A=;
-	b=fU0Ucq2Zozn5lIme8umd+NPvnYdbeq8n+vgerZyyHe52W8djl0BAxU8Rw1jzxQGItfO/zu
-	5EFjV/tvqGjcsYRDhHnB1mm4nQ1XGWXOstSwAncHxwj0b3Y5bhqq8bH6X60iRvQSjAVC0F
-	4ARHps6J7H0XRlAknziGvzTfddv/ONc=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Alan Huang <mmpgouride@gmail.com>
-Cc: linux-bcachefs@vger.kernel.org, 
-	syzbot+d540192e763531d307ff@syzkaller.appspotmail.com
-Subject: Re: [PATCH] bcachefs: Don't unlock the trans if ret doesn't match
- BCH_ERR_operation_blocked
-Message-ID: <qcn736sc3xd324fcyg77teebjviazwljcwpjevmwngwqv36sdy@j42qf7bago65>
-References: <20250624191027.1157638-1-mmpgouride@gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j4PuVynd"
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-74931666cbcso600457b3a.0
+        for <linux-bcachefs@vger.kernel.org>; Wed, 25 Jun 2025 20:04:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750907090; x=1751511890; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ro4pn15+zGrzhqYHLqFWrXtrvOKXBv/gNz9AH7cCRj0=;
+        b=j4PuVyndKOjxvDsse8qLU722bEys00D4VQWTa5BRJUaKp/WbUq15gHmE/2lOkhr6Sx
+         gdnevS+5KlllWL1IZCI7V6fwXxHrgtGjIjhCRo3WV/bjGzNsv/docagRcAdzQX6PDgr1
+         NM7cgEDiiax/gyZzeFzUwDsLMZpOntuR68MLnamNFPD9KSTRCuQ4H6RA3Mx7RNIKcVbi
+         LcNra7MUsPk8W9OE5UM+SRNOEQyUZIpCmJYFpaT5gOXe9faWoeN9rI6T5zOmdYVb3kav
+         gm2XYAn3BLKJlWsNn4BxqJqYNpDAZ0S85bBQx+KMcnid+aZ4oGRK3Rm5O7N+k++yHb/e
+         IKnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750907090; x=1751511890;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ro4pn15+zGrzhqYHLqFWrXtrvOKXBv/gNz9AH7cCRj0=;
+        b=lapqfTRn7SshIivgJHgl99mxt47ZCOgHxNIHQ1ZauaEqU/QnLoS4OvXsb1J2SYf6xO
+         UFis6UnWTL9kPO4ClMezAbduAyJi6RrMsO8M+j7E9b9ynckmTJTOaKpKhBVSMRDzjm5N
+         A+1udxhlqCJvp+OV3EiW1lZ0q7vIHTLoKbsx4FG6lkBm6pUQ96MTnsO2SyRcwNlAxJqG
+         YriAl1emdvLlyXraQXe6HcL1+Q9ZrDVfdJVBVtpLLsJs43xgBZQpsVRYlZcFGfaiDnIK
+         szCe/FuP/SCRwtsp+zDzcKYfh8bEarOu3aNIhhZv6hfmS5ogUvt7GxrafxD7CVvCbGn2
+         qaxQ==
+X-Gm-Message-State: AOJu0YwqUATiB8RAvD2GcNYmqUu2DEMmmzGGv3lnhA236Ic3w1t6y8uZ
+	qapgzIkEyJig5y4pGRB+RRa5WpQWcPyzJT8Hf4NYd3KfLB0SqmWjqauz
+X-Gm-Gg: ASbGncvpqJxMR/SbZfwyWeNkrgcqpVCOTSXbZj27DGZoBNNZzVdOb3fa3RVD1Qsh/9I
+	akCztfnPVj6q4OdMBQNtfUYJinn3yy44VrO3RxjJShZjvgwvXTNaQrSSlig1OQ0WSa+++DpSVxb
+	bNLUzyasLXn6pQlTmaDO/8cNc/+rTm4wuViKfQ6UXCP4BRr5LCgaChpZGB9RPJOgnSBhHYQF1CY
+	T0nVcIJ7vkjLsQdj5i4s5KsEpYng/ZtvUuOSFfDBqPcDL6FNDgPPmnQ2F3hPCJrzEl8b1zuTkER
+	gz8Zc+Un1RwUUFvmBuEHqiXRYk2M6UHTEDxY
+X-Google-Smtp-Source: AGHT+IGNJBghRQdEMKtbsIMyMn/Uuk2ns/lcaT4K5KXbMVNgnYv9FHFlBeTZwtFjx5ARJ1zMNVjJMw==
+X-Received: by 2002:a05:6a00:1953:b0:748:de30:d01 with SMTP id d2e1a72fcca58-74ad4491066mr6696807b3a.10.1750907089607;
+        Wed, 25 Jun 2025 20:04:49 -0700 (PDT)
+Received: from localhost ([2402:d0c0:11:86::1])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-749b5e08d1csm5806212b3a.13.2025.06.25.20.04.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Jun 2025 20:04:49 -0700 (PDT)
+From: Alan Huang <mmpgouride@gmail.com>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	Alan Huang <mmpgouride@gmail.com>,
+	kernel test robot <lkp@intel.com>
+Subject: [PATCH] bcachefs: Shut up clang warning
+Date: Thu, 26 Jun 2025 11:04:45 +0800
+Message-ID: <20250626030445.1442111-1-mmpgouride@gmail.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250624191027.1157638-1-mmpgouride@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jun 25, 2025 at 03:10:27AM +0800, Alan Huang wrote:
-> Reported-by: syzbot+d540192e763531d307ff@syzkaller.appspotmail.com
-> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202506261026.ZxtJ7yeV-lkp@intel.com/
+Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+---
+ fs/bcachefs/btree_iter.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-thanks! applied
+diff --git a/fs/bcachefs/btree_iter.c b/fs/bcachefs/btree_iter.c
+index 8f037a798524..3d85627eedd1 100644
+--- a/fs/bcachefs/btree_iter.c
++++ b/fs/bcachefs/btree_iter.c
+@@ -3333,6 +3333,8 @@ u32 bch2_trans_begin(struct btree_trans *trans)
+ 		bool lock_dropped = false;
+ 		void *new_mem = allocate_dropping_locks_norelock(trans, lock_dropped,
+ 					krealloc(trans->mem, new_bytes, _gfp));
++		(void)lock_dropped;
++
+ 		if (!new_mem) {
+ 			new_mem = mempool_alloc(&trans->c->btree_trans_mem_pool, GFP_KERNEL);
+ 			new_bytes = BTREE_TRANS_MEM_MAX;
+-- 
+2.48.1
 
-> ---
->  fs/bcachefs/btree_update_interior.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/bcachefs/btree_update_interior.c b/fs/bcachefs/btree_update_interior.c
-> index 7bf1bd6a6e92..553059b33bfd 100644
-> --- a/fs/bcachefs/btree_update_interior.c
-> +++ b/fs/bcachefs/btree_update_interior.c
-> @@ -1287,10 +1287,11 @@ bch2_btree_update_start(struct btree_trans *trans, struct btree_path *path,
->  
->  		do {
->  			ret = bch2_btree_reserve_get(trans, as, nr_nodes, target, flags, &cl);
-> -
-> +			if (!bch2_err_matches(ret, BCH_ERR_operation_blocked))
-> +				break;
->  			bch2_trans_unlock(trans);
->  			bch2_wait_on_allocator(c, &cl);
-> -		} while (bch2_err_matches(ret, BCH_ERR_operation_blocked));
-> +		} while (1);
->  	}
->  
->  	if (ret) {
-> -- 
-> 2.48.1
-> 
