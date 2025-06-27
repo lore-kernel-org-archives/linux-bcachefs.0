@@ -1,69 +1,40 @@
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D77C527FB31
-	for <linux-bcachefs@vger.kernel.org>; Fri, 27 Jun 2025 14:46:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14BEA192D8A
+	for <linux-bcachefs@vger.kernel.org>; Fri, 27 Jun 2025 16:00:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751035568; cv=none; b=XB8H3aHTHTK2q5aWa5OczX+rGzPZmnAAl1Cg+7xzUgKnRPmWVgYf/aZu+BWCsofo869K6m2HlZMe9bgxt5nEU0G38CrjkH6XS5G/Ms465vdgNxSPKtkttQ9tf+YcjF2M4tDk+7nZOmAXZWLEsIdXeCYASXiA+FJ+5+s5+eZCX4A=
+	t=1751040047; cv=none; b=ecACw6obC7hd+zqJI3kUQNMy200T9ZYypLq4QkiLJYEIPCqyKR9oEbrdpK4UixIaie6/tAw0v+sWBB6rxc0V19OHPsEbDHwNppMsF2BfWxAUTxXVV2vt1nlinosJbc1GkHPu3Vscqm6MynhFM9hIODS0W9oKNCMOhezqH8NbwZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751035568; c=relaxed/simple;
-	bh=E3Y6IzzH6pxPxtBDBUSfanZZ39PEqoGxRtLOhfbrYg8=;
+	s=arc-20240116; t=1751040047; c=relaxed/simple;
+	bh=eBobpTH5dO5aFYWBOFgi7YHuDOocnJlbZIlJ/t4tWrA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MiSRfNTZjdnnKPoV1Z6qxPzqkgDZzWO2Cclxz2yg9NjBzNkVZ+goksDc3bajYcROmlXkI+Pixx9kVTdgzHIC6t8c+tvsZFPV8bi8h/uBKDUjRAxpXg0W7RhXGCbyPAgnTKEvY8FPZEdrj71GVNKDNYL8z8Jb5eYIFTflqKZGJPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=vtmBW32g; arc=none smtp.client-ip=209.85.160.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=d+lv+/vknLK2acgJVI7s6VfFKpJv2B4vBQ0D6Wbra1ihrGDNqBLFp2zQl/27cBTwD5IbPmFDNGlqxrtJ8prXdJR/OR4pivbuNnvGtbTmwgFvhZmVxy8U6gRC5h3RfsBESrbYqBzVlKKaJjZbgUCotI5k2unnG1gMYGEEqTwE07Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wtfC1lj8; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="vtmBW32g"
-Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-4a76ea97cefso24757781cf.2
-        for <linux-bcachefs@vger.kernel.org>; Fri, 27 Jun 2025 07:46:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1751035566; x=1751640366; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cRZ2pYMMlB12bEyOWlLPzPkRWlImskMORgDF4tKP1qU=;
-        b=vtmBW32gyxvDT3+DEMFKOabrGzfxEuOAEpEHM77wLWw++0FvVkCREW5rRuFv2FI3/r
-         S1lnu1IR6RPRYVLh2mZlHptrHCRCzJZzEn71R/U1ydDs2q7h1UUbZUvQDbi1VUtZkcoH
-         2s418vmzJ29PPnYZ+lzUzhuMo4GUJJ2TS6cOGSE3yMHHlwgtfGo7I4EbTBCkQuQd3WUD
-         OwygcdD0xHENTo2oq++ppyFDVptBXNqah+FxO+lXWdOeWOb0QYhsPda09M/GaRgzhQOL
-         aXAAK8L7J+kAQUfn7REOwMHXSGEQ/41VuSM5rJUMcyzN2/FeWYpIB28rf3CK0AlCj4q9
-         BfeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751035566; x=1751640366;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cRZ2pYMMlB12bEyOWlLPzPkRWlImskMORgDF4tKP1qU=;
-        b=dy/zQsBnDGx2ji/fFktRHmz0N9rQg7Zer6Z3e/x9n2u5YXWVPq2wHqBwiMu05uNxw3
-         8YZKwxqGGTXStq9kQQvMnxAnE6YX0+xrnpXA4KEWOl8NG/2XMDJAtn5iWwHGlIlrNNDB
-         lgjWYXhr+iMY91V9LKJGJjhVCmWXvNx64FwP8P84brre5eKk1cqLVFWW5Sj90zVcG71j
-         BNyNfUblwA/abd9qsqdo8wLXQ5dziUbq3XU012LY2iznGTstVZcsvs6n6jnIGcLS2zCM
-         elk6XkYnlSpDEIB5RMce7ulnTU5FuJ1Gqpcxv7MyXy0bBHhc1HWYmomuwVmsGbHrlFyF
-         CPtA==
-X-Gm-Message-State: AOJu0Yw0PSXJiFaDwCk/aSdXwUtxZH8m+7+L9nlYiFbUHlxWEpX4IBZA
-	iBCHPVuTQ/RCRa/6gmHKR4o2S5EkJJC1+LFIXtw6rp4+iaIDMJ+Y1/Oq4tNAMWfWMGo=
-X-Gm-Gg: ASbGncudhHQ7wdZBTAYRTXUkiBnVHiwp99SVUO1MYw9Dwvw5Vpsuqy5j2O0QDQUyW44
-	52rShQxjsaMcBIr764W5JYJky9UQmx0+fFVGtzx2Hg/Yd2d3uIXyYH3RBrpM32QYW2IzxCUBN3x
-	/rWXT//Q6yHWEGytlOGZh2HkqYK69OxerDpnRedXbF/CYXr8flf5AUSATUWPQ2jH/4GYNBeCwI5
-	CmJEE+u3MgfRm9cpsDUYxG2iPdVYcy5aygiLB/JzHrTqyFWtQIhjgrij3XjNpupmXn0hp+74Cix
-	JpJJvsDZ8dD4nWZqv6GxcjJwxCsgUlRPlPT2tM5j5IxCOQqIjpHPoHxG4rURbJ54E5i5RFb4u3m
-	mOKKGeK0KZaTcMzd8k8eAeps=
-X-Google-Smtp-Source: AGHT+IEl0a6FKcst6Ik6YqVg0aAynT4+CuhWSr+flkm8BIm7KHjl1Bb3vmzdqMA+uCtcxDKZ0P3SuA==
-X-Received: by 2002:ac8:5ad4:0:b0:4a7:6ddf:f7de with SMTP id d75a77b69052e-4a7fc9d7dc6mr61049981cf.1.1751035565530;
-        Fri, 27 Jun 2025 07:46:05 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4a7fc13a60bsm13628811cf.29.2025.06.27.07.46.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Jun 2025 07:46:04 -0700 (PDT)
-Date: Fri, 27 Jun 2025 10:46:04 -0400
-From: Josef Bacik <josef@toxicpanda.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kerenl@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs fixes for 6.16-rc4
-Message-ID: <20250627144441.GA349175@fedora>
-References: <ahdf2izzsmggnhlqlojsnqaedlfbhomrxrtwd2accir365aqtt@6q52cm56jmuf>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wtfC1lj8"
+Date: Fri, 27 Jun 2025 12:00:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1751040043;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EFd2TeDZePnyevS06G3vybw5Qpi1D8XzIEjoYS75/gg=;
+	b=wtfC1lj8G/k/A9owK6q8rE9rsVurmiVwBf4wimjSsEF5e6ddfCeAq/aGw2cLEAzOgwj2tZ
+	JASy5Wswd+rz0+X1pUTPxiXnGiqZ0uLNY2fGmI8/4WOGS5AOfq9j9Wi6H2mgO9WfNZ9+CI
+	++SNdvcrMRbAsON5PUDtgMkGkizYlK0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Bharadwaj Raju <bharadwaj.raju777@gmail.com>
+Cc: linux-bcachefs@vger.kernel.org, shuah@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kernel-mentees@lists.linux.dev, 
+	syzbot+029d1989099aa5ae3e89@syzkaller.appspotmail.com
+Subject: Re: [PATCH] bcachefs: use mustfix to check invalid btree IDs
+Message-ID: <j2sx5unznfhswob6iuzeh5fp6tirxrbktdxkeednh7p7lfbemv@2ywasorzlvg3>
+References: <20250627084033.614376-2-bharadwaj.raju777@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -72,61 +43,42 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ahdf2izzsmggnhlqlojsnqaedlfbhomrxrtwd2accir365aqtt@6q52cm56jmuf>
+In-Reply-To: <20250627084033.614376-2-bharadwaj.raju777@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jun 26, 2025 at 10:22:52PM -0400, Kent Overstreet wrote:
-> per the maintainer thread discussion and precedent in xfs and btrfs
-> for repair code in RCs, journal_rewind is again included
->
-
-I'm replying to set the record straight. This is not the start of the
-discussion. I am not going to let false statements stand by unchallenged
-however.
-
-Sterba has never sent large pull requests in RCs, certainly not with features in
-them.  Even when Chris was the maintainer and we were a little faster and looser
-and were pushing the envelope to see what Linus would accept we didn't ship
-anything near this volume of patches past rc1.
-
-And the numbers don't lie.
-
-josef@fedora:~/linux$ git tag --contains 1c6fdbd8f2465ddfb73a01ec620cbf3d14044e1a | grep -v rc > bcachefs-tags
-josef@fedora:~/linux$ git tag --contains be0e5c097fc206b863ce9fe6b3cfd6974b0110f4 | grep -v rc > tags
-josef@fedora:~/linux$ for i in $(cat tags); do git log --no-merges --oneline $i-rc2..$i fs/btrfs | wc -l; done > btrfs-counts.txt
-josef@fedora:~/linux$ for i in $(cat bcachefs-tags); do git log --no-merges --oneline $i-rc2..$i fs/bcachefs | wc -l; done > bcachefs-counts.txt
-
-josef@fedora:~/linux$ R -q -e "x <- read.csv('btrfs-counts.txt', header = F); summary(x); sd(x[ , 1 ])"
-> x <- read.csv('btrfs-counts.txt', header = F); summary(x); sd(x[ , 1 ])
-       V1       
- Min.   : 0.00  
- 1st Qu.:10.25  
- Median :19.00  
- Mean   :20.48  
- 3rd Qu.:27.50  
- Max.   :55.00  
-[1] 11.77108
+On Fri, Jun 27, 2025 at 02:10:32PM +0530, Bharadwaj Raju wrote:
+> Checking for invalid IDs was introduced in 9e7cfb35e266 ("bcachefs: Check for invalid btree IDs")
+> to prevent an invalid shift later, but since 141526548052 ("bcachefs: Bad btree roots are now autofix")
+> made the parent class btree_root_bkey_invalid FSCK_AUTOFIX, fsck_err_on
+> no longer works for this check.
 > 
-josef@fedora:~/linux$ R -q -e "x <- read.csv('bcachefs-counts.txt', header = F); summary(x); sd(x[ , 1 ])"
-> x <- read.csv('bcachefs-counts.txt', header = F); summary(x); sd(x[ , 1 ])
-       V1        
- Min.   :  0.00  
- 1st Qu.: 38.50  
- Median : 70.00  
- Mean   : 63.86  
- 3rd Qu.: 81.50  
- Max.   :137.00  
-[1] 45.28218
+> Change the condition to use mustfix_fsck_err_on instead.
+
+We can mark this one autofix instead
+
 > 
-
-So even including the wilder times of kernel development in general and btrfs's
-specifically, our worst window was 55 patches, less than your mean.
-
-These are not the same thing. Do not equivicate the two.  Sterba is a phenomenal
-maintainer who does his job well, manages to work with Linus just fine. We are
-not the same, we do not work the same, and we absolutely do follow the rules, as
-do 99.99% of the kernel community.
-
-If xfs has done this then good for them. Those developers have a track record of
-doing the right thing over a long period of time. Btrfs for sure hasn't. Thanks,
-
-Josef
+> Reported-by: syzbot+029d1989099aa5ae3e89@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=029d1989099aa5ae3e89
+> Fixes: 141526548052 ("bcachefs: Bad btree roots are now autofix")
+> 
+> Signed-off-by: Bharadwaj Raju <bharadwaj.raju777@gmail.com>
+> ---
+>  fs/bcachefs/recovery.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
+> index d0b7e3a36a54..abcaa0e3e2e6 100644
+> --- a/fs/bcachefs/recovery.c
+> +++ b/fs/bcachefs/recovery.c
+> @@ -489,7 +489,7 @@ static int journal_replay_entry_early(struct bch_fs *c,
+>  		if (unlikely(!entry->u64s))
+>  			return 0;
+>  
+> -		if (fsck_err_on(entry->btree_id >= BTREE_ID_NR_MAX,
+> +		if (mustfix_fsck_err_on(entry->btree_id >= BTREE_ID_NR_MAX,
+>  				c, invalid_btree_id,
+>  				"invalid btree id %u (max %u)",
+>  				entry->btree_id, BTREE_ID_NR_MAX))
+> -- 
+> 2.50.0
+> 
