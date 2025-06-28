@@ -1,74 +1,99 @@
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from vps01.wiesinger.com (vps01.wiesinger.com [46.36.37.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DD931C8633
-	for <linux-bcachefs@vger.kernel.org>; Sat, 28 Jun 2025 01:59:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6EBA221FD8;
+	Sat, 28 Jun 2025 08:08:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.36.37.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751075982; cv=none; b=G+oRel1pZGkgrrW8nlPM7TDHzzgRwmJe6tNTCGOQv+NMM4OiLEIjlzbQnMZ+XfK+lju3hcpmjIdHAnfXm2583PSndWk+GpRSYVqpVhHoGtow7klt1HeHXkrinpsUxmRaLcpGnwnz/OZi+08+YNgrcfgxJakD+2qDS4nUb+I2N8o=
+	t=1751098091; cv=none; b=UTvE2L9INfuWKGgNM3GkuaeGgNcxJxSHuj4oRIyPYsvhVq8HOX4uxZjJj5hFu1KLj34DkrScyLSIQJ7yhZ819x+J6t9LUQF2tIZbAwN9/8iJZ4ZRgrPBNDLrxtJvl027A4Fmj6EetPJZhl3A8IWUaImGTwvVj/s1AS98rnwg+aQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751075982; c=relaxed/simple;
-	bh=zKekZwSqQusN2Lf8w2F4JMK3LpxFMNG4m1N534slQrw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bq+0l6qqrK3x0UHTGR6kqHYn9iI9es/P1uOjv5mJ2VsAIYBMWf0ttVSMHljqDtY4NLgXhlt/5k36xVOr8M4J1hTqrCawwtKL+BiBc4nvG4F+KAJ5CF2f+cXEWIonqOh3+hf37rk+WWA9TFO8lp7uKDymKtj4wWn+h47zmcli3+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from macsyma.thunk.org ([70.33.172.117])
+	s=arc-20240116; t=1751098091; c=relaxed/simple;
+	bh=q55JQTKEtkZNEFxfWSuufk4z52CToxwjOSJP8koqfog=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rIJ+pcZlycY1R7KQ1r1qkw3fTbgBdgjWNh6Py5YIGEgggitsqHZseQcaNybWi8dEmxeUqnKDlmtB2IpLlQBBJh67tbDKswzmDjd3KHoxGqt9eFiTZ6Y6Dl7OwWfhABNOdc7w+mpxmW48xxGRqBjsBTAP3GbqzYN+OjaRW3RtYH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wiesinger.com; spf=pass smtp.mailfrom=wiesinger.com; dkim=pass (4096-bit key) header.d=wiesinger.com header.i=@wiesinger.com header.b=WG8/E/v5; arc=none smtp.client-ip=46.36.37.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wiesinger.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wiesinger.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=wiesinger.com header.i=@wiesinger.com header.b="WG8/E/v5"
+Received: from wiesinger.com (wiesinger.com [84.112.177.114])
+	by vps01.wiesinger.com (Postfix) with ESMTPS id 919E99F31F;
+	Sat, 28 Jun 2025 10:06:48 +0200 (CEST)
+Received: from [192.168.32.192] (bgld-ip-192.intern [192.168.32.192])
 	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 55S1xYIu025556
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 27 Jun 2025 21:59:35 -0400
-Received: by macsyma.thunk.org (Postfix, from userid 15806)
-	id AB867340685; Fri, 27 Jun 2025 21:59:34 -0400 (EDT)
-Date: Fri, 27 Jun 2025 21:59:34 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kerenl@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs fixes for 6.16-rc4
-Message-ID: <20250628015934.GB4253@mit.edu>
-References: <ahdf2izzsmggnhlqlojsnqaedlfbhomrxrtwd2accir365aqtt@6q52cm56jmuf>
- <20250627144441.GA349175@fedora>
+	by wiesinger.com (8.18.1/8.18.1) with ESMTPSA id 55S86kp7305086
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+	Sat, 28 Jun 2025 10:06:46 +0200
+DKIM-Filter: OpenDKIM Filter v2.11.0 wiesinger.com 55S86kp7305086
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiesinger.com;
+	s=default; t=1751098007;
+	bh=WmV7WtQQ17wwtJyVDyq7EY/V9V+f8ZCDTRAQLmKN30A=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=WG8/E/v5H01SZWJ2IyJRGQtCsngIWgEqOFkIHzJDa4bNxsscfuS3fk9F/xXXW+puh
+	 FA2E+Tb4YU0DNOA2tKkqmXj4TTb/ui7AoFFjc5cX6ZYDQwBxoFIxa8Ig2/wNWKoN1p
+	 TTqtU7Rn4LoZUYAopg+xovIlwKni7zif/g3Y9vNkFjZxRVaDpmqGzCQaBiUqKr3N8S
+	 S+ipWRXHvoCkg1bEq5MbHECtKVtqKBjin330MmXDHTVxV9PEc3Ot/2yBqmJHaw4xTy
+	 uMr73PdNk1bi4X8ruicbwVEhSpQ/iURxvdvjPzcIHeDqtt/7xXiuKA53QIIj6PqcmK
+	 i+s+bOH4yz7nAcPDo+9TQVdCyvOXMJF5qrxMA2FgBWv/2dlPQgArKTvKidN4KoQeHf
+	 qLZLzIq8Co358xqfmj6pjWErZZ+ANRYWxHnW8ip4cbNJbENovryvHw/rAxEm1OFHV9
+	 HlQW3MSjLTkM/DrQ3GY37mxCT7R5FD+Lm/cixWjuYFeP8YlsKujnX2qyrICHg0itae
+	 xU6QT1lpugBOxgG8CjxP7bT4t2DL28DRpDMTDVuE94KUcoyH+rZl2L8w2/buQVaPDq
+	 42+BGS70vsymM1ZcjSs8dUusr5SDdmJG0YKfpt3toL1zdX+gcKmttejqCHokGzeXix
+	 5VPfaNkSlidXV6Bg9rViX5tM=
+Message-ID: <e1c38d04-94bc-40ca-896a-ab883ec22867@wiesinger.com>
+Date: Sat, 28 Jun 2025 10:06:46 +0200
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250627144441.GA349175@fedora>
+User-Agent: Betterbird (Windows)
+Subject: Re: [GIT PULL] bcachefs fixes for 6.16-rc4
+Content-Language: en-US
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kerenl@vger.kernel.org
+References: <ahdf2izzsmggnhlqlojsnqaedlfbhomrxrtwd2accir365aqtt@6q52cm56jmuf>
+ <CAHk-=wi+k8E4kWR8c-nREP0+EA4D+=rz5j0Hdk3N6cWgfE03-Q@mail.gmail.com>
+From: Gerhard Wiesinger <lists@wiesinger.com>
+In-Reply-To: <CAHk-=wi+k8E4kWR8c-nREP0+EA4D+=rz5j0Hdk3N6cWgfE03-Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jun 27, 2025 at 10:46:04AM -0400, Josef Bacik wrote:
-> On Thu, Jun 26, 2025 at 10:22:52PM -0400, Kent Overstreet wrote:
-> > per the maintainer thread discussion and precedent in xfs and btrfs
-> > for repair code in RCs, journal_rewind is again included
-> 
-> I'm replying to set the record straight. This is not the start of the
-> discussion. I am not going to let false statements stand by unchallenged
-> however.
-> 
-> Sterba has never sent large pull requests in RCs, certainly not with
-> features in them.  Even when Chris was the maintainer and we were a
-> little faster and looser and were pushing the envelope to see what
-> Linus would accept we didn't ship anything near this volume of
-> patches past rc1.
+On 27.06.2025 05:21, Linus Torvalds wrote:
+> On Thu, 26 Jun 2025 at 19:23, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>> per the maintainer thread discussion and precedent in xfs and btrfs
+>> for repair code in RCs, journal_rewind is again included
+> I have pulled this, but also as per that discussion, I think we'll be
+> parting ways in the 6.17 merge window.
+>
+> You made it very clear that I can't even question any bug-fixes and I
+> should just pull anything and everything.
+>
+> Honestly, at that point, I don't really feel comfortable being
+> involved at all, and the only thing we both seemed to really
+> fundamentally agree on in that discussion was "we're done".
+>
+Hello Linus,
 
-And as far as XFS is concerned, "citation needed".  Dave Chinner (who
-is not the current XFS maintainer) has asserted that there might be a
-time when XFS *might* want to send repair code post merge window.
-However, I'm not aware of any time when Darrick Wong was working on
-XFS online repair that he sent changes outside of the merge window as
-the XFS maintainer.
+Do you think the "hard rules" for "no features" in the "fixing merge 
+window" also apply for modules in Linux kernel which are marked as 
+experimental (as long no other code outside of the module itself is 
+changed)?
 
-And now that XFS online repair feature is upstream, *bug fixes* can be
-sent at any time.  So (a) I am not aware of any time that XFS *has*
-sent online repair changes upstream outside of a merge window --- this
-is just an assertion by Kent --- and (b) I am not sure when XFS would
-need to send some kind of new feature involving online repair
-upstream, given that online repair is *already* upstream.
+I understand your points fully for non experimental code but maybe it is 
+a solution is to have different rules for code marked as experimental 
+code. Every user who uses experimental features should be aware that 
+potential non stable code is used.
 
-							- Ted
+Maybe you can think of it.
+
+Thnx.
+
+Ciao,
+
+Gerhard
+
+
