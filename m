@@ -1,176 +1,78 @@
-Received: from mail.stoffel.org (mail.stoffel.org [172.104.24.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A4052777E1;
-	Tue,  1 Jul 2025 14:49:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.104.24.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E33892797B5
+	for <linux-bcachefs@vger.kernel.org>; Tue,  1 Jul 2025 17:08:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751381349; cv=none; b=HY/Fhr5/xzG45AdFXk0/pklLzPl97R7z+0fW37gmSGjnNbcjKopzQJhj2FhtXodxnfHCXbI+2XxiK498H6bunw/EP37Y9jMK6f1mh8Y2s1uDeD7y1K6UpqDzPgPHsH5fYWUthqGJSNueNIQVQmevAcrqba6AB8sMsTop97kyf/k=
+	t=1751389685; cv=none; b=gjeOtZqwk11lNa17fsV8/dklUd6KfQL33ELigwUaTPAIGEalZH9/1DzUFbqxghbmCefHNtMiJtdT4Jyeg/DIKi8FQ3HYjtZISYi2I8PNTnztCnsmWQCqgWG3n2hwRao0KCwGrybyFLY/sks/PBMPWKyQvSX1C18dwTtjiYR1IYY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751381349; c=relaxed/simple;
-	bh=lRxGPfMELh7HzrgS15Q3ejhCWOxjdsNt9Sn5cFB1kZw=;
-	h=MIME-Version:Content-Type:Message-ID:Date:From:To:Cc:Subject:
-	 In-Reply-To:References; b=EbpPjBcE8CB9WHOXTtiOgcr/1a5SKwmp9DJ5SvxLEvlZzwn058HWkOncyiNJliBcB+EH5iVtHCq1/4fcHv0XVPl/m3jTPnqf6LbW1qHzjibII/C1voO+Xn9PF7O5bHwGPcNaaWFcB6YxtQCrqHghfoHfBzX7HJvsXS1Nb4RNuS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stoffel.org; spf=pass smtp.mailfrom=stoffel.org; dkim=pass (2048-bit key) header.d=stoffel.org header.i=@stoffel.org header.b=Ocx1PyaO; arc=none smtp.client-ip=172.104.24.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stoffel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stoffel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=stoffel.org header.i=@stoffel.org header.b="Ocx1PyaO"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=stoffel.org;
- i=@stoffel.org; q=dns/txt; s=20250308; t=1751380992; h=mime-version :
- content-type : content-transfer-encoding : message-id : date : from :
- to : cc : subject : in-reply-to : references : from;
- bh=lRxGPfMELh7HzrgS15Q3ejhCWOxjdsNt9Sn5cFB1kZw=;
- b=Ocx1PyaOH8aHynt34mUsXr9UJzfH/4C68EC8KU/vfepsuiTkKzJ14SA/Fq2UE8s+5haMf
- MDC+iMXs60FTao2S1vUDzH7EsiJXfiId8FpqfqB4FEoVoMxl6zsHLkIu2d97/ldGGBwo45s
- 9sfsy7OfYf/m/H7Wvk6KgPNrmZrfM88KJox3rnZHAlDUPKlVR+WNXcpLvmkf31RcuaeHfMQ
- qmkhsLITA21K44pc9XDXQL4TiqUHwreoEDbpfWC+sR8XssaoHhbTlIOiMBP1/adMlTVy0N3
- eheR64UVRhcZLJPmKnV01XYyVp9raM/6HYaAL4PfQNCoqRzqUilrjewn2DZg==
-Received: from quad.stoffel.org (syn-097-095-183-072.res.spectrum.com [97.95.183.72])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.stoffel.org (Postfix) with ESMTPSA id 87AD71E2CE;
-	Tue,  1 Jul 2025 10:43:12 -0400 (EDT)
-Received: by quad.stoffel.org (Postfix, from userid 1000)
-	id F2196A10F5; Tue,  1 Jul 2025 10:43:11 -0400 (EDT)
+	s=arc-20240116; t=1751389685; c=relaxed/simple;
+	bh=lGNM49zBAJ4nfrkgrwFTURqaXAtC/maqVZynbpwjkjM=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=rsDQb18giT4VoVJsjAS4BMgqWLFAfy5bQD658c4rJ7uNXnLprpsnIHNWWbcEiTudkbJJB2ykRZXheD6jhIvPmkPEnACmWvgiuOIpCdpKzU9w9q/rzn4+TuoOr68eKlmsAlFSn0wd2xR7nD7TV/Z50PQWBLP/qUwbJwtWA/QhxuY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-86cfea700daso282547539f.0
+        for <linux-bcachefs@vger.kernel.org>; Tue, 01 Jul 2025 10:08:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751389683; x=1751994483;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JU+KXye9+FPkFTKWwvrCpuyPFHhsroEvlenk5AA3kC4=;
+        b=I6+tQ7J+gxNonu2RnfvyVjUZ7Ewr3DngpsHJM5UBOkCOs6eFEpeTEFtLTZ1WVPYBb5
+         8bGeVJpV7AREqmDmpdg5ZZqIJFMCNPulOxDxewsRSD2PqYJo+LBwNjfjl1VDNj9vynft
+         FqsHW+n29Y36IoCNybYS2ny8DvDaduJJaXnn9ZLs+KeSkXTCSQqCRg/EwdzfJry8QJHY
+         sEpXFg3zzC9XNtH5uCXmzsxHs3EqYGUCLPj+cWhxBYx/CVDDasDiiAgX0CexKRA2zHcc
+         ZWYU+6qvJXjB9UmRiep2ktzJT1m/gHLnmMsQa7HkAtr3o6Hp75n8eyHgVQzlqZYr5Mkt
+         9C/A==
+X-Forwarded-Encrypted: i=1; AJvYcCXVmfgKXM9diBj3ZcfiSe89X6ypi+q36J8Ki8WxkFyf9upAhPeiliyVEExCV49vjDTw0izZRUklHvMwd4UgtA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzM5ed9yhBzyX7MCEXtH6BPLebyTyobbIV6eF6jG6smjyMMnYDv
+	mFf35SbmLQqYDiiyGoApM8H2J5/mGfjmzx0JLgmMAo7LE95v8FEgOwfSDFq3ZNufQGdl6TjT7H0
+	B9xCt7QAGTjia6zu+dDOTnuc9FWcgudxPzlyON68D5qjYKplfmAbj54IEZlo=
+X-Google-Smtp-Source: AGHT+IG5/C1zGPsp7HYnW/T/uNOu8dvXINXfscxI4yiyLKvJc3Emb3PO1MoZ9EOIl4GvGgrhbiFNCORI2cdNP6UssGaPAkKay6cA
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <26723.62463.967566.748222@quad.stoffel.home>
-Date: Tue, 1 Jul 2025 10:43:11 -0400
-From: "John Stoffel" <john@stoffel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-    linux-bcachefs@vger.kernel.org,
-    linux-fsdevel@vger.kernel.org,
-    linux-kerenl@vger.kernel.org
-X-Clacks-Overhead: GNU Terry Pratchett
-Subject: Re: [GIT PULL] bcachefs fixes for 6.16-rc4
-In-Reply-To: <xl2fyyjk4kjcszcgypirhoyflxojzeyxkzoevvxsmo26mklq7i@jw2ou76lh2py>
-References: <ahdf2izzsmggnhlqlojsnqaedlfbhomrxrtwd2accir365aqtt@6q52cm56jmuf>
-	<CAHk-=wi+k8E4kWR8c-nREP0+EA4D+=rz5j0Hdk3N6cWgfE03-Q@mail.gmail.com>
-	<xl2fyyjk4kjcszcgypirhoyflxojzeyxkzoevvxsmo26mklq7i@jw2ou76lh2py>
-X-Mailer: VM 8.3.x under 28.2 (x86_64-pc-linux-gnu)
+X-Received: by 2002:a05:6602:150a:b0:861:7237:9021 with SMTP id
+ ca18e2360f4ac-8768825cdd2mr2212540739f.3.1751389683140; Tue, 01 Jul 2025
+ 10:08:03 -0700 (PDT)
+Date: Tue, 01 Jul 2025 10:08:03 -0700
+In-Reply-To: <000000000000d62d530617ca4c33@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <686415f3.a70a0220.3b7e22.1ec0.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs] KASAN: slab-out-of-bounds Read in poly1305_update_arch
+From: syzbot <syzbot+9375e47164f8e9588f17@syzkaller.appspotmail.com>
+To: bp@alien8.de, dave.hansen@linux.intel.com, davem@davemloft.net, 
+	herbert@gondor.apana.org.au, hpa@zytor.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-crypto@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, mingo@redhat.com, mmpgouride@gmail.com, 
+	syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
->>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
+syzbot suspects this issue was fixed by commit:
 
-I wasn't sure if I wanted to chime in here, or even if it would be
-worth it.  But whatever.
+commit d89a34b14df5c205de698c23c3950b2b947cdb97
+Author: Alan Huang <mmpgouride@gmail.com>
+Date:   Sat Jun 14 09:18:07 2025 +0000
 
-> On Thu, Jun 26, 2025 at 08:21:23PM -0700, Linus Torvalds wrote:
->> On Thu, 26 Jun 2025 at 19:23, Kent Overstreet <kent.overstreet@linux.dev> wrote:
->> >
->> > per the maintainer thread discussion and precedent in xfs and btrfs
->> > for repair code in RCs, journal_rewind is again included
->> 
->> I have pulled this, but also as per that discussion, I think we'll be
->> parting ways in the 6.17 merge window.
->> 
->> You made it very clear that I can't even question any bug-fixes and I
->> should just pull anything and everything.
+    bcachefs: Move bset size check before csum check
 
-> Linus, I'm not trying to say you can't have any say in bcachefs. Not at
-> all.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1460388c580000
+start commit:   7367539ad4b0 Merge tag 'cxl-fixes-6.9-rc7' of git://git.ke..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3714fc09f933e505
+dashboard link: https://syzkaller.appspot.com/bug?extid=9375e47164f8e9588f17
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1196bc97180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11bc9a4c980000
 
-> I positively enjoy working with you - when you're not being a dick,
-> but you can be genuinely impossible sometimes. A lot of times...
+If the result looks correct, please mark the issue as fixed by replying with:
 
-Kent, you can be a dick too.  Prime example, the lines above.  And
-how you've treated me and others who gave feedback on bcachefs in the
-past.  I'm not a programmer, I'm in IT and follow this because it's
-interesting, and I've been doing data management all my career.  So
-new filesystems are interesting.  
+#syz fix: bcachefs: Move bset size check before csum check
 
-But I've also been bitten by data loss, so I'd never ever trust my
-production data to something labeled "experimental".  It's wonderful
-that you have stepped up and managed to get back people's data when
-bugs in the code have caused them to lose data.  
-
-But for god's sake, just because you can find and fix this type of bug
-during the -rc series, doesn't mean you need to try and patch it NOW.
-Queue it up for the next release.  Tell people how they can pull the
-patch early if they want, but don't push it late in the release
-cycle.  
-
-I've been watching this list since the early 2.x days, and I've seen
-how the workflow has evolved over time.  I've watched people burn out
-and leave, flame wars and all kinds of crap.  And the people who have
-stayed around are generally the nice people.  The flexible people.
-The people who know when to back the f*ck off and take their time.  
-
-> When bcachefs was getting merged, I got comments from another
-> filesystem maintainer that were pretty much "great! we finally have
-> a filesystem maintainer who can stand up to Linus!".
-
-Is that in terms of being dicks, or in terms of technical ability?  Or
-in terms of being super productive and focussed and able to get work
-done.  Standing up doesn't mean you're right.  Or wrong.  
-
-> And having been on the receiving end of a lot of venting from them
-> about what was going on... And more that I won't get into...
-
-> I don't want to be in that position.
-
-So don't!  Just step back a second.  Go back and read and re-read all
-the comments Linus had made about the workflow and release process
-over the years, much less decades of the kernel development.  I'm not
-sure you realize how much work it is to have people blasting patches
-at you all day long, 365 days a year, and who think their patches are
-the most important thing in the entire world bar none.   
-
-Just reflect on this for a second.  Take your hands off your keyboard,
-and don't type anything.  And think about how many other people also
-think their patches are the most important.  
-
-And about the users who _need_ _that_ _patch_ _right_ _now_ to fix a
-problem.  Why doesn't Linus see that I'm important and my part of the
-kernel is the most important!  
-
-Just let that sink in a bit.  
-
-Then think about how many people do not care about bcachefs at all,
-who don't even know it exists.  And haven't used it or want to use
-it.  Are they less important?  What about the graphics driver they
-need to get _their_ work done right now?  Is that more or less
-important?
-
-> I'm just not going to have any sense of humour where user data integrity
-> is concerned or making sure users have the bugfixes they need.
-
-So release your own patches in your own tree!  No one is stopping you!
-Have your '6.17-next' branch with the big re-working to fix this
-horrible issue.  But send in just the minimal patch _now_.  The
-absolutely the smallest patch.  
-
-Or just send in a revert for all you have done in the current series
-which is breaking people, because it wasn't quite baked enough for
-stability.  Fall back, re-group, re-submit it all on the next release.
-
-Slow down.  
-
-> Like I said - all I've been wanting is for you to tone it down and stop
-> holding pull requests over my head as THE place to have that discussion. 
-
-And you need to stop thinking you are the most important thing and
-only you can decide when bcachefs needs to be updated or not in the
-kernel tree.  
-
-> You have genuinely good ideas, and you're bloody sharp. It is FUN
-> getting shit done with you when we're not battling.
-
-I'm honestly amazed at your abilities here Kent, even though you can
-be an abrassive person too.  
-
-> But you have to understand the constraints people are under. Not
-> just myself.
-
-Dude, you need to listed to Linus saying this exact same line back to
-you.
-
-John
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
