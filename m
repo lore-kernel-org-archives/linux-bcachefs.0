@@ -1,155 +1,169 @@
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+Received: from smtp.carlthompson.net (charon.carlthompson.net [45.77.7.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E4F52FC3CE
-	for <linux-bcachefs@vger.kernel.org>; Wed,  2 Jul 2025 16:34:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78F7C275842;
+	Wed,  2 Jul 2025 17:44:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.77.7.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751474059; cv=none; b=kgun/fJFboDKGMgIC/kSAOlH/c9x/h6Y+J6tRCF7svfuBZzXZKz9qysc6EGelu3U5UOn9X/bbpQintDutEGsg7sZCjKWItATYmQXKlCn1s2HxAYg15Lb6MGVpznD8yBbVhDCjmwKeh88LNvoOL3d20xI8DHWXbXfw+LnrgR1VjA=
+	t=1751478288; cv=none; b=hLUY3bhO8DfL2SSCwks0sqJtrAzxTeaEbQJ2uyoVCyEfpNdFR9l4D+L1pcq9oCIXD4vuQlUQJ7oTIZ8bZb2I02TEgHUBrRVUka+ZlhoMLLEGODk0JF/2M8lx4D2C3Xf3PA5ai3fn4gbgQnlyIQc6kS0uhI5QdWz6zZookzF/prk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751474059; c=relaxed/simple;
-	bh=4lR1Xh08/sQLiOaBFrRDSvCEUOK2+dsuYmN7W/oIA+A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZFjlKT7ieUjBFlEx1aVvaAq1WLs0w04RDE/CoXS7HNthtT8s4tojKTzKweqQCn9LWL+rVU8sLx8k4mSQq9YUmfUaawNdn487nnCvBL511J5IRbM0iBW5yzEiMqJyUXStXZBD2bBr/DTMe5r6c2A01Se7g5Dnyhm+gBjYMi3zrgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Kha0xlGH; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Kha0xlGH"
-Date: Wed, 2 Jul 2025 12:34:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1751474044;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nNtQyZYN8r1glr1xYZPVCQJBFCDyqJ1sFSVx2i0k8WI=;
-	b=Kha0xlGHuC4/w2TjLggwX8g2P81eHQpGKN0WXnaAsxtU4LIv44fQ42AD8Oj26wBBlcn4D1
-	oHmR/uXz7Ujdze8OQhPOeWrT2mQFCpe138xQJQvK5qqsKfmzlsaDTUMFZH7ps4SeyScohp
-	UWnTH96+aFPGpv/H8DFHV4WvW9lkZyc=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: John Stoffel <john@stoffel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kerenl@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs fixes for 6.16-rc4
-Message-ID: <gq2c4qlivewr2j5tp6cubfouvr42jww4ilhx3l55cxmbeotejk@emoy2z2ztmi2>
+	s=arc-20240116; t=1751478288; c=relaxed/simple;
+	bh=hV/0ScW8xik2A1Kq2BlvjeCCkbUfpKQC7SnIdDzb3pk=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=cfveCegbV9hhpJue3z2Rc9qz3GzP5OaGJcwV0CgG0MmidYN8UmxWbMKgW42WIU8db0zG6w8NouJj/QkltmxpmAugZn8lvONjmxIreV6+r+wJG5dnjTfhzuRIPMD41dck7VG2VHxYftC+wB3VIZyQzBU+2x2X4IeeGaduZBQL7eM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=carlthompson.net; spf=pass smtp.mailfrom=carlthompson.net; arc=none smtp.client-ip=45.77.7.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=carlthompson.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=carlthompson.net
+Received: from mail.carlthompson.net (mail.home [10.35.20.252])
+	(Authenticated sender: cet@carlthompson.net)
+	by smtp.carlthompson.net (Postfix) with ESMTPSA id 53E991E0F289E;
+	Wed,  2 Jul 2025 10:41:34 -0700 (PDT)
+Date: Wed, 2 Jul 2025 10:41:34 -0700 (PDT)
+From: "Carl E. Thompson" <cet@carlthompson.net>
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+	John Stoffel <john@stoffel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kerenl@vger.kernel.org
+Message-ID: <751434463.112.1751478094192@mail.carlthompson.net>
+In-Reply-To: <gq2c4qlivewr2j5tp6cubfouvr42jww4ilhx3l55cxmbeotejk@emoy2z2ztmi2>
 References: <ahdf2izzsmggnhlqlojsnqaedlfbhomrxrtwd2accir365aqtt@6q52cm56jmuf>
  <CAHk-=wi+k8E4kWR8c-nREP0+EA4D+=rz5j0Hdk3N6cWgfE03-Q@mail.gmail.com>
  <xl2fyyjk4kjcszcgypirhoyflxojzeyxkzoevvxsmo26mklq7i@jw2ou76lh2py>
  <26723.62463.967566.748222@quad.stoffel.home>
+ <gq2c4qlivewr2j5tp6cubfouvr42jww4ilhx3l55cxmbeotejk@emoy2z2ztmi2>
+Subject: Re: [GIT PULL] bcachefs fixes for 6.16-rc4
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <26723.62463.967566.748222@quad.stoffel.home>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.6-Rev73
+X-Originating-Client: open-xchange-appsuite
 
-On Tue, Jul 01, 2025 at 10:43:11AM -0400, John Stoffel wrote:
-> >>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
+Kent, at this point in bcachefs' development you want complete control over your development processes and timetable that you simply can't get in the mainline kernel. It's in your own best interest for you to develop out-of-tree for now.
+
+It's in your users' best interests too. It's much faster, easier, less invasive and less risky to compile and install a single module than it is to replace the entire kernel. Developing out-of-tree will help users track down bugs faster because you'll be able to iterate faster and because testing multiple bcachefs versions in the same kernel eliminates the possibility of other kernel changes clouding the tests. 
+
+And it seems to me to be in the other kernel developers' best interests. They need to be able to do their work and I suspect the constant drama and distraction you bring could make that harder. You've already damaged your own reputation considerably but your continued drama is also damaging _their_ reputations (and the kernel's) and that's not fair.
+
+I don't know what arrangement you have with your corporate sponsor but if they have incentivized you to have your development happen in the mainline kernel tree then I would ask that you not put their interests above everyone else's.
+
+Carl Thompson
+
+PS: There is a typo in the linux-kernel mailing list email address in this chain. Not fixing it as I don't think there's anything in this discussion that is of value to a larger audience.
+
+
+> On 2025-07-02 9:34 AM PDT Kent Overstreet <kent.overstreet@linux.dev> wrote:
 > 
-> I wasn't sure if I wanted to chime in here, or even if it would be
-> worth it.  But whatever.
+>  
+> On Tue, Jul 01, 2025 at 10:43:11AM -0400, John Stoffel wrote:
+> > >>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
+> > 
+> > I wasn't sure if I wanted to chime in here, or even if it would be
+> > worth it.  But whatever.
+> > 
+> > > On Thu, Jun 26, 2025 at 08:21:23PM -0700, Linus Torvalds wrote:
+> > >> On Thu, 26 Jun 2025 at 19:23, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> > >> >
+> > >> > per the maintainer thread discussion and precedent in xfs and btrfs
+> > >> > for repair code in RCs, journal_rewind is again included
+> > >> 
+> > >> I have pulled this, but also as per that discussion, I think we'll be
+> > >> parting ways in the 6.17 merge window.
+> > >> 
+> > >> You made it very clear that I can't even question any bug-fixes and I
+> > >> should just pull anything and everything.
+> > 
+> > > Linus, I'm not trying to say you can't have any say in bcachefs. Not at
+> > > all.
+> > 
+> > > I positively enjoy working with you - when you're not being a dick,
+> > > but you can be genuinely impossible sometimes. A lot of times...
+> > 
+> > Kent, you can be a dick too.  Prime example, the lines above.  And
+> > how you've treated me and others who gave feedback on bcachefs in the
+> > past.  I'm not a programmer, I'm in IT and follow this because it's
+> > interesting, and I've been doing data management all my career.  So
+> > new filesystems are interesting.  
 > 
-> > On Thu, Jun 26, 2025 at 08:21:23PM -0700, Linus Torvalds wrote:
-> >> On Thu, 26 Jun 2025 at 19:23, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> >> >
-> >> > per the maintainer thread discussion and precedent in xfs and btrfs
-> >> > for repair code in RCs, journal_rewind is again included
-> >> 
-> >> I have pulled this, but also as per that discussion, I think we'll be
-> >> parting ways in the 6.17 merge window.
-> >> 
-> >> You made it very clear that I can't even question any bug-fixes and I
-> >> should just pull anything and everything.
+> Oh yes, I can be. I apologize if I've been a dick to you personally, I
+> try to be nice to my users and build good working relationships. But
+> kernel development is a high stakes, high pressure, stressful job, as I
+> often remind people. I don't ever take it personally, although sometimes
+> we do need to cool off before we drive each other completely mad :)
 > 
-> > Linus, I'm not trying to say you can't have any say in bcachefs. Not at
-> > all.
+> If there was something that was unresolved, and you'd like me to look at
+> it again, I'd be more than happy to. If you want to share what you were
+> hitting here, I'll tell you what I know - and if it was from a year or
+> more ago it's most likely been fixed.
 > 
-> > I positively enjoy working with you - when you're not being a dick,
-> > but you can be genuinely impossible sometimes. A lot of times...
+> > Slow down.  
 > 
-> Kent, you can be a dick too.  Prime example, the lines above.  And
-> how you've treated me and others who gave feedback on bcachefs in the
-> past.  I'm not a programmer, I'm in IT and follow this because it's
-> interesting, and I've been doing data management all my career.  So
-> new filesystems are interesting.  
-
-Oh yes, I can be. I apologize if I've been a dick to you personally, I
-try to be nice to my users and build good working relationships. But
-kernel development is a high stakes, high pressure, stressful job, as I
-often remind people. I don't ever take it personally, although sometimes
-we do need to cool off before we drive each other completely mad :)
-
-If there was something that was unresolved, and you'd like me to look at
-it again, I'd be more than happy to. If you want to share what you were
-hitting here, I'll tell you what I know - and if it was from a year or
-more ago it's most likely been fixed.
-
-> Slow down.  
-
-This is the most critical phase in the 10+ year process of shipping a
-new filesystem.
-
-We're seeing continually increasing usage (hopefully by users who are
-prepared to accept that risk, but not always!), but we're not yet ready
-for true widespread deployment.
-
-Shipping a project as large and complex as a filesystem must be done
-incrementally, in stages where we're deploying to gradually increasing
-numbers of users, fixing everything they find and assessing where we're
-at before opening it up to more users.
-
-Working with users, supporting with them, checking in on how it's doing,
-and getting them the fixes for what they find is how we iterate and
-improve. The job is not done until it's working well for everyone.
-
-Right now, everyone is concerned because this is a hotly anticipated
-project, and everyone wants to see it done right.
-
-And in 6.16, we had two massive pull requests (30+ patches in a week,
-twice in a row); that also generates concern when people are wondering
-"is this thing stabilizing?".
-
-6.16 was largely a case of a few particularly interesting bug reports
-generating a bunch of fixes (and relatively simple and localized fixes,
-which is what we like to see) for repair corner cases, the biggest
-culprit (again) being snapshots.
-
-If you look at the bug tracker, especially rate of incoming bugs and the
-severity of bug reports (and also other sources of bug reports, like
-reddit and IRC) - yes, we are stabilizing fast.
-
-There is still a lot of work to be done, but we're on the right track.
-
-"Slowing down" is not something you do without a concrete reason. Right
-now we need to be getting those fixes out to users so they can keep
-testing and finding the next bug. When someone has invested time and
-effort learning how the system works and how to report bugs, we don't
-watn them getting frustrated and leaving - we want to work with them, so
-they can keep testing and finding new bugs.
-
-The signals that would tell me it's time to slow down are:
-
-- Regressions getting through (quantity, severity, time spent on fixing
-  them)
-- Bugs getting through that show that show that something fundamental is
-  missing (testing, hardening), or broken in our our design.
-- Frequency of bug reports going up to where I can't keep up (it's been
-  in steady, gradual decline)
-
-We actually do not want this to be 100% perfect before it sees users.
-That would result in a filesystem that's brittle - a glass cannon. We
-might get it to the point where it works 99% of the time, but then when
-it breaks we'd be in a panic - and if you discover it then, when it's in
-the wild, it's too late.
-
-The processes for how we debug and recover from failures, in the wild,
-is a huge part (perhaps the majority) of what we're working on now. That
-stuff has to be baked into the design on a deep level, and like all
-other complex design it requires continual iteration.
-
-That is how we'll get the reliability and robustness we hope to achieve.
+> This is the most critical phase in the 10+ year process of shipping a
+> new filesystem.
+> 
+> We're seeing continually increasing usage (hopefully by users who are
+> prepared to accept that risk, but not always!), but we're not yet ready
+> for true widespread deployment.
+> 
+> Shipping a project as large and complex as a filesystem must be done
+> incrementally, in stages where we're deploying to gradually increasing
+> numbers of users, fixing everything they find and assessing where we're
+> at before opening it up to more users.
+> 
+> Working with users, supporting with them, checking in on how it's doing,
+> and getting them the fixes for what they find is how we iterate and
+> improve. The job is not done until it's working well for everyone.
+> 
+> Right now, everyone is concerned because this is a hotly anticipated
+> project, and everyone wants to see it done right.
+> 
+> And in 6.16, we had two massive pull requests (30+ patches in a week,
+> twice in a row); that also generates concern when people are wondering
+> "is this thing stabilizing?".
+> 
+> 6.16 was largely a case of a few particularly interesting bug reports
+> generating a bunch of fixes (and relatively simple and localized fixes,
+> which is what we like to see) for repair corner cases, the biggest
+> culprit (again) being snapshots.
+> 
+> If you look at the bug tracker, especially rate of incoming bugs and the
+> severity of bug reports (and also other sources of bug reports, like
+> reddit and IRC) - yes, we are stabilizing fast.
+> 
+> There is still a lot of work to be done, but we're on the right track.
+> 
+> "Slowing down" is not something you do without a concrete reason. Right
+> now we need to be getting those fixes out to users so they can keep
+> testing and finding the next bug. When someone has invested time and
+> effort learning how the system works and how to report bugs, we don't
+> watn them getting frustrated and leaving - we want to work with them, so
+> they can keep testing and finding new bugs.
+> 
+> The signals that would tell me it's time to slow down are:
+> 
+> - Regressions getting through (quantity, severity, time spent on fixing
+>   them)
+> - Bugs getting through that show that show that something fundamental is
+>   missing (testing, hardening), or broken in our our design.
+> - Frequency of bug reports going up to where I can't keep up (it's been
+>   in steady, gradual decline)
+> 
+> We actually do not want this to be 100% perfect before it sees users.
+> That would result in a filesystem that's brittle - a glass cannon. We
+> might get it to the point where it works 99% of the time, but then when
+> it breaks we'd be in a panic - and if you discover it then, when it's in
+> the wild, it's too late.
+> 
+> The processes for how we debug and recover from failures, in the wild,
+> is a huge part (perhaps the majority) of what we're working on now. That
+> stuff has to be baked into the design on a deep level, and like all
+> other complex design it requires continual iteration.
+> 
+> That is how we'll get the reliability and robustness we hope to achieve.
