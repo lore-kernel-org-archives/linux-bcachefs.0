@@ -1,154 +1,155 @@
-Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FB85283FEA
-	for <linux-bcachefs@vger.kernel.org>; Tue,  1 Jul 2025 19:20:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E4F52FC3CE
+	for <linux-bcachefs@vger.kernel.org>; Wed,  2 Jul 2025 16:34:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751397636; cv=none; b=Xhc7bw1jgDS2thGGLlxfs6G3cKSia2qMLuAgE2hcEKorB/3LnKL63LDHHllrv566tT1rnlGzJjk2l8WtEEEy3Jc3unv1XlL5U2SkBNuogdxY5QUI4jiHMmNCtoRPcRaBC3LPtO9ZUw1cGXQICz8iP7BqSJUo5iNwm6NNMnEr/jc=
+	t=1751474059; cv=none; b=kgun/fJFboDKGMgIC/kSAOlH/c9x/h6Y+J6tRCF7svfuBZzXZKz9qysc6EGelu3U5UOn9X/bbpQintDutEGsg7sZCjKWItATYmQXKlCn1s2HxAYg15Lb6MGVpznD8yBbVhDCjmwKeh88LNvoOL3d20xI8DHWXbXfw+LnrgR1VjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751397636; c=relaxed/simple;
-	bh=s+fpz3JvFEIY4fBoDI4pcfP3wn1rXJMjSEhByfSDrHc=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=YxKBi+VEs/r878uHZKhpQg0BG0UKUNXkxyKLbyw8/z4LmxNd+8izSm7rqLr1wuaNnW8zfm8inHDpdYQup4x19/nCTSADwHAULkOaCuLpdmTv0sGHhZsX3H/BLErmTCOUYlpviAqnCbccr+dU/waLc9T7Rk1cvLkI4oa+Nl9eK+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-86f4e2434b6so354481539f.2
-        for <linux-bcachefs@vger.kernel.org>; Tue, 01 Jul 2025 12:20:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751397634; x=1752002434;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rKM3zhh4aLiS5GxnZCJ+eCUZQpLt3IZ88OhQSIhquS0=;
-        b=XbYLv6GU8RsM8LfV36kS/tGSITKL7A5EQXEVuqh/eYlM9TPd5H+CF7Crt2RGTCM6Hs
-         Drr6wfCOts7Z8MjFrC3x7dw2JNtO+Hx4IDm/RCzKWrDBWgMlNW2WwZ4Vzr7zyh8RiULN
-         FY9JE7KXYavPh1AlOOnmgcM006SyGUA+pdat31oSLMVY7S8YTIj1yED2r19KkkwuAnnA
-         ehZ938zh9EAKYUA+MR2CJrev7fXJ6JJRpmiggu4BGME2n+LOAcC2u5443a1RMpzqQVwP
-         vt2mRBzg8b0/TUMR03HAkhwUWCO7vyObAJVW/V7xoWmZFxECa+8105NOS1v42ye9oOx9
-         k2Lw==
-X-Forwarded-Encrypted: i=1; AJvYcCWtc7s+X6m6q1WRmgXS3OT5b7QABGqzhU0tRN4oYShmw90/y5IQl91huiPaCGTuiWCM5Grr9SFL1ogwKNMXaw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YydY6Ig49Ba9PDItkSnoVsUP9U5udVyazK2DZmKzTCuoSqhH4c1
-	WbgQohTk7dnDk5pIwv1mij6DRN/EgYdi8FQxmw9+tGhNTgEuSV+2kt8Lgs2rEC4D7e0MllrWV5y
-	1NbuBFk+evTYXn4Wxn2T+33Xgohi6SKz7TixDRq7J2C4B9YleNJcCCo1ObSw=
-X-Google-Smtp-Source: AGHT+IGk7tOJ4PfLZCJO4CRU66nNx6bA2e2HT/eIDboOpXbCqiYQavb777Zx64eOMJTXDxpHZByiQLkWdyOp08PYxkPVlSqW4JEC
+	s=arc-20240116; t=1751474059; c=relaxed/simple;
+	bh=4lR1Xh08/sQLiOaBFrRDSvCEUOK2+dsuYmN7W/oIA+A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZFjlKT7ieUjBFlEx1aVvaAq1WLs0w04RDE/CoXS7HNthtT8s4tojKTzKweqQCn9LWL+rVU8sLx8k4mSQq9YUmfUaawNdn487nnCvBL511J5IRbM0iBW5yzEiMqJyUXStXZBD2bBr/DTMe5r6c2A01Se7g5Dnyhm+gBjYMi3zrgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Kha0xlGH; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Kha0xlGH"
+Date: Wed, 2 Jul 2025 12:34:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1751474044;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nNtQyZYN8r1glr1xYZPVCQJBFCDyqJ1sFSVx2i0k8WI=;
+	b=Kha0xlGHuC4/w2TjLggwX8g2P81eHQpGKN0WXnaAsxtU4LIv44fQ42AD8Oj26wBBlcn4D1
+	oHmR/uXz7Ujdze8OQhPOeWrT2mQFCpe138xQJQvK5qqsKfmzlsaDTUMFZH7ps4SeyScohp
+	UWnTH96+aFPGpv/H8DFHV4WvW9lkZyc=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: John Stoffel <john@stoffel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kerenl@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs fixes for 6.16-rc4
+Message-ID: <gq2c4qlivewr2j5tp6cubfouvr42jww4ilhx3l55cxmbeotejk@emoy2z2ztmi2>
+References: <ahdf2izzsmggnhlqlojsnqaedlfbhomrxrtwd2accir365aqtt@6q52cm56jmuf>
+ <CAHk-=wi+k8E4kWR8c-nREP0+EA4D+=rz5j0Hdk3N6cWgfE03-Q@mail.gmail.com>
+ <xl2fyyjk4kjcszcgypirhoyflxojzeyxkzoevvxsmo26mklq7i@jw2ou76lh2py>
+ <26723.62463.967566.748222@quad.stoffel.home>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1fe5:b0:3df:4c0a:a3 with SMTP id
- e9e14a558f8ab-3e054b14b5bmr1488225ab.20.1751397633721; Tue, 01 Jul 2025
- 12:20:33 -0700 (PDT)
-Date: Tue, 01 Jul 2025 12:20:33 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68643501.a70a0220.3b7e22.1f46.GAE@google.com>
-Subject: [syzbot] [bcachefs?] KMSAN: uninit-value in bch2_check_subvols
-From: syzbot <syzbot+377f67f96ce8b673a57b@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <26723.62463.967566.748222@quad.stoffel.home>
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
+On Tue, Jul 01, 2025 at 10:43:11AM -0400, John Stoffel wrote:
+> >>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
+> 
+> I wasn't sure if I wanted to chime in here, or even if it would be
+> worth it.  But whatever.
+> 
+> > On Thu, Jun 26, 2025 at 08:21:23PM -0700, Linus Torvalds wrote:
+> >> On Thu, 26 Jun 2025 at 19:23, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> >> >
+> >> > per the maintainer thread discussion and precedent in xfs and btrfs
+> >> > for repair code in RCs, journal_rewind is again included
+> >> 
+> >> I have pulled this, but also as per that discussion, I think we'll be
+> >> parting ways in the 6.17 merge window.
+> >> 
+> >> You made it very clear that I can't even question any bug-fixes and I
+> >> should just pull anything and everything.
+> 
+> > Linus, I'm not trying to say you can't have any say in bcachefs. Not at
+> > all.
+> 
+> > I positively enjoy working with you - when you're not being a dick,
+> > but you can be genuinely impossible sometimes. A lot of times...
+> 
+> Kent, you can be a dick too.  Prime example, the lines above.  And
+> how you've treated me and others who gave feedback on bcachefs in the
+> past.  I'm not a programmer, I'm in IT and follow this because it's
+> interesting, and I've been doing data management all my career.  So
+> new filesystems are interesting.  
 
-syzbot found the following issue on:
+Oh yes, I can be. I apologize if I've been a dick to you personally, I
+try to be nice to my users and build good working relationships. But
+kernel development is a high stakes, high pressure, stressful job, as I
+often remind people. I don't ever take it personally, although sometimes
+we do need to cool off before we drive each other completely mad :)
 
-HEAD commit:    d0b3b7b22dfa Linux 6.16-rc4
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14b3b88c580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1d5c61bcebaf295a
-dashboard link: https://syzkaller.appspot.com/bug?extid=377f67f96ce8b673a57b
-compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07757-1~exp1~20250514183223.118), Debian LLD 20.1.6
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a76770580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10db988c580000
+If there was something that was unresolved, and you'd like me to look at
+it again, I'd be more than happy to. If you want to share what you were
+hitting here, I'll tell you what I know - and if it was from a year or
+more ago it's most likely been fixed.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/20baa44346a0/disk-d0b3b7b2.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8b99eb399d29/vmlinux-d0b3b7b2.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ccabd4354061/bzImage-d0b3b7b2.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/f1f67d5353ee/mount_2.gz
+> Slow down.  
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+377f67f96ce8b673a57b@syzkaller.appspotmail.com
+This is the most critical phase in the 10+ year process of shipping a
+new filesystem.
 
-bcachefs (loop2): bucket_gens_init... done
-bcachefs (loop2): check_snapshot_trees... done
-bcachefs (loop2): check_snapshots...
- done
-bcachefs (loop2): check_subvols...
-=====================================================
-BUG: KMSAN: uninit-value in check_subvol fs/bcachefs/subvolume.c:76 [inline]
-BUG: KMSAN: uninit-value in bch2_check_subvols+0x1297/0x48c0 fs/bcachefs/subvolume.c:187
- check_subvol fs/bcachefs/subvolume.c:76 [inline]
- bch2_check_subvols+0x1297/0x48c0 fs/bcachefs/subvolume.c:187
- bch2_run_recovery_pass fs/bcachefs/recovery_passes.c:484 [inline]
- __bch2_run_recovery_passes+0x49e/0x1330 fs/bcachefs/recovery_passes.c:539
- bch2_run_recovery_passes+0x284/0x310 fs/bcachefs/recovery_passes.c:610
- bch2_fs_recovery+0x53bf/0x66d0 fs/bcachefs/recovery.c:1039
- bch2_fs_start+0x1159/0x1920 fs/bcachefs/super.c:1212
- bch2_fs_get_tree+0x113a/0x2ae0 fs/bcachefs/fs.c:2490
- vfs_get_tree+0xb3/0x5c0 fs/super.c:1804
- do_new_mount+0x738/0x1610 fs/namespace.c:3902
- path_mount+0x6db/0x1e90 fs/namespace.c:4226
- do_mount fs/namespace.c:4239 [inline]
- __do_sys_mount fs/namespace.c:4450 [inline]
- __se_sys_mount+0x6eb/0x7d0 fs/namespace.c:4427
- __x64_sys_mount+0xe4/0x150 fs/namespace.c:4427
- x64_sys_call+0xfa7/0x3db0 arch/x86/include/generated/asm/syscalls_64.h:166
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xd9/0x210 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
+We're seeing continually increasing usage (hopefully by users who are
+prepared to accept that risk, but not always!), but we're not yet ready
+for true widespread deployment.
 
-Uninit was created at:
- ___kmalloc_large_node+0x2e2/0x460 mm/slub.c:4283
- __kmalloc_large_node_noprof+0x3f/0x1f0 mm/slub.c:4300
- __do_kmalloc_node mm/slub.c:4316 [inline]
- __kvmalloc_node_noprof+0x9f/0x1530 mm/slub.c:5015
- btree_node_data_alloc+0xe2/0x5f0 fs/bcachefs/btree_cache.c:150
- __bch2_btree_node_mem_alloc+0x1eb/0x880 fs/bcachefs/btree_cache.c:195
- bch2_fs_btree_cache_init+0x4fc/0xd20 fs/bcachefs/btree_cache.c:656
- bch2_fs_alloc fs/bcachefs/super.c:998 [inline]
- bch2_fs_open+0x46ac/0x54e0 fs/bcachefs/super.c:2432
- bch2_fs_get_tree+0x955/0x2ae0 fs/bcachefs/fs.c:2474
- vfs_get_tree+0xb3/0x5c0 fs/super.c:1804
- do_new_mount+0x738/0x1610 fs/namespace.c:3902
- path_mount+0x6db/0x1e90 fs/namespace.c:4226
- do_mount fs/namespace.c:4239 [inline]
- __do_sys_mount fs/namespace.c:4450 [inline]
- __se_sys_mount+0x6eb/0x7d0 fs/namespace.c:4427
- __x64_sys_mount+0xe4/0x150 fs/namespace.c:4427
- x64_sys_call+0xfa7/0x3db0 arch/x86/include/generated/asm/syscalls_64.h:166
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xd9/0x210 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
+Shipping a project as large and complex as a filesystem must be done
+incrementally, in stages where we're deploying to gradually increasing
+numbers of users, fixing everything they find and assessing where we're
+at before opening it up to more users.
 
-CPU: 1 UID: 0 PID: 6242 Comm: syz.2.21 Not tainted 6.16.0-rc4-syzkaller #0 PREEMPT(undef) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
-=====================================================
+Working with users, supporting with them, checking in on how it's doing,
+and getting them the fixes for what they find is how we iterate and
+improve. The job is not done until it's working well for everyone.
 
+Right now, everyone is concerned because this is a hotly anticipated
+project, and everyone wants to see it done right.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+And in 6.16, we had two massive pull requests (30+ patches in a week,
+twice in a row); that also generates concern when people are wondering
+"is this thing stabilizing?".
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+6.16 was largely a case of a few particularly interesting bug reports
+generating a bunch of fixes (and relatively simple and localized fixes,
+which is what we like to see) for repair corner cases, the biggest
+culprit (again) being snapshots.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+If you look at the bug tracker, especially rate of incoming bugs and the
+severity of bug reports (and also other sources of bug reports, like
+reddit and IRC) - yes, we are stabilizing fast.
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+There is still a lot of work to be done, but we're on the right track.
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+"Slowing down" is not something you do without a concrete reason. Right
+now we need to be getting those fixes out to users so they can keep
+testing and finding the next bug. When someone has invested time and
+effort learning how the system works and how to report bugs, we don't
+watn them getting frustrated and leaving - we want to work with them, so
+they can keep testing and finding new bugs.
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+The signals that would tell me it's time to slow down are:
 
-If you want to undo deduplication, reply with:
-#syz undup
+- Regressions getting through (quantity, severity, time spent on fixing
+  them)
+- Bugs getting through that show that show that something fundamental is
+  missing (testing, hardening), or broken in our our design.
+- Frequency of bug reports going up to where I can't keep up (it's been
+  in steady, gradual decline)
+
+We actually do not want this to be 100% perfect before it sees users.
+That would result in a filesystem that's brittle - a glass cannon. We
+might get it to the point where it works 99% of the time, but then when
+it breaks we'd be in a panic - and if you discover it then, when it's in
+the wild, it's too late.
+
+The processes for how we debug and recover from failures, in the wild,
+is a huge part (perhaps the majority) of what we're working on now. That
+stuff has to be baked into the design on a deep level, and like all
+other complex design it requires continual iteration.
+
+That is how we'll get the reliability and robustness we hope to achieve.
