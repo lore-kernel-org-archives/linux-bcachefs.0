@@ -1,137 +1,100 @@
-Received: from mail.tnxip.de (mail.tnxip.de [49.12.77.104])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D9402BE651;
-	Wed,  2 Jul 2025 18:59:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=49.12.77.104
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D94122F384
+	for <linux-bcachefs@vger.kernel.org>; Thu,  3 Jul 2025 00:00:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751482788; cv=none; b=qnyJnC3GPFCI3fZ3zPYwhRzGLBMaygt7hEvx3T9ab3hMhash+Ag67/9EFXh1X8JY6E9nK/2cEJTpnITGKU1Fr/ft98Tb/wQ29LLbypj5s8fJSno2Fgg67YwQMfUwU62K5sJyP7Onf8dbf3liRIWYGfE9s9SVN8Rg2pS0nkxSvB4=
+	t=1751500801; cv=none; b=ngD8azw2JLyuX6AoO/p2K/nKFhLHB8S8SETZKMt9AE/3hlfRBWg6FK+kwPSvtWviNS2Qo1fXuvSTc/Ohmc/kqFTyVGT12J1u6gzPxt/SF03N2Iq7bG7LYQ+tbVH/de4mmn7ylO+xhYco/54PoL0q0dsNV2vpFA12x6gsxRsvOsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751482788; c=relaxed/simple;
-	bh=QHrXzmhcjq+tf7zFyEmmqMNmhAWNPWCstCoYDwuWjt4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cXQ4nqDK014vOIaA4u9ai0rhoHw+XAyK2Onk1DeVzYujocoU9fwB3OJglVPHJt+nptawRwpWIYSKLr+gmn+LR+EF7nmLFgOx4gxBzqJrfgGvzNa6sGKG4qNC9qSgnR4xQYm1wbeDWi0f9JGhY8X4diIbOOrw/vWJLYx0KP6ow28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=tnxip.de; spf=pass smtp.mailfrom=tnxip.de; dkim=pass (1024-bit key) header.d=tnxip.de header.i=@tnxip.de header.b=iE/jubqi; dkim=permerror (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b=fjDuO26c; dkim=pass (1024-bit key) header.d=tnxip.de header.i=@tnxip.de header.b=SW26/YE6; dkim=permerror (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b=b/DrPuw6; arc=none smtp.client-ip=49.12.77.104
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=tnxip.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tnxip.de
+	s=arc-20240116; t=1751500801; c=relaxed/simple;
+	bh=gnnjvecIMspwetzSVAe0VRtgLxZZswKaIGBkmePg2HM=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=X7VhZviLv1exD+iv1veIxBPqoX3uICHT6oebgv6yaoGzbVYUWHn2BkJqHon1ajyxtcOH4rk6sOWZqfpIH2F0B22GaVRprxxA0sKr5YBh6HCq9NNckDVmlB0ftvqRNd/dVWz8kI0bMr0tpEvukAiRBcd18j2Yh+FxB7DPQuufNi0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MIM00h/3; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tnxip.de header.i=@tnxip.de header.b="iE/jubqi";
-	dkim=permerror (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b="fjDuO26c";
-	dkim=pass (1024-bit key) header.d=tnxip.de header.i=@tnxip.de header.b="SW26/YE6";
-	dkim=permerror (0-bit key) header.d=tnxip.de header.i=@tnxip.de header.b="b/DrPuw6"
-Received: from gw.tnxip.de (unknown [IPv6:fdc7:1cc3:ec03:1:41c4:f6bf:9765:d776])
-	by mail.tnxip.de (Postfix) with ESMTPS id D18DD1F508;
-	Wed,  2 Jul 2025 20:49:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tnxip.de; s=mail-vps;
-	t=1751482193;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QHrXzmhcjq+tf7zFyEmmqMNmhAWNPWCstCoYDwuWjt4=;
-	b=iE/jubqic12yzgfhguECgeXwFLfaUdG2lbDggyuFT+JWIUHNFDBlFSVu/9MgMtlVdOLcoz
-	H/coId7izuylyqJ+hqijSp5ID+bPXU+7vwcurTVEsOiqTbiC501yu7CMJBKfpVXLBuYPh7
-	HxHpmOpr1Z7xUOBZ4aP78nMgzHHHhOk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=tnxip.de;
-	s=mail-vps-ed; t=1751482193;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QHrXzmhcjq+tf7zFyEmmqMNmhAWNPWCstCoYDwuWjt4=;
-	b=fjDuO26crbRSF0bVmRO+lJSefRPFWJRBYPGhr+dDlMSMAnchwjBB8rNZPjfMX733mGTh60
-	+bY5NGp4tGSfhZCw==
-Received: from [IPV6:2a04:4540:8c04:1600:d42:34ad:c501:6cc5] (unknown [IPv6:2a04:4540:8c04:1600:d42:34ad:c501:6cc5])
-	by gw.tnxip.de (Postfix) with ESMTPSA id 8478B3800000000017FE8;
-	Wed, 02 Jul 2025 20:49:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tnxip.de; s=mail-gw;
-	t=1751482193;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QHrXzmhcjq+tf7zFyEmmqMNmhAWNPWCstCoYDwuWjt4=;
-	b=SW26/YE6Nkw2wtr2YrG7+Q3tv/OJT1Wg1NHQYybgyPXTvQr/+iTwJCJm5/QjI+LD25TJn2
-	kTk6d88O3HIkpMXnUUP1+f1PiPQ2Q/Btf8PaghEhxVeKpevNAirIpx4huYwgtaH9V4NK2F
-	l9xwKzgQPaHi7ZjV8QZ9TUtDr6ZnErA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=tnxip.de;
-	s=mail-gw-ed; t=1751482193;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QHrXzmhcjq+tf7zFyEmmqMNmhAWNPWCstCoYDwuWjt4=;
-	b=b/DrPuw6PzjFdtZoIVuocUtrnF94Giab5lQ0S7r/Lr8J1GpMMxzkHVXIR/QdR13+r5EcWi
-	fDXrA+72zNNjplDw==
-Message-ID: <a448243d-8ef8-48d8-afbc-2c45068c882c@tnxip.de>
-Date: Wed, 2 Jul 2025 20:49:32 +0200
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MIM00h/3"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A9658C4CEE7;
+	Thu,  3 Jul 2025 00:00:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751500800;
+	bh=gnnjvecIMspwetzSVAe0VRtgLxZZswKaIGBkmePg2HM=;
+	h=From:Date:Subject:To:Cc:Reply-To:From;
+	b=MIM00h/3Om7FDUwqql+bkqFoxZJVJx/97gYiF9gcNBhxKnCOsiZ7bwgk7vedkB4YJ
+	 KFoYktbHW1kDLyaMfrccfmqZvgqwiNQtMcQ/S9MyGzr/H4w1aVsQj2uaKSJShn1l3D
+	 CibowCSiasLPfqP43iPhi8lfFbXz5ZxfULQK6O/IyJIU6bT5hZoYu70cSDBwDEL5el
+	 lGBe2a3ZnRagalW+TtadB7WY5pXVH+UrlUkCtKjcPoAFs0o3hL8LzgjpJ7XlVsqwXW
+	 sh665RmBijlHzem5LDy8b3FdPo1szeyb+rJDN5YQrzUbAyK94na5vqeBD+9y8f2YSq
+	 RRzq24wB+qQyA==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FD68C77B7C;
+	Thu,  3 Jul 2025 00:00:00 +0000 (UTC)
+From: Nikita Ofitserov via B4 Relay <devnull+himikof.gmail.com@kernel.org>
+Date: Thu, 03 Jul 2025 02:59:11 +0300
+Subject: [PATCH] bcachefs: Suppress unnecessary inode_i_sectors_wrong fsck
+ error
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Betterbird (Linux)
-Subject: Re: [GIT PULL] bcachefs fixes for 6.16-rc4
-To: Kent Overstreet <kent.overstreet@linux.dev>,
- "Carl E. Thompson" <cet@carlthompson.net>
-Cc: John Stoffel <john@stoffel.org>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <ahdf2izzsmggnhlqlojsnqaedlfbhomrxrtwd2accir365aqtt@6q52cm56jmuf>
- <CAHk-=wi+k8E4kWR8c-nREP0+EA4D+=rz5j0Hdk3N6cWgfE03-Q@mail.gmail.com>
- <xl2fyyjk4kjcszcgypirhoyflxojzeyxkzoevvxsmo26mklq7i@jw2ou76lh2py>
- <26723.62463.967566.748222@quad.stoffel.home>
- <gq2c4qlivewr2j5tp6cubfouvr42jww4ilhx3l55cxmbeotejk@emoy2z2ztmi2>
- <751434463.112.1751478094192@mail.carlthompson.net>
- <fomli5univuatcdc7syty56wffm4uvslocxkufks27otyix7fl@6c5i7w7g64qo>
-Content-Language: en-US, de-DE
-From: =?UTF-8?Q?Malte_Schr=C3=B6der?= <malte.schroeder@tnxip.de>
-In-Reply-To: <fomli5univuatcdc7syty56wffm4uvslocxkufks27otyix7fl@6c5i7w7g64qo>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20250703-isectors-not-wrong-v1-1-37002be151e0@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAM7HZWgC/x3MPQqAMAxA4atIZgO14g9eRRxKTWuWVhJRQby7x
+ fEb3ntASZgUpuoBoZOVcypo6gr85lIk5LUYrLGdGUyLrOSPLIopH3hJThFHGl1jex9aM0AJd6H
+ A9z+dl/f9AN1vRPtkAAAA
+X-Change-ID: 20250703-isectors-not-wrong-8e8a126cf307
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, Nikita Ofitserov <himikof@gmail.com>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1208; i=himikof@gmail.com;
+ h=from:subject:message-id;
+ bh=2wcJM/AavbId1UzNMVMhmkxxIl8bglzMr8gbV3nXSjw=;
+ b=owGbwMvMwCW2edHtzWZP9DIYT6slMWSkHv/veldg3gHD2C8hoV436lYaT/r0/lBo2yrHWR6Z6
+ 3Q/LrHb3lHKwiDGxSArpsjyYcnXP2syrf9YCu01hJnDygQyhIGLUwAmclOC4X+Zj9najUWHPt3P
+ EXruNUHu7POZ82sPtmgWZ+/Zu12w/doURoZ5rZxfBNkm/Zsj4XvBKPtoya9SZtd/sXJcFmtsLPo
+ Nq1gA
+X-Developer-Key: i=himikof@gmail.com; a=openpgp;
+ fpr=F0A4F5FCAC693BFC3912BD31B3A2DBB336E42E68
+X-Endpoint-Received: by B4 Relay for himikof@gmail.com/default with
+ auth_id=452
+X-Original-From: Nikita Ofitserov <himikof@gmail.com>
+Reply-To: himikof@gmail.com
 
-On 02.07.25 19:53, Kent Overstreet wrote:
-> On Wed, Jul 02, 2025 at 10:41:34AM -0700, Carl E. Thompson wrote:
->> Kent, at this point in bcachefs' development you want complete control
->> over your development processes and timetable that you simply can't
->> get in the mainline kernel. It's in your own best interest for you to
->> develop out-of-tree for now.
-> Carl, all I'm doing is stating up front what it's going to take to get
-> this done right.
->
-> I'm not particularly pushing one way or the other for bcachefs to stay
-> in; there are pros and cons either way. It'll be disruptive for it to be
-> out, but if the alternative is disrupting process too much and driving
-> Linus and I completely completely nuts, that's ok.
->
-> Everyone please be patient. This is a 10+ year process, no one thing is
-> make or break.
->
-So as a user usually hanging out on IRC and running Kent's trees:
+From: Nikita Ofitserov <himikof@gmail.com>
 
-I think most of those people actually testing bcachefs are either
-running bcachefs-master, -rc or some outdated distro kernel. From my
-perspective I'd think it would be good enough to push for-upstream
-during the merge window and then only provide further patches if there
-where regressions or some really bad bug appears that actually eats data
-(like the one that bit me). If it's "just" stability fixes, well, if
-people running a distro kernel hit those bugs they'll need to build a
--rc kernel anyways to get fixes, those could just build bcachefs-master.
-When running Linus' tree I am aware and accept that I am not running the
-absolutely latest code.
+It is possible that fsck first miscounted the expected sector count (due
+to applying other fixes at the same time, for example) and then
+corrected itself using extents. No need to log an fsck error and
+write the inode in this case.
 
-I've had some pretty bad experience with amdgpu requiring out of tree
-patches to get my system running free of glitches, which took months to
-get into upstream. It's annoying, but I accept that.
+Signed-off-by: Nikita Ofitserov <himikof@gmail.com>
+---
+ fs/bcachefs/fsck.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I'd rather have a slightly outdated bcachefs in kernel than not at all.
-It is good to have a distro kernel I can fall back to if I mess up my
-own kernel building ;)
+diff --git a/fs/bcachefs/fsck.c b/fs/bcachefs/fsck.c
+index 1ceca63c87a3bf3eb75d396f7a10949c502b0e8d..471e93a3f00c637050b5c485d72b27cfb284282d 100644
+--- a/fs/bcachefs/fsck.c
++++ b/fs/bcachefs/fsck.c
+@@ -1638,7 +1638,8 @@ static int check_i_sectors_notnested(struct btree_trans *trans, struct inode_wal
+ 			i->count = count2;
+ 		}
+ 
+-		if (fsck_err_on(!(i->inode.bi_flags & BCH_INODE_i_sectors_dirty),
++		if (fsck_err_on(!(i->inode.bi_flags & BCH_INODE_i_sectors_dirty) &&
++				i->inode.bi_sectors != i->count,
+ 				trans, inode_i_sectors_wrong,
+ 				"inode %llu:%u has incorrect i_sectors: got %llu, should be %llu",
+ 				w->last_pos.inode, i->inode.bi_snapshot,
 
+---
+base-commit: 14a12362bb22b3735c51ecdb712570a12992a695
+change-id: 20250703-isectors-not-wrong-8e8a126cf307
 
-my 0.02€
+Best regards,
+-- 
+Nikita Ofitserov
 
-/Malte
 
