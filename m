@@ -1,63 +1,96 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6396A2DEA61;
-	Fri,  4 Jul 2025 17:36:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BFE71BF58
+	for <linux-bcachefs@vger.kernel.org>; Sat,  5 Jul 2025 02:07:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751650575; cv=none; b=Hp0dF9VOyoGr42xjANtu3ALJbjYUieooOuh3gI0yx7FK1+ToIyaDg1oe1j0ze2maqmHahg51kOrRJDwhxTM4gQn7rl2h4kRwePMH/zdL3X2Dbk15P0OHZyIgvH0w3owZ7a0lO4v0FbHlYVqzJS2rP2pXcwdOMhNwomrrHkVk8ok=
+	t=1751681260; cv=none; b=E35gd9OO8ng5sHR/uEVhrE/Sx4q3GIppMN0hzuPcwVENz9LmV3Z4Wx/ZNGxrjI3+ZjigYkFRVITUtcBtV31ipyuVC3sNE65iEXVQcH+Us3yXkrS2PMpghencBCaYjh+MW+hvNqhMr1b3kJKKirsKCCnW843kqEwsNIYkog1HFyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751650575; c=relaxed/simple;
-	bh=KkTmraAJzSDQJXZhmFCSDdWoS8nm7mjVTMUq+SZfoXo=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=LrcHNaXchr5GmCv4FIOVhdd/8/icWh9ITvfudFsOcF2OTsGHtabivzPb+lAGEBKJ715creFFXWuIQ8ez8YRJUmmWz6PC1kW+1Fqkp35pIjgNExIyOn83GmGtOFAzpm7rYfs+b+4DGLdsoktJESuamCMIKCV7gBZbPdIrjLzEvKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=grmqCRRN; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1751681260; c=relaxed/simple;
+	bh=WG0l2vXf4C7gYU/NPv2He4rrfyB5Oh+SIprx16W+qyE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=tLXHDGAAeyX3T1I469cDizODH5Z8z+Z/cQE5lUyNUs0HvbZjf9mWFrKwRnYdvFU43GaqkouOPWCWuCl6DiVRz9ArAfSrJDnjb4I0t350YYw64uZg+4/3YBvE5PNEAQFhLZxeojwGlifQ/Za9i4C3+aUZj5aO76ObAQD7WxmcLKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AydaTY7/; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="grmqCRRN"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47284C4CEED;
-	Fri,  4 Jul 2025 17:36:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751650575;
-	bh=KkTmraAJzSDQJXZhmFCSDdWoS8nm7mjVTMUq+SZfoXo=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=grmqCRRNcLwWpdzubgINxpnsUIB6VJIOgPAjhOfURRTYcc5c8c2TujmhWlV69tXJz
-	 bDaZHFnDYQty6oBaqtJA6DG+5xWhfDEryAofn4FYGt1LmlJ9f6fpHnH66b2nTnZ/+n
-	 MHE+DNv9CBwvb0kevBV0rfViUkciGZWZXH/eDJSMQBn9i7v71lcHCzksjrpJLDU1wa
-	 FNPSDAGTJrBD4zcIrSvdJFoAzkJqccBz+cyN4zznJ4BmgXvXjWb8+AfwUpEgXHk5qT
-	 sZ241V/q3vDsxjwto6A0nznOZOLeiAK9YOUltaTdjUdsWFwBFhXbYKM4txpFBd4YCq
-	 NxTEuKzQs5oYw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70CFA383BA01;
-	Fri,  4 Jul 2025 17:36:40 +0000 (UTC)
-Subject: Re: [GIT PULL] bcachefs fixes for 6.16-rc5
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <b3o4rbii2ni4h67fbahnriodyhodomrd6qxdquxkpm2k5sdjmn@hr74xtmqtoeo>
-References: <b3o4rbii2ni4h67fbahnriodyhodomrd6qxdquxkpm2k5sdjmn@hr74xtmqtoeo>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <b3o4rbii2ni4h67fbahnriodyhodomrd6qxdquxkpm2k5sdjmn@hr74xtmqtoeo>
-X-PR-Tracked-Remote: git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-07-03
-X-PR-Tracked-Commit-Id: 94426e4201fbb1c5ea4a697eb62a8b7cd7dfccbf
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 482deed9dfa065cf3f68372dadac857541c7d504
-Message-Id: <175165059926.2287194.11885239279323530155.pr-tracker-bot@kernel.org>
-Date: Fri, 04 Jul 2025 17:36:39 +0000
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AydaTY7/"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1751681255;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=OjmpWIcj21P7LuBODrrCigEVya17IaLI/8xF+alupLU=;
+	b=AydaTY7/7Tv9oQFj1u8s+qMz2zl3F81gZ91pSPxxBpVVmrYDRS4/UirkjB31vWH+aH8oIc
+	slJp+Z7kEeo+Ae6YIcGy9YR/r5SbPPbSDR9HWQe6lFi8TV7kJvCO6ThnVEhmSvXcC0DtrF
+	G/jAQj+4pAOML6Cb2GpvA2oPDKMz/yU=
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: linux-bcachefs@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	=?UTF-8?q?J=C3=A9r=C3=B4me=20Poulin?= <jeromepoulin@gmail.com>
+Subject: [PATCH] bcachefs: Fix infinite loop in backpointers fsck on upgrade
+Date: Fri,  4 Jul 2025 22:07:30 -0400
+Message-ID: <20250705020730.751334-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-The pull request you sent on Thu, 3 Jul 2025 20:33:28 -0400:
+On upgrade from before bcachefs_metadata_version_backpointer_bucket_gen
+we'll typically skip the write buffer flush, because we expect many
+invalid/missing backpointers and it's faster to just repair them.
 
-> git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-07-03
+When we find backpointers that sum up to more than the bucket sector
+counters, that's a special situation - we need to walk those
+backpointers to kill the bad ones, and so that case needs a write buffer
+flush to avoid an infinite loop.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/482deed9dfa065cf3f68372dadac857541c7d504
+Reported-by: Jérôme Poulin <jeromepoulin@gmail.com>
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+---
+ fs/bcachefs/backpointers.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-Thank you!
-
+diff --git a/fs/bcachefs/backpointers.c b/fs/bcachefs/backpointers.c
+index 77d93beb3c8f..9d0c3cb634e8 100644
+--- a/fs/bcachefs/backpointers.c
++++ b/fs/bcachefs/backpointers.c
+@@ -943,20 +943,24 @@ static int check_bucket_backpointer_mismatch(struct btree_trans *trans, struct b
+ 	if (sectors[ALLOC_dirty]  != a->dirty_sectors ||
+ 	    sectors[ALLOC_cached] != a->cached_sectors ||
+ 	    sectors[ALLOC_stripe] != a->stripe_sectors) {
+-		if (c->sb.version_upgrade_complete >= bcachefs_metadata_version_backpointer_bucket_gen) {
++		if (sectors[ALLOC_dirty]  > a->dirty_sectors ||
++		    sectors[ALLOC_cached] > a->cached_sectors ||
++		    sectors[ALLOC_stripe] > a->stripe_sectors) {
+ 			ret = bch2_backpointers_maybe_flush(trans, alloc_k, last_flushed);
+ 			if (ret)
+ 				goto err;
+-		}
+ 
+-		if (sectors[ALLOC_dirty]  > a->dirty_sectors ||
+-		    sectors[ALLOC_cached] > a->cached_sectors ||
+-		    sectors[ALLOC_stripe] > a->stripe_sectors) {
+ 			ret = check_bucket_backpointers_to_extents(trans, ca, alloc_k.k->p) ?:
+ 				bch_err_throw(c, transaction_restart_nested);
+ 			goto err;
+ 		}
+ 
++		if (c->sb.version_upgrade_complete >= bcachefs_metadata_version_backpointer_bucket_gen) {
++			ret = bch2_backpointers_maybe_flush(trans, alloc_k, last_flushed);
++			if (ret)
++				goto err;
++		}
++
+ 		bool empty = (sectors[ALLOC_dirty] +
+ 			      sectors[ALLOC_stripe] +
+ 			      sectors[ALLOC_cached]) == 0;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.50.0
+
