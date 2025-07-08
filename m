@@ -1,54 +1,54 @@
-Received: from wiki.archlinuxcn.org (wiki.archlinuxcn.org [104.245.9.4])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 052CF1F0E58;
-	Tue,  8 Jul 2025 06:57:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.245.9.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 182CE1C5499
+	for <linux-bcachefs@vger.kernel.org>; Tue,  8 Jul 2025 12:51:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751957833; cv=none; b=jDsosxvHoJDdZS93epZwIohiEL6pAu8OcqLeTXu4gGvdDLE/wrWu1ScwlFwMlnrrUgtlO+WIGm6Xn/tDQoxOD8Lm8OKSc9M8eiaHVbwHBd3KbBHR3IRc323phigilSCxQF8aCeZ4pi+7kDomzjZmZjTGFpuo2eEluIN73oBnTtE=
+	t=1751979075; cv=none; b=GM1fev2wbeFGiwUEUyAIp/o5a5M7xGA1Ihu2M/pLKQ170Kkg8scgpLoBEtnjcO0eDKEUnBh3ViAi849Nb2TV1FTlO38GsQDu6hCwd4XuHfSw708NxlQJmedNuPTl/lccXXlUXGMLtRAHfPwhK6gYaT0qbRepaGmHH4qGw176c8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751957833; c=relaxed/simple;
-	bh=yoUrgK4WIHlzQWl3kA0Av2Vsc2BP10Kej3LtqCJ91lc=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=rOHQVgdrA81nkO/MTpfNmK0R+VpcoMsOX3o14OgkZ4jz6JXK4+fWQI9Q1yLIIWJ0/MGbFeG6+R0oT3WY8SXibY84/GtAHGp+BVbLygd9l8gtWdsao2f1W3wNJH/ch0ikvtsTRWic78t41ta+9/IDeBd1te8mU0fMnFujuigkraM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org; spf=pass smtp.mailfrom=archlinuxcn.org; dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b=6WD/qIcT; arc=none smtp.client-ip=104.245.9.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=archlinuxcn.org
+	s=arc-20240116; t=1751979075; c=relaxed/simple;
+	bh=QOFYPrp8fx065K2ZfqSqKamPxKcxM2CbqK5FTx2WjTg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XPsAxjEYidmnic2QTml+4ZXARuZTnexdqfZ9YimCGg4OnK/CiC1A0qQWzUG6i073+aR+usIhc5lXXd5RT5ic8zfJuczGXzGWxofGDMDdd40KfnbYB1huPgedyhPQzJP3aaT9gFk7OCt0BO3HAVbk/gbw3xtIlofAKr2Kyk3Ez9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Zl8jawXZ; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b="6WD/qIcT"
-DKIM-Signature: a=rsa-sha256; bh=yoUrgK4WIHlzQWl3kA0Av2Vsc2BP10Kej3LtqCJ91lc=;
- c=relaxed/relaxed; d=archlinuxcn.org;
- h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:In-Reply-To:Message-Id:Message-Id:References:References:Autocrypt:Openpgp;
- i=@archlinuxcn.org; s=default; t=1751956904; v=1; x=1752388904;
- b=6WD/qIcTkGxeO9uIEpoQouCYrTQjx25jylIMBOIn6Ak7bnHQxAgSCF8Q/bge68nf+DaHZk9n
- a1N9TzvUpSbcYCTY8MhYwcJzqo+a1cCkwpHywhI/70P57cWYqBl+f263wMQtD5Iq7sseG9ZCNE5
- EwVdnz1dC57bdOyTzKPhDkYGNcZfI0pvLpeOL01FzfTuuPHrNx6jJIcDYIlgdnhBVpaLPx0NWsT
- YgM2Z87Br88vXfUOmsRpyo19BdcMcXeKN1O2VxGS3bUMmEyt4zkvvLBvcDHsD02ScWxN1I4R6cL
- g69u/5Wi0xmeAu0ijThbQmpSJYaRxEd3QGVhVI91aYs9A==
-Received: by wiki.archlinuxcn.org (envelope-sender
- <integral@archlinuxcn.org>) with ESMTPS id 1c5aa930; Tue, 08 Jul 2025
- 14:41:44 +0800
-Message-ID: <cc3c0ed7-26bb-488d-b80a-6f5a0d0b5cea@archlinuxcn.org>
-Date: Tue, 8 Jul 2025 14:41:41 +0800
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Zl8jawXZ"
+Date: Tue, 8 Jul 2025 08:50:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1751979070;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EuWJac7bIMMbrDLP0jqOSz/nHOanSt+qlzS+K+3StRk=;
+	b=Zl8jawXZGHb2uwXHn5g/nzkV/spbb+A/yXlqkajRWj+ZZvyEODkFM1MYqp+rLP8Q7HS2Ev
+	EteHOIk4f1LgGF2qsw7xV5ZYZ7OF7GCpRdQSO6gNccrV8tAW/p9DVCaqMns9HJaNhulJjY
+	7J/dZFsKzygfuxYXyQ6WP5Ykl5vdZEA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: George Hu <integral@archlinux.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 RESEND] bcachefs: use union for bch_compression_opt to
+ make encode & decode easier
+Message-ID: <c32zfpyool2mpjibvxp4rloegtsqfazuphxz5wqrdmjcnfnc7l@fyc5hjd7pmfo>
+References: <20250617070036.10685-1-integral@archlinux.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: integral@archlinux.org
-Cc: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250617070036.10685-1-integral@archlinux.org>
-Subject: Re: [PATCH v2 RESEND] bcachefs: use union for bch_compression_opt to
- make encode & decode easier
-Content-Language: en-US
-From: Integral <integral@archlinuxcn.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <20250617070036.10685-1-integral@archlinux.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi, Kent
+On Tue, Jun 17, 2025 at 03:00:36PM +0800, George Hu wrote:
+> Eliminate redundant encode & decode function by using union for
+> bch_compression_opt, which reduces code complexity.
+> 
+> Signed-off-by: George Hu <integral@archlinux.org>
 
-Give you a gentle ping :)
+Applied to testing
