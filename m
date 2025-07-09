@@ -1,77 +1,103 @@
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10BE02264B0
-	for <linux-bcachefs@vger.kernel.org>; Wed,  9 Jul 2025 19:34:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFDB121A92F;
+	Wed,  9 Jul 2025 20:58:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752089645; cv=none; b=MkLJCAKCHPezMTjWO4ni0oZOF/HqqZgk4cXaeBxcLbTrdFgZvTtLkWSGSIHYcE2g6MgPIqe8YsvHf+hvJvWDzZhmkPkadeCV3X3/OLDWMpPxeJXEV54XAv2RLm4O77sw3CccwYimTEXb1JUirqZ4yrqsHn3Eeucn/wcvKICg53Y=
+	t=1752094703; cv=none; b=Zli0sb5dH7celP5sMPccXz82R+vzxfLvyu0gpwUuRcMrcJebQG355iwTe4ey6858lR90m20RcefNlkth6IZtSv+17s9IoVulztgM8d9+/3iDPNNJkmYL8QrymMS7piYMLhUMlDhqcHytZS4JLg/b5hto236UnsYRYlmzjYWKFX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752089645; c=relaxed/simple;
-	bh=FmSWEMiKS2GWteM3+xkqPju3/+A8QOWe7DgoLvFMw9o=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=BOG9jCZtLTEV1JYVIgoJM/YNsz3rT4WesEAhb5KBoF0JO1Z/5Eb7NZQDwNCzYBF0FSi1OgwSnCvO4UG/OfY6fuSbr/BXj7LUMGEdMaiOSmZe5RzDRkz8YdkAAas6R4SoU6oHoX8QiLlCg8qp//hjvXYGiN+/PwLZL7X4nz18lPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-86cc7cdb86fso34378239f.1
-        for <linux-bcachefs@vger.kernel.org>; Wed, 09 Jul 2025 12:34:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752089643; x=1752694443;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IiR6g+qyudooivd78b1N45PiW3XgKBWniwsSI4xqkII=;
-        b=U+4xJTHKXWzUUtjtaDAzJC7H/asoYTl5pdflN84yOb3CC+Sr8/AKmC85y/r3ZeJ47/
-         xnVSveVr1CV+XU21FyIFoEsav71IIEFLHVZhMRs3AMmPrLiU3VLxI9Mnuv+4KVYdIsDw
-         1OEwGrp3hzCX3ptQoG4lJD/KP7S4tSY7SOtrhiaEvguh7Na3g7+9sSt5gYsn8ufjc29O
-         QOb5PVq1fvW/AWtJlnxrJNo3TTpX0xmGr1CNaKTItnLWMjqTnamqkrEx7To5HU8TiGeJ
-         CfyQTNdb5M7FH9E/Ek1Miq/OzkzemE1OLKDw6sio20GhIStiQoGN1K/0EfUoLD3ilcsg
-         vF/A==
-X-Forwarded-Encrypted: i=1; AJvYcCWF+D/Lrg3Nf7RZiGO5Ga1LUScW8NX9fgD/HxuU6FCqucIwo2u2gJxs3foEKEvywm4oAzxyWuGI+Rzt7/nqXg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw7AGx93elQrb8Ux3+cEc0oknPodWaAFTlXIgpTBWRVuOXJtDmX
-	AwdGsFxXGJdfVj7XwY+oZf/852I25MaCXPOBI/DoQ9OS6r1rOuWIRqNKfRV/bW4moUVQtXCDAAp
-	I6FbdlSghX8L7V3o4lRc5THtrz4WlGGaPQLOa6GEKIL8fJTft0dwb7sZiJf8=
-X-Google-Smtp-Source: AGHT+IEceed77DdA5JUd9P8OMerQksCR3D/DZggSl6GaOPAghZrlCXhOzd3qth9JjZ96NiSoTIVrQAHWpYA/ci/yPKvo49CWEAS+
+	s=arc-20240116; t=1752094703; c=relaxed/simple;
+	bh=ueEG8yp3hUYyJWqlqrkUDKTjvyC55obFwvi/Yvm/Jmo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oEnI9UTpJDYxyHfeanx/J0RPYrP/JPe/g4EfP3KRV5WOOmhjriRs9a3Mter4VovJGJ/J8bTLMoZdfB1a32n70hn2o5Lx/tuvkjVXD0SNbDSlakpl31nwzr/ttRx82yQbixD6tljCcEQd/bSDHrebFfdxBgEHkaIfV6wME/D9tN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kx1ntk1+; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kx1ntk1+"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56D5AC4CEEF;
+	Wed,  9 Jul 2025 20:58:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752094702;
+	bh=ueEG8yp3hUYyJWqlqrkUDKTjvyC55obFwvi/Yvm/Jmo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kx1ntk1+wqmtkcJE8xJdtY7xSzaqdbtvoUPfW9Z9ItTuZrVqVQvdLHV3WDEkbi7ZN
+	 O1VTkYU8elasexw05Xgux1zf7uZgrDLfw+u+wtZHbS9VCIuI9hEp+B03YoZNWbGHUX
+	 N6pUi8k/KxGe3nDUqa5Iom5Dh1kqr/2bZcXTc0a35CG5NeE3iubT/NRr+jpS2ma6LE
+	 UXVIdTYxfumiuwrDnW+VeCeUEMx9Xn03B0k7cjaumXHP757KGRAfaAJ00rzG3HPZYW
+	 MFMNrARB05rb4cVA2bhG2wWUwKc/TW+fmBDtQwcbQcQWc3lDHtB23vW/kEnoNlR4y8
+	 yHk/cuWYyUG8w==
+Date: Wed, 9 Jul 2025 22:58:16 +0200
+From: Danilo Krummrich <dakr@kernel.org>
+To: Vitaly Wool <vitaly.wool@konsulko.se>
+Cc: linux-mm@kvack.org, akpm@linux-foundation.org,
+	linux-kernel@vger.kernel.org, Uladzislau Rezki <urezki@gmail.com>,
+	Alice Ryhl <aliceryhl@google.com>, Vlastimil Babka <vbabka@suse.cz>,
+	rust-for-linux@vger.kernel.org,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	linux-bcachefs@vger.kernel.org, bpf@vger.kernel.org,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>
+Subject: Re: [PATCH v12 3/4] rust: add support for NUMA ids in allocations
+Message-ID: <aG7X6Htx0I6cUqYD@cassiopeiae>
+References: <20250709172345.1031907-1-vitaly.wool@konsulko.se>
+ <20250709172458.1032040-1-vitaly.wool@konsulko.se>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:23c4:b0:3dd:f4d5:1c1a with SMTP id
- e9e14a558f8ab-3e1670d8889mr33353025ab.17.1752089643105; Wed, 09 Jul 2025
- 12:34:03 -0700 (PDT)
-Date: Wed, 09 Jul 2025 12:34:03 -0700
-In-Reply-To: <686d2569.050a0220.1ffab7.000e.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <686ec42b.050a0220.385921.001e.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] KASAN: slab-use-after-free Read in bch2_copygc
-From: syzbot <syzbot+3168625f36f4a539237e@syzkaller.appspotmail.com>
-To: anna.luese@v-bien.de, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250709172458.1032040-1-vitaly.wool@konsulko.se>
 
-syzbot has bisected this issue to:
+On Wed, Jul 09, 2025 at 07:24:58PM +0200, Vitaly Wool wrote:
+> Add a new type to support specifying NUMA identifiers in Rust
+> allocators and extend the allocators to have NUMA id as a
+> parameter. Thus, modify ReallocFunc to use the new extended realloc
+> primitives from the C side of the kernel (i. e.
+> k[v]realloc_node_align/vrealloc_node_align) and add the new function
+> alloc_node to the Allocator trait while keeping the existing one
+> (alloc) for backward compatibility.
+> 
+> This will allow to specify node to use for allocation of e. g.
+> {KV}Box, as well as for future NUMA aware users of the API.
+> 
+> Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.se>
 
-commit 82067c916994dd1bfec65496144dc16e17899e36
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Fri May 9 03:21:28 2025 +0000
+> +/// Non Uniform Memory Access (NUMA) node identifier
 
-    bcachefs: buckets_in_flight on stack
+Please end with a period.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10d6aa8c580000
-start commit:   d006330be3f7 Merge tag 'sound-6.16-rc6' of git://git.kerne..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=12d6aa8c580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14d6aa8c580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bd2783a0a99d4ed0
-dashboard link: https://syzkaller.appspot.com/bug?extid=3168625f36f4a539237e
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=175fabd4580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14c0bf70580000
+> +#[derive(Clone, Copy, PartialEq)]
+> +pub struct NumaNode(i32);
+> +
+> +impl NumaNode {
+> +    /// create a new NUMA node identifer (non-negative integer)
 
-Reported-by: syzbot+3168625f36f4a539237e@syzkaller.appspotmail.com
-Fixes: 82067c916994 ("bcachefs: buckets_in_flight on stack")
+s/identifer/identifier/
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Please also add an empty line in between those two.
+
+> +    /// returns EINVAL if a negative id or an id exceeding MAX_NUMNODES is specified
+
+Please start with a capital letter, use markdown and end with a period.
+
+> +    pub fn new(node: i32) -> Result<Self> {
+> +        // SAFETY: MAX_NUMNODES never exceeds 2**10 because NODES_SHIFT is 0..10
+
+This must not be a safety comment, but a normal one. Please use markdown and end
+the sentence with a period.
+
+> +        if node < 0 || node >= bindings::MAX_NUMNODES as i32 {
+> +            return Err(EINVAL);
+> +        }
+> +        Ok(Self(node))
+> +    }
+> +}
+
+With that fixed,
+
+	Acked-by: Danilo Krummrich <dakr@kernel.org>
