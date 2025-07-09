@@ -1,87 +1,99 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC63942AA5;
-	Wed,  9 Jul 2025 21:00:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 873E6801;
+	Wed,  9 Jul 2025 22:54:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752094858; cv=none; b=Sp0hkDGgU7miy3xYnnyIjRqM7KA0KP/Pl8KVnEopqciEa9eSyUDy/Z8pNj4PoFseANEzyFW4qRAfgs60UCbsKPZJVXEhGGjQBpSqHAjH9o75lLrYfUkuwS4EDLPmbrzPkRB3y7F0iYI9c/UWZUT8BRBOKZ7XNduHNi+IAHgfiZ0=
+	t=1752101642; cv=none; b=cmFcHbbF9DZb6wOmgHSN+CHngToDtZsl38/Na5ug6bRUHQ7s4+QwPbk5CNaeWVOxs8TXuoZIsX7er8DyLdf4VX/tTq+/LrQ5kMb995gQWVPlxWuJET8Ol0/Xz5LwdX6JT9CcVARIeuKuPCSkWwvMd7snscGytRAVdv5ybznAnGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752094858; c=relaxed/simple;
-	bh=AmnUb7yJNWX4dwwep1SMKT/h6N+Cx4+LrtblZJzni+k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QLxLVu5BjWAdCmPotX0zUweSddKotdegWZ6LdeuNZ40ebsgbQAl9DOKJXtDV59ExC5e9J7JGjwkZ0beflGn5htzR3VcskFN22KployJP72yqsShK8NSb/0okyKkKyxz6+YRNUZZI+a1lYSH2xh4QzC5P/fNgILQmVaRm1mi9gaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Whehk9WW; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1752101642; c=relaxed/simple;
+	bh=Ck7M9kjFGroRgtLiIjkzu/4Z/tLPPWCGWsdGNFjqJ3g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TrbE6tMufm+QHTunwiOXbsrERyxi68EvlkkItnegflMe2TeOu1DKtx7n/7VX7e9C82IGBVvIBwYMN3xaTJnymog3mYhY+tzoDEqTuBa41GA0nTsk6+/fFCJ1meRxqVkvuabiopcdYrkOZqWpRC/kwLo98auw+xXGZYlZZbOV1ZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MJxigi8k; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Whehk9WW"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25A55C4CEEF;
-	Wed,  9 Jul 2025 21:00:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752094858;
-	bh=AmnUb7yJNWX4dwwep1SMKT/h6N+Cx4+LrtblZJzni+k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Whehk9WWYghHn/wCtVNA/Tk0Zu86XExQdHkvRXk6QzqRubkOrrgp2yH7/mNyMKFmt
-	 yyXcAVZZqHIEVFAUQFyvqgoqe0EQv01OYJuE5oEHZAazBJNRyYMQ3uxE3PG9VwQ3+Z
-	 R++8huQw5IDFb86bXOYYjdhnA2b5qdQfPoPQnw3pS0FK3Y2h9wr9kGSxsQCfLRUVea
-	 IR9lbCBScLQ3AJebsy/XXxQG9luGKNUpMMU7vtTAIaGnvTAVe/fffs6YcLVEKtY4i2
-	 D17/VKX4Rh9Dgpbom2XJXg+GDgrs/hSCRuxLfYjgb6h3ekw/FBpivjfy8SimhpcwRC
-	 VE9dLj/Bcy5QQ==
-Date: Wed, 9 Jul 2025 23:00:52 +0200
-From: Danilo Krummrich <dakr@kernel.org>
-To: Vitaly Wool <vitaly.wool@konsulko.se>
-Cc: linux-mm@kvack.org, akpm@linux-foundation.org,
-	linux-kernel@vger.kernel.org, Uladzislau Rezki <urezki@gmail.com>,
-	Alice Ryhl <aliceryhl@google.com>, Vlastimil Babka <vbabka@suse.cz>,
-	rust-for-linux@vger.kernel.org,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	linux-bcachefs@vger.kernel.org, bpf@vger.kernel.org,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>
-Subject: Re: [PATCH v12 4/4] rust: support large alignments in allocations
-Message-ID: <aG7YhNnGih9KcQjV@cassiopeiae>
-References: <20250709172345.1031907-1-vitaly.wool@konsulko.se>
- <20250709172509.1032067-1-vitaly.wool@konsulko.se>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MJxigi8k"
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3a582e09144so273514f8f.1;
+        Wed, 09 Jul 2025 15:54:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752101639; x=1752706439; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N9iJnt4WkpfToovTZMYNbYtyMvKSLn0aTix0qiRAhhs=;
+        b=MJxigi8kc9x/gSPcu0shR/8vV8WS+mHrXaxAw3ON6oy5oUfGR6nfaAq1VLgBVKn4wj
+         OLoDZBOyDFGmC4WVGByWCmIihfMJiV/cg+rYovZNWxyspfksTLEQ+5nLfiNnKaG+CzNG
+         bTT8cT4KpwmYDXy2NKpVYYLEoo1ZHXGUc2ZW6WS0jYJIE4CpKQzTElboxzXJkwmUQZPP
+         C8PjJ+4PDNyI3iLWqCvPt5tgh21IXVeCKDBtfwhx+bQq6lGbKv/M02fOSVIQvwb/uYyG
+         tUWleXqLrBbLqwQ36JyVQDH3gkXjvszU30H+Zxd7xp525vT3euTRdLpGrl6pz/6KrprE
+         /yZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752101639; x=1752706439;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=N9iJnt4WkpfToovTZMYNbYtyMvKSLn0aTix0qiRAhhs=;
+        b=qEL+iSCp+tkaXNKcYIVfCUSYKfadNf6F20moPYJiTnbUBmAsYZFsWD0jniMIlQKApf
+         52sQoGVgc01S927LLtb9nsCXNNYUBo5arkpcwvoh4d/zyMRrQmct1ozkO4SbZ3BuJAjk
+         Y4RUxh7kS6B9b5IXO3tb0rAazOBqbSFF5/i556H3WyGrJkchz8okHHb4V2C6tgMF7kkz
+         H6E5wPPBLjEsLkI5RDADLyzsp/crDks9e/k/dWRawCRcrls2X7XibwWAs0Jbwic5kMb/
+         XybVrpVL6mO/dXHGIk3XzWbrkHgEah49vLL0WFhBb+jZCO0R9VW20imob5l2R9a9gPt0
+         Bz5g==
+X-Forwarded-Encrypted: i=1; AJvYcCUe0PPrbvg8HaynizY/ZxXLoxU8gqhBFnj6CyoJVWpuG8A/riW3rPR3cJMh7Z4e18Oqyg75Cj/Lbq2nvdKBsN0=@vger.kernel.org, AJvYcCWP2rMJZoJcjtEiBDqZvLo3MFTodZABUC+Kz0WgsqYZC+n8fgzaLjMvHGt4Txl4idXAVTI=@vger.kernel.org, AJvYcCWbLlRG1VjJFymXWNh0kkeaaeKaLNGF9VTlamiJLc6RtSQgRJhuGjAacwmLIts8fSmJzsOebQ/hPWniOhGbfBU=@vger.kernel.org, AJvYcCXF/lOcQs6bVr5QqSPUe41qPHD1X7C7juyC32t7MGo0chA9HM3jcKD7w9dvpX3bpJmDWVLFl69QOdeY4AJH@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzv9nEC6/nrhsQbqqw38oTtMjSZiAxqC+bT9qiR+q7ZDkAgkHUU
+	I4pAs5Qhf6UjBiRfLFV22VHI93fgTxMR3fGNYl5tKjvNT+dsGN1RzAk74p8oCuJZV5Y4RHhmSSB
+	xTzvERX7mgIFwL8BBdNDcUN6WI0i/1QNTUw==
+X-Gm-Gg: ASbGncv9MwqPEQ/a040TLjUCnXjmJodcj7XJlCtnARj02+iKFnV06voW0/RSxeR7slB
+	M4E1HGejUHqTKRtJNgue5nkb+gbflJRLFJ9ejBUZWATJnp0sVSJEGBCAy1B5sYnbwunpVQsItvz
+	5O0JF/QC9BsJWFsKJ3IXl3bO1wV2WMwdQq+ydbVbO4Kl9u/5ttiptmRScCqrFUhf/a/Eh83O4Bu
+	1haAc9mrJo=
+X-Google-Smtp-Source: AGHT+IHDoCCRbQwoVIBCKCBT14ZzPnGvut13NQFhw59jUbLavByhjz0wHOG/UJnidp46oUKDyQonZwNPRHpvQmXcL5Q=
+X-Received: by 2002:a05:6000:991:b0:3a4:e609:dc63 with SMTP id
+ ffacd0b85a97d-3b5e867f6e4mr389008f8f.20.1752101638580; Wed, 09 Jul 2025
+ 15:53:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250709172509.1032067-1-vitaly.wool@konsulko.se>
+References: <20250709172345.1031907-1-vitaly.wool@konsulko.se> <20250709172416.1031970-1-vitaly.wool@konsulko.se>
+In-Reply-To: <20250709172416.1031970-1-vitaly.wool@konsulko.se>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 9 Jul 2025 15:53:47 -0700
+X-Gm-Features: Ac12FXyuwwXk41iu49XWkmvEY5dPL8zCHicyZww6svC_W6iI9a-7d53GSWyAAdg
+Message-ID: <CAADnVQ+bikqCO7D+5_rAtiJXv3F6xn=0_hgGH5CkoTPpdi8j6Q@mail.gmail.com>
+Subject: Re: [PATCH v12 1/4] mm/vmalloc: allow to set node and align in vrealloc
+To: Vitaly Wool <vitaly.wool@konsulko.se>
+Cc: linux-mm <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Uladzislau Rezki <urezki@gmail.com>, 
+	Danilo Krummrich <dakr@kernel.org>, Alice Ryhl <aliceryhl@google.com>, Vlastimil Babka <vbabka@suse.cz>, 
+	rust-for-linux <rust-for-linux@vger.kernel.org>, 
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "Liam R . Howlett" <Liam.Howlett@oracle.com>, 
+	Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, 
+	bpf <bpf@vger.kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 09, 2025 at 07:25:09PM +0200, Vitaly Wool wrote:
->  void * __must_check __realloc_size(2)
-> -rust_helper_krealloc_node(const void *objp, size_t new_size, gfp_t flags, int node)
-> +rust_helper_krealloc_node_align(const void *objp, size_t new_size, unsigned long align,
-> +				gfp_t flags, int node)
+On Wed, Jul 9, 2025 at 10:25=E2=80=AFAM Vitaly Wool <vitaly.wool@konsulko.s=
+e> wrote:
+>
+>
+> -void *vrealloc_noprof(const void *p, size_t size, gfp_t flags)
+> +void *vrealloc_node_align_noprof(const void *p, size_t size, unsigned lo=
+ng align,
+> +                                gfp_t flags, int node)
+>  {
 
-CHECK: Alignment should match open parenthesis
-#38: FILE: rust/helpers/slab.c:14:
-+rust_helper_kvrealloc_node_align(const void *p, size_t size, unsigned long align,
-+                               gfp_t flags, int node)
-
-total: 0 errors, 0 warnings, 1 checks, 94 lines checked
-
-Please make sure to always run scripts/checkpatch.pl. :)
-
-> @@ -185,12 +180,6 @@ unsafe fn realloc(
->          flags: Flags,
->          nid: NumaNode,
->      ) -> Result<NonNull<[u8]>, AllocError> {
-> -        // TODO: Support alignments larger than PAGE_SIZE.
-> -        if layout.align() > bindings::PAGE_SIZE {
-> -            pr_warn!("KVmalloc does not support alignments larger than PAGE_SIZE yet.\n");
-> -            return Err(AllocError);
-> -        }
-> -
-
-Since you remove the pr_warn!(), you also have to remove the corresponding
-import, otherwise you get a clippy warning.
-
-Please build with CLIPPY=1, see also [1].
-
-[1] https://rust-for-linux.com/contributing#submit-checklist-addendum
+imo this is a silly pattern to rename functions because they
+got new arguments.
+The names of the args are clear enough "align" and "node".
+I see no point in adding the same suffixes to a function name.
+In the future this function will receive another argument and
+the function would be renamed again?!
+"_noprof" suffix makes sense, since it's there for alloc_hooks,
+but "_node_align_" is unnecessary.
