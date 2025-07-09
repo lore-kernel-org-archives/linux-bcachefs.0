@@ -1,233 +1,316 @@
-Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A960A288C13
-	for <linux-bcachefs@vger.kernel.org>; Wed,  9 Jul 2025 10:19:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2856C224256
+	for <linux-bcachefs@vger.kernel.org>; Wed,  9 Jul 2025 17:23:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752056378; cv=none; b=t2klDIxb6Mwk3umHtEVjN7YuqDv9cj4USKBBkQHdysNm6SxU27OtxNJMOyglvv69IP28sbZux7sniXfUZH530jDgwYnRfeBI73iqEBFIWAHv/e8R5b0CKHjDjSFXDfeYpZmnoPFLuq/ZZNhgciF/tNdkcSWtsN2MnYNfkGKJIn8=
+	t=1752081791; cv=none; b=Y4N+7CT6R6orTYrnEbp88MKql/yyWiqX8u06nDJps+QddPuwruh3/WllomiaWYyRL/xQN0phPN7Y/o5tuig1+gSEh7IQjCxTnYsnLRQSyXvqS2iHSEOBMOAaTNhUXuYcdir8sOtHKg3wHx+dvOvJURJDgHX9uwy9U3onO0BvF3E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752056378; c=relaxed/simple;
-	bh=CBjd/dYK5mBZTnUDMNluqtKD0eSyrqiqAv9096eYEqU=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=t+8Y0yqgc7yMtNkN598KwMOfHpbrk5QG/gWxT3lk54rvi0RfQH12E6zOkgolhXuTy2IvjPKX8Kq0Mr1NGLfI4Dp1D+24pJMkOUzKVCzXN7kTdU55txu0y+eIMppzxXPVxxqY0XVy+6lRtJaGtpcUNnG7vkjWVL9qbeFjD504f5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-869e9667f58so1111903339f.3
-        for <linux-bcachefs@vger.kernel.org>; Wed, 09 Jul 2025 03:19:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752056376; x=1752661176;
-        h=content-transfer-encoding:to:from:subject:message-id:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kiFIMRDznFqfOqvFbnckfSKn5Gyi/myOlnv4fWjZZKE=;
-        b=ptMJWYUTsHucqWcwtZAsCgY4CYHdZO0hhIcYjzRaAxVprWPc7/v3JJRPeBi9OVmXmQ
-         CzZXJtybrM7AlwwVfVDzQTNLIcA5smLwTHjO5dtf8LPa3D36VDRI4OcEO+Z33nE6ufQp
-         TLs7nQVn8RXWyEm8Tuq4Klmj+aUQ89mi2ekDtvbVuH96B1u+X7B7wd5LqppGtStLrbrA
-         wNpUoIn0bPECCj2zm176aKU2hPD/m69AzkogL5+njdvFD2WadbsYBoek7Ng5Hp4xXc6M
-         jZSWRR3pHKalN1LkR20ArtKXSIcb6eXWz+RvtCHFEUDFPhzyoNEKCpFdPVkfWDFlASPj
-         6KJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWW60FZ14mk7V+7k+4hf+/A+a8PB2bVHtBBqNxz+PLHGMeG5hoA5+Wdbr+LTWchfz96PiMF/EYxzVuY8s9X8w==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzsGBpVsYfxC9sVVEd3PQNjm8qmprvX2m8CeYHOwePlA8IadAbv
-	wFFZOASZOIxYQYWwjD8N+eRQzTFHX0wlhfQ+k2/b7yOnQGXwF9jFQr3QNJWvssKM1GZba4yhQrF
-	VsP8O2yRbos1VKfQrzxb2NMypBMWgxPGN5M2pMzib5x553Gi3cX4kXBPuIEI=
-X-Google-Smtp-Source: AGHT+IE0A0cB0AdxhxIXdo02g/aEMovLre8D+EQox6QHRFyc2rG2ZPpRY1Y06rQ8dGd0Z4QzfLem8yP4WJkvXQOVPhVkJnPvbRzg
+	s=arc-20240116; t=1752081791; c=relaxed/simple;
+	bh=EnJHYNU6Y50PZt7QUNbTsz9O4daY3cPlwjTtQcl/RqY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=QMfS3w6usPrLGOM3N9Xa/wgniBr+lHNCUkiYKICDjMmrWNxKOP9UMLmRoEw4ehDS1rbcikvb3sGViOcGkumc2JzMhwPgYF6RCasa1jDTLXg6BCWmU0Is26bP3clQY70xvQCjOjmbKr02ips7eviZOdF5tum4hthmt6znvHNf0Fk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lrtqxg0H; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=BcWGmaiw; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AJoWVpOV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=TL+oxa4x; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lrtqxg0H";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BcWGmaiw";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AJoWVpOV";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="TL+oxa4x"
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B22EC2117A;
+	Wed,  9 Jul 2025 17:23:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1752081788; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=CC+sITaj/SX+l6M3xryuVDKN0uxVFK1sOBgicJxYht8=;
+	b=lrtqxg0H1oHdRhpeVDqsfF0jwsTZRp+1UW+HoKB7Ar3SPhbDVX2YWrdqpqp2OahdYFramu
+	Cn5jdABzK7odyjvf1dFYABXqHRs4QTi86JTw9pwzP7g5iedq7nX8nzx97GlZNHGD2GrzZj
+	hVZYetUA+B3xdI7RiAN7orS+RIaDZOg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1752081788;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=CC+sITaj/SX+l6M3xryuVDKN0uxVFK1sOBgicJxYht8=;
+	b=BcWGmaiwk5rfrY2cCRW+UhD3p8GJgvAytQYAcd/mkwlrlvCTJyk/Tl/jFpD+V18B+EhTXq
+	8m6PspGYMjIIFQBw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1752081787; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=CC+sITaj/SX+l6M3xryuVDKN0uxVFK1sOBgicJxYht8=;
+	b=AJoWVpOV56vkSVcv6MRSAVnN+fCovzvMso4Gmd7m522WNv6fUyv7PgxY65ajGU28NYMk+Z
+	SYmQDI/e7QRKAWiDK23RXqEX9gQrt/v2/GxWoEet2h77Jt0n59A3Jf7s+wOCHonoFjFJgQ
+	+lggTc1pTzzQHGAeqRz1scGNTLY0Yws=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1752081787;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=CC+sITaj/SX+l6M3xryuVDKN0uxVFK1sOBgicJxYht8=;
+	b=TL+oxa4x5HVSeFOOVnZbN20Kr3T/kNhk4mP74dqSzQSbR8Phj9mtdSonllbxlOwKAMwrnP
+	yZPrtli/rPlKOdAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9B43D13757;
+	Wed,  9 Jul 2025 17:23:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id LVzgJXulbmhoJwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 09 Jul 2025 17:23:07 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 1D212A09C3; Wed,  9 Jul 2025 19:23:07 +0200 (CEST)
+Date: Wed, 9 Jul 2025 19:23:07 +0200
+From: Jan Kara <jack@suse.cz>
+To: Dave Chinner <david@fromorbit.com>
+Cc: Christian Brauner <brauner@kernel.org>, 
+	"Darrick J. Wong" <djwong@kernel.org>, Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>, 
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, 
+	jack@suse.cz, linux-ext4@vger.kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, ntfs3@lists.linux.dev, linux-xfs@vger.kernel.org, 
+	Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH v4 1/6] fs: enhance and rename shutdown() callback to
+ remove_bdev()
+Message-ID: <343vlonfhw76mnbjnysejihoxsjyp2kzwvedhjjjml4ccaygbq@72m67s3e2ped>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:276a:b0:85b:3c49:8811 with SMTP id
- ca18e2360f4ac-8795b0acf05mr238766239f.4.1752056375808; Wed, 09 Jul 2025
- 03:19:35 -0700 (PDT)
-Date: Wed, 09 Jul 2025 03:19:35 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <686e4237.a00a0220.296254.038a.GAE@google.com>
-Subject: [syzbot] [bcachefs?] WARNING in bch2_btree_node_mem_alloc (2)
-From: syzbot <syzbot+6f91a1a3e34f980bb72c@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	FAKE_REPLY(1.00)[];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmx.com];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,gmx.com,suse.com,vger.kernel.org,zeniv.linux.org.uk,suse.cz,lists.sourceforge.net,lists.linux.dev,linux.dev];
+	RCVD_COUNT_THREE(0.00)[3];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
 
-Hello,
+Bcc:
+Subject: Re: [PATCH v4 1/6] fs: enhance and rename shutdown() callback to
+ remove_bdev()
+Reply-To:
+In-Reply-To: <aG2i3qP01m-vmFVE@dread.disaster.area>
 
-syzbot found the following issue on:
+On Wed 09-07-25 08:59:42, Dave Chinner wrote:
+> On Tue, Jul 08, 2025 at 09:55:14AM +0200, Christian Brauner wrote:
+> > On Mon, Jul 07, 2025 at 05:45:32PM -0700, Darrick J. Wong wrote:
+> > > On Tue, Jul 08, 2025 at 08:52:47AM +0930, Qu Wenruo wrote:
+> > > > 在 2025/7/8 08:32, Dave Chinner 写道:
+> > > > > On Fri, Jul 04, 2025 at 10:12:29AM +0930, Qu Wenruo wrote:
+> > > > > > Currently all the filesystems implementing the
+> > > > > > super_opearations::shutdown() callback can not afford losing a device.
+> > > > > > 
+> > > > > > Thus fs_bdev_mark_dead() will just call the shutdown() callback for the
+> > > > > > involved filesystem.
+> > > > > > 
+> > > > > > But it will no longer be the case, with multi-device filesystems like
+> > > > > > btrfs and bcachefs the filesystem can handle certain device loss without
+> > > > > > shutting down the whole filesystem.
+> > > > > > 
+> > > > > > To allow those multi-device filesystems to be integrated to use
+> > > > > > fs_holder_ops:
+> > > > > > 
+> > > > > > - Replace super_opearation::shutdown() with
+> > > > > >    super_opearations::remove_bdev()
+> > > > > >    To better describe when the callback is called.
+> > > > > 
+> > > > > This conflates cause with action.
+> > > > > 
+> > > > > The shutdown callout is an action that the filesystem must execute,
+> > > > > whilst "remove bdev" is a cause notification that might require an
+> > > > > action to be take.
+> > > > > 
+> > > > > Yes, the cause could be someone doing hot-unplug of the block
+> > > > > device, but it could also be something going wrong in software
+> > > > > layers below the filesystem. e.g. dm-thinp having an unrecoverable
+> > > > > corruption or ENOSPC errors.
+> > > > > 
+> > > > > We already have a "cause" notification: blk_holder_ops->mark_dead().
+> > > > > 
+> > > > > The generic fs action that is taken by this notification is
+> > > > > fs_bdev_mark_dead().  That action is to invalidate caches and shut
+> > > > > down the filesystem.
+> > > > > 
+> > > > > btrfs needs to do something different to a blk_holder_ops->mark_dead
+> > > > > notification. i.e. it needs an action that is different to
+> > > > > fs_bdev_mark_dead().
+> > > > > 
+> > > > > Indeed, this is how bcachefs already handles "single device
+> > > > > died" events for multi-device filesystems - see
+> > > > > bch2_fs_bdev_mark_dead().
+> > > > 
+> > > > I do not think it's the correct way to go, especially when there is already
+> > > > fs_holder_ops.
+> > > > 
+> > > > We're always going towards a more generic solution, other than letting the
+> > > > individual fs to do the same thing slightly differently.
+> > > 
+> > > On second thought -- it's weird that you'd flush the filesystem and
+> > > shrink the inode/dentry caches in a "your device went away" handler.
+> > > Fancy filesystems like bcachefs and btrfs would likely just shift IO to
+> > > a different bdev, right?  And there's no good reason to run shrinkers on
+> > > either of those fses, right?
+> > > 
+> > > > Yes, the naming is not perfect and mixing cause and action, but the end
+> > > > result is still a more generic and less duplicated code base.
+> > > 
+> > > I think dchinner makes a good point that if your filesystem can do
+> > > something clever on device removal, it should provide its own block
+> > > device holder ops instead of using fs_holder_ops.  I don't understand
+> > > why you need a "generic" solution for btrfs when it's not going to do
+> > > what the others do anyway.
+> > 
+> > I think letting filesystems implement their own holder ops should be
+> > avoided if we can. Christoph may chime in here. I have no appettite for
+> > exporting stuff like get_bdev_super() unless absolutely necessary. We
+> > tried to move all that handling into the VFS to eliminate a slew of
+> > deadlocks we detected and fixed. I have no appetite to repeat that
+> > cycle.
+> 
+> Except it isn't actually necessary.
+> 
+> Everyone here seems to be assuming that the filesystem *must* take
+> an active superblock reference to process a device removal event,
+> and that is *simply not true*.
+> 
+> bcachefs does not use get_bdev_super() or an active superblock
+> reference to process ->mark_dead events.
+>
+> It has it's own internal reference counting on the struct bch_fs
+> attached to the bdev that ensures the filesystem structures can't go
+> away whilst ->mark_dead is being processed.  i.e. bcachefs is only
+> dependent on the bdev->bd_holder_lock() being held when
+> ->mark_dead() is called and does not rely on the VFS for anything.
 
-HEAD commit:    c435a4f487e8 Merge tag 'riscv-for-linus-6.16-rc5' of git:/.=
-.
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=3D13c4cf70580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3Db29b1a0d7330d4a=
-8
-dashboard link: https://syzkaller.appspot.com/bug?extid=3D6f91a1a3e34f980bb=
-72c
-compiler:       Debian clang version 20.1.7 (++20250616065708+6146a88f6049-=
-1~exp1~20250616065826.132), Debian LLD 20.1.7
+Right, they have their own refcount which effectively blocks umount
+in .put_super AFAICS and they use it instead of VFS refcounts for this.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> This means that device removal processing can be performed
+> without global filesystem/VFS locks needing to be held. Hence issues
+> like re-entrancy deadlocks when there are concurrent/cascading
+> device failures (e.g. a HBA dies, taking out multiple devices
+> simultaneously) are completely avoided...
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d90=
-0f083ada3/non_bootable_disk-c435a4f4.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/3a184d1ad283/vmlinux-=
-c435a4f4.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/db5931917c56/bzI=
-mage-c435a4f4.xz
+Funnily enough how about:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit=
-:
-Reported-by: syzbot+6f91a1a3e34f980bb72c@syzkaller.appspotmail.com
+bch2_fs_bdev_mark_dead()		umount()
+  bdev_get_fs()
+    bch2_ro_ref_tryget() -> grabs bch_fs->ro_ref
+    mutex_unlock(&bdev->bd_holder_lock);
+					deactivate_super()
+					  down_write(&sb->s_umount);
+					  deactivate_locked_super()
+					    bch2_kill_sb()
+					      generic_shutdown_super()
+					        bch2_put_super()
+						  __bch2_fs_stop()
+						    bch2_ro_ref_put()
+						    wait_event(c->ro_ref_wait, !refcount_read(&c->ro_ref));
+  sb = c->vfs_sb;
+  down_read(&sb->s_umount); -> deadlock
 
-loop0: detected capacity change from 0 to 32768
-bcachefs (loop0): starting version 1.519: (unknown version) opts=3Dmetadata=
-_checksum=3Dnone,data_checksum=3Dnone,checksum_err_retry_nr=3D0,compression=
-=3Dlz4,nopromote_whole_extents,fsck,norecovery,nojournal_transaction_names,=
-allocator_stuck_timeout=3D3,version_upgrade=3Dincompatible
-  allowing incompatible features above 0.0: (unknown version)
-  features: lz4,new_siphash,inline_data,new_extent_overwrite,btree_ptr_v2,n=
-ew_varint,journal_no_flush,alloc_v2,extents_across_btree_nodes
-bcachefs (loop0): Using encoding defined by superblock: utf8-12.1.0
-bcachefs (loop0): invalid bkey in superblock btree=3Dextents level=3D1: u64=
-s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq c6c25c03258c59c5 written 1=
-6 min_key 360287970189639680:0:0 durability: 0 (invalid extent entry 000000=
-000001b000)
-  invalid extent entry type (got 12, max 7), deleting
-bcachefs (loop0): recovering from clean shutdown, journal seq 10
-bcachefs (loop0): Version downgrade required:
-bcachefs (loop0): Version upgrade required:
-Version upgrade from 0.24: unwritten_extents to 1.519: (unknown version) in=
-complete
-Doing incompatible version upgrade from 0.24: unwritten_extents to 1.28: in=
-ode_has_case_insensitive
-  running recovery passes: check_allocations,check_alloc_info,check_lrus,ch=
-eck_btree_backpointers,check_backpointers_to_extents,check_extents_to_backp=
-ointers,check_alloc_to_lru_refs,bucket_gens_init,check_snapshot_trees,check=
-_snapshots,check_subvols,check_subvol_children,delete_dead_snapshots,check_=
-inodes,check_extents,check_indirect_extents,check_dirents,check_xattrs,chec=
-k_root,check_unreachable_inodes,check_subvolume_structure,check_directory_s=
-tructure,check_nlinks,check_rebalance_work,set_fs_needs_rebalance
-bcachefs (loop0): Now allowing incompatible features up to 1.28: inode_has_=
-case_insensitive, previously allowed up to 0.0: (unknown version)
-bcachefs (loop0): error reading btree root btree=3Ddirents level=3D0: btree=
-_node_read_error, fixing
-bcachefs (loop0): invalid bkey in btree_node btree=3Dalloc level=3D0: u64s =
-11 type xattr POS_MIN len 0 ver 0: (type 1):=20
-  invalid key type for btree alloc (xattr), deleting
-bcachefs (loop0): error reading btree root btree=3Dalloc level=3D0: btree_n=
-ode_read_error, fixing
-bcachefs (loop0): btree node read error at btree snapshots level 0/0
-  u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq ebb8d5a9e3463bdb writ=
-ten 16 min_key 0:262144:0 durability: 1 ptr: 0:32:0 gen 0
-  loop0 node offset 0/16: incorrect min_key: got POS_MIN should be 0:262144=
-:0
-  flagging btree snapshots lost data
-  running recovery pass reconstruct_snapshots (21), currently at recovery_p=
-ass_empty (0)
-  ret btree_node_read_validate_error
-bcachefs (loop0): error reading btree root btree=3Dsnapshots level=3D0: btr=
-ee_node_read_error, fixing
-bcachefs (loop0): error reading btree root btree=3Dfreespace level=3D0: btr=
-ee_node_read_error, fixing
-bcachefs (loop0): check_topology...
-bcachefs (loop0): btree root dirents unreadable, must recover from scan
-bcachefs (loop0): running recovery pass scan_for_btree_nodes (1), currently=
- at check_topology (2) - rewinding
-bcachefs (loop0): bch2_check_root(): error restart_recovery
-bcachefs (loop0): scan_for_btree_nodes...
-bcachefs (loop0): btree node scan found 7 nodes after overwrites
- done
-bcachefs (loop0): check_topology...
-bcachefs (loop0): btree root dirents unreadable, must recover from scan
-bcachefs (loop0): bch2_get_scanned_nodes(): recovery btree=3Ddirents level=
-=3D0 POS_MIN - SPOS_MAX
-bcachefs (loop0): bch2_get_scanned_nodes(): recovering u64s 11 type btree_p=
-tr_v2 SPOS_MAX len 0 ver 0: seq 9aa2895aefce4bdf written 24 min_key POS_MIN=
- durability: 1 ptr: 0:41:0 gen 0
-bcachefs (loop0): empty interior btree node at btree=3Ddirents level=3D1
-  u64s 5 type btree_ptr SPOS_MAX len 0 ver 0, fixing
-bcachefs (loop0): bch2_btree_repair_topology_recurse(): error ECHILD
-bcachefs (loop0): empty btree root dirents
-bcachefs (loop0): btree root snapshots unreadable, must recover from scan
-------------[ cut here ]------------
-btree cache cannibalize failed
-WARNING: CPU: 0 PID: 5351 at fs/bcachefs/btree_cache.c:771 btree_node_canni=
-balize fs/bcachefs/btree_cache.c:771 [inline]
-WARNING: CPU: 0 PID: 5351 at fs/bcachefs/btree_cache.c:771 bch2_btree_node_=
-mem_alloc+0x1015/0x1820 fs/bcachefs/btree_cache.c:871
-Modules linked in:
-CPU: 0 UID: 0 PID: 5351 Comm: syz.0.0 Not tainted 6.16.0-rc4-syzkaller-0028=
-6-gc435a4f487e8 #0 PREEMPT(full)=20
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16=
-.3-2~bpo12+1 04/01/2014
-RIP: 0010:btree_node_cannibalize fs/bcachefs/btree_cache.c:771 [inline]
-RIP: 0010:bch2_btree_node_mem_alloc+0x1015/0x1820 fs/bcachefs/btree_cache.c=
-:871
-Code: d2 e8 8f ca 74 fd 2e 2e 2e 31 c0 e9 a6 fe ff ff e8 c0 ae a2 fd c6 05 =
-4d 27 6e 0b 01 90 48 c7 c7 c0 24 d3 8b e8 3c 57 66 fd 90 <0f> 0b 90 90 eb c=
-3 e8 a0 ae a2 fd eb 05 e8 99 ae a2 fd 49 8d bf b0
-RSP: 0018:ffffc9000d4b6d40 EFLAGS: 00010246
-RAX: 35dc07f7034c9600 RBX: ffff888059d80000 RCX: 0000000000100000
-RDX: ffffc9000f7e1000 RSI: 00000000000fffff RDI: 0000000000100000
-RBP: ffff888059d81ce8 R08: ffff88801fc24293 R09: 1ffff11003f84852
-R10: dffffc0000000000 R11: ffffed1003f84853 R12: ffff888059cfc800
-R13: ffff888059cfca28 R14: ffff888059d81cf0 R15: dffffc0000000000
-FS:  00007f3575bd46c0(0000) GS:ffff88808d21c000(0000) knlGS:000000000000000=
-0
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055558c3af5f8 CR3: 0000000011c4d000 CR4: 0000000000352ef0
-Call Trace:
- <TASK>
- bch2_btree_root_alloc_fake_trans+0x141/0xb00 fs/bcachefs/btree_update_inte=
-rior.c:2655
- bch2_check_root fs/bcachefs/btree_gc.c:566 [inline]
- bch2_check_topology+0x390/0xe00 fs/bcachefs/btree_gc.c:594
- bch2_run_recovery_pass fs/bcachefs/recovery_passes.c:484 [inline]
- __bch2_run_recovery_passes+0x395/0x1010 fs/bcachefs/recovery_passes.c:539
- bch2_run_recovery_passes+0x184/0x210 fs/bcachefs/recovery_passes.c:610
- bch2_fs_recovery+0x2690/0x3a50 fs/bcachefs/recovery.c:1005
- bch2_fs_start+0xaaf/0xda0 fs/bcachefs/super.c:1213
- bch2_fs_get_tree+0xb39/0x1520 fs/bcachefs/fs.c:2488
- vfs_get_tree+0x92/0x2b0 fs/super.c:1804
- do_new_mount+0x24a/0xa40 fs/namespace.c:3902
- do_mount fs/namespace.c:4239 [inline]
- __do_sys_mount fs/namespace.c:4450 [inline]
- __se_sys_mount+0x317/0x410 fs/namespace.c:4427
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f35797900ca
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 =
-00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff f=
-f 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f3575bd3e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007f3575bd3ef0 RCX: 00007f35797900ca
-RDX: 00002000000000c0 RSI: 0000200000000100 RDI: 00007f3575bd3eb0
-RBP: 00002000000000c0 R08: 00007f3575bd3ef0 R09: 000000000000001e
-R10: 000000000000001e R11: 0000000000000246 R12: 0000200000000100
-R13: 00007f3575bd3eb0 R14: 0000000000005aa7 R15: 00002000000001c0
- </TASK>
+Which is a case in point why I would like to have a shared infrastructure
+for bdev -> sb transition that's used as widely as possible. Because it
+isn't easy to get the lock ordering right given all the constraints in the
+VFS and block layer code paths for this transition that's going contrary to
+the usual ordering sb -> bdev. And yes I do realize bcachefs grabs s_umount
+not because it itself needs it but because it calls some VFS helpers
+(sync_filesystem()) which expect it to be held so the pain is inflicted
+by VFS here but that just demostrates the fact that VFS and FS locking are
+deeply intertwined and you can hardly avoid dealing with VFS locking rules
+in the filesystem itself.
 
+> It also avoids the problem of ->mark_dead events being generated
+> from a context that holds filesystem/vfs locks and then deadlocking
+> waiting for those locks to be released.
+> 
+> IOWs, a multi-device filesystem should really be implementing
+> ->mark_dead itself, and should not be depending on being able to
+> lock the superblock to take an active reference to it.
+> 
+> It should be pretty clear that these are not issues that the generic
+> filesystem ->mark_dead implementation should be trying to
+> handle.....
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Well, IMO every fs implementation needs to do the bdev -> sb transition and
+make sb somehow stable. It may be that grabbing s_umount and active sb
+reference is not what everybody wants but AFAIU btrfs as the second
+multi-device filesystem would be fine with that and for bcachefs this
+doesn't work only because they have special superblock instantiation
+behavior on mount for independent reasons (i.e., not because active ref
++ s_umount would be problematic for them) if I understand Kent right.
+So I'm still not fully convinced each multi-device filesystem should be
+shipping their special method to get from device to stable sb reference.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> > The shutdown method is implemented only by block-based filesystems and
+> > arguably shutdown was always a misnomer because it assumed that the
+> > filesystem needs to actually shut down when it is called.
+> 
+> Shutdown was not -assumed- as the operation that needed to be
+> performed. That was the feature that was *required* to fix
+> filesystem level problems that occur when the device underneath it
+> disappears.
+> 
+> ->mark_dead() is the abstract filesystem notification from the block
+> device, fs_bdfev_mark_dead() is the -generic implementation- of the
+> functionality required by single block device filesystems. Part of
+> that functionality is shutting down the filesystem because it can
+> *no longer function without a backing device*.
+> 
+> multi-block device filesystems require compeltely different
+> implementations, and we already have one that -does not use active
+> superblock references-. IOWs, even if we add ->remove_bdev(sb)
+> callout, bcachefs will continue to use ->mark_dead() because low
+> level filesystem device management isn't (and shouldn't be!)
+> dependent on high level VFS structure reference counting....
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+I have to admit I don't get why device management shouldn't be dependent on
+VFS refcounts / locking. IMO it is often dependent although I agree with
+multiple devices you likely have to do *additional* locking. And yes, I can
+imagine VFS locking could get in your way but the only tangible example we
+have is bcachefs and btrfs seems to be a counter example showing even multi
+device filesystem can live with VFS locking. So I don't think the case is
+as clear as you try to frame it.
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+So conceptually I agree making filesystems as bdev holders implement their
+own holder ops makes a lot of sense but because of lock ordering rules it
+is not quite practical or easily maintainable choice I'm afraid.
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
