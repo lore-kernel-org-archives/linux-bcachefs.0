@@ -1,173 +1,170 @@
-Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8B2B22D7A5
-	for <linux-bcachefs@vger.kernel.org>; Wed,  9 Jul 2025 17:38:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B732E22256F
+	for <linux-bcachefs@vger.kernel.org>; Wed,  9 Jul 2025 17:49:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752082713; cv=none; b=rH5cGmeRnpGku+OGfeNIuZVr5SLci+KTsisM91dZ6HCnkmTWbZqHQIqW7wyerZLb9Pzna7YGh68X5JeElgYY0ybFB+Qyooncczh71r0wZk7kRGVsveDp/4ULvo0iJ3me4XGHQJ9/9/JLz33qmRdl8l3dkLOFQaHG0L5K4hl+hlI=
+	t=1752083379; cv=none; b=usnkECNVlrbG24a2gHLZll0JIqmtP0VUsReAt4dDWKu1yxNL0/tUZKG7Q+BRh+mKb8rPqdyHBoxeXqpcAjkx5YdKTbhykiRh1/+3nsji9VYtHS3f19mdhBIlnw5M7WYkEuAreXZZN/tgwq53J8UzXFDrFjTnEvitktHheNPVsCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752082713; c=relaxed/simple;
-	bh=q9Pbp7urO0epXPxgo2MXb6syFHGq3ww+QGxyGJc+168=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=TSWYDps61ZRRVLeU63tZ8fD0IH89+kxkBd5bIdswnZde/PZo9S0aSoBSOHLtr0FYgK0jj0+AYOnoP+t0d1MSpg2fU6b+itqpcgyHIfoMZziENz1AKQKUBfcgFL91sRS2hKw0jdckLMonuPOHsB0U+9M+tSyeSWHJ4qfqY8untyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3df2d0b7c50so1278125ab.1
-        for <linux-bcachefs@vger.kernel.org>; Wed, 09 Jul 2025 10:38:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752082711; x=1752687511;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rUkTTgI92QzmAc9ICKC0M2YNgzpd6VFuNwCoNZ6vJfY=;
-        b=jOLv+3e5zzNRJyLPFqNAduVvM2kozK7K5PABg+Axrr0AOcf3Ama+Ho3i1AHxF2EB9O
-         9muGUm9mIsKa440aGQRzOu+kLAFF4EnWcz6n+f+GVoGDr2/6nBgVtPwAVsqJC//snXr0
-         1uxXfA1LFjbLNxmCymKDAUJxRE58R0BLITmcN2FAqXz8Wb4t/OooElOR/UBIJ4nh+pgt
-         HObKvA1qGs+Aq1/UTIccWEDzCSOaznk6OIfqJyaSQBru5t32efZPAfkPomiNJAT9iz8Y
-         Ed/MlMbUIcVlwHhENtJOKeA3vtVpkqGctVbx70l5hbmz8u5xsSwDSR3kgn6mTPZMYse5
-         uh9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVF93FfTRmZ5Fwj7ZG9+/otK4rqPOKJxdHuAlReaHCoLQtWiLC2EfP/9Mp6uCseLRRtBTb/1QGV8SXz4Nx7Mw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz9iSn7YAoqSSRNge1uCDQSpe+220LulXhy6nFP69aH8/3GeR9m
-	3k1Gc0RKiPHuKBFWyfxPhkUMGMQsRq6pTHRh04oYMYDqDplvUeHOIY/yJfS2EJuo5InsLWXioEj
-	xaSuqH/C1C8jmsO+/Se+2mIzAxv+65QamaSlTCrAshd+OYSPY2wxfFkt/e/E=
-X-Google-Smtp-Source: AGHT+IHBluWqgairrFXOlngsvcfyszYqLbwcrys7mpxy4nEeBj7YHhGsmlwlU84AGN4q/JIF++O2yIT6LBrKYznQoLcp6QxDTBAo
+	s=arc-20240116; t=1752083379; c=relaxed/simple;
+	bh=O2COwCVuJdzgOw6OpvXMgyjCNr+fnukRUw64/d9W5ek=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cmbgJ3v1Qd+Gi7RYxL2S8i702pfrjOn0qBctgIAKPyO1/npGG7xuON+SbBrd13SoJrILR3Wel/QeBUm29rsGjdkHhDIawnspnT7HGhdliBk3y5JnfYwoVUCcgHRPShGDJ/rrQHj5BSUlzU+jPzK2/xMERhSJH1Q0hjgzNfcqw8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nxOYpGdf; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nxOYpGdf"
+Date: Wed, 9 Jul 2025 13:49:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1752083364;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hqDUS4BBDM+csIlPWx+TszLLC9bq/xJu9mUJf/EWg0s=;
+	b=nxOYpGdfTMPJVXG5huvcmm3wX800iKwgvi9EibH7o8WPbGD0IbJnuT8Xfh49BzCs2NNRiI
+	l7YWbWGNS8/XY+4jyd7qjYN5zK+VF2fi6LvcD3n2iQlxfIicgfoo+0Ab8aH3ZqPTI1/j4M
+	/GaxGdzpYELaL0glMe+tv7VhZuKHsRo=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Jan Kara <jack@suse.cz>
+Cc: Dave Chinner <david@fromorbit.com>, 
+	Christian Brauner <brauner@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>, 
+	Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, linux-ext4@vger.kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, ntfs3@lists.linux.dev, linux-xfs@vger.kernel.org, 
+	linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH v4 1/6] fs: enhance and rename shutdown() callback to
+ remove_bdev()
+Message-ID: <y2rpp6u6pksjrzgxsn5rtcsl2vspffkcbtu6tfzgo7thn7g23p@7quhaixfx5yh>
+References: <343vlonfhw76mnbjnysejihoxsjyp2kzwvedhjjjml4ccaygbq@72m67s3e2ped>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2167:b0:3df:3154:2e90 with SMTP id
- e9e14a558f8ab-3e1670fac99mr36542005ab.19.1752082710981; Wed, 09 Jul 2025
- 10:38:30 -0700 (PDT)
-Date: Wed, 09 Jul 2025 10:38:30 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <686ea916.050a0220.385921.0013.GAE@google.com>
-Subject: [syzbot] [bcachefs?] kernel BUG in bch2_btree_node_iter_init (2)
-From: syzbot <syzbot+3ba6dd3d414ec2296f3c@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <343vlonfhw76mnbjnysejihoxsjyp2kzwvedhjjjml4ccaygbq@72m67s3e2ped>
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
+On Wed, Jul 09, 2025 at 07:23:07PM +0200, Jan Kara wrote:
+> On Wed 09-07-25 08:59:42, Dave Chinner wrote:
+> > This means that device removal processing can be performed
+> > without global filesystem/VFS locks needing to be held. Hence issues
+> > like re-entrancy deadlocks when there are concurrent/cascading
+> > device failures (e.g. a HBA dies, taking out multiple devices
+> > simultaneously) are completely avoided...
+> 
+> Funnily enough how about:
+> 
+> bch2_fs_bdev_mark_dead()		umount()
+>   bdev_get_fs()
+>     bch2_ro_ref_tryget() -> grabs bch_fs->ro_ref
+>     mutex_unlock(&bdev->bd_holder_lock);
+> 					deactivate_super()
+> 					  down_write(&sb->s_umount);
+> 					  deactivate_locked_super()
+> 					    bch2_kill_sb()
+> 					      generic_shutdown_super()
+> 					        bch2_put_super()
+> 						  __bch2_fs_stop()
+> 						    bch2_ro_ref_put()
+> 						    wait_event(c->ro_ref_wait, !refcount_read(&c->ro_ref));
+>   sb = c->vfs_sb;
+>   down_read(&sb->s_umount); -> deadlock
+> 
+> Which is a case in point why I would like to have a shared infrastructure
+> for bdev -> sb transition that's used as widely as possible. Because it
+> isn't easy to get the lock ordering right given all the constraints in the
+> VFS and block layer code paths for this transition that's going contrary to
+> the usual ordering sb -> bdev. And yes I do realize bcachefs grabs s_umount
+> not because it itself needs it but because it calls some VFS helpers
+> (sync_filesystem()) which expect it to be held so the pain is inflicted
+> by VFS here but that just demostrates the fact that VFS and FS locking are
+> deeply intertwined and you can hardly avoid dealing with VFS locking rules
+> in the filesystem itself.
 
-syzbot found the following issue on:
+Getting rid of the s_umount use looks like the much saner and easier
+fix - like the comment notes, it's only taken to avoid the warning in
+sync_filesystem, we don't actually need it.
 
-HEAD commit:    733923397fd9 Merge tag 'pwm/for-6.16-rc6-fixes' of git://g..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10d4b582580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b309c907eaab29da
-dashboard link: https://syzkaller.appspot.com/bug?extid=3ba6dd3d414ec2296f3c
-compiler:       Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15fd2a8c580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=115bea8c580000
+Locking gets easier when locks are private to individual subsystems,
+protecting specific data structures that are private to those
+subsystems.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-73392339.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/be7feaa77b8c/vmlinux-73392339.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a663b3e31463/bzImage-73392339.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/3e7303eff7fc/mount_0.gz
+> > It also avoids the problem of ->mark_dead events being generated
+> > from a context that holds filesystem/vfs locks and then deadlocking
+> > waiting for those locks to be released.
+> > 
+> > IOWs, a multi-device filesystem should really be implementing
+> > ->mark_dead itself, and should not be depending on being able to
+> > lock the superblock to take an active reference to it.
+> > 
+> > It should be pretty clear that these are not issues that the generic
+> > filesystem ->mark_dead implementation should be trying to
+> > handle.....
+> 
+> Well, IMO every fs implementation needs to do the bdev -> sb transition and
+> make sb somehow stable. It may be that grabbing s_umount and active sb
+> reference is not what everybody wants but AFAIU btrfs as the second
+> multi-device filesystem would be fine with that and for bcachefs this
+> doesn't work only because they have special superblock instantiation
+> behavior on mount for independent reasons (i.e., not because active ref
+> + s_umount would be problematic for them) if I understand Kent right.
+> So I'm still not fully convinced each multi-device filesystem should be
+> shipping their special method to get from device to stable sb reference.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3ba6dd3d414ec2296f3c@syzkaller.appspotmail.com
+Honestly, the sync_filesystem() call seems bogus.
 
-bcachefs (loop0): bucket 0:26 data type btree ptr gen 0 missing in alloc btree
-  while marking u64s 11 type btree_ptr_v2 SPOS_MAX len 0 ver 0: seq ac62141f8dc7e261 written 24 min_key POS_MIN durability: 1 ptr: 0:26:0 gen 0, fixing
-------------[ cut here ]------------
-kernel BUG at fs/bcachefs/bset.h:287!
-Oops: invalid opcode: 0000 [#1] SMP KASAN NOPTI
-CPU: 0 UID: 0 PID: 5498 Comm: syz.0.16 Not tainted 6.16.0-rc5-syzkaller-00038-g733923397fd9 #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:bkey_cmp_p_or_unp fs/bcachefs/bset.h:287 [inline]
-RIP: 0010:bset_search_tree fs/bcachefs/bset.c:1129 [inline]
-RIP: 0010:__bch2_bset_search fs/bcachefs/bset.c:1181 [inline]
-RIP: 0010:bch2_btree_node_iter_init+0x3961/0x3a50 fs/bcachefs/bset.c:1334
-Code: fd 90 0f 0b e8 90 a8 a3 fd 90 0f 0b e8 88 a8 a3 fd 90 0f 0b e8 80 a8 a3 fd 90 0f 0b e8 78 a8 a3 fd 90 0f 0b e8 70 a8 a3 fd 90 <0f> 0b e8 68 a8 a3 fd 90 0f 0b e8 60 a8 a3 fd 90 0f 0b e8 58 a8 a3
-RSP: 0018:ffffc90002b5e300 EFLAGS: 00010293
-RAX: ffffffff841c7e00 RBX: 000000000000004e RCX: ffff888032b52440
-RDX: 0000000000000000 RSI: 000000000000004e RDI: 0000000000000001
-RBP: ffffc90002b5e530 R08: ffff888032b52440 R09: 0000000000000002
-R10: 000000000000ffff R11: 0000000000000000 R12: dffffc0000000000
-R13: ffff88803f849908 R14: ffff888011900288 R15: 0000000000000001
-FS:  0000555588091500(0000) GS:ffff88808d21b000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007faae076b5a3 CR3: 000000001ee4f000 CR4: 0000000000352ef0
-Call Trace:
- <TASK>
- __btree_path_level_init fs/bcachefs/btree_iter.c:617 [inline]
- bch2_btree_path_level_init+0x50b/0xa20 fs/bcachefs/btree_iter.c:637
- btree_path_lock_root fs/bcachefs/btree_iter.c:787 [inline]
- bch2_btree_path_traverse_one+0xfec/0x21d0 fs/bcachefs/btree_iter.c:1203
- bch2_btree_path_traverse fs/bcachefs/btree_iter.h:250 [inline]
- __bch2_btree_iter_peek fs/bcachefs/btree_iter.c:2267 [inline]
- bch2_btree_iter_peek_max+0x9e8/0x58f0 fs/bcachefs/btree_iter.c:2384
- bch2_btree_iter_peek_max_type fs/bcachefs/btree_iter.h:743 [inline]
- bch2_gc_btree fs/bcachefs/btree_gc.c:729 [inline]
- bch2_gc_btrees fs/bcachefs/btree_gc.c:792 [inline]
- bch2_check_allocations+0x120d/0x57b0 fs/bcachefs/btree_gc.c:1094
- bch2_run_recovery_pass fs/bcachefs/recovery_passes.c:484 [inline]
- __bch2_run_recovery_passes+0x392/0x1010 fs/bcachefs/recovery_passes.c:539
- bch2_run_recovery_passes+0x184/0x210 fs/bcachefs/recovery_passes.c:610
- bch2_fs_recovery+0x2690/0x3a50 fs/bcachefs/recovery.c:1005
- bch2_fs_start+0xaaf/0xda0 fs/bcachefs/super.c:1213
- bch2_fs_get_tree+0xb39/0x1520 fs/bcachefs/fs.c:2488
- vfs_get_tree+0x92/0x2b0 fs/super.c:1804
- do_new_mount+0x24a/0xa40 fs/namespace.c:3902
- do_mount fs/namespace.c:4239 [inline]
- __do_sys_mount fs/namespace.c:4450 [inline]
- __se_sys_mount+0x317/0x410 fs/namespace.c:4427
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f6704d900ca
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd3cd859c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffd3cd85a50 RCX: 00007f6704d900ca
-RDX: 00002000000058c0 RSI: 0000200000005900 RDI: 00007ffd3cd85a10
-RBP: 00002000000058c0 R08: 00007ffd3cd85a50 R09: 0000000000010000
-R10: 0000000000010000 R11: 0000000000000246 R12: 0000200000005900
-R13: 00007ffd3cd85a10 R14: 0000000000005923 R15: 0000200000000040
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:bkey_cmp_p_or_unp fs/bcachefs/bset.h:287 [inline]
-RIP: 0010:bset_search_tree fs/bcachefs/bset.c:1129 [inline]
-RIP: 0010:__bch2_bset_search fs/bcachefs/bset.c:1181 [inline]
-RIP: 0010:bch2_btree_node_iter_init+0x3961/0x3a50 fs/bcachefs/bset.c:1334
-Code: fd 90 0f 0b e8 90 a8 a3 fd 90 0f 0b e8 88 a8 a3 fd 90 0f 0b e8 80 a8 a3 fd 90 0f 0b e8 78 a8 a3 fd 90 0f 0b e8 70 a8 a3 fd 90 <0f> 0b e8 68 a8 a3 fd 90 0f 0b e8 60 a8 a3 fd 90 0f 0b e8 58 a8 a3
-RSP: 0018:ffffc90002b5e300 EFLAGS: 00010293
-RAX: ffffffff841c7e00 RBX: 000000000000004e RCX: ffff888032b52440
-RDX: 0000000000000000 RSI: 000000000000004e RDI: 0000000000000001
-RBP: ffffc90002b5e530 R08: ffff888032b52440 R09: 0000000000000002
-R10: 000000000000ffff R11: 0000000000000000 R12: dffffc0000000000
-R13: ffff88803f849908 R14: ffff888011900288 R15: 0000000000000001
-FS:  0000555588091500(0000) GS:ffff88808d21b000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007faae06c8120 CR3: 000000001ee4f000 CR4: 0000000000352ef0
+If the block device is truly dead, what's it going to accomplish?
 
+It's not like we get callbacks for "this device is going to be going
+away soon", we only get that in reaction to something that's already
+happened.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> > > The shutdown method is implemented only by block-based filesystems and
+> > > arguably shutdown was always a misnomer because it assumed that the
+> > > filesystem needs to actually shut down when it is called.
+> > 
+> > Shutdown was not -assumed- as the operation that needed to be
+> > performed. That was the feature that was *required* to fix
+> > filesystem level problems that occur when the device underneath it
+> > disappears.
+> > 
+> > ->mark_dead() is the abstract filesystem notification from the block
+> > device, fs_bdfev_mark_dead() is the -generic implementation- of the
+> > functionality required by single block device filesystems. Part of
+> > that functionality is shutting down the filesystem because it can
+> > *no longer function without a backing device*.
+> > 
+> > multi-block device filesystems require compeltely different
+> > implementations, and we already have one that -does not use active
+> > superblock references-. IOWs, even if we add ->remove_bdev(sb)
+> > callout, bcachefs will continue to use ->mark_dead() because low
+> > level filesystem device management isn't (and shouldn't be!)
+> > dependent on high level VFS structure reference counting....
+> 
+> I have to admit I don't get why device management shouldn't be dependent on
+> VFS refcounts / locking. IMO it is often dependent although I agree with
+> multiple devices you likely have to do *additional* locking. And yes, I can
+> imagine VFS locking could get in your way but the only tangible example we
+> have is bcachefs and btrfs seems to be a counter example showing even multi
+> device filesystem can live with VFS locking. So I don't think the case is
+> as clear as you try to frame it.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Individual devices coming and going has nothing to do with the VFS. If a
+single device goes away and we're continuing in RW mode, _no_ VFS state
+is affected whatsoever.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+The only thing that's needed is a ref to prevent the filesystem from
+going away, not a lock. But again given that a bch_fs doesn't
+necessarily even have a VFS superblock it's not something we'd use
+directly in .mark_dead, that synchronization is handled directly via
+kill_sb -> generic_shutdown_super -> and all that...
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+We don't want bch_fs to outlive the VFS superblock if we do have a VFS
+sb, because asynchronous shutdown and releasing of resources causes very
+real problems (which already exist for other reasons...)
