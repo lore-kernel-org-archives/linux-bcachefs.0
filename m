@@ -1,157 +1,168 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AB9A1E505;
-	Thu, 10 Jul 2025 09:57:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF9F02D0C93
+	for <linux-bcachefs@vger.kernel.org>; Thu, 10 Jul 2025 13:10:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752141475; cv=none; b=Nmunq82PgMraQgWRvrN4NAEK/69BSEnJPniIbGpFVpRbdkV6obWbdPqe96Cz7Lb40pWq5o/OB8xalr7slq0LVu5niCJnnPDKytWqKNkcY7N9Bv0JH7IcqEDmVHHTX1ZnJ8nJre5j2K7369KFszgS/stRC/iS1CZXEXhDPA8K5As=
+	t=1752153013; cv=none; b=TFsIQY5uOWPj5O9WaVp7Ygtv4S1Y/25k2XT6D3JLUUahz4rNP1QriDCSreHSEuhe2/3RxEfPitQd/ijyL4OhgtnQc1i9NlYnQMrVpwNCoMayTQufe795z8socNFjgHoDi3LLtK1DVjX0QsqkzWB2K4AO9nIUKvFEXD9HDcWibpQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752141475; c=relaxed/simple;
-	bh=B5Te1MOfraVVrSpjVQqFSGNLCQuc3hLW//SrxwQmFCI=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:Subject:Cc:To:
-	 References:In-Reply-To; b=cAIHhW2y63JaOf304BAbwwSE9iQhn9jgC/DvAW7qbdJ3/8lw3yW7NIBcqmsoEz5xheD9vO5wdF5VNT9jaUwYW43nQIsUeKzJld97YWjvCXWm0bKi3is60g3NynUyADQbCnekCBfSSxBKQEDN59YKqkoc//ZPZ3unSfYPPHKLyHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vNulD8l8; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1752153013; c=relaxed/simple;
+	bh=6wzNeHKe2BwweMlq895MbtGooUY62kwoBduxkWK5Nos=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I7ZlFmtOFRWA8K/mIO0JqINtMYVWskWAqzmJUmoF4APwAgnJHAalxuV5uaXdMJG5StFvbefvsEfP+hiL6rwVidiKGn14fOX8x0T4Vbzf/IckzphWd/R+CssdrqElr3QVvBMtOH+G9TmlHCBorhL3LxVSm6Tkqb5+4Lz2TrBqFPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eD+Hvn7Z; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mJOuKh4P; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AE8gmRXK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2iNx+RTI; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vNulD8l8"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D741BC4CEE3;
-	Thu, 10 Jul 2025 09:57:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752141475;
-	bh=B5Te1MOfraVVrSpjVQqFSGNLCQuc3hLW//SrxwQmFCI=;
-	h=Date:From:Subject:Cc:To:References:In-Reply-To:From;
-	b=vNulD8l8X0acklVEmHYF6S8BVnK+45pS2sUQfSezAQwOQ7uZUtMKG0RIvwIuOwqVN
-	 CiszKPKYAXRasB/EQD8VLrBkthqNMWby/2oKdjxD5gv3C2g97D/FDWbfFXA+cOmhsv
-	 V9CdxRiVg110RYC6k55Kue7ZF7Jw8UKm5vV1eYgg6YOUTzYpAz86ImrNbywCl5VUkx
-	 JybQaalrWBLrVRURMZpZn74AZEnRHX61sNITP9ygx/c6s3btRxcqBOBFQCx72C0eHG
-	 AkJQlrzblaVCzMwsY0KqRuc1wbybmnyeB4ESYj/5yyiQJ+PB5XKQdGH7qHIS9aWhv9
-	 XRKR6B3glJhWA==
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eD+Hvn7Z";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mJOuKh4P";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AE8gmRXK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2iNx+RTI"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C424121175;
+	Thu, 10 Jul 2025 13:10:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1752153009; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zyJYnzTWJud5qEGhrZj76b5jt76YQEEA8Xla8XnWYCI=;
+	b=eD+Hvn7ZLTFWMgSHZCTGec0Q2nrnVMxsDS60BVl3tkuQTfzJX6NKCouIsq0gvJDK5qTDZm
+	hzfec7UPwkOq03Rut0QrPDclglmvIM1JlhtM+PxiclYYwxAnSAPEvXEWYUJdRbQtjYpCYQ
+	8VUrnp1QnIyaTXxt0OXdlTD8PNxA2uk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1752153009;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zyJYnzTWJud5qEGhrZj76b5jt76YQEEA8Xla8XnWYCI=;
+	b=mJOuKh4P+rH23nX5Slq2qnqcl4aZaxTkud0cBp7E7uk23R/O5aN339AWOIzgj4zkFjKs2B
+	4txzG5FZizrEKTAA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=AE8gmRXK;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=2iNx+RTI
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1752153008; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zyJYnzTWJud5qEGhrZj76b5jt76YQEEA8Xla8XnWYCI=;
+	b=AE8gmRXK97XQg+ako5dNJ/Am6nwNeQMZiPTHlyWjH6cESCeSKiwH9t1kre4nAFCpWAP8S4
+	X23Nw3M+4bpMfjDKqHk1AczAhxCwLZuqoN5T3BnMmOR7hvNlofMWFvsVTkFNTlJxST/7BT
+	vCIRTWq9DcbaVWNDvbLNERrcO2tWf9E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1752153008;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zyJYnzTWJud5qEGhrZj76b5jt76YQEEA8Xla8XnWYCI=;
+	b=2iNx+RTILnuNSLzwrBa6OKoCkNZ1ZxkYVIT/m5OgKQDqKVYd6EnQ0dRySRNKTdE2+gYWyd
+	/d5t9pC4FFZl+wBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B6119136CB;
+	Thu, 10 Jul 2025 13:10:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id esQeLLC7b2jGGQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 10 Jul 2025 13:10:08 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 5A12EA098F; Thu, 10 Jul 2025 15:10:04 +0200 (CEST)
+Date: Thu, 10 Jul 2025 15:10:04 +0200
+From: Jan Kara <jack@suse.cz>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Jan Kara <jack@suse.cz>, Dave Chinner <david@fromorbit.com>, 
+	Christian Brauner <brauner@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>, 
+	Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, linux-ext4@vger.kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, ntfs3@lists.linux.dev, linux-xfs@vger.kernel.org, 
+	linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH v4 1/6] fs: enhance and rename shutdown() callback to
+ remove_bdev()
+Message-ID: <kgolzhhd47x3iqkdrwyzh65ng4mm6cauxdjgiao2otztncyc3f@rskadwaph2l5>
+References: <343vlonfhw76mnbjnysejihoxsjyp2kzwvedhjjjml4ccaygbq@72m67s3e2ped>
+ <y2rpp6u6pksjrzgxsn5rtcsl2vspffkcbtu6tfzgo7thn7g23p@7quhaixfx5yh>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 10 Jul 2025 11:57:50 +0200
-Message-Id: <DB8ABBBNMMVB.1QWW942P0MRJP@kernel.org>
-From: "Danilo Krummrich" <dakr@kernel.org>
-Subject: Re: [PATCH v12 1/4] mm/vmalloc: allow to set node and align in
- vrealloc
-Cc: "Vitaly Wool" <vitaly.wool@konsulko.se>, "linux-mm"
- <linux-mm@kvack.org>, "Andrew Morton" <akpm@linux-foundation.org>, "LKML"
- <linux-kernel@vger.kernel.org>, "Uladzislau Rezki" <urezki@gmail.com>,
- "Alice Ryhl" <aliceryhl@google.com>, "Vlastimil Babka" <vbabka@suse.cz>,
- "rust-for-linux" <rust-for-linux@vger.kernel.org>, "Lorenzo Stoakes"
- <lorenzo.stoakes@oracle.com>, "Liam R . Howlett" <Liam.Howlett@oracle.com>,
- "Kent Overstreet" <kent.overstreet@linux.dev>,
- <linux-bcachefs@vger.kernel.org>, "bpf" <bpf@vger.kernel.org>, "Herbert Xu"
- <herbert@gondor.apana.org.au>, "Jann Horn" <jannh@google.com>, "Pedro
- Falcato" <pfalcato@suse.de>
-To: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
-References: <20250709172345.1031907-1-vitaly.wool@konsulko.se>
- <20250709172416.1031970-1-vitaly.wool@konsulko.se>
- <CAADnVQ+bikqCO7D+5_rAtiJXv3F6xn=0_hgGH5CkoTPpdi8j6Q@mail.gmail.com>
- <14b08e7c-c2e8-435c-a1dd-bd51cfb42060@kernel.org>
- <CAADnVQ+qCNfm3aucBrkXRXrUjjYeYQb09Oobx+pgOXNDny4s8w@mail.gmail.com>
- <DB7WW886UVAJ.I58517CYL8G7@kernel.org>
- <CAADnVQ+iZbKzx8bje=CLO=OnpmGHmQHpDNC=UjWYfN59bWoN3A@mail.gmail.com>
-In-Reply-To: <CAADnVQ+iZbKzx8bje=CLO=OnpmGHmQHpDNC=UjWYfN59bWoN3A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <y2rpp6u6pksjrzgxsn5rtcsl2vspffkcbtu6tfzgo7thn7g23p@7quhaixfx5yh>
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FREEMAIL_ENVRCPT(0.00)[gmx.com];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	MISSING_XM_UA(0.00)[];
+	FREEMAIL_CC(0.00)[suse.cz,fromorbit.com,kernel.org,gmx.com,suse.com,vger.kernel.org,zeniv.linux.org.uk,lists.sourceforge.net,lists.linux.dev];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Rspamd-Queue-Id: C424121175
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.01
 
-On Thu Jul 10, 2025 at 2:39 AM CEST, Alexei Starovoitov wrote:
-> On Wed, Jul 9, 2025 at 4:26=E2=80=AFPM Danilo Krummrich <dakr@kernel.org>=
- wrote:
->>
->> On Thu Jul 10, 2025 at 1:14 AM CEST, Alexei Starovoitov wrote:
->> > On Wed, Jul 9, 2025 at 3:57=E2=80=AFPM Danilo Krummrich <dakr@kernel.o=
-rg> wrote:
->> >>
->> >> On 7/10/25 12:53 AM, Alexei Starovoitov wrote:
->> >> > On Wed, Jul 9, 2025 at 10:25=E2=80=AFAM Vitaly Wool <vitaly.wool@ko=
-nsulko.se> wrote:
->> >> >>
->> >> >>
->> >> >> -void *vrealloc_noprof(const void *p, size_t size, gfp_t flags)
->> >> >> +void *vrealloc_node_align_noprof(const void *p, size_t size, unsi=
-gned long align,
->> >> >> +                                gfp_t flags, int node)
->> >> >>   {
->> >> >
->> >> > imo this is a silly pattern to rename functions because they
->> >> > got new arguments.
->> >> > The names of the args are clear enough "align" and "node".
->> >> > I see no point in adding the same suffixes to a function name.
->> >> > In the future this function will receive another argument and
->> >> > the function would be renamed again?!
->> >> > "_noprof" suffix makes sense, since it's there for alloc_hooks,
->> >> > but "_node_align_" is unnecessary.
->> >>
->> >> Do you have an alternative proposal given that we also have vrealloc(=
-) and
->> >> vrealloc_node()?
->> >
->> > vrealloc_node()?! There is no such thing in the tree.
->> > There are various k[zm]alloc_node() which are artifacts of the past
->> > when NUMA just appeared and people cared about CONFIG_NUMA vs not.
->> > Nowadays NUMA is everywhere and any new code must support NUMA
->> > from the start. Hence no point in carrying old baggage and obsolete na=
-mes.
->>
->> This patch adds it; do you suggest to redefine vrealloc_noprof() to take=
- align
->> and nid? If we don't mind being inconsistent with krealloc_noprof() and
->> kvrealloc_noprof() that's fine I guess.
->>
->> FWIW, I prefer consistency.
->
-> What inconsistency are you talking about? That
-> krealloc_noprof(const void *p, size_t new_size, gfp_t flags)
-> and
-> vrealloc_noprof(const void *p, size_t size, unsigned long align,
->                 gfp_t flags, int node)
-> have different number of arguments?!
->
-> See:
-> alloc_pages_noprof(gfp_t gfp, unsigned int order);
-> __alloc_pages_noprof(gfp_t gfp, unsigned int order, int preferred_nid,
->                 nodemask_t *nodemask);
->
-> Adding double underscore to keep all existing callers of
-> vrealloc_noprof() without changes and do:
->
-> vrealloc_noprof(const void *p, size_t size, gfp_t flags);
-> __vrealloc_noprof(const void *p, size_t size, unsigned long align,
-> gfp_t flags, int node);
->
-> is fine and consistent with how things were done in the past,
-> but adding "_node_align_" to the function name and code churn to all
-> callsites is a cargo cult.
+On Wed 09-07-25 13:49:12, Kent Overstreet wrote:
+> On Wed, Jul 09, 2025 at 07:23:07PM +0200, Jan Kara wrote:
+> > > It also avoids the problem of ->mark_dead events being generated
+> > > from a context that holds filesystem/vfs locks and then deadlocking
+> > > waiting for those locks to be released.
+> > > 
+> > > IOWs, a multi-device filesystem should really be implementing
+> > > ->mark_dead itself, and should not be depending on being able to
+> > > lock the superblock to take an active reference to it.
+> > > 
+> > > It should be pretty clear that these are not issues that the generic
+> > > filesystem ->mark_dead implementation should be trying to
+> > > handle.....
+> > 
+> > Well, IMO every fs implementation needs to do the bdev -> sb transition and
+> > make sb somehow stable. It may be that grabbing s_umount and active sb
+> > reference is not what everybody wants but AFAIU btrfs as the second
+> > multi-device filesystem would be fine with that and for bcachefs this
+> > doesn't work only because they have special superblock instantiation
+> > behavior on mount for independent reasons (i.e., not because active ref
+> > + s_umount would be problematic for them) if I understand Kent right.
+> > So I'm still not fully convinced each multi-device filesystem should be
+> > shipping their special method to get from device to stable sb reference.
+> 
+> Honestly, the sync_filesystem() call seems bogus.
+> 
+> If the block device is truly dead, what's it going to accomplish?
 
-As Vitaly mentioned in a different reply, this would be inconsistent with t=
-he
-'k' and 'kv' variants, which have the suffix '_node'.
+Notice that fs_bdev_mark_dead() calls sync_filesystem() only in case
+'surprise' argument is false - meaning this is actually a notification
+*before* the device is going away. I.e., graceful device hot unplug when
+you can access the device to clean up as much as possible.
 
-Anyways, in general I don't think that adding underscores for functions tha=
-t
-basically do the same thing but are getting more specialized is a great pat=
-tern
-for things that are not strictly limited to a narrow context.
-
-Please note, I'm not saying we should encode additional arguments in the na=
-me
-either. I think it really depends on the actual case.
-
-In this case, it seems to make sense to me that there is e.g. kmalloc() and
-kmalloc_node().
-
-For a caller that's much more useful, i.e. I want classic kmalloc(), but wa=
-nt to
-set the node, hence kmalloc_node(). Calling it __kmalloc() instead seems a =
-bit
-random.
-
-Or do you only refer to the *_noprof() variants, which are not exported to
-users? But even then, underscores still don't seem very expressive.
-
-I'm not maintaining this code though, so just take it FWIW. :)
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
