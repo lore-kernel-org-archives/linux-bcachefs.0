@@ -1,97 +1,216 @@
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+Received: from mailrelay-egress16.pub.mailoutpod3-cph3.one.com (mailrelay-egress16.pub.mailoutpod3-cph3.one.com [46.30.212.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A93B2FCE3D
-	for <linux-bcachefs@vger.kernel.org>; Thu, 10 Jul 2025 18:41:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A01942FD591
+	for <linux-bcachefs@vger.kernel.org>; Thu, 10 Jul 2025 18:58:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.212.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752172887; cv=none; b=la4XMmMOBHbGZAnwc3PmcW2HhECYxcMs9W0ry+OTnjN6OguvH1XCgvDJKxN9oumbXoZd/Ze4g4C00R1ZRo40qeqEGJwYBD376brGK3iFaB4af59Tvbm41+l5kDYC4EvOjaT4agnALDLzmdXpuG14R1HyqD8QZHVL5fPOOfnjTJM=
+	t=1752173886; cv=none; b=CFowQO8+xGgok3g0N2We3Qeo9LSCB+t6h95rzZX9diDWjxzD8sH3a31i/ayFp0ADsArowafuE3Jp1eJVgxPeyYHWAWHLMpcu2xNLY9Y1UzwVGHBTZSjjhQ59NQDttlE4UQGHKKOSLm8nqF6EMwzVNNydF9gLrQLg2sRl7ZmbLn0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752172887; c=relaxed/simple;
-	bh=nSYtxsroVKUHT9UvaB/DZeOq2Pt7+h1yZzB58Fh4XdQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ujrrtDkA3KLDVp8GNRbUNY5OZDqTLo6ynPF/LOD5JbNw+4SkvKhEh1fmckyZaDeKaFbCEZ/U2v3yY2hX1iN/lN3guJIioL7g/hv8bEQMkIQMgWFPxzSkzNGffA8mN5+2lGlVIm8+sn7cwDTYF4E5IcAgfvnZSk1pbZL79C9K1jg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YR3JBw0d; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1752173886; c=relaxed/simple;
+	bh=pe4AI+RI8fgZTAcJ20G+kMV/6FPxTNz+kibld3PNvek=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=o13O6t9Lt+AS1NShIZdnvsxiVGV1tAILJCzfuuXWaNUESWBh7wllM+vxxUk8uo3+ZY7n+n1vYVIb2lUMMQsvYJbgp4TizPzh51fXXBW7V43rdGzQwAWn//otA+1JuvL5mnMyPMFwunfTdOAYHiPah2VaX+UKCvl54pgnEAhWhhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=konsulko.se; spf=none smtp.mailfrom=konsulko.se; dkim=pass (2048-bit key) header.d=konsulko.se header.i=@konsulko.se header.b=59u0gWhR; dkim=permerror (0-bit key) header.d=konsulko.se header.i=@konsulko.se header.b=Z6euGjn8; arc=none smtp.client-ip=46.30.212.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=konsulko.se
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=konsulko.se
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YR3JBw0d"
-Date: Thu, 10 Jul 2025 14:41:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752172882;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4BIQ0YzbWgDLZuTNtQ8L6nBVEh6ENrzY2g79PLtP8UI=;
-	b=YR3JBw0dNQxWT8gbfOrQApQA3Dr/mncyvyWlhdULFlpmatye4WQWSGg+jo14ol4mS36JHY
-	HHEptsY8mnK7lMtHhlgU9ZWw06YTXudIOiL3YY7WVl8TqHFp7dZrbySpEs9bEUWoszkMXv
-	xx0hqlX1kXJ+NYMyOY8UTChQdDIsxs0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Jan Kara <jack@suse.cz>
-Cc: Dave Chinner <david@fromorbit.com>, 
-	Christian Brauner <brauner@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>, 
-	Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, linux-ext4@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, ntfs3@lists.linux.dev, linux-xfs@vger.kernel.org, 
-	linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH v4 1/6] fs: enhance and rename shutdown() callback to
- remove_bdev()
-Message-ID: <5xno4s25lsd2sqq6judn7moorgy2h3konejgassnzlccfa6jsf@ez6ciofy3bwp>
-References: <343vlonfhw76mnbjnysejihoxsjyp2kzwvedhjjjml4ccaygbq@72m67s3e2ped>
- <y2rpp6u6pksjrzgxsn5rtcsl2vspffkcbtu6tfzgo7thn7g23p@7quhaixfx5yh>
- <kgolzhhd47x3iqkdrwyzh65ng4mm6cauxdjgiao2otztncyc3f@rskadwaph2l5>
+	dkim=pass (2048-bit key) header.d=konsulko.se header.i=@konsulko.se header.b="59u0gWhR";
+	dkim=permerror (0-bit key) header.d=konsulko.se header.i=@konsulko.se header.b="Z6euGjn8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1752173879; x=1752778679;
+	d=konsulko.se; s=rsa1;
+	h=to:references:message-id:content-transfer-encoding:cc:date:in-reply-to:from:
+	 subject:mime-version:content-type:from;
+	bh=qOROnEfbRMkEU9HUIlrw8G/gc7MbaqKeDQV/AuFw0LU=;
+	b=59u0gWhR/XhR/i5COmwjWdLGRDxP9xDXHDopl2OUB0iq94dLbpEeYI7Vz1wimKDxihVFX59SQmx+V
+	 4IrlXC7v64t9gScthV2gZhTtx+AzVXPmuO6lqlvgbUHCRVJurwRE6W+yLK+m71O/CWRks6wFn7wvyC
+	 1srhBrdDsj6lXbdNNVWqQbs26VS/nXQH6SzfgsR8amVggugx648AYHZmJAThmuZnloO6LgMLB/Myxg
+	 XY3CWlKactui0SrgVoLBfB2EhQBLRH+fqfQDGSqv9uzvosBsOgiC9Yp9gqFZlT1s4cJKfnT9bRXKmG
+	 lD7N51RK0yaCSc/InhrGXh4Jfb4SIJg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1752173879; x=1752778679;
+	d=konsulko.se; s=ed1;
+	h=to:references:message-id:content-transfer-encoding:cc:date:in-reply-to:from:
+	 subject:mime-version:content-type:from;
+	bh=qOROnEfbRMkEU9HUIlrw8G/gc7MbaqKeDQV/AuFw0LU=;
+	b=Z6euGjn8Mwt0J/TG8fUhvLbVRpyUb5j4Wf9Bv9akAk10Z6B/49l8SclhsQwGW5lI0CgIAMtsb89gN
+	 /5kL9yNBA==
+X-HalOne-ID: cb161d63-5dbf-11f0-b814-e90f2b8e16ca
+Received: from smtpclient.apple (c188-150-224-8.bredband.tele2.se [188.150.224.8])
+	by mailrelay2.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
+	id cb161d63-5dbf-11f0-b814-e90f2b8e16ca;
+	Thu, 10 Jul 2025 18:57:58 +0000 (UTC)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <kgolzhhd47x3iqkdrwyzh65ng4mm6cauxdjgiao2otztncyc3f@rskadwaph2l5>
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.200.121\))
+Subject: Re: [PATCH v12 1/4] mm/vmalloc: allow to set node and align in
+ vrealloc
+From: Vitaly Wool <vitaly.wool@konsulko.se>
+In-Reply-To: <aedc2b36-b3b0-4367-aa68-ba9f8a110b52@lucifer.local>
+Date: Thu, 10 Jul 2025 20:57:48 +0200
+Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ linux-mm@kvack.org,
+ akpm@linux-foundation.org,
+ linux-kernel@vger.kernel.org,
+ Uladzislau Rezki <urezki@gmail.com>,
+ Danilo Krummrich <dakr@kernel.org>,
+ Alice Ryhl <aliceryhl@google.com>,
+ Vlastimil Babka <vbabka@suse.cz>,
+ rust-for-linux@vger.kernel.org,
+ Kent Overstreet <kent.overstreet@linux.dev>,
+ linux-bcachefs@vger.kernel.org,
+ bpf@vger.kernel.org,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ Jann Horn <jannh@google.com>,
+ Pedro Falcato <pfalcato@suse.de>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <2D8A1A29-C847-479F-B732-A7CB13A46FA7@konsulko.se>
+References: <20250709172345.1031907-1-vitaly.wool@konsulko.se>
+ <20250709172416.1031970-1-vitaly.wool@konsulko.se>
+ <nsacpwgldqdidsqkqalxdhwptikk7srnhjncmjaulnzcf6nsmu@fisb5w4aamhl>
+ <D0D76B82-E390-498E-AE84-1B2CA6C0F809@konsulko.se>
+ <aedc2b36-b3b0-4367-aa68-ba9f8a110b52@lucifer.local>
+To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+X-Mailer: Apple Mail (2.3826.200.121)
 
-On Thu, Jul 10, 2025 at 03:10:04PM +0200, Jan Kara wrote:
-> On Wed 09-07-25 13:49:12, Kent Overstreet wrote:
-> > On Wed, Jul 09, 2025 at 07:23:07PM +0200, Jan Kara wrote:
-> > > > It also avoids the problem of ->mark_dead events being generated
-> > > > from a context that holds filesystem/vfs locks and then deadlocking
-> > > > waiting for those locks to be released.
-> > > > 
-> > > > IOWs, a multi-device filesystem should really be implementing
-> > > > ->mark_dead itself, and should not be depending on being able to
-> > > > lock the superblock to take an active reference to it.
-> > > > 
-> > > > It should be pretty clear that these are not issues that the generic
-> > > > filesystem ->mark_dead implementation should be trying to
-> > > > handle.....
-> > > 
-> > > Well, IMO every fs implementation needs to do the bdev -> sb transition and
-> > > make sb somehow stable. It may be that grabbing s_umount and active sb
-> > > reference is not what everybody wants but AFAIU btrfs as the second
-> > > multi-device filesystem would be fine with that and for bcachefs this
-> > > doesn't work only because they have special superblock instantiation
-> > > behavior on mount for independent reasons (i.e., not because active ref
-> > > + s_umount would be problematic for them) if I understand Kent right.
-> > > So I'm still not fully convinced each multi-device filesystem should be
-> > > shipping their special method to get from device to stable sb reference.
-> > 
-> > Honestly, the sync_filesystem() call seems bogus.
-> > 
-> > If the block device is truly dead, what's it going to accomplish?
-> 
-> Notice that fs_bdev_mark_dead() calls sync_filesystem() only in case
-> 'surprise' argument is false - meaning this is actually a notification
-> *before* the device is going away. I.e., graceful device hot unplug when
-> you can access the device to clean up as much as possible.
 
-That doesn't seem to be hooked up to anything?
 
-blk_mark_disk_dead() -> blk_report_disk_dead(), surprise is always true
+> On Jul 10, 2025, at 5:19=E2=80=AFPM, Lorenzo Stoakes =
+<lorenzo.stoakes@oracle.com> wrote:
+>=20
+> On Thu, Jul 10, 2025 at 08:21:19AM +0200, Vitaly Wool wrote:
+>>=20
+>>=20
+>>> On Jul 9, 2025, at 9:01=E2=80=AFPM, Liam R. Howlett =
+<Liam.Howlett@oracle.com> wrote:
+>>>=20
+>>> * Vitaly Wool <vitaly.wool@konsulko.se =
+<mailto:vitaly.wool@konsulko.se>> [250709 13:24]:
+>>>> Reimplement vrealloc() to be able to set node and alignment should
+>>>> a user need to do so. Rename the function to vrealloc_node_align()
+>>>> to better match what it actually does now and introduce macros for
+>>>> vrealloc() and friends for backward compatibility.
+>>>>=20
+>>>> With that change we also provide the ability for the Rust part of
+>>>> the kernel to set node and alignment in its allocations.
+>>>>=20
+>>>> Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.se>
+>>>> Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+>>>> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+>>>> ---
+>>>> include/linux/vmalloc.h | 12 +++++++++---
+>>>> mm/nommu.c              |  3 ++-
+>>>> mm/vmalloc.c            | 31 ++++++++++++++++++++++++++-----
+>>>> 3 files changed, 37 insertions(+), 9 deletions(-)
+>>>>=20
+>>> ...
+>>>=20
+>>>> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+>>>> index 6dbcdceecae1..03dd06097b25 100644
+>>>> --- a/mm/vmalloc.c
+>>>> +++ b/mm/vmalloc.c
+>>>> @@ -4089,19 +4089,31 @@ void *vzalloc_node_noprof(unsigned long =
+size, int node)
+>>>> EXPORT_SYMBOL(vzalloc_node_noprof);
+>>>>=20
+>>>> /**
+>>>> - * vrealloc - reallocate virtually contiguous memory; contents =
+remain unchanged
+>>>> + * vrealloc_node_align_noprof - reallocate virtually contiguous =
+memory; contents
+>>>> + * remain unchanged
+>>>> * @p: object to reallocate memory for
+>>>> * @size: the size to reallocate
+>>>> + * @align: requested alignment
+>>>> * @flags: the flags for the page level allocator
+>>>> + * @nid: node number of the target node
+>>>> + *
+>>>> + * If @p is %NULL, vrealloc_XXX() behaves exactly like vmalloc(). =
+If @size is
+>>>> + * 0 and @p is not a %NULL pointer, the object pointed to is =
+freed.
+>>>> *
+>>>> - * If @p is %NULL, vrealloc() behaves exactly like vmalloc(). If =
+@size is 0 and
+>>>> - * @p is not a %NULL pointer, the object pointed to is freed.
+>>>> + * if @nid is not NUMA_NO_NODE, this function will try to allocate =
+memory on
+>>>> + * the given node. If reallocation is not necessary (e. g. the new =
+size is less
+>>>> + * than the current allocated size), the current allocation will =
+be preserved
+>>>> + * unless __GFP_THISNODE is set. In the latter case a new =
+allocation on the
+>>>> + * requested node will be attempted.
+>=20
+> Agreed with Liam, this is completely unreadable.
+>=20
+> I think the numa node stuff is unnecesasry, that's pretty much =
+inferred.
+>=20
+> I'd just go with something like 'if the function can void having to =
+reallocate
+> then it does'.
+>=20
+> Nice and simple :)
 
-disk_force_media_change(), same
+I think it is important to stress that the function is not always =
+following the specified nid.
+How about =E2=80=9CIf the caller wants the new memory to be on specific =
+node *only*, __GFP_THISNODE flag should be set, otherwise the function =
+will try to avoid reallocation and possibly disregard the specified =
+@nid=E2=80=9D ?
 
-The only call where it's falso is in s390 code. If we know that a disk
-is going away, that would be a userspace thing, and they can just
-unmount.
+>=20
+>>>=20
+>>> I am having a very hard time understanding what you mean here.  What =
+is
+>>> the latter case?
+>>>=20
+>>> If @nis is !NUMA_NO_NODE, the allocation will be attempted on the =
+given
+>>> node.  Then things sort of get confusing.  What is the latter case?
+>>=20
+>> The latter case is __GFP_THISNODE present in flags. That=E2=80=99s =
+the latest if-clause in this paragraph.
+>>>=20
+>>>> *
+>>>> * If __GFP_ZERO logic is requested, callers must ensure that, =
+starting with the
+>>>> * initial memory allocation, every subsequent call to this API for =
+the same
+>>>> * memory allocation is flagged with __GFP_ZERO. Otherwise, it is =
+possible that
+>>>> * __GFP_ZERO is not fully honored by this API.
+>>>> *
+>>>> + * If the requested alignment is bigger than the one the =
+*existing* allocation
+>>>> + * has, this function will fail.
+>>>> + *
+>>>=20
+>>> It might be better to say something like:
+>>> Requesting an alignment that is bigger than the alignment of the
+>>> *existing* allocation will fail.
+>>>=20
+>>=20
+>> The whole function description in fact consists of several if-clauses =
+(some of which are nested) so I am just following the pattern here.
+>=20
+> Right, but in no sane world is essentially describing a series of =
+if-clauses in
+> a kerneldoc a thing.
+>=20
+> Just it keep it simple, this is meant to be an overview, people can go =
+read the
+> code if they need details :)
+>=20
+Alright, no strong feelings about it anyway. Will reword as you guys =
+suggest.
+
+Thanks,
+Vitaly
+
