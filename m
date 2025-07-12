@@ -1,65 +1,63 @@
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61696274FF0
-	for <linux-bcachefs@vger.kernel.org>; Sat, 12 Jul 2025 12:57:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34EE328CF5D;
+	Sat, 12 Jul 2025 18:15:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752325078; cv=none; b=moMOfh0YddY/woq60SbLfKsOXZTm6uX6P3GMJclJ7gFAAmuNTYlCtfnHmuTOIn8Au1OOx66xiaarwvEvJKss6U05SLVlpPTZoNK8rZj4DeOyrPEw0F/HLpM5HIoNlBzLlMDHU6rzRis2w2Bij6BT+cuwGZ7z8OjwdDe8iMUBxII=
+	t=1752344101; cv=none; b=lMc+ywduTFtVA4pvu7Y8cgvDLJgy5n5vV50ADfKjQT704MZJ4o3TqjsI9bRggSc85iYdRWCMvonNOQMNIQuNV/tA5qXcJCZ6N5bg5fzCijn1nJHT56Bb6JclEwZp3ZYOxgbI4SqGy1/EWxbpmX+hUM9b3lpFnOYyY7DylKA6YvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752325078; c=relaxed/simple;
-	bh=8bS4UYr3l9WBkgw+x3LKq/gxxx5Z7hIDlxrvtzw6Z5M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e9xfMwf9m7HVmRx8Kj3FLS6gYQBls5BxwU3KMLyB7uJ+cSymlf2IKLoPqvOSICLP2QtH0tO1HUAo3TQIBxZ/6wrGN9y+cks9RGXsPsy2yO24WQkmoDFtPqxp8QwzXFbjz5WvBdh6BYyiwrHXN6L6olq0x160eJA7/dKDxSVlHuk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HU9nk8Pl; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1752344101; c=relaxed/simple;
+	bh=Z40NUk9emlT/nRO6A0g8lOmulcjqezpPuIat1qDc0h4=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=JrYxbzYmUJLtxWOO2qUt7tIGy2QcIPvmp1kEJsaPMBZXUUI8CSzoYP/BfsRo2Aim4fzR/V8cqgjr38Wom1qkiU8zXHknA7r94nBldxpMoSIgSLztBnZ9K8XoG3gC84uXZQJxrMPg6v+tZJ2qohq/7cH/7nC3Tcwaw8I3FiBOGJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EfMtWgUU; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HU9nk8Pl"
-Date: Sat, 12 Jul 2025 08:57:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752325063;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qTv9ah9t4h6oUdT9A789T2hnOTNgS9LvHpI6S8hxVbw=;
-	b=HU9nk8PlIt0Ta7EANFGfn6lUjjbynF3tYrp9GiFZW3SHg/dTtlVn+Mz6dL04xApslFmXjm
-	wZXCSjd3v73/DnykGKnccxnxFTFdQbzs2p3Lhv/fA/vaquXHVGe2G8eKsN7vdHfLx8R641
-	NPe+W/gkXRhR5filgs+9qHcKGtt7SVw=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EfMtWgUU"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14F4EC4CEEF;
+	Sat, 12 Jul 2025 18:15:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752344101;
+	bh=Z40NUk9emlT/nRO6A0g8lOmulcjqezpPuIat1qDc0h4=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=EfMtWgUU7LTZ8XZeOoiEmtbDgEX8tKaEujFAuPxvcTGLeK6KJHJWMMkBEYnVeth7R
+	 4o2Xfc/E/C/DJ04Onnpcp4GkowpFnwvGAk+QVqHguDdpnl3JjlYdSsW+EOyYGJnoKp
+	 maB73Lc399EhdeZlc9SVTIXIS16HZfCl1wlYXsEaQ/l+dJDOcU0ukpXPWZkaeJEyGM
+	 PfjRLns7/uUgdjCK9ZoU8Qjl34Mw5TIoGRMvWL671smM3oWEOMIMgVaXnayK7n2eyS
+	 8StqwdVWAu22pIOwKgaDZf0lNNRjGy/eTVTnJj2SJSwEuDBgtlqx6xp7UXInrN4Oem
+	 XzFRoTWzgARjg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAECE383B276;
+	Sat, 12 Jul 2025 18:15:23 +0000 (UTC)
 Subject: Re: [GIT PULL] bcachefs fixes for 6.16-rc6
-Message-ID: <myc76cllhaignqti4pheqyp7paxkwe3fkzfldesvb6xfl6cbxf@kdi3asjcafzi>
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <hmihnrl4tzezjnhp56c7eipq5ntgyadvy6uyfxgytenqfbzzov@swfpjfb2qkw5>
 References: <hmihnrl4tzezjnhp56c7eipq5ntgyadvy6uyfxgytenqfbzzov@swfpjfb2qkw5>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <hmihnrl4tzezjnhp56c7eipq5ntgyadvy6uyfxgytenqfbzzov@swfpjfb2qkw5>
+X-PR-Tracked-Remote: git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-07-11
+X-PR-Tracked-Commit-Id: fec5e6f97dae5fbd628c444148b77728eae3bb93
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 4412b8b23de24a94a0b78ac283db043c833a3975
+Message-Id: <175234412252.2616006.1162311898013007042.pr-tracker-bot@kernel.org>
+Date: Sat, 12 Jul 2025 18:15:22 +0000
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <hmihnrl4tzezjnhp56c7eipq5ntgyadvy6uyfxgytenqfbzzov@swfpjfb2qkw5>
-X-Migadu-Flow: FLOW_OUT
 
-On Fri, Jul 11, 2025 at 09:01:48AM -0400, Kent Overstreet wrote:
-> 
-> The following changes since commit 94426e4201fbb1c5ea4a697eb62a8b7cd7dfccbf:
-> 
->   bcachefs: opts.casefold_disabled (2025-07-01 19:33:46 -0400)
-> 
-> are available in the Git repository at:
-> 
->   git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-07-11
-> 
-> for you to fetch changes up to fec5e6f97dae5fbd628c444148b77728eae3bb93:
-> 
->   bcachefs: Don't set BCH_FS_error on transaction restart (2025-07-08 15:24:15 -0400)
-> 
-> ----------------------------------------------------------------
-> bcachefs fixes for 6.16-rc6
+The pull request you sent on Fri, 11 Jul 2025 09:01:48 -0400:
 
-These are fixes for some high severity 6.16 regressions.
+> git://evilpiepirate.org/bcachefs.git tags/bcachefs-2025-07-11
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4412b8b23de24a94a0b78ac283db043c833a3975
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
