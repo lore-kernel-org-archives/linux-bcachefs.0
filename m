@@ -1,75 +1,250 @@
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDBD323504D
-	for <linux-bcachefs@vger.kernel.org>; Mon, 14 Jul 2025 06:32:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D432F23956E
+	for <linux-bcachefs@vger.kernel.org>; Mon, 14 Jul 2025 08:14:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752474726; cv=none; b=OnNNkwukQ1ok+G5Scmf+6Fs4W0gk/XKznUIezwS2dC118Q8sFseA4o2iFus2mt1OaFGa8hh+wBu03Z3mLW0Q6Dy9QWw+YOu7DtaYpIIKu0wet7hOs6fL40j6uaIQjd6ZBYxmbMVv6+z0+aFOU4q0OEp6wDgK0GTIEkT67eL0Fx8=
+	t=1752480853; cv=none; b=sE9X2D5SMqW4jXB0iHdmHq8pP8USEBeqFuSWtIec53NT7B3QLMirYvMebgyWlubDvYAmI3M5otbJ6b8wvrqsrclfoaFf0rX++9skfJbWYZN/IVyCtoV2FHoQXQS6eYwXX4kBFoxCch7kfz5tHR5e6/ukg0zz3Twd30TFK3Q/EQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752474726; c=relaxed/simple;
-	bh=va153gw+DLc+V8l0wOCuiPpTlHZUFObs6dMNjRWNt6s=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=MAvVertxkgIr78JmsPgOnTNGecYarEhkI006NYFMBBjOKB6BfalNzlL4oJmH4KGEYP7W2Wcb1vtjh5Iwli5OEmFqNUlfD5Z5CTeD92GJJ2rHWqjbSJqAoo8aR9JlA1NPH/UmonqCbB8wit5kBYhwcGsNew7+ofgphfMz0UIz9Jw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3df3b71b987so32625425ab.0
-        for <linux-bcachefs@vger.kernel.org>; Sun, 13 Jul 2025 23:32:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752474724; x=1753079524;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Drjl5++96nBjNy31ORv6VBMFXWnYYE09eZaGN9HQRaU=;
-        b=NHNmehy8zBNH93YnmTXNn45tP3mnkEZ91ZqtFOkERm9j7kiuhjAGdLUaREXkvhpIJa
-         swuZZXJ3CSmr2FUvl2MUK+Qehtrrt/nXtHgccuHi4SILZNoJDfWsY1G+diJ/PM0qJTrJ
-         ZFcyKeoEDvnV0Pt8Bbu4dfiDfiZhtn4+0DUnMnuH4imWxZ1FxjKI4pUfmRiVl9165yXn
-         DssF4lVBDTSwGm1hfLUleAAUpvfMppFHfQYD3xXA7sgKA8FBSHjJbK/IN8TtmP7cF5oJ
-         bMwpmRHuYsWAva/k4rvWzcbvynJuF998BVGl9fGiQIf7zZIFXNyiLLA+WulBj0jE+inZ
-         Xjqw==
-X-Forwarded-Encrypted: i=1; AJvYcCV8OvlgUZhPoX7gd7mUOABIqfaeyoXvYPWPORh5Py+t9SqLlA4+P5AvcJTpnuDP291rCdQ8as4veJhYlJTW6w==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx2Zy+Uj5c5ArjX/38KlhBdTP2QCV3wlhqGkNvV9rkIzESdF3XV
-	UotjOcUmLjE6t55kIaqwhqUEXzTgiZ5qWExNunrDY8PPo91pkTIRNYfRW40vQfYvmMKHXVMNsZJ
-	IRAno7TTx55oRSLNtdM712wjJpJnw/OUO5jX0bbcqBN/4hMPWG+nQUIKXcW0=
-X-Google-Smtp-Source: AGHT+IEzxbUzQ1NTjarPnNyh4tFQY4wQ80X1LiRAI+n3VkX1EtGFzpIRe4XCQY+Dp3HrM9KhAoJdpBn6DB0IMUY4abY91XljYtQu
+	s=arc-20240116; t=1752480853; c=relaxed/simple;
+	bh=N3NDV8ZRMS6/YJ3Bor5jdHCVj/sPizkjyONgJopAub8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GZgV8htfMwQPwbsB3YbTH7gNIp/S0zgunrpmzoEtV8iBNnLdWpoEYqIcXnq9dB2UpPK2Q2YgChRBHVxVgE6+0k24Bd7+6Bk9BhaB45pY6zGmvAbEqhc71k3E3GiF9dZxPxM/9KfGtYA2tpjiH/KG3bP1QVJk+1MuvzDYcMiuECs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=a9k0+0DU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dpcnJWFj; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mamSDHXH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gq58d71Y; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="a9k0+0DU";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dpcnJWFj";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mamSDHXH";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gq58d71Y"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id CCB5B1F387;
+	Mon, 14 Jul 2025 08:14:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1752480849; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=oLZSSKrSwR5i5R+ZxG6wpsVx5R6CJ87qoC7NyByXS8Y=;
+	b=a9k0+0DUgZ+2NNuTdMbJoo1Y5Q0zy6GMb/MkRjDMrstrGNWv5OkmiHnH6jNPucrCajF0Cx
+	O9KlFRpmUGGcHFqpsALCmnYUv4VYBnkUz0AsfNnDA55b3HbCZJz4yqZFoeWPXxO5dLNr3C
+	xg1YrMVXAeEqA9NBM+BuPyALea1S2/Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1752480849;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=oLZSSKrSwR5i5R+ZxG6wpsVx5R6CJ87qoC7NyByXS8Y=;
+	b=dpcnJWFjkB42gHX2Xh61tgF0ar4MVlp0HBxcHI73dYPj2xoJESeUSFOQJWO1dgliEG4ZPs
+	ktFsgO9C0+bPBlCw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=mamSDHXH;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=gq58d71Y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1752480846; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=oLZSSKrSwR5i5R+ZxG6wpsVx5R6CJ87qoC7NyByXS8Y=;
+	b=mamSDHXHZWkLnGgbg19zG6gMVU+zJ57lV2t/JJ4e2ASq66TrP7V4YqtdyLunpYRSUV6xaU
+	p4UYLAtB/ceAGan1kO959AkMtjhaG6WULOzR/xlMFP9RLDnunPIJgM18UqJcE8JYRuZWso
+	TMtAUIwA4OumM5nn7ZBFAQXCkhokkFA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1752480846;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=oLZSSKrSwR5i5R+ZxG6wpsVx5R6CJ87qoC7NyByXS8Y=;
+	b=gq58d71YYaI0uMOCONBGIgtW5YJWbpuTP4grXzqc4SVuvE8YQZa5W6QcA5NRv/nyTCBgF8
+	ivA596bA9koOpJBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A8BD413306;
+	Mon, 14 Jul 2025 08:14:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id af6ZKE68dGhhKAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 14 Jul 2025 08:14:06 +0000
+Message-ID: <1dedcee0-c5a2-47b3-ae13-315ad437ae1a@suse.cz>
+Date: Mon, 14 Jul 2025 10:14:06 +0200
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2513:b0:3dd:ceb0:f603 with SMTP id
- e9e14a558f8ab-3e2541dc6d6mr120908775ab.2.1752474724219; Sun, 13 Jul 2025
- 23:32:04 -0700 (PDT)
-Date: Sun, 13 Jul 2025 23:32:04 -0700
-In-Reply-To: <684c57c4.a00a0220.279073.0015.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6874a464.a70a0220.3b380f.004a.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] kernel BUG in __bch2_bkey_compat
-From: syzbot <syzbot+4908f37148402680dfec@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12 2/4] mm/slub: allow to set node and align in
+ k[v]realloc
+Content-Language: en-US
+To: Vitaly Wool <vitaly.wool@konsulko.se>
+Cc: Harry Yoo <harry.yoo@oracle.com>, linux-mm@kvack.org,
+ akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+ Uladzislau Rezki <urezki@gmail.com>, Danilo Krummrich <dakr@kernel.org>,
+ Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+ Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org,
+ bpf@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
+ Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>
+References: <20250709172345.1031907-1-vitaly.wool@konsulko.se>
+ <20250709172441.1032006-1-vitaly.wool@konsulko.se> <aHDSLyHZ8b1ELeWe@hyeyoo>
+ <5bc89531-ab09-4690-aae4-a44f9ddb4a68@suse.cz>
+ <3AD3F7B5-679F-4DC8-968F-9FE991B56A5C@konsulko.se>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ m6M14QORSWTLRg==
+In-Reply-To: <3AD3F7B5-679F-4DC8-968F-9FE991B56A5C@konsulko.se>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	URIBL_BLOCKED(0.00)[suse.cz:mid,suse.cz:dkim,suse.cz:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[oracle.com,kvack.org,linux-foundation.org,vger.kernel.org,gmail.com,kernel.org,google.com,linux.dev,gondor.apana.org.au,suse.de];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:mid,suse.cz:dkim,suse.cz:email]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Rspamd-Queue-Id: CCB5B1F387
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.51
 
-syzbot suspects this issue was fixed by commit:
+On 7/12/25 14:43, Vitaly Wool wrote:
+> 
+> 
+>> On Jul 11, 2025, at 5:43 PM, Vlastimil Babka <vbabka@suse.cz> wrote:
+>> 
+>> On 7/11/25 10:58, Harry Yoo wrote:
+>>> On Wed, Jul 09, 2025 at 07:24:41PM +0200, Vitaly Wool wrote:
+>>>> static __always_inline __realloc_size(2) void *
+>>>> -__do_krealloc(const void *p, size_t new_size, gfp_t flags)
+>>>> +__do_krealloc(const void *p, size_t new_size, unsigned long align, gfp_t flags, int nid)
+>>>> {
+>>>> void *ret;
+>>>> size_t ks = 0;
+>>>> @@ -4859,6 +4859,20 @@ __do_krealloc(const void *p, size_t new_size, gfp_t flags)
+>>>> if (!kasan_check_byte(p))
+>>>> return NULL;
+>>>> 
+>>>> + /* refuse to proceed if alignment is bigger than what kmalloc() provides */
+>>>> + if (!IS_ALIGNED((unsigned long)p, align) || new_size < align)
+>>>> + return NULL;
+>>> 
+>>> Hmm but what happens if `p` is aligned to `align`, but the new object is not?
+>>> 
+>>> For example, what will happen if we  allocate object with size=64, align=64
+>>> and then do krealloc with size=96, align=64...
+>>> 
+>>> Or am I missing something?
+>> 
+>> Good point. We extended the alignment guarantees in commit ad59baa31695
+>> ("slab, rust: extend kmalloc() alignment guarantees to remove Rust padding")
+>> for rust in a way that size 96 gives you alignment of 32. It assumes that
+>> rust side will ask for alignments that are power-of-two and sizes that are
+>> multiples of alignment. I think if that assumption is still honored than
+>> this will keep working, but the check added above (is it just a sanity check
+>> or something the rust side relies on?) doesn't seem correct?
+>> 
+> 
+> It is a sanity check and it should have looked like this:
+> 
+>         if (!IS_ALIGNED((unsigned long)p, align) && new_size <= ks)
+>                 return NULL;
+> 
+> and the reasoning for this is the following: if we don’t intend to reallocate (new size is not bigger than the original size), but the user requests a larger alignment, it’s a miss. Does that sound reasonable?
 
-commit 263561649ee5875a922f4358e96d3deb17a91021
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Sat Jun 7 18:27:35 2025 +0000
+So taking a step back indeed the align passed to krealloc is indeed used
+only for this check. If it's really just a sanity check, then I'd rather not
+add this parameter to krealloc functions at all - kmalloc() itself also
+doesn't have it, so it's inconsistent that krealloc() would have it - but
+only to return NULL and not e.g. try to reallocate for alignment.
 
-    bcachefs: Don't persistently run scan_for_btree_nodes
+If it's not just a sanity check, it means it's expected that for some
+sequence of valid kvrealloc_node_align() calls it can return NULL and then
+rely on the fallback to vmalloc. That would be rather wasteful for the cases
+like going from 64 to 96 bytes etc. So in that case it would be better if
+krealloc did the reallocation, same as in cases when size increases. Of
+course it would still have to rely on the documented alignment guarantees
+only and not provide anything arbitrary. aligned_size() in
+rust/kernel/alloc/allocator.rs is responsible for that, AFAIK.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14a0c18c580000
-start commit:   27605c8c0f69 Merge tag 'net-6.16-rc2' of git://git.kernel...
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=162faeb2d1eaefb4
-dashboard link: https://syzkaller.appspot.com/bug?extid=4908f37148402680dfec
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f9f682580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17ecb9d4580000
+And I think it's not a sanity check but the latter - if the following is a
+valid k(v)realloc sequence (from Rust POV). The individual size+align
+combinations AFAIK are, but if it's valid to make them follow one another
+them like this, I don't know.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+krealloc(size=96, align=32) -> can give object with 32 alignment only
+krealloc(size=64, align=64) -> doesn't increase size but wants alignment 64
 
-#syz fix: bcachefs: Don't persistently run scan_for_btree_nodes
+> ~Vitaly
+> 
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
