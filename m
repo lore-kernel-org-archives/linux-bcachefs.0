@@ -1,44 +1,44 @@
 Received: from mailrelay-egress16.pub.mailoutpod3-cph3.one.com (mailrelay-egress16.pub.mailoutpod3-cph3.one.com [46.30.212.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A2302EFD8D
-	for <linux-bcachefs@vger.kernel.org>; Tue, 15 Jul 2025 13:57:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D83062E7BD1
+	for <linux-bcachefs@vger.kernel.org>; Tue, 15 Jul 2025 13:58:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.212.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752587858; cv=none; b=bc/hSmHYEEi7PI+i2yfZOWMl8ml/zwDIKQsR7eSlxBXRBHf4J1KbIJ9Pqab9ro0AQIKDAoRE8ewIvIuR6nEW5Mnb4ygayidLoVyrOp+FwK35B+iO/NeA2+r65Xw1fsdLZNpM7foKAB0HtwnElsY0Zcx8NlT35mdTTT6mXibyS6M=
+	t=1752587889; cv=none; b=o7O+bjsDHBLT/2obiltXXfpqyUJLWq+2Y8oNmyUqsW7pcHk8wWo+IUm1jFplrTdtR3hWpvvCbXO3+4xSZnaej0vxrlF8t+TUu/dH5qeQjD1yf1pZ0TdJyu3W7yu63KbIYOuV/+CDsf432YxeudPRta+CIo5t2QK2kIxTz6baBfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752587858; c=relaxed/simple;
+	s=arc-20240116; t=1752587889; c=relaxed/simple;
 	bh=b11Dg6R/vlsqaqKkGCKON+PJNYHWYPrTti/tRvvl5Ps=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LIce8DLggbUC7XdYW5pxN9iIIK6TV5iS5uTa/PvPva2hEAqpW6tclYwRZfdWh2s9KaHtWgDein8K0nYnzBDzSr6PT9CVQZehgLji4AhnoS9owmpQyqSeuKOTHlpqwPpUoys+HoJ05WKTzLHfu4gmVguOrnfc+4r6NBLIm+IZl2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=konsulko.se; spf=none smtp.mailfrom=konsulko.se; dkim=pass (2048-bit key) header.d=konsulko.se header.i=@konsulko.se header.b=UWbbR/Tc; dkim=permerror (0-bit key) header.d=konsulko.se header.i=@konsulko.se header.b=848oN+c1; arc=none smtp.client-ip=46.30.212.3
+	 MIME-Version; b=oy4migWjBqHENzXvUTYUBUOBUyj2vZ+w3PD9xSL3exJLyt+zOr6/2MDJpkgDDqP3Citx9GjaH7VNtRL+pBeFA4CNLBdl6hbjoAQzbKT2q28uAYaaZ4YfPHqqka1bJ/xkcZ0iGwVarRlzSXOWHvxIuKeCsvpgbC8Im+Fwhu+Bmo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=konsulko.se; spf=none smtp.mailfrom=konsulko.se; dkim=pass (2048-bit key) header.d=konsulko.se header.i=@konsulko.se header.b=ZYkj/tH0; dkim=permerror (0-bit key) header.d=konsulko.se header.i=@konsulko.se header.b=K7s/z8ke; arc=none smtp.client-ip=46.30.212.3
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=konsulko.se
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=konsulko.se
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=konsulko.se header.i=@konsulko.se header.b="UWbbR/Tc";
-	dkim=permerror (0-bit key) header.d=konsulko.se header.i=@konsulko.se header.b="848oN+c1"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1752587854; x=1753192654;
+	dkim=pass (2048-bit key) header.d=konsulko.se header.i=@konsulko.se header.b="ZYkj/tH0";
+	dkim=permerror (0-bit key) header.d=konsulko.se header.i=@konsulko.se header.b="K7s/z8ke"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1752587886; x=1753192686;
 	d=konsulko.se; s=rsa1;
 	h=content-transfer-encoding:mime-version:references:in-reply-to:message-id:date:
 	 subject:cc:to:from:from;
 	bh=RvpazCzVxvXnIveADtjt84U407dyEylMhRtOiCnmbUA=;
-	b=UWbbR/Tc5H2QH0ma6nzlJH4+43hHSy99oZBjToIFA9zzlj1OjISXyp4xecXIK6N9OkcJYwvwNzpwO
-	 l9yz7zSmi16gfVnlLktA4U9NPTOWUwF+eLhT9UgOtFSKe/RWVfCGGA0Y/YsCOXT7nYaciVlUPejP4o
-	 Yro+8h2sN9CB095MAFh/npr33kYvkQlNNiQXbaeyezQPgRce1nHr5k/kMUKmhqhL6PPLJjamOPf1eY
-	 xWr357znGIVCHPebSj+fLlxCDGnlBfDAP2TnbdkBPip3d48PzxAsy7lpzN1jDXr6p2aazUaevY2zw7
-	 9GoW9vp0jJTo28BtsbRmVQfnsz5XH4g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1752587854; x=1753192654;
+	b=ZYkj/tH0/s0Co1qLPu9jhXAVZgLaM16V863OL7E+GKPk8A9exPRCUxW93Y1I9tNPVuS7PBk6ppW9b
+	 KGpn3f2TvWHpvpIxxhLVXunPZTyR/p58I7sdMBlQOpQM1wh1swpWRcmW2x8pYLEBo5KSz0NdpSuadb
+	 WD56pXT2bX4CDROy/8oa+iBijp/bCPKSevSHll86blURiM7fkCb92xCS4Br61Xy1EnXhn7VuASYESE
+	 JYStkaBCe18bu3jK3OfFEIffBrLxUxAOi31cEgQy1eMwicvLDcJFJFeWkP3XoaGqbiPd3Hef/a+B53
+	 phyA+TJ5I6o/F3LGLm6bUjO6lvMtRvg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1752587886; x=1753192686;
 	d=konsulko.se; s=ed1;
 	h=content-transfer-encoding:mime-version:references:in-reply-to:message-id:date:
 	 subject:cc:to:from:from;
 	bh=RvpazCzVxvXnIveADtjt84U407dyEylMhRtOiCnmbUA=;
-	b=848oN+c1f8XMdcyZaAPG2ad29Xgmv0OPdHleViT6C1fEdDDsWBsFBdALoKvVJWbzLkfaSMCAhcaIa
-	 IIVfucCBA==
-X-HalOne-ID: a716537d-6183-11f0-9c7f-494313b7f784
+	b=K7s/z8keFCDg2jxD/UnJCssqJywHAo1+Lm1JkRas/9lTcIvPj0eP5MtupCAWiBSiFDEoGzOqfGUrp
+	 iTJRct0CA==
+X-HalOne-ID: b99010bc-6183-11f0-8923-e90f2b8e16ca
 Received: from slottsdator.home (host-90-238-19-233.mobileonline.telia.com [90.238.19.233])
-	by mailrelay6.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
-	id a716537d-6183-11f0-9c7f-494313b7f784;
-	Tue, 15 Jul 2025 13:57:33 +0000 (UTC)
+	by mailrelay2.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
+	id b99010bc-6183-11f0-8923-e90f2b8e16ca;
+	Tue, 15 Jul 2025 13:58:05 +0000 (UTC)
 From: Vitaly Wool <vitaly.wool@konsulko.se>
 To: linux-mm@kvack.org
 Cc: akpm@linux-foundation.org,
@@ -57,9 +57,9 @@ Cc: akpm@linux-foundation.org,
 	Jann Horn <jannh@google.com>,
 	Pedro Falcato <pfalcato@suse.de>,
 	Vitaly Wool <vitaly.wool@konsulko.se>
-Subject: [PATCH v13 1/4] :mm/vmalloc: allow to set node and align in vrealloc
-Date: Tue, 15 Jul 2025 15:57:24 +0200
-Message-Id: <20250715135724.2230116-1-vitaly.wool@konsulko.se>
+Subject: [PATCH v13 1/4] mm/vmalloc: allow to set node and align in vrealloc
+Date: Tue, 15 Jul 2025 15:58:03 +0200
+Message-Id: <20250715135803.2230193-1-vitaly.wool@konsulko.se>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20250715135645.2230065-1-vitaly.wool@konsulko.se>
 References: <20250715135645.2230065-1-vitaly.wool@konsulko.se>
