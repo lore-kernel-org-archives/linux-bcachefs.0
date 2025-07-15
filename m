@@ -1,178 +1,146 @@
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3144F26CE3A
-	for <linux-bcachefs@vger.kernel.org>; Tue, 15 Jul 2025 07:03:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB39226D4F8
+	for <linux-bcachefs@vger.kernel.org>; Tue, 15 Jul 2025 07:40:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752563025; cv=none; b=EC14BeR9epdXi0CSoYLQH1LW/Ig5mm14oGmTzNWRCctQ2LWMJ6i47+eknjvrDHom+6gjGOGKAdye1uq5O3eBMSAjdtFgHdgvyDKB408lM7Ir8zNuW+ysRno0PAh240lLbO12XFGY6MmcnRJMrv18zJP/v1rCA8cl00aYEw99u40=
+	t=1752565233; cv=none; b=gTCFjcoVQB8V1U6MMn2brRE59qgfBhDCauRdqxRuRk6AaruyEDfbC0yzDtvTMMqjyQDdhvIBaByTWz62rsPXJJI7t2Yz+qsJumqfnJp6UIGnDTRjRX8Nv642etLkU2aMB8eAuDfnZQ/6fvCBWMFWs1f9TC70SqFQL9TfUaYAfq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752563025; c=relaxed/simple;
-	bh=jGIHWJIRk9i2hR7tXdegBVyUzLtZws4m098Ez8HCiu8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nFneMXD2JjJ2FuM9ok9x+0aHkedKrrWg2L/zsBqk6QNvInhMIJdVXVdfV57Mm1su6KVxI1S26L7BLGIftF2hYctQc3W+8ORYzVJ/alQ1FzhiLD/xFbL8yUkA53usTcfh8huZ97CNigMbFjXGw04myDBn14Ccuzy2TbrahkN8Bcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=p6di1us/; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="p6di1us/"
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3a5257748e1so3393319f8f.2
-        for <linux-bcachefs@vger.kernel.org>; Tue, 15 Jul 2025 00:03:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1752563020; x=1753167820; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jt/6M57mZgMPhITvF8HdLS12vV1vFn0N4xhHPTTFoy0=;
-        b=p6di1us/YOoA1lZHdJKciAn/weTVp3gueuCxxgxq0vox0P1weH/XwtFqEzh7VG8rdE
-         z/8Ok3qMaemxdgDCx3iENLGbHdvgZD8fsioGrTK8eWKyVl8EXeXjT87ZyNXwOgV0xjr/
-         1ptF1Bzg65wX4mYOInpU7lCCH8mgq1sWxn9UB2X8VvhX2NmQuXyPja6UF8r+sJaUyaR4
-         Lsejui+EiNRyPQDOtDghE81neDRuCYhPB/mp71EX3Ne7pCdRiqjyCItgH6awQjiTqH0S
-         0seB7xl69ukokxhyGUBRrOnW7Zw+qODHBzgsbnqdy2qrnnYqCMJCtSpWF5aa0MnT5nPu
-         edGw==
+	s=arc-20240116; t=1752565233; c=relaxed/simple;
+	bh=XabCYADV5oq320B01NvGx75prAEwtGcF+dNLCyHWIAQ=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=DUgnlOEf2s/gWtq5xnSQ++EVlw7M7p2Lb4EjfFvl7BAiHcGuY/bxlxJ9EDQoDM0QjHhtfkeHxmxjKrm4GVawf4OO2o6RdZXsWVGF29Al0UGvJGWj+4+1uwrpFTcRXqNJjMCit3Db/oTIv4zd1JvaP/DT7ANteyC9JPtKIxl/hYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-86cf89ff625so462639839f.0
+        for <linux-bcachefs@vger.kernel.org>; Tue, 15 Jul 2025 00:40:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752563020; x=1753167820;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jt/6M57mZgMPhITvF8HdLS12vV1vFn0N4xhHPTTFoy0=;
-        b=meS+qc/hFlOYuzhnMxNHnBEaXXs+YrhIvKvGy/RKf3TYC8jlfcNmLFeur2YHc+JNFw
-         dVzMMcIx4xsHxfJffMYq1qTmkct2uFkRF5qOzmr8LX2zDJ8abpgPK/log/WimJJrhvMa
-         xAtd34O3nFiJD4Z6tHKR2XwQf9XkOWqTuw/XZgrPE7nSn6T7zHgs6SnBbyXo9y9EyCcl
-         WZY6qwFlyrml/eTZIQ25+pPXkZo7g1fCt+4EB7zWnD0DhbLpVRaWUYMD+Htpt76UyAb5
-         7O0sSmVBFy58eMOzSJk/znRFOhKRzGiPLtpJZnJWT2aYd4HsVog7e4oixSd0zB7OQL26
-         0AVg==
-X-Forwarded-Encrypted: i=1; AJvYcCVKrDyO8+9xaG8jxB6rfyO6MdXXsgsZwxCfE07VGarNhybu3uZJaN1TVti0ylF7E2sYhEGBXJ0yivwPkaA2rA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxJHwr7jsvn06ysX52IShWQIg0sCWriyU0HNCT3omc+JqRWzDs+
-	3x96JqnIsrJ+g93ReT1UDaYUIyEfb0NfQ8T16buL7ZbfNVcErhGUvG9G1q8CKkoEQkXRuAEVOjn
-	QXXr7dSM9hrDQHsyZ5eiaZ8YgDPv9hxI3R2XnDHKf
-X-Gm-Gg: ASbGncu46XsD0c88C9aR1PaT4qPX90HwD4gVI8B9kreH/AvqvuX8QCn5SLy6WNrQpFi
-	1aibMDJqP+Ptz/H93osilrm62BFLRpVGeGwHi5kDKTQT2b1rqxn4MPaDGMvd9paVzGNRmVZh5qn
-	oLqjKxBEDIlGlo/pjVm0PDHVGX3zpgl92eR/vARWJIvOmdisrc1lRf7s+tqYpyI1TjpCajeE37I
-	olMbqmF
-X-Google-Smtp-Source: AGHT+IE1/MY0RQcecLFoHvQZdO+7sZGnb0kcJHS9oa/ewG1ZdNmenXVcPC2k1yhTjRTUuDq69k9FOq7rxEcXnfgllNg=
-X-Received: by 2002:a05:6000:1a86:b0:3a4:eda1:6c39 with SMTP id
- ffacd0b85a97d-3b5f2dc216dmr10969220f8f.13.1752563020324; Tue, 15 Jul 2025
- 00:03:40 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1752565231; x=1753170031;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qSM+78FKblvXJBoy0tTE2ejwxXtyTLe36RrT6lNENdM=;
+        b=qp86ydwNruwLvkRBPpJ9cbz6scpTFYid8YnS+M1Vt87u3B/2rG9j44FKFiyaApcpA6
+         0vtgg1rwtkjLYBT0t8o4gu1LsuhXxqMH81sKbVY1T5YrXfZSIuAgfzFKw//VX8UId1b9
+         r3TBl9I1IbRag9Ul1TPDL2bMss4P6iOMH5992C30jg920kaI8Er4Bd1Ys8M5DPw2Hdp/
+         cYCIsPC+ZGd07xeCRSMfvClxThmvPr9g2/yggfg+pH/YCj5zq0jJkEWIfo9ovkoRpwl2
+         mDRg4VGB32WM7hKoB5d5ljHalLA9FHmj9huWYOcnDPJ3WHWX4vmrWZnwtJmQMDyj/VQy
+         Ffsw==
+X-Forwarded-Encrypted: i=1; AJvYcCWwCe4NGboxkTonwBy+y8rKJeWofSTXZMTix8wQxbJzglV/k3iKnIW3sN5oSyG+IdD9oEi7aypMNc+LBjJ9AA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxCxSizbdKvtMQv7KIdlXKOBpz/uF+nwtSBvG0Z1CeYRmYMkAnx
+	pFDjaJr6sibi5N7IacmdvHNVu3BfanqPbmyKL2z2LmMtrgbjxiMlj7Iy5CCtjAGKto38C1uyYYN
+	vLwFpc9myFnCNWHDRCgMZtf8P7drymFkeCUzFvP3BJ6OIPCPqWURa20APFyY=
+X-Google-Smtp-Source: AGHT+IG0ICav9y5C9dNWvzB/xnKNbRw0nvre5qkrALe6p4Aio36r4OAVswPr/ezik01oaPfzOTjnbeZZIjHBoKvTstFqSPGtm8nL
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250709172345.1031907-1-vitaly.wool@konsulko.se>
- <20250709172441.1032006-1-vitaly.wool@konsulko.se> <aHDSLyHZ8b1ELeWe@hyeyoo>
- <5bc89531-ab09-4690-aae4-a44f9ddb4a68@suse.cz> <3AD3F7B5-679F-4DC8-968F-9FE991B56A5C@konsulko.se>
- <1dedcee0-c5a2-47b3-ae13-315ad437ae1a@suse.cz>
-In-Reply-To: <1dedcee0-c5a2-47b3-ae13-315ad437ae1a@suse.cz>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Tue, 15 Jul 2025 09:03:27 +0200
-X-Gm-Features: Ac12FXx5pgrLnvLVllVwWAxwc6ktT76M5E8OvULeGL7H3WltRDY_yqdMh5SmBiA
-Message-ID: <CAH5fLggV2Y+N7k=+b5z=Hy5a556VomEZEa3bGhufvKBU+Fd=Ug@mail.gmail.com>
-Subject: Re: [PATCH v12 2/4] mm/slub: allow to set node and align in k[v]realloc
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Vitaly Wool <vitaly.wool@konsulko.se>, Harry Yoo <harry.yoo@oracle.com>, linux-mm@kvack.org, 
-	akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
-	Uladzislau Rezki <urezki@gmail.com>, Danilo Krummrich <dakr@kernel.org>, rust-for-linux@vger.kernel.org, 
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "Liam R . Howlett" <Liam.Howlett@oracle.com>, 
-	Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, 
-	bpf@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>, 
-	Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>
+X-Received: by 2002:a05:6602:4802:b0:86d:9ec4:effe with SMTP id
+ ca18e2360f4ac-879787e7038mr1759757239f.8.1752565231091; Tue, 15 Jul 2025
+ 00:40:31 -0700 (PDT)
+Date: Tue, 15 Jul 2025 00:40:31 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <687605ef.050a0220.158d12.0000.GAE@google.com>
+Subject: [syzbot] [bcachefs?] kernel BUG in bch2_fill_extent (2)
+From: syzbot <syzbot+397f6fe952a0defb9424@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 14, 2025 at 10:14=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> w=
-rote:
->
-> On 7/12/25 14:43, Vitaly Wool wrote:
-> >
-> >
-> >> On Jul 11, 2025, at 5:43=E2=80=AFPM, Vlastimil Babka <vbabka@suse.cz> =
-wrote:
-> >>
-> >> On 7/11/25 10:58, Harry Yoo wrote:
-> >>> On Wed, Jul 09, 2025 at 07:24:41PM +0200, Vitaly Wool wrote:
-> >>>> static __always_inline __realloc_size(2) void *
-> >>>> -__do_krealloc(const void *p, size_t new_size, gfp_t flags)
-> >>>> +__do_krealloc(const void *p, size_t new_size, unsigned long align, =
-gfp_t flags, int nid)
-> >>>> {
-> >>>> void *ret;
-> >>>> size_t ks =3D 0;
-> >>>> @@ -4859,6 +4859,20 @@ __do_krealloc(const void *p, size_t new_size,=
- gfp_t flags)
-> >>>> if (!kasan_check_byte(p))
-> >>>> return NULL;
-> >>>>
-> >>>> + /* refuse to proceed if alignment is bigger than what kmalloc() pr=
-ovides */
-> >>>> + if (!IS_ALIGNED((unsigned long)p, align) || new_size < align)
-> >>>> + return NULL;
-> >>>
-> >>> Hmm but what happens if `p` is aligned to `align`, but the new object=
- is not?
-> >>>
-> >>> For example, what will happen if we  allocate object with size=3D64, =
-align=3D64
-> >>> and then do krealloc with size=3D96, align=3D64...
-> >>>
-> >>> Or am I missing something?
-> >>
-> >> Good point. We extended the alignment guarantees in commit ad59baa3169=
-5
-> >> ("slab, rust: extend kmalloc() alignment guarantees to remove Rust pad=
-ding")
-> >> for rust in a way that size 96 gives you alignment of 32. It assumes t=
-hat
-> >> rust side will ask for alignments that are power-of-two and sizes that=
- are
-> >> multiples of alignment. I think if that assumption is still honored th=
-an
-> >> this will keep working, but the check added above (is it just a sanity=
- check
-> >> or something the rust side relies on?) doesn't seem correct?
-> >>
-> >
-> > It is a sanity check and it should have looked like this:
-> >
-> >         if (!IS_ALIGNED((unsigned long)p, align) && new_size <=3D ks)
-> >                 return NULL;
-> >
-> > and the reasoning for this is the following: if we don=E2=80=99t intend=
- to reallocate (new size is not bigger than the original size), but the use=
-r requests a larger alignment, it=E2=80=99s a miss. Does that sound reasona=
-ble?
->
-> So taking a step back indeed the align passed to krealloc is indeed used
-> only for this check. If it's really just a sanity check, then I'd rather =
-not
-> add this parameter to krealloc functions at all - kmalloc() itself also
-> doesn't have it, so it's inconsistent that krealloc() would have it - but
-> only to return NULL and not e.g. try to reallocate for alignment.
->
-> If it's not just a sanity check, it means it's expected that for some
-> sequence of valid kvrealloc_node_align() calls it can return NULL and the=
-n
-> rely on the fallback to vmalloc. That would be rather wasteful for the ca=
-ses
-> like going from 64 to 96 bytes etc. So in that case it would be better if
-> krealloc did the reallocation, same as in cases when size increases. Of
-> course it would still have to rely on the documented alignment guarantees
-> only and not provide anything arbitrary. aligned_size() in
-> rust/kernel/alloc/allocator.rs is responsible for that, AFAIK.
->
-> And I think it's not a sanity check but the latter - if the following is =
-a
-> valid k(v)realloc sequence (from Rust POV). The individual size+align
-> combinations AFAIK are, but if it's valid to make them follow one another
-> them like this, I don't know.
->
-> krealloc(size=3D96, align=3D32) -> can give object with 32 alignment only
-> krealloc(size=3D64, align=3D64) -> doesn't increase size but wants alignm=
-ent 64
+Hello,
 
-On the Rust side, you specify what the old size/align was, and what
-you which size/align you want after the call, and they can be anything
-including that combination.
+syzbot found the following issue on:
 
-Alice
+HEAD commit:    bc9ff192a6c9 Merge tag 'net-6.16-rc6' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10daba8c580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b309c907eaab29da
+dashboard link: https://syzkaller.appspot.com/bug?extid=397f6fe952a0defb9424
+compiler:       Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-bc9ff192.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/481157442741/vmlinux-bc9ff192.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/97943fefb22f/bzImage-bc9ff192.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+397f6fe952a0defb9424@syzkaller.appspotmail.com
+
+netlink: 'syz.0.0': attribute type 1 has an invalid length.
+bcachefs (loop0): /file3 offset 0: key_type_error
+  u64s 5 type error 536870913:24:U32_MAX len 24 ver 0
+------------[ cut here ]------------
+kernel BUG at fs/bcachefs/fs.c:1323!
+Oops: invalid opcode: 0000 [#1] SMP KASAN NOPTI
+CPU: 0 UID: 0 PID: 5339 Comm: syz.0.0 Not tainted 6.16.0-rc5-syzkaller-00121-gbc9ff192a6c9 #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+RIP: 0010:bch2_fill_extent+0x96e/0x970 fs/bcachefs/fs.c:1323
+Code: 0f 0b e8 75 7a 86 fd 90 0f 0b e8 6d 7a 86 fd e9 f7 fe ff ff e8 63 7a 86 fd 90 0f 0b e8 5b 7a 86 fd 90 0f 0b e8 53 7a 86 fd 90 <0f> 0b 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 55 41 57 41
+RSP: 0018:ffffc9000d4af520 EFLAGS: 00010293
+RAX: ffffffff8439bc1d RBX: 0000000000000014 RCX: ffff88803310c880
+RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000007
+RBP: 0000000000000001 R08: ffff88803310c880 R09: 0000000000000004
+R10: 0000000000000012 R11: 0000000000000000 R12: 0000000000000000
+R13: ffffc9000d4af9a8 R14: 0000000000000002 R15: 0000000000000002
+FS:  00007ffbb4c046c0(0000) GS:ffff88808d21b000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f5297547000 CR3: 00000000435be000 CR4: 0000000000352ef0
+Call Trace:
+ <TASK>
+ bch2_fiemap+0x2871/0x2a90 fs/bcachefs/fs.c:1538
+ ioctl_fiemap fs/ioctl.c:220 [inline]
+ do_vfs_ioctl+0x16d3/0x1990 fs/ioctl.c:841
+ __do_sys_ioctl fs/ioctl.c:905 [inline]
+ __se_sys_ioctl+0x82/0x170 fs/ioctl.c:893
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7ffbb3d8e929
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffbb4c04038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007ffbb3fb6080 RCX: 00007ffbb3d8e929
+RDX: 0000200000000240 RSI: 00000000c020660b RDI: 0000000000000007
+RBP: 00007ffbb3e10b39 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007ffbb3fb6080 R15: 00007ffc38ab3c78
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:bch2_fill_extent+0x96e/0x970 fs/bcachefs/fs.c:1323
+Code: 0f 0b e8 75 7a 86 fd 90 0f 0b e8 6d 7a 86 fd e9 f7 fe ff ff e8 63 7a 86 fd 90 0f 0b e8 5b 7a 86 fd 90 0f 0b e8 53 7a 86 fd 90 <0f> 0b 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 55 41 57 41
+RSP: 0018:ffffc9000d4af520 EFLAGS: 00010293
+RAX: ffffffff8439bc1d RBX: 0000000000000014 RCX: ffff88803310c880
+RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000007
+RBP: 0000000000000001 R08: ffff88803310c880 R09: 0000000000000004
+R10: 0000000000000012 R11: 0000000000000000 R12: 0000000000000000
+R13: ffffc9000d4af9a8 R14: 0000000000000002 R15: 0000000000000002
+FS:  00007ffbb4c046c0(0000) GS:ffff88808d21b000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 00000000435be000 CR4: 0000000000352ef0
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
