@@ -1,38 +1,39 @@
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA4B52652B2
-	for <linux-bcachefs@vger.kernel.org>; Wed, 16 Jul 2025 16:01:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85022F50B3
+	for <linux-bcachefs@vger.kernel.org>; Wed, 16 Jul 2025 16:01:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752681712; cv=none; b=rwfpYjGbp2QKErwPYdNbTkZSvl/GJSdc8XBSuUVfwni+rvuFtLLXsSH9SXPC0nXjb16r5Z1syOY7SG0qrnmUZQU7Qb9K7YOzwnwtTHfTpUL2aUAQbNQqWQu0RKk2UbzrIbyZ/58iw+7rou8IRNDYEbKGzeCtdU8YB1+jrEv5jJc=
+	t=1752681713; cv=none; b=B2BSI1B7AZ3fq/cjwIrx/nNLcN83U+2k1n8C45fIIVtKSrOii4kiOBihFSg81jvLAxd5RiwemzKLQqyVHhAwyLKbJWlgFMl3itsloAGpCumaUsfrJS5+IeDbv5kIdp99ccOfKGTOazIdYsdcLcMcwlqcbENzdw0srh19ujwpuXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752681712; c=relaxed/simple;
-	bh=iiwTOn2Q5gl9d7MBEIcHT/XtH1hIZ9Grql+Vvt/DoVw=;
+	s=arc-20240116; t=1752681713; c=relaxed/simple;
+	bh=S65UghuK42sCk2As6oiEQakA51IxaqyLY8O2rgEaWoU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fd2mlE44QERxJF7IKyhkWMuyx7MG5M5gMmnq2dY7OEqI+vD91fWukhLBU3ITkp53spa2/vfA1tU+0ZFIYexxuw4NOlTWyW5SKfwrARtp61wsN/gVcou2Xt9RKX4x1JHt5qmRuuB0YCYM7uIEddOaSlnm09R+p4UGMsI4ImxUb+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tdu6SDKZ; arc=none smtp.client-ip=95.215.58.188
+	 MIME-Version; b=lSIpSel39JMs5JH+RqwXaDlrN2+BfJQRN9o7SGURYOPR74kZuCmXMZOcAb/TCa2KvuAvrMATUuTi4TdDl2Gxd7X0TueGuddWZr6+8Qoz0whWHdFY1CDHjajn6UmHBFldzy7FPEBsrOm0SsphQ4uEPUa4bV3hp/iLb72izM/94jg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=i44rZ3Ue; arc=none smtp.client-ip=95.215.58.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tdu6SDKZ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="i44rZ3Ue"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752681709;
+	t=1752681710;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BKQ+3f4Joi/Tm72VDac8z6EmG7uAKHMDEuOeVI4esi0=;
-	b=tdu6SDKZfZDnsmVwqxMJe6peKbdV/p0gmEZST1oydquKBILd/GauQhh+32iNxtPJrVmP60
-	8vRGRh/lrNJe1WGW4czw0omBJEGEnT7jNIG6Dky0OlsVE6EFbeGgGbkT+/jBNbGKedlwuX
-	hmCYObOTsp+W+/wJXUiMNcYOjH2X7eU=
+	bh=nAL/EHZXc0QkgTJbAvwSd1cq8DffA7LIvQKD02ajE2k=;
+	b=i44rZ3UeVQMSWClSPg+W3RIxxwbDcqQCCjemZsgm1v8f/bX0+tKyuswlOsFU8E5fpoHt56
+	7vd2BAz/27VsdZYF45AXqxVARoxCIcoeFD/hU6bmptWLq2F7K8L7N27UcU+WP8O48Ia2LD
+	NVXFQ+cgIvGTI3d30/3nprBn+uSrIIE=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 4/7] bcachefs: Tweak threshold for allocator triggering discards
-Date: Wed, 16 Jul 2025 12:01:38 -0400
-Message-ID: <20250716160141.1158722-4-kent.overstreet@linux.dev>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	syzbot+c5e7a66b3b23ae65d44f@syzkaller.appspotmail.com
+Subject: [PATCH 5/7] bcachefs: Don't build aux search tree when still repairing node
+Date: Wed, 16 Jul 2025 12:01:39 -0400
+Message-ID: <20250716160141.1158722-5-kent.overstreet@linux.dev>
 In-Reply-To: <20250716160141.1158722-1-kent.overstreet@linux.dev>
 References: <20250716160141.1158722-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,29 +45,46 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-The allocator path has a "if we're really low on free buckets, check if
-we should issue discards" - tweak this to also trigger discards if more
-than 1/128th of the device is in need_discard state.
+bch2_btree_node_drop_keys_outside_node() will (re)build aux search
+trees, because it's also called by topology repair.
 
+bch2_btree_node_read_done() was calling it before validating individual
+keys; invalid ones have to be dropped.
+
+If we call drop_keys_outside_node() first, then
+bch2_bset_build_aux_tree() doesn't run because the node already has an
+aux search tree - which was invalidated by the repair.
+
+Reported-by: syzbot+c5e7a66b3b23ae65d44f@syzkaller.appspotmail.com
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/alloc_foreground.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/bcachefs/btree_io.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/bcachefs/alloc_foreground.c b/fs/bcachefs/alloc_foreground.c
-index b375ad610acd..b58525ec7b4d 100644
---- a/fs/bcachefs/alloc_foreground.c
-+++ b/fs/bcachefs/alloc_foreground.c
-@@ -511,7 +511,8 @@ static struct open_bucket *bch2_bucket_alloc_trans(struct btree_trans *trans,
- 	bch2_dev_usage_read_fast(ca, &req->usage);
- 	avail = dev_buckets_free(ca, req->usage, req->watermark);
+diff --git a/fs/bcachefs/btree_io.c b/fs/bcachefs/btree_io.c
+index a4cc72986e36..590cd29f3e86 100644
+--- a/fs/bcachefs/btree_io.c
++++ b/fs/bcachefs/btree_io.c
+@@ -1295,9 +1295,6 @@ int bch2_btree_node_read_done(struct bch_fs *c, struct bch_dev *ca,
  
--	if (req->usage.buckets[BCH_DATA_need_discard] > avail)
-+	if (req->usage.buckets[BCH_DATA_need_discard] >
-+	    min(avail, ca->mi.nbuckets >> 7))
- 		bch2_dev_do_discards(ca);
+ 	btree_bounce_free(c, btree_buf_bytes(b), used_mempool, sorted);
  
- 	if (req->usage.buckets[BCH_DATA_need_gc_gens] > avail)
+-	if (updated_range)
+-		bch2_btree_node_drop_keys_outside_node(b);
+-
+ 	i = &b->data->keys;
+ 	for (k = i->start; k != vstruct_last(i);) {
+ 		struct bkey tmp;
+@@ -1335,6 +1332,9 @@ int bch2_btree_node_read_done(struct bch_fs *c, struct bch_dev *ca,
+ 
+ 	btree_node_reset_sib_u64s(b);
+ 
++	if (updated_range)
++		bch2_btree_node_drop_keys_outside_node(b);
++
+ 	/*
+ 	 * XXX:
+ 	 *
 -- 
 2.50.0
 
