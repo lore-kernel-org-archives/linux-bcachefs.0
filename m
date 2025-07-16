@@ -1,36 +1,40 @@
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF7021D7E26
-	for <linux-bcachefs@vger.kernel.org>; Wed, 16 Jul 2025 16:01:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B018A262FC7
+	for <linux-bcachefs@vger.kernel.org>; Wed, 16 Jul 2025 16:01:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752681711; cv=none; b=ail+9ZXmK3owxSGyp9Rs8Gnj3nakp57DkUQT4QFORnIMIvpbnOvB9BuMFOx12p9BkBjVx4yn5mgCOqbttAaRxayYMnm4lNt4AlIAFL6mm2XFZ3C3ooZ6dBuUhxfWvniFDGBzAsMyNF22udGIklC4dGSCMBwL6i2nL5DMpmx1Fm8=
+	t=1752681711; cv=none; b=KUKulX4AE7q/fFNlV69ALMm0fXG2QQ+DaZinTD66u6djAXbrCm310r/EcKUdXwBtIzlWXmfof/C/5Q9v69T6djorbtRQOZmF5lye8cIV/wUE5VN/m0g8OZmCTNiX2Wd/fhVLe8NMUUkKCJ5FemFCdmI79sssV63yOVEU2fE9/f4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1752681711; c=relaxed/simple;
-	bh=RodTPrlmrQ9OPu2IQbo21Ri3NOamY4DYF9jzuUI9jZY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kf77hMW0P9mMB2d5j4UJeDvwOlWrZGbRHcga8Pc1MFXvZaQC3qBaOvJbownPZ4piZQt9H4SYbojXl/q2Vrqp6Cq+6McmQYE05UxKj7yp5e1PXfGNrliyk+ksS+Q6modezFYf9WPFnArDaxHzo7qf9shpAWSiNADK3FnuKApOGlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iyrT742V; arc=none smtp.client-ip=95.215.58.186
+	bh=9Y8+aNFfaMxwiMuyl615gwYgkvccrC2beQqP+yallcI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=DeYChfA11Yo11T5lYb07RMD/x90HwXtKxY2yF524PcucJLZ8R6K+lZrea3mTQiIhipmOYIRovkhV6XXJtOfuNjVmwEwJK0Tx/CNmGZP6+oZhV3M82ERDvJ3lZNPLP6kwru9CvciM6xeqAP3ub+exnuNGwIy7o7Pn3Mk5oaytOO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QJNfukCb; arc=none smtp.client-ip=95.215.58.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iyrT742V"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QJNfukCb"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
 	t=1752681707;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=CNm4BnRu62RBejUyvx86+pyorkDlb4bQhhJt8xmJnJM=;
-	b=iyrT742V3jatYW5ZI2iHMm9+BSbkewDieCyfzUtvx4ysgZTXdGenH/8FSpEb7CySJ/jCbH
-	Nqt3j1irDMkuEEV5tHSsnnaAk6G4IxJQuP9xNp6cLDIXx900PVmVKidAJxansx6QO5F+OG
-	dLfEHVzeDkQLHMB1K0MHqBDayZPnlFM=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=epstTAiQzK8V4lTdmwxFg1WtkyYSpDxMOjk7TijBL+c=;
+	b=QJNfukCbaCssV7BSBrZAmVNaE8pVswu68pVPXhP28Y1EdfvUiFMzqC0tsYRhbjSbVv9lCL
+	BgZJRQN1/cqecXdYpzaFgDEtFOKfxRPrUv4dbQQaO1IbKsrTu5LcAxnDhY5w5oiPXrenut
+	GFTzlpZNabkTh1vjROfCe3vwNFPEGhA=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 1/7] bcachefs: io_read: remove from async obj list in rbio_done()
-Date: Wed, 16 Jul 2025 12:01:35 -0400
-Message-ID: <20250716160141.1158722-1-kent.overstreet@linux.dev>
+Subject: [PATCH 2/7] bcachefs: async_objs: update iter pos after obj printed
+Date: Wed, 16 Jul 2025 12:01:36 -0400
+Message-ID: <20250716160141.1158722-2-kent.overstreet@linux.dev>
+In-Reply-To: <20250716160141.1158722-1-kent.overstreet@linux.dev>
+References: <20250716160141.1158722-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -40,37 +44,29 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Previously, only split rbios allocated in io_read.c would be removed
-from the async obj list.
-
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/io_read.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ fs/bcachefs/async_objs.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/fs/bcachefs/io_read.c b/fs/bcachefs/io_read.c
-index cd184b219a65..e0874ad9a6cf 100644
---- a/fs/bcachefs/io_read.c
-+++ b/fs/bcachefs/io_read.c
-@@ -166,6 +166,7 @@ static noinline void promote_free(struct bch_read_bio *rbio)
- 	BUG_ON(ret);
+diff --git a/fs/bcachefs/async_objs.c b/fs/bcachefs/async_objs.c
+index a7cd1f0f0964..e368c765eb46 100644
+--- a/fs/bcachefs/async_objs.c
++++ b/fs/bcachefs/async_objs.c
+@@ -80,12 +80,11 @@ static ssize_t bch2_async_obj_list_read(struct file *file, char __user *buf,
+ 			break;
  
- 	async_object_list_del(c, promote, op->list_idx);
-+	async_object_list_del(c, rbio, rbio->list_idx);
+ 		list->obj_to_text(&i->buf, obj);
++		i->iter = iter.pos;
+ 	}
  
- 	bch2_data_update_exit(&op->write);
+ 	if (i->buf.allocation_failure)
+ 		ret = -ENOMEM;
+-	else
+-		i->iter = iter.pos;
  
-@@ -456,6 +457,10 @@ static void bch2_rbio_done(struct bch_read_bio *rbio)
- 	if (rbio->start_time)
- 		bch2_time_stats_update(&rbio->c->times[BCH_TIME_data_read],
- 				       rbio->start_time);
-+#ifdef CONFIG_BCACHEFS_ASYNC_OBJECT_LISTS
-+	if (rbio->list_idx)
-+		async_object_list_del(rbio->c, rbio, rbio->list_idx);
-+#endif
- 	bio_endio(&rbio->bio);
- }
- 
+ 	if (!ret)
+ 		ret = bch2_debugfs_flush_buf(i);
 -- 
 2.50.0
 
