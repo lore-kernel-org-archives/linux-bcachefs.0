@@ -1,40 +1,67 @@
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1E3D188596
-	for <linux-bcachefs@vger.kernel.org>; Fri, 18 Jul 2025 06:47:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A7FE291C10
+	for <linux-bcachefs@vger.kernel.org>; Fri, 18 Jul 2025 07:47:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752821252; cv=none; b=IP1j0pxlu7yD/wITT8gD7Yg1/u4h1LeKfdBJz/792m77nUWK6qNqRlmMG7Te9ElhxjRKnnS/YZ2vPvxv/qPcVtMWu/MCaSx2oH6HMaoC/n5WLPpx89W8BLizWI3dmzLmXfS4brGJ8YaBjhmWahFeStCSiCn+3PQk9PyK5FglW78=
+	t=1752824830; cv=none; b=fO6aj2OE4FuGnyM/HZ8G68WFBr9YwrppwGyyNyMessQW7YwrQjzYa/aunYY0oAqCwQ7+Wax595BLkJkjIhga1LQEtwAlGLyGAiIh098ptvOY70wUPTDtAPgCQzZvxaXL2GmeeBCh/cefoem1ISOI0AFR3hlEBnmJhe3l/Xd1bZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752821252; c=relaxed/simple;
-	bh=PccrzY3+CuMIlOt8cB04pj/boZxmXED6O+M2ICMATGk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Z31QqnzfqZcV02zajnpI/0GPZ51RZhhM+5uP+BJa92Md/OqdjKJha4PGXPIkBnpPf0Sjd1/dxQ9QrN/gdbM4a0jvB5CW+4HL0yiCovJWM8yiVxZC8MyhgErd/MQ52aZP9X1arNSJObbeVmoiuypFo5uIczjMru1pfd0GLeW6hAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hU2xVK4S; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1752824830; c=relaxed/simple;
+	bh=5P0mmkI8IheL6hKU4l8NL+K9zY2DpKsKMSzwajvPWZE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PFHQU4Q6EzjQZZWTznqTGzvkr+cKljt/4NMGIJ9cyrVDvMrmI6qOmyhD7E70zCrxW5y0RcSXOpmQwMcRQWcwU0cX0S27TO0/9M2WD+5NcJezqyjwvOKoBNF2d9bahJ0oZF+xACn/1MmLg7FPzBiv9pZuT18XeqgGvBbMnQYN92c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cenIg3hz; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hU2xVK4S"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752821247;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cGUsxdXfCMuarhwWcY7zlOidO7efkOaTGTdhzeOyXOo=;
-	b=hU2xVK4SDRdEsFZO2moduxIo9WfJ/Dl8UpqLjgFMZ55ay5hjklnPCfqlgDsELouvsezgem
-	RrgAPl9ULU4qsv5yH8RchOZGndsJwODOOrEnHQTQqd121e9xi30Hp2U7/FyaTJFLB7L2Gd
-	tmJpM5KpUp/OTi/j6mARBGoFi7RbauY=
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 4/4] bcachefs: can_use_btree_node()
-Date: Fri, 18 Jul 2025 02:47:15 -0400
-Message-ID: <20250718064715.333124-4-kent.overstreet@linux.dev>
-In-Reply-To: <20250718064715.333124-1-kent.overstreet@linux.dev>
-References: <20250718064715.333124-1-kent.overstreet@linux.dev>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cenIg3hz"
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-748d982e97cso1670604b3a.1
+        for <linux-bcachefs@vger.kernel.org>; Fri, 18 Jul 2025 00:47:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752824828; x=1753429628; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nL9QmwKQL3LVMymQaCdvoqLZJn4gowlC60ql62f+mG8=;
+        b=cenIg3hzHt+2InhglsXOYkp4QPU5Khhs1Rhgl1NedPdJiBiXUgKuUmDwHAtrN+q7r1
+         eCupDlcp3e5diU8wx/rDl9ahQbMGaw2D5HF8tTwt/Vf8LG41RlqENTDjbeBOmIVNicvR
+         WvQmynsHA24iXhGSiEQRUnslpBM54x8Ey1dZEOTnBJrblptvZ0/Pnkah9eV3snwS2MoG
+         F7Qdod5QgtBnL8ev39FAk6C9vygCp3YxNlzf2Fb//0jFzpnfx1m/ciaeFoTw3JwmjrJQ
+         qBVsVckfG3vBrDI1JujszlRuDlydtzALvwgngss1ei7lTdh3Wi45BRz36ALDV6z3vf36
+         Cr0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752824828; x=1753429628;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nL9QmwKQL3LVMymQaCdvoqLZJn4gowlC60ql62f+mG8=;
+        b=g1rhSzUZ0ZnZpQvcMPzEbiAdNWMeJCW+PX9PT+oHhbW/U0T6SpzoaAVcH+b7nRSgGG
+         cSPoLkxbJIzAFOvP9lZN+IdBrOKTd1sMhHzzvnEMsv9QalPd0XU7qY5XW8f1hmm4b7Su
+         d0wk9JdSluhBMilNWk/ErR3JUTLSZWMGdC9KJoBCI7e8WEDsAF6SwfGPqsSLIeXgX1fb
+         Ia/bAnLV0Gz072YK7Q/mVfzcVPfFaHOw7xLn9nWJ/AeBGvQELKu9X38+j5iCL2SPXFrY
+         HmYFUDqemu/htPQMAQWyyyhYQJxwaw4/ztRvgCap1lvJLcpMPBHWzqND3XGxoQtHiMyd
+         EX5A==
+X-Gm-Message-State: AOJu0Yxd2s/kbLcK+yVoDJoypg7FgmSVjDiSPbOeIXOOpUr1t6LBgAJ4
+	UFnemLOCR3ywuw/tK7eUSCpvVmei+7c89fAWU5BZqKIGuv2c82cMlRPo0CMJeb29
+X-Gm-Gg: ASbGnct9F0pSO0wYIr7cddq6reDCqwjF3T+rDRPJ/8rzSDGjZDfBBk16uCQzORkO/TJ
+	Tp1Zu4yfmEEpbaQgoegdqnyx8A/1/O5YwYppqwOO793ZBA3ku6do0H6XyiSmZDQhMvr4wfWeWNv
+	jh8FiY5U2PY2y9VdFXtyzqa/wcu+S6qiYfh/jt8cWhFO/mMSzGTwuW6rnelVcA6c+wMUtMsL4qI
+	8eIIhN0CTq4S4C3fb3vmyYQPdg1O59lTSW8Zd3My2UsPhkb8FZfDEouuEDuHpyeOsqjWsm4eEro
+	AOTKzDk5jG2VH19NNXhBC6FD7PbOS1arIZL09K6S3O4e0idPWx8EraXs3y76nMtyHRygbWBU
+X-Google-Smtp-Source: AGHT+IFQO+zpLdCX7IrzvYKCuHHxf9BYPsFJsY6hvL1XMVDBhXdhcCujXsulo1ndZ+jQ2a+03KxYgg==
+X-Received: by 2002:a05:6a21:a344:b0:233:b2f8:70e with SMTP id adf61e73a8af0-23812947a1emr14387679637.25.1752824828318;
+        Fri, 18 Jul 2025 00:47:08 -0700 (PDT)
+Received: from localhost ([2402:d0c0:11:86::1])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-759c89cf989sm695762b3a.37.2025.07.18.00.47.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jul 2025 00:47:07 -0700 (PDT)
+From: Alan Huang <mmpgouride@gmail.com>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	Alan Huang <mmpgouride@gmail.com>
+Subject: [PATCH] bcachefs: Use user_backed_iter instead of iter_is_iovec
+Date: Fri, 18 Jul 2025 15:47:03 +0800
+Message-ID: <20250718074703.1452422-1-mmpgouride@gmail.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -42,123 +69,27 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-Make sure btree_node_alloc() respects allocation policy when allocating
-from the btree node reserve.
+ITER_UBUF is also from userspace
 
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Signed-off-by: Alan Huang <mmpgouride@gmail.com>
 ---
- fs/bcachefs/btree_update_interior.c | 41 ++++++++++++++++++++++++++---
- fs/bcachefs/extents.c               | 14 ++++++++++
- fs/bcachefs/extents.h               |  2 ++
- 3 files changed, 54 insertions(+), 3 deletions(-)
+ fs/bcachefs/fs-io-direct.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/bcachefs/btree_update_interior.c b/fs/bcachefs/btree_update_interior.c
-index 312ef203b27b..e4aa4fa749bc 100644
---- a/fs/bcachefs/btree_update_interior.c
-+++ b/fs/bcachefs/btree_update_interior.c
-@@ -14,6 +14,7 @@
- #include "btree_locking.h"
- #include "buckets.h"
- #include "clock.h"
-+#include "disk_groups.h"
- #include "enumerated_ref.h"
- #include "error.h"
- #include "extents.h"
-@@ -277,6 +278,36 @@ static void bch2_btree_node_free_never_used(struct btree_update *as,
- 	bch2_trans_node_drop(trans, b);
- }
+diff --git a/fs/bcachefs/fs-io-direct.c b/fs/bcachefs/fs-io-direct.c
+index 1f5154d9676b..6fdc477c81af 100644
+--- a/fs/bcachefs/fs-io-direct.c
++++ b/fs/bcachefs/fs-io-direct.c
+@@ -127,7 +127,7 @@ static int bch2_direct_IO_read(struct kiocb *req, struct iov_iter *iter)
+ 	 * the dirtying of requests that are internal from the kernel (i.e. from
+ 	 * loopback), because we'll deadlock on page_lock.
+ 	 */
+-	dio->should_dirty = iter_is_iovec(iter);
++	dio->should_dirty = user_backed_iter(iter);
  
-+static bool can_use_btree_node(struct bch_fs *c,
-+			       struct disk_reservation *res,
-+			       unsigned target,
-+			       struct bkey_s_c k)
-+{
-+	if (!bch2_bkey_devs_rw(c, k))
-+		return false;
-+
-+	if (target && !bch2_bkey_in_target(c, k, target))
-+		return false;
-+
-+	unsigned durability = bch2_bkey_durability(c, k);
-+
-+	if (durability >= res->nr_replicas)
-+		return true;
-+
-+	struct bch_devs_mask devs = target_rw_devs(c, BCH_DATA_btree, target);
-+
-+	guard(rcu)();
-+
-+	unsigned durability_available = 0, i;
-+	for_each_set_bit(i, devs.d, BCH_SB_MEMBERS_MAX) {
-+		struct bch_dev *ca = bch2_dev_rcu_noerror(c, i);
-+		if (ca)
-+			durability_available += ca->mi.durability;
-+	}
-+
-+	return durability >= durability_available;
-+}
-+
- static struct btree *__bch2_btree_node_alloc(struct btree_trans *trans,
- 					     struct disk_reservation *res,
- 					     struct closure *cl,
-@@ -303,10 +334,14 @@ static struct btree *__bch2_btree_node_alloc(struct btree_trans *trans,
- 	mutex_lock(&c->btree_reserve_cache_lock);
- 	if (c->btree_reserve_cache_nr > nr_reserve) {
- 		for (struct btree_alloc *a = c->btree_reserve_cache;
--		     a < c->btree_reserve_cache + c->btree_reserve_cache_nr;
--		     a++) {
--			if (target && !bch2_bkey_in_target(c, bkey_i_to_s_c(&a->k), target))
-+		     a < c->btree_reserve_cache + c->btree_reserve_cache_nr;) {
-+			/* check if it has sufficient durability */
-+
-+			if (!can_use_btree_node(c, res, target, bkey_i_to_s_c(&a->k))) {
-+				bch2_open_buckets_put(c, &a->ob);
-+				*a = c->btree_reserve_cache[--c->btree_reserve_cache_nr];
- 				continue;
-+			}
- 
- 			bkey_copy(&b->key, &a->k);
- 			b->ob = a->ob;
-diff --git a/fs/bcachefs/extents.c b/fs/bcachefs/extents.c
-index b36ecfc0ab9d..8152ef1cbbcd 100644
---- a/fs/bcachefs/extents.c
-+++ b/fs/bcachefs/extents.c
-@@ -1006,6 +1006,20 @@ const struct bch_extent_ptr *bch2_bkey_has_device_c(struct bkey_s_c k, unsigned
- 	return NULL;
- }
- 
-+bool bch2_bkey_devs_rw(struct bch_fs *c, struct bkey_s_c k)
-+{
-+	struct bkey_ptrs_c ptrs = bch2_bkey_ptrs_c(k);
-+
-+	guard(rcu)();
-+	bkey_for_each_ptr(ptrs, ptr) {
-+		CLASS(bch2_dev_tryget, ca)(c, ptr->dev);
-+		if (!ca || ca->mi.state != BCH_MEMBER_STATE_rw)
-+			return false;
-+	}
-+
-+	return true;
-+}
-+
- bool bch2_bkey_has_target(struct bch_fs *c, struct bkey_s_c k, unsigned target)
- {
- 	struct bkey_ptrs_c ptrs = bch2_bkey_ptrs_c(k);
-diff --git a/fs/bcachefs/extents.h b/fs/bcachefs/extents.h
-index f212f91c278d..35ee03cd5065 100644
---- a/fs/bcachefs/extents.h
-+++ b/fs/bcachefs/extents.h
-@@ -614,6 +614,8 @@ static inline struct bch_extent_ptr *bch2_bkey_has_device(struct bkey_s k, unsig
- 	return (void *) bch2_bkey_has_device_c(k.s_c, dev);
- }
- 
-+bool bch2_bkey_devs_rw(struct bch_fs *, struct bkey_s_c);
-+
- bool bch2_bkey_has_target(struct bch_fs *, struct bkey_s_c, unsigned);
- bool bch2_bkey_in_target(struct bch_fs *, struct bkey_s_c, unsigned);
+ 	blk_start_plug(&plug);
  
 -- 
-2.50.0
+2.48.1
 
