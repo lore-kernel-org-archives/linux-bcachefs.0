@@ -1,37 +1,67 @@
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B777C2E7BDF
-	for <linux-bcachefs@vger.kernel.org>; Fri, 18 Jul 2025 17:56:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51A6E17A2F5
+	for <linux-bcachefs@vger.kernel.org>; Fri, 18 Jul 2025 18:16:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752861386; cv=none; b=WaGOb7v8sSSbsgoKz8CaxVxR0nnULNTGtWDVZ4ts3MjBorJN+1vWaShEWSxNiidBU5rrur5EMjaXo39DYyavibHDa3MS2PdiC0hfTdvLRvMSC0k6A+iaowWZg7haTrFM162EeKKQC9IlAg6Q7PpMwPU65FsFcUxV+y4BPs2H0Hs=
+	t=1752862616; cv=none; b=HB/WgPY9BgNIYQWVHrTddo2AtnQn09atk9mQNjprF5d054gY1oMpIuW4rnrup4tK7KYWI9sdqZXl9pquqMCFxxZZFV1nGyjYPbXITvADIarCmSCmg127fzKJqX6sqwKV5qn6Slj11LUKCb4JQHZRVkAZwobaAnxHh5W7gnaNJro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752861386; c=relaxed/simple;
-	bh=PRXvPDIg2rZ5YP4lxjd0jjH3TCLhXGFORlW1lTIMDow=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rI1udDIna7+7K/s8hix5xn34MjBdLJRiZLKK4VJ6EMGiSY0GNXtZ2ujeOndS01NlAJ3jLB8ovc2uH/w83Ve5aK/TeInlId6cVzqHCv1wvkOzoF2XyqaSpMLZdGhvE2nbS8zs6nrNoYKFxEPItARaytRpXBePL08EK1fnIaPf4DE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=u/dWVQ5O; arc=none smtp.client-ip=91.218.175.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1752862616; c=relaxed/simple;
+	bh=bXxcujjyeZ/tK1cViodkyoabmarszqp70wlxxwDykyo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JQwo5Z+ypkGC/9zhkjGNJkTEw6IRZe7oZyHnk7R3TVq7jdf3T/PBzTJ890UfTKLkxmis35vqVMtca1aQiTBzC3JEmLuwaQHLxstwPd3UFkrlKLnsiiLUzwA84S5KiLZjYrwjlRJIFZpR37SU+B33iPkDYwj85YfYcOp5jGLnhB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JaHtbQa8; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="u/dWVQ5O"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752861381;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=X2TwKpRo0l1c5pX3ML9YVlhht1GtulqMD5EuHnImvBk=;
-	b=u/dWVQ5OMGdbAP3UAqfMD+YEmfO8JSw6h/p3DBPIfzQrQzzJu6/e285JE0UyF7mSoObu7+
-	gLQGAokzBQpXTXURny+YsL1uyyS1pdGVcpt34ahmB16kZ5/Xzgo7KrNOBWrEC+72D7FU3S
-	iB09BYAJOy9CCSiHZ1BsHzlsQkdg1pA=
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	syzbot+8eb51728519f6659ef7b@syzkaller.appspotmail.com
-Subject: [PATCH] bcachefs: Fix refs to undefined fields in __bch2_alloc_v4_to_text()
-Date: Fri, 18 Jul 2025 13:56:16 -0400
-Message-ID: <20250718175616.496553-1-kent.overstreet@linux.dev>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JaHtbQa8"
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-75ab31c426dso328878b3a.3
+        for <linux-bcachefs@vger.kernel.org>; Fri, 18 Jul 2025 11:16:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752862614; x=1753467414; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+ume53cEmkG7mmrxweQ62pw2qTC1KApDiDVve+Omg50=;
+        b=JaHtbQa8aMo5Xai6ZZ8x2mwqdKt6ky3hz4KKfsuA/eWTkHneeDTCfgoNw8AloytPZ7
+         0bGjNIVgcVjh9k4my2X2zodBt+njAHoADjBfTdB1CIxvS3D1+rPzqHaKZowGxuLJRek5
+         GHmdjNYpd/IS7M5xHxV+Ry/eyXoiXSp6Uk2Ija/yZwiZcMezLyDkao9wpcbImxFMa3O+
+         bdG5sqzvo2mhy7AxAIe8S9tGeuySxKQX3IG6yP2c3eIRLWaeLtqL+nmSjyfWPFLDc5te
+         NebaoztJP70JP8NXVjzt9CeyltXO32cKV7iU4vEoVjEwTYvv/iV7pxs4JvYF95p5sGCY
+         aTeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752862614; x=1753467414;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+ume53cEmkG7mmrxweQ62pw2qTC1KApDiDVve+Omg50=;
+        b=c67v0tJpHiYSL+D9J5jZZB5cfwcoCzINoJX/7j8RIPLgfjMtvLCm/HE3lN9SffuO9R
+         gtmK90V5egwo9m77C7vVg69T+WT944Q2qckTPcGWqxNuFQh3UylD7c8VbOgMSINjjrYN
+         6173+58ui8YBBpbT9VSkgvGHvlBvNZoxjImu+LpabtVsemuQwoIaypKntciRvhi1s88J
+         1HslkElzpJExZSDB3jYX6wBf/Zc/chBGJiBjNPJhieCw7LIh+yVft4ZSmOfRyJUFja17
+         56q/AMFTdTfQBw5DsWigH1MOyipL0U5xLsEv/2yLukxupnijzJffCqjbof1PesZLmX34
+         wdFw==
+X-Gm-Message-State: AOJu0YxsQsx3kVo0N9P3kuEsE3ewASnnhbNFr6XR6JUuhb+co8H8cxqT
+	f6a1LZqr2qocPeyG44PHB8lEL0mo8Wsi3XHEAjH1AxPNmp8+PwP5p5rv
+X-Gm-Gg: ASbGncsNxUMJUPRgLNBkkwuBW8zQhNstL72R0UmUkJQqV0O9rny7p0VZ/YAdHxjXM62
+	YCMqxDTb9Wpdau24DbKcolqFMcQcK/YkDM8Kd5QAEn6iwQM81p8AetuEalX9on/QjYvtkVYA1Jz
+	SczvwdAtiw+62xWbGse8M2WVf06z5amEgzxyUiNjrdF7jcaGORSzaILJU1Yp2H6vw43+9mW0ZUk
+	4jKtsKwj/Hrv8/Be8fH2BTZDJqbYDkqgUoP6B+5eFKSL2BL6dcVc7TGo1pL/VVfvf5aQP3lMcPP
+	YwraRHhh2XW7Sj2y1x+Rnx9DJwVsq5lc2vp65ejGhT5iyAgyoXFU/7JN8q18iXVkjuOtLlNv
+X-Google-Smtp-Source: AGHT+IF14PoFCANWYvwj2AIws4U1ai5dr5gd+wwP8+FOfGjSFJdRbIg0h+eGtSNs/5OPw7WMNK3AFg==
+X-Received: by 2002:a17:903:2292:b0:235:ea29:28da with SMTP id d9443c01a7336-23e2569c2b7mr190855175ad.17.1752862614314;
+        Fri, 18 Jul 2025 11:16:54 -0700 (PDT)
+Received: from localhost ([2402:d0c0:11:86::1])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23e3b6ef21bsm16535945ad.197.2025.07.18.11.16.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jul 2025 11:16:53 -0700 (PDT)
+From: Alan Huang <mmpgouride@gmail.com>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	Alan Huang <mmpgouride@gmail.com>
+Subject: [PATCH v2] bcachefs: Use user_backed_iter instead of iter_is_iovec
+Date: Sat, 19 Jul 2025 02:16:35 +0800
+Message-ID: <20250718181635.1502126-1-mmpgouride@gmail.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -39,69 +69,32 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-Recent stack usage reductions have avoided unpacking alloc keys onto the
-stack in a few places, but when we do so we must be careful not to
-reference fields that don't exist - key values can be extended with new
-fields over time.
+ITER_UBUF is also one of the user backed iter, which is equivalent
+of single-segment iovec. DIO handling should use user_backed_iter.
 
-Reported-by: syzbot+8eb51728519f6659ef7b@syzkaller.appspotmail.com
-Fixes: eabef52ff881 ("bcachefs: bch2_alloc_v4_to_text()")
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Signed-off-by: Alan Huang <mmpgouride@gmail.com>
 ---
- fs/bcachefs/alloc_background.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/fs/bcachefs/alloc_background.c b/fs/bcachefs/alloc_background.c
-index 4c1604fd80f9..f1d35b7f3fc5 100644
---- a/fs/bcachefs/alloc_background.c
-+++ b/fs/bcachefs/alloc_background.c
-@@ -337,9 +337,10 @@ void bch2_alloc_v4_swab(struct bkey_s k)
- }
+V2: imporve commit message
+
+
+ fs/bcachefs/fs-io-direct.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/bcachefs/fs-io-direct.c b/fs/bcachefs/fs-io-direct.c
+index 1f5154d9676b..6fdc477c81af 100644
+--- a/fs/bcachefs/fs-io-direct.c
++++ b/fs/bcachefs/fs-io-direct.c
+@@ -127,7 +127,7 @@ static int bch2_direct_IO_read(struct kiocb *req, struct iov_iter *iter)
+ 	 * the dirtying of requests that are internal from the kernel (i.e. from
+ 	 * loopback), because we'll deadlock on page_lock.
+ 	 */
+-	dio->should_dirty = iter_is_iovec(iter);
++	dio->should_dirty = user_backed_iter(iter);
  
- static inline void __bch2_alloc_v4_to_text(struct printbuf *out, struct bch_fs *c,
--					   unsigned dev, const struct bch_alloc_v4 *a)
-+					   struct bkey_s_c k,
-+					   const struct bch_alloc_v4 *a)
- {
--	struct bch_dev *ca = c ? bch2_dev_tryget_noerror(c, dev) : NULL;
-+	struct bch_dev *ca = c ? bch2_dev_tryget_noerror(c, k.k->p.inode) : NULL;
+ 	blk_start_plug(&plug);
  
- 	prt_newline(out);
- 	printbuf_indent_add(out, 2);
-@@ -348,11 +349,14 @@ static inline void __bch2_alloc_v4_to_text(struct printbuf *out, struct bch_fs *
- 	bch2_prt_data_type(out, a->data_type);
- 	prt_newline(out);
- 	prt_printf(out, "journal_seq_nonempty %llu\n",	a->journal_seq_nonempty);
--	prt_printf(out, "journal_seq_empty    %llu\n",	a->journal_seq_empty);
-+	if (bkey_val_bytes(k.k) > offsetof(struct bch_alloc_v4, journal_seq_empty))
-+		prt_printf(out, "journal_seq_empty    %llu\n",	a->journal_seq_empty);
-+
- 	prt_printf(out, "need_discard         %llu\n",	BCH_ALLOC_V4_NEED_DISCARD(a));
- 	prt_printf(out, "need_inc_gen         %llu\n",	BCH_ALLOC_V4_NEED_INC_GEN(a));
- 	prt_printf(out, "dirty_sectors        %u\n",	a->dirty_sectors);
--	prt_printf(out, "stripe_sectors       %u\n",	a->stripe_sectors);
-+	if (bkey_val_bytes(k.k) > offsetof(struct bch_alloc_v4, stripe_sectors))
-+		prt_printf(out, "stripe_sectors       %u\n",	a->stripe_sectors);
- 	prt_printf(out, "cached_sectors       %u\n",	a->cached_sectors);
- 	prt_printf(out, "stripe               %u\n",	a->stripe);
- 	prt_printf(out, "stripe_redundancy    %u\n",	a->stripe_redundancy);
-@@ -372,12 +376,12 @@ void bch2_alloc_to_text(struct printbuf *out, struct bch_fs *c, struct bkey_s_c
- 	struct bch_alloc_v4 _a;
- 	const struct bch_alloc_v4 *a = bch2_alloc_to_v4(k, &_a);
- 
--	__bch2_alloc_v4_to_text(out, c, k.k->p.inode, a);
-+	__bch2_alloc_v4_to_text(out, c, k, a);
- }
- 
- void bch2_alloc_v4_to_text(struct printbuf *out, struct bch_fs *c, struct bkey_s_c k)
- {
--	__bch2_alloc_v4_to_text(out, c, k.k->p.inode, bkey_s_c_to_alloc_v4(k).v);
-+	__bch2_alloc_v4_to_text(out, c, k, bkey_s_c_to_alloc_v4(k).v);
- }
- 
- void __bch2_alloc_to_v4(struct bkey_s_c k, struct bch_alloc_v4 *out)
 -- 
-2.50.0
+2.48.1
 
