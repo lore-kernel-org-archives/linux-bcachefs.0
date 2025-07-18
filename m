@@ -1,38 +1,38 @@
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1CF64689
-	for <linux-bcachefs@vger.kernel.org>; Fri, 18 Jul 2025 06:47:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1E3D188596
+	for <linux-bcachefs@vger.kernel.org>; Fri, 18 Jul 2025 06:47:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752821251; cv=none; b=kQZXZLK8jQhXEscsUsKKA6RwX7kgs4l7lsUnpzgWRud97KeCTZR2P3nkWD+lwyOciTL87/8+NT9WIHqRvM3n2MjotkMvY8N8Us4xOaXa/cIYVaFL8Y6CE/6fWpGDeUf5KHVPqpR5MqXcvrkSZja2ZSKWsjgs9HeXdN/qyja8HIw=
+	t=1752821252; cv=none; b=IP1j0pxlu7yD/wITT8gD7Yg1/u4h1LeKfdBJz/792m77nUWK6qNqRlmMG7Te9ElhxjRKnnS/YZ2vPvxv/qPcVtMWu/MCaSx2oH6HMaoC/n5WLPpx89W8BLizWI3dmzLmXfS4brGJ8YaBjhmWahFeStCSiCn+3PQk9PyK5FglW78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752821251; c=relaxed/simple;
-	bh=XGBuAtCpsCCcqiAucJpFR0FVJDKohx3RMx3fbPz0H5c=;
+	s=arc-20240116; t=1752821252; c=relaxed/simple;
+	bh=PccrzY3+CuMIlOt8cB04pj/boZxmXED6O+M2ICMATGk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=F+vcyt1a6XFp86iCuYb7+wyoxdUa9gvJMa3p5zfTk5LqWk87ItdSBGJf/rhMgAJuBQmiYd7PrEu/ek/BKpeARO2g5f+hWZcADvblweWadglp+s3z/XNhjOCYROtt3vSqAR5/V1mNcMY5MvuqPVcnMwfdyiSa99mlJZItH2qluMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PHedr93N; arc=none smtp.client-ip=95.215.58.189
+	 MIME-Version; b=Z31QqnzfqZcV02zajnpI/0GPZ51RZhhM+5uP+BJa92Md/OqdjKJha4PGXPIkBnpPf0Sjd1/dxQ9QrN/gdbM4a0jvB5CW+4HL0yiCovJWM8yiVxZC8MyhgErd/MQ52aZP9X1arNSJObbeVmoiuypFo5uIczjMru1pfd0GLeW6hAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hU2xVK4S; arc=none smtp.client-ip=95.215.58.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PHedr93N"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hU2xVK4S"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752821246;
+	t=1752821247;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/P4GQEsNiQG2sbg5qQDFNMMb+BkOJBzJWJwtPw1lIY4=;
-	b=PHedr93NNjZODGF5ejP2kd2+B16MQwZR0ur+FGLrZb0PoMTJHjPH3UTAE82ly3Kw3HKwiU
-	0lNUzHo5S4s2qxcY/rw4gW/mMJH4owCpnFgB4ZG8Pl6cxFIodrX0klf9heeE2HLnNLqbIS
-	+i/QRudAeQKJmIv5ZfN25eIVTaTUWNc=
+	bh=cGUsxdXfCMuarhwWcY7zlOidO7efkOaTGTdhzeOyXOo=;
+	b=hU2xVK4SDRdEsFZO2moduxIo9WfJ/Dl8UpqLjgFMZ55ay5hjklnPCfqlgDsELouvsezgem
+	RrgAPl9ULU4qsv5yH8RchOZGndsJwODOOrEnHQTQqd121e9xi30Hp2U7/FyaTJFLB7L2Gd
+	tmJpM5KpUp/OTi/j6mARBGoFi7RbauY=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 2/4] bcachefs: bch2_move_data() now walks btree nodes
-Date: Fri, 18 Jul 2025 02:47:13 -0400
-Message-ID: <20250718064715.333124-2-kent.overstreet@linux.dev>
+Subject: [PATCH 4/4] bcachefs: can_use_btree_node()
+Date: Fri, 18 Jul 2025 02:47:15 -0400
+Message-ID: <20250718064715.333124-4-kent.overstreet@linux.dev>
 In-Reply-To: <20250718064715.333124-1-kent.overstreet@linux.dev>
 References: <20250718064715.333124-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,188 +44,121 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-bch2_move_data_btree() can already walk btree nodes, and it properly
-handles btree roots.
-
-This is a code cleanup - and it fixes the rereplicate2 test, we can now
-reliably rerereplicate in one psas.
+Make sure btree_node_alloc() respects allocation policy when allocating
+from the btree node reserve.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/move.c | 95 ++++++++++++++++++----------------------------
- fs/bcachefs/move.h | 12 ------
- 2 files changed, 36 insertions(+), 71 deletions(-)
+ fs/bcachefs/btree_update_interior.c | 41 ++++++++++++++++++++++++++---
+ fs/bcachefs/extents.c               | 14 ++++++++++
+ fs/bcachefs/extents.h               |  2 ++
+ 3 files changed, 54 insertions(+), 3 deletions(-)
 
-diff --git a/fs/bcachefs/move.c b/fs/bcachefs/move.c
-index 3f44bb54f91a..3419e406f0c7 100644
---- a/fs/bcachefs/move.c
-+++ b/fs/bcachefs/move.c
-@@ -795,50 +795,50 @@ int bch2_move_data_btree(struct moving_context *ctxt,
- 	return ret;
+diff --git a/fs/bcachefs/btree_update_interior.c b/fs/bcachefs/btree_update_interior.c
+index 312ef203b27b..e4aa4fa749bc 100644
+--- a/fs/bcachefs/btree_update_interior.c
++++ b/fs/bcachefs/btree_update_interior.c
+@@ -14,6 +14,7 @@
+ #include "btree_locking.h"
+ #include "buckets.h"
+ #include "clock.h"
++#include "disk_groups.h"
+ #include "enumerated_ref.h"
+ #include "error.h"
+ #include "extents.h"
+@@ -277,6 +278,36 @@ static void bch2_btree_node_free_never_used(struct btree_update *as,
+ 	bch2_trans_node_drop(trans, b);
  }
  
--int __bch2_move_data(struct moving_context *ctxt,
--		     struct bbpos start,
--		     struct bbpos end,
--		     move_pred_fn pred, void *arg)
-+static int bch2_move_data(struct bch_fs *c,
-+			  struct bbpos start,
-+			  struct bbpos end,
-+			  unsigned min_depth,
-+			  struct bch_ratelimit *rate,
-+			  struct bch_move_stats *stats,
-+			  struct write_point_specifier wp,
-+			  bool wait_on_copygc,
-+			  move_pred_fn pred, void *arg)
++static bool can_use_btree_node(struct bch_fs *c,
++			       struct disk_reservation *res,
++			       unsigned target,
++			       struct bkey_s_c k)
++{
++	if (!bch2_bkey_devs_rw(c, k))
++		return false;
++
++	if (target && !bch2_bkey_in_target(c, k, target))
++		return false;
++
++	unsigned durability = bch2_bkey_durability(c, k);
++
++	if (durability >= res->nr_replicas)
++		return true;
++
++	struct bch_devs_mask devs = target_rw_devs(c, BCH_DATA_btree, target);
++
++	guard(rcu)();
++
++	unsigned durability_available = 0, i;
++	for_each_set_bit(i, devs.d, BCH_SB_MEMBERS_MAX) {
++		struct bch_dev *ca = bch2_dev_rcu_noerror(c, i);
++		if (ca)
++			durability_available += ca->mi.durability;
++	}
++
++	return durability >= durability_available;
++}
++
+ static struct btree *__bch2_btree_node_alloc(struct btree_trans *trans,
+ 					     struct disk_reservation *res,
+ 					     struct closure *cl,
+@@ -303,10 +334,14 @@ static struct btree *__bch2_btree_node_alloc(struct btree_trans *trans,
+ 	mutex_lock(&c->btree_reserve_cache_lock);
+ 	if (c->btree_reserve_cache_nr > nr_reserve) {
+ 		for (struct btree_alloc *a = c->btree_reserve_cache;
+-		     a < c->btree_reserve_cache + c->btree_reserve_cache_nr;
+-		     a++) {
+-			if (target && !bch2_bkey_in_target(c, bkey_i_to_s_c(&a->k), target))
++		     a < c->btree_reserve_cache + c->btree_reserve_cache_nr;) {
++			/* check if it has sufficient durability */
++
++			if (!can_use_btree_node(c, res, target, bkey_i_to_s_c(&a->k))) {
++				bch2_open_buckets_put(c, &a->ob);
++				*a = c->btree_reserve_cache[--c->btree_reserve_cache_nr];
+ 				continue;
++			}
+ 
+ 			bkey_copy(&b->key, &a->k);
+ 			b->ob = a->ob;
+diff --git a/fs/bcachefs/extents.c b/fs/bcachefs/extents.c
+index b36ecfc0ab9d..8152ef1cbbcd 100644
+--- a/fs/bcachefs/extents.c
++++ b/fs/bcachefs/extents.c
+@@ -1006,6 +1006,20 @@ const struct bch_extent_ptr *bch2_bkey_has_device_c(struct bkey_s_c k, unsigned
+ 	return NULL;
+ }
+ 
++bool bch2_bkey_devs_rw(struct bch_fs *c, struct bkey_s_c k)
++{
++	struct bkey_ptrs_c ptrs = bch2_bkey_ptrs_c(k);
++
++	guard(rcu)();
++	bkey_for_each_ptr(ptrs, ptr) {
++		CLASS(bch2_dev_tryget, ca)(c, ptr->dev);
++		if (!ca || ca->mi.state != BCH_MEMBER_STATE_rw)
++			return false;
++	}
++
++	return true;
++}
++
+ bool bch2_bkey_has_target(struct bch_fs *c, struct bkey_s_c k, unsigned target)
  {
--	struct bch_fs *c = ctxt->trans->c;
--	enum btree_id id;
- 	int ret = 0;
- 
--	for (id = start.btree;
-+	struct moving_context ctxt;
-+	bch2_moving_ctxt_init(&ctxt, c, rate, stats, wp, wait_on_copygc);
-+
-+	for (enum btree_id id = start.btree;
- 	     id <= min_t(unsigned, end.btree, btree_id_nr_alive(c) - 1);
- 	     id++) {
--		ctxt->stats->pos = BBPOS(id, POS_MIN);
-+		ctxt.stats->pos = BBPOS(id, POS_MIN);
- 
--		if (!btree_type_has_ptrs(id) ||
--		    !bch2_btree_id_root(c, id)->b)
-+		if (!bch2_btree_id_root(c, id)->b)
- 			continue;
- 
--		ret = bch2_move_data_btree(ctxt,
--				       id == start.btree ? start.pos : POS_MIN,
--				       id == end.btree   ? end.pos   : POS_MAX,
--				       pred, arg, id, 0);
-+		unsigned min_depth_this_btree = min_depth;
-+
-+		if (!btree_type_has_ptrs(id))
-+			min_depth_this_btree = max(min_depth_this_btree, 1);
-+
-+		for (unsigned level = min_depth_this_btree;
-+		     level < BTREE_MAX_DEPTH;
-+		     level++) {
-+			ret = bch2_move_data_btree(&ctxt,
-+						   id == start.btree ? start.pos : POS_MIN,
-+						   id == end.btree   ? end.pos   : POS_MAX,
-+						   pred, arg, id, level);
-+			if (ret)
-+				break;
-+		}
-+
- 		if (ret)
- 			break;
- 	}
- 
--	return ret;
--}
--
--int bch2_move_data(struct bch_fs *c,
--		   struct bbpos start,
--		   struct bbpos end,
--		   struct bch_ratelimit *rate,
--		   struct bch_move_stats *stats,
--		   struct write_point_specifier wp,
--		   bool wait_on_copygc,
--		   move_pred_fn pred, void *arg)
--{
--	struct moving_context ctxt;
--
--	bch2_moving_ctxt_init(&ctxt, c, rate, stats, wp, wait_on_copygc);
--	int ret = __bch2_move_data(&ctxt, start, end, pred, arg);
- 	bch2_moving_ctxt_exit(&ctxt);
--
- 	return ret;
+ 	struct bkey_ptrs_c ptrs = bch2_bkey_ptrs_c(k);
+diff --git a/fs/bcachefs/extents.h b/fs/bcachefs/extents.h
+index f212f91c278d..35ee03cd5065 100644
+--- a/fs/bcachefs/extents.h
++++ b/fs/bcachefs/extents.h
+@@ -614,6 +614,8 @@ static inline struct bch_extent_ptr *bch2_bkey_has_device(struct bkey_s k, unsig
+ 	return (void *) bch2_bkey_has_device_c(k.s_c, dev);
  }
  
-@@ -1206,14 +1206,6 @@ static bool migrate_pred(struct bch_fs *c, void *arg,
- 	return data_opts->rewrite_ptrs != 0;
- }
++bool bch2_bkey_devs_rw(struct bch_fs *, struct bkey_s_c);
++
+ bool bch2_bkey_has_target(struct bch_fs *, struct bkey_s_c, unsigned);
+ bool bch2_bkey_in_target(struct bch_fs *, struct bkey_s_c, unsigned);
  
--static bool rereplicate_btree_pred(struct bch_fs *c, void *arg,
--				   struct btree *b,
--				   struct bch_io_opts *io_opts,
--				   struct data_update_opts *data_opts)
--{
--	return rereplicate_pred(c, arg, b->c.btree_id, bkey_i_to_s_c(&b->key), io_opts, data_opts);
--}
--
- /*
-  * Ancient versions of bcachefs produced packed formats which could represent
-  * keys that the in memory format cannot represent; this checks for those
-@@ -1293,15 +1285,6 @@ static bool drop_extra_replicas_pred(struct bch_fs *c, void *arg,
- 	return data_opts->kill_ptrs != 0;
- }
- 
--static bool drop_extra_replicas_btree_pred(struct bch_fs *c, void *arg,
--				   struct btree *b,
--				   struct bch_io_opts *io_opts,
--				   struct data_update_opts *data_opts)
--{
--	return drop_extra_replicas_pred(c, arg, b->c.btree_id, bkey_i_to_s_c(&b->key),
--					io_opts, data_opts);
--}
--
- static bool scrub_pred(struct bch_fs *c, void *_arg,
- 		       enum btree_id btree, struct bkey_s_c k,
- 		       struct bch_io_opts *io_opts,
-@@ -1359,11 +1342,7 @@ int bch2_data_job(struct bch_fs *c,
- 	case BCH_DATA_OP_rereplicate:
- 		stats->data_type = BCH_DATA_journal;
- 		ret = bch2_journal_flush_device_pins(&c->journal, -1);
--		ret = bch2_move_btree(c, start, end,
--				      rereplicate_btree_pred, c, stats) ?: ret;
--		ret = bch2_move_data(c, start, end,
--				     NULL,
--				     stats,
-+		ret = bch2_move_data(c, start, end, 0, NULL, stats,
- 				     writepoint_hashed((unsigned long) current),
- 				     true,
- 				     rereplicate_pred, c) ?: ret;
-@@ -1389,12 +1368,10 @@ int bch2_data_job(struct bch_fs *c,
- 		ret = bch2_scan_old_btree_nodes(c, stats);
- 		break;
- 	case BCH_DATA_OP_drop_extra_replicas:
--		ret = bch2_move_btree(c, start, end,
--				drop_extra_replicas_btree_pred, c, stats) ?: ret;
--		ret = bch2_move_data(c, start, end, NULL, stats,
--				writepoint_hashed((unsigned long) current),
--				true,
--				drop_extra_replicas_pred, c) ?: ret;
-+		ret = bch2_move_data(c, start, end, 0, NULL, stats,
-+				     writepoint_hashed((unsigned long) current),
-+				     true,
-+				     drop_extra_replicas_pred, c) ?: ret;
- 		ret = bch2_replicas_gc2(c) ?: ret;
- 		break;
- 	default:
-diff --git a/fs/bcachefs/move.h b/fs/bcachefs/move.h
-index fe92ca6d418d..481026ff99ab 100644
---- a/fs/bcachefs/move.h
-+++ b/fs/bcachefs/move.h
-@@ -128,18 +128,6 @@ struct bch_io_opts *bch2_move_get_io_opts(struct btree_trans *,
- 
- int bch2_move_data_btree(struct moving_context *, struct bpos, struct bpos,
- 			 move_pred_fn, void *, enum btree_id, unsigned);
--int __bch2_move_data(struct moving_context *,
--		     struct bbpos,
--		     struct bbpos,
--		     move_pred_fn, void *);
--int bch2_move_data(struct bch_fs *,
--		   struct bbpos start,
--		   struct bbpos end,
--		   struct bch_ratelimit *,
--		   struct bch_move_stats *,
--		   struct write_point_specifier,
--		   bool,
--		   move_pred_fn, void *);
- 
- int bch2_move_data_phys(struct bch_fs *, unsigned, u64, u64, unsigned,
- 			struct bch_ratelimit *, struct bch_move_stats *,
 -- 
 2.50.0
 
