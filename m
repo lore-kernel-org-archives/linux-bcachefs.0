@@ -1,140 +1,284 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30F3F2139C9;
-	Tue, 29 Jul 2025 08:25:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58C7F22AE76
+	for <linux-bcachefs@vger.kernel.org>; Tue, 29 Jul 2025 18:19:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753777539; cv=none; b=R3zr/OHpeLjiS8Dx/4aZrWkP9q22d2I/RlJvIVjDxV3qYWHrh6tgo3JP5hqeIH9/cWM4kZVg1X0gnFMp4SsPvk8fOlcnM7XisKd+uADsWpVqHLUT6swKavrXZTn5DMAeSHAIs8m4w8kcXVy3xSWs3a9hN8DPgkeWa2MebHt8SoQ=
+	t=1753813176; cv=none; b=g+C+Hj5852YvJ+9S0xJwQ/o6V0LPYsQZiOrYnvZxWcBkQ8VOIp/tSspLb8mv+HONBmA0O74GHMhejwZP92p86GC2m6JcEYwfSCXljdXGJHH4c6IDgeypzJ5ClUdBuCj0+SQFmLDAzJl830A6+HR+ga4FwRkdHZgy7nBMKP/0Lfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753777539; c=relaxed/simple;
-	bh=trWv/O9N9LVzYZbp1eqr0+k5qTUNtSEiwyb6DFcx67E=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
-	 References:In-Reply-To; b=XR3F07RjRG1/AvgOB/LeAkbnfu77g/y8xzkakAWMTlSggvwfKp7ulfnWLhzHkjnoJ64XFAkjJjU+HYb+P1b2uA2vUDQsWEp0tpjDMXbXp20D9t7krBr09Zffi/RJL1lxnFmZ95V1cUQTi6zp7DBQwozPg0yIGnU9rXZ/tOiu+pc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fgFv3EQl; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fgFv3EQl"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6E6FC4CEEF;
-	Tue, 29 Jul 2025 08:25:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753777537;
-	bh=trWv/O9N9LVzYZbp1eqr0+k5qTUNtSEiwyb6DFcx67E=;
-	h=Date:Cc:To:From:Subject:References:In-Reply-To:From;
-	b=fgFv3EQlY2wrAjec/GhEM4fnwhqVwAKfjahNRyiU935vDwY3emdOPuRrk9X9AKLSg
-	 s3Rn1wg4oPcHkCeIfvw6M6G6S+5q8eMJfhPVoISggyYqYc28O/G2vFvdiope7kGL0c
-	 bVF9rKCTQfZkCWeRz1tJqijdXfI3pJ6VlsGvv3ItNyu2dxhll0drtkRGjoJ6/d+NEY
-	 mb1Ucmy5cwiYT9XWxoXLKkiuDzvjXqJ4tjms0Frm4orwZyRTsGRLwJuI4u1vwB+/Lh
-	 IPssxQRMSYVGTJ1O0vLgpotwkf90l5gSsFUKhbYwMPoBW3GxOVNKbBdP2FxA/hu5Qs
-	 DpQZZ96LN58WA==
+	s=arc-20240116; t=1753813176; c=relaxed/simple;
+	bh=wpUlOwybmwMZ5+iQbeX5IpGD5/zT9tH9IX/TjdHjMBI=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=V+lD/rBR/xsBcvUZh50KoftqhRcgE8dWiT2ZcYNrkzT+Eld1oqbBmAV4kgYFz2oB7IuxeL/Wrl0S3NZRgRbEX8pjzJahi1+B/r3lCkB1T2UqcpRZ4dz5iHvjlFBHI70F75PqsgIe13ebPKvBww4hH55Za/Z1LE1NUrqY8yJtXDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-87326a81ceaso15892139f.1
+        for <linux-bcachefs@vger.kernel.org>; Tue, 29 Jul 2025 11:19:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753813173; x=1754417973;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hDoCJCkPySBSG4VIhCf6u4oigoDGG+MZ0xFI3r4cOxI=;
+        b=igfWK378+mL5wmR8nh/vNqu6osr6m4UMUedlTgZAzYznJSo9prjgHAc/3nds1PxmkM
+         WPsUwy1Z74WPMhVme60rHzAKH/LyhWlmYD1K/J1iMnokKG5A2NKq/EkvMhvHhv6Ex+DR
+         Ce2H0W6nvvc47GWnMxLHVfyQcWIpx9FbOAS6sYYM7DcEyYQn80qJGjfR53vwBAJ5HJRw
+         JcrshPx0WbQagRLf18kZhgsu0fyPSouwBmGTW8e+2v4AoD5ZWdWu4NtD0HO0I1RFU9H6
+         Zh9ecvvBqjrQ4CeuaTqaNMjibmYBkTOnZkybwdocZzTyowWNd/Tt0Cf21vtV5WFpK0UZ
+         voKw==
+X-Forwarded-Encrypted: i=1; AJvYcCUMD2x5bOPP3sjbkhu4mvBbptKRuQgrCvKhpH3UOGH9DJ5FvZLPofel0GDIbwTaY3KFHrJKruYIrO8ufPWqMw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwLtA0WO14rK9uRVIZ+0N6AvLlC09J/sPBcull8/usMUDNdHQZ2
+	+gFeVZqwwwx3e2GQkc+o3U1M/dPAaw4UQ2O5fBH1ZC8cMgvRXE4EWvTaowUf8ankpg83Be9RPuu
+	gV+1SdWzPCZBX5cJk5sxe5EIFjUTDeb8V4XI2P1cFEugO+p0vRnpnDCagpsM=
+X-Google-Smtp-Source: AGHT+IHPctcsSm85/iVsXJRwOipgbdYxSmPDMzNzh12hRxt2kY76EbVt/k09cu43KBgqpugYcD4qzAR/OyrOooIJZGHgxshCIeD3
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 29 Jul 2025 10:25:33 +0200
-Message-Id: <DBOE907J16WH.1IOU3M11RX5SH@kernel.org>
-Cc: <linux-mm@kvack.org>, <akpm@linux-foundation.org>,
- <linux-kernel@vger.kernel.org>, "Uladzislau Rezki" <urezki@gmail.com>,
- "Alice Ryhl" <aliceryhl@google.com>, "Vlastimil Babka" <vbabka@suse.cz>,
- <rust-for-linux@vger.kernel.org>, "Lorenzo Stoakes"
- <lorenzo.stoakes@oracle.com>, "Liam R . Howlett" <Liam.Howlett@oracle.com>,
- "Kent Overstreet" <kent.overstreet@linux.dev>,
- <linux-bcachefs@vger.kernel.org>, <bpf@vger.kernel.org>, "Herbert Xu"
- <herbert@gondor.apana.org.au>, "Jann Horn" <jannh@google.com>, "Pedro
- Falcato" <pfalcato@suse.de>
-To: "Vitaly Wool" <vitaly.wool@konsulko.se>
-From: "Danilo Krummrich" <dakr@kernel.org>
-Subject: Re: [PATCH v13 3/4] rust: add support for NUMA ids in allocations
-References: <20250715135645.2230065-1-vitaly.wool@konsulko.se>
- <20250715135827.2230267-1-vitaly.wool@konsulko.se>
-In-Reply-To: <20250715135827.2230267-1-vitaly.wool@konsulko.se>
+MIME-Version: 1.0
+X-Received: by 2002:a05:6602:718b:b0:87c:63cd:62a2 with SMTP id
+ ca18e2360f4ac-8813744dfe1mr93183239f.1.1753813173441; Tue, 29 Jul 2025
+ 11:19:33 -0700 (PDT)
+Date: Tue, 29 Jul 2025 11:19:33 -0700
+In-Reply-To: <6879a305.a70a0220.693ce.0058.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <688910b5.a00a0220.26d0e1.000c.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] INFO: task hung in bch2_run_recovery_passes
+From: syzbot <syzbot+c2294ae43bae606e3c7d@syzkaller.appspotmail.com>
+To: anna-maria@linutronix.de, frederic@kernel.org, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue Jul 15, 2025 at 3:58 PM CEST, Vitaly Wool wrote:
->  pub unsafe trait Allocator {
-> -    /// Allocate memory based on `layout` and `flags`.
-> +    /// Allocate memory based on `layout`, `flags` and `nid`.
->      ///
->      /// On success, returns a buffer represented as `NonNull<[u8]>` that=
- satisfies the layout
->      /// constraints (i.e. minimum size and alignment as specified by `la=
-yout`).
-> @@ -153,13 +180,21 @@ pub unsafe trait Allocator {
->      ///
->      /// Additionally, `Flags` are honored as documented in
->      /// <https://docs.kernel.org/core-api/mm-api.html#mm-api-gfp-flags>.
-> -    fn alloc(layout: Layout, flags: Flags) -> Result<NonNull<[u8]>, Allo=
-cError> {
-> +    fn alloc(layout: Layout, flags: Flags, nid: NumaNode) -> Result<NonN=
-ull<[u8]>, AllocError> {
->          // SAFETY: Passing `None` to `realloc` is valid by its safety re=
-quirements and asks for a
->          // new memory allocation.
-> -        unsafe { Self::realloc(None, layout, Layout::new::<()>(), flags)=
- }
-> +        unsafe { Self::realloc(None, layout, Layout::new::<()>(), flags,=
- nid) }
->      }
-> =20
-> -    /// Re-allocate an existing memory allocation to satisfy the request=
-ed `layout`.
-> +    /// Re-allocate an existing memory allocation to satisfy the request=
-ed `layout` and
-> +    /// a specific NUMA node request to allocate the memory for.
-> +    ///
-> +    /// Systems employing a Non Uniform Memory Access (NUMA) architectur=
-e contain collections of
-> +    /// hardware resources including processors, memory, and I/O buses, =
-that comprise what is
-> +    /// commonly known as a NUMA node.
-> +    ///
-> +    /// `nid` stands for NUMA id, i. e. NUMA node identifier, which is a=
- non-negative integer
-> +    /// if a node needs to be specified, or [`NumaNode::NO_NODE`] if the=
- caller doesn't care.
->      ///
->      /// If the requested size is zero, `realloc` behaves equivalent to `=
-free`.
->      ///
-> @@ -196,6 +231,7 @@ unsafe fn realloc(
->          layout: Layout,
->          old_layout: Layout,
->          flags: Flags,
-> +        nid: NumaNode,
->      ) -> Result<NonNull<[u8]>, AllocError>;
-> =20
->      /// Free an existing memory allocation.
-> @@ -211,7 +247,15 @@ unsafe fn free(ptr: NonNull<u8>, layout: Layout) {
->          // SAFETY: The caller guarantees that `ptr` points at a valid al=
-location created by this
->          // allocator. We are passing a `Layout` with the smallest possib=
-le alignment, so it is
->          // smaller than or equal to the alignment previously used with t=
-his allocation.
-> -        let _ =3D unsafe { Self::realloc(Some(ptr), Layout::new::<()>(),=
- layout, Flags(0)) };
-> +        let _ =3D unsafe {
-> +            Self::realloc(
-> +                Some(ptr),
-> +                Layout::new::<()>(),
-> +                layout,
-> +                Flags(0),
-> +                NumaNode::NO_NODE,
-> +            )
-> +        };
->      }
->  }
+syzbot has found a reproducer for the following issue on:
 
-Regarding the change in the Allocator trait, we also have to consider
-the Cmalloc allocator in rust/kernel/alloc/allocator_test.rs, which is ther=
-e to
-support userspace tests.
+HEAD commit:    ae388edd4a8f Merge tag 'landlock-6.17-rc1' of git://git.ke..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15424cf0580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8004f1b1e0ae8198
+dashboard link: https://syzkaller.appspot.com/bug?extid=c2294ae43bae606e3c7d
+compiler:       Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1583f034580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1038d4a2580000
 
-While we're planning to remove this (see also [1]), we still have to consid=
-er
-it for now.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/720dce21f23a/disk-ae388edd.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/a83240c628a9/vmlinux-ae388edd.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/1cabbf436747/bzImage-ae388edd.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/2b16c3a29557/mount_0.gz
 
-[1] https://lore.kernel.org/rust-for-linux/20250726180750.2735836-1-ojeda@k=
-ernel.org/
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c2294ae43bae606e3c7d@syzkaller.appspotmail.com
+
+INFO: task syz.4.23:6214 blocked for more than 143 seconds.
+      Tainted: G        W           6.16.0-syzkaller-01056-gae388edd4a8f #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.4.23        state:D stack:21160 pid:6214  tgid:6213  ppid:5960   task_flags:0x400140 flags:0x00004006
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5397 [inline]
+ __schedule+0x165b/0x4c50 kernel/sched/core.c:6786
+ __schedule_loop kernel/sched/core.c:6864 [inline]
+ schedule+0x165/0x360 kernel/sched/core.c:6879
+ schedule_timeout+0x9a/0x270 kernel/time/sleep_timeout.c:75
+ ___down_common kernel/locking/semaphore.c:268 [inline]
+ __down_common+0x319/0x6a0 kernel/locking/semaphore.c:293
+ down+0x80/0xd0 kernel/locking/semaphore.c:100
+ bch2_run_recovery_passes+0x177/0x210 fs/bcachefs/recovery_passes.c:609
+ bch2_fs_recovery+0x28c9/0x3a50 fs/bcachefs/recovery.c:1050
+ bch2_fs_start+0xaaf/0xda0 fs/bcachefs/super.c:1213
+ bch2_fs_get_tree+0xb39/0x1520 fs/bcachefs/fs.c:2488
+ vfs_get_tree+0x92/0x2b0 fs/super.c:1815
+ do_new_mount+0x2a2/0x9e0 fs/namespace.c:3805
+ do_mount fs/namespace.c:4133 [inline]
+ __do_sys_mount fs/namespace.c:4344 [inline]
+ __se_sys_mount+0x317/0x410 fs/namespace.c:4321
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f0774e9014a
+RSP: 002b:00007f07740f5e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f07740f5ef0 RCX: 00007f0774e9014a
+RDX: 0000200000000080 RSI: 00002000000001c0 RDI: 00007f07740f5eb0
+RBP: 0000200000000080 R08: 00007f07740f5ef0 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00002000000001c0
+R13: 00007f07740f5eb0 R14: 000000000000f628 R15: 00002000000000c0
+ </TASK>
+INFO: task syz.0.26:6216 blocked for more than 143 seconds.
+      Tainted: G        W           6.16.0-syzkaller-01056-gae388edd4a8f #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.0.26        state:D stack:21160 pid:6216  tgid:6215  ppid:5947   task_flags:0x40[  344.100863][   T38] task:syz.0.26        state:D stack:21160 pid:6216  tgid:6215  ppid:5947   task_flags:0x400140 flags:0x00004006
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5397 [inline]
+ __schedule+0x165b/0x4c50 kernel/sched/core.c:6786
+ __schedule_loop kernel/sched/core.c:6864 [inline]
+ schedule+0x165/0x360 kernel/sched/core.c:6879
+ schedule_timeout+0x9a/0x270 kernel/time/sleep_timeout.c:75
+ ___down_common kernel/locking/semaphore.c:268 [inline]
+ __down_common+0x319/0x6a0 kernel/locking/semaphore.c:293
+ down+0x80/0xd0 kernel/locking/semaphore.c:100
+ bch2_run_recovery_passes+0x177/0x210 fs/bcachefs/recovery_passes.c:609
+ bch2_fs_recovery+0x28c9/0x3a50 fs/bcachefs/recovery.c:1050
+ bch2_fs_start+0xaaf/0xda0 fs/bcachefs/super.c:1213
+ bch2_fs_get_tree+0xb39/0x1520 fs/bcachefs/fs.c:2488
+ vfs_get_tree+0x92/0x2b0 fs/super.c:1815
+ do_new_mount+0x2a2/0x9e0 fs/namespace.c:3805
+ do_mount fs/namespace.c:4133 [inline]
+ __do_sys_mount fs/namespace.c:4344 [inline]
+ __se_sys_mount+0x317/0x410 fs/namespace.c:4321
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7ffbf91d014a
+RSP: 002b:00007ffbf8435e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffbf8435ef0 RCX: 00007ffbf91d014a
+RDX: 0000200000000080 RSI: 00002000000001c0 RDI: 00007ffbf8435eb0
+RBP: 0000200000000080 R08: 00007ffbf8435ef0 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00002000000001c0
+R13: 00007ffbf8435eb0 R14: 000000000000f628 R15: 00002000000000c0
+ </TASK>
+INFO: task syz.3.28:6241 blocked for more than 143 seconds.
+      Tainted: G        W           6.16.0-syzkaller-01056-gae388edd4a8f #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.3.28        state:D stack:21160 pid:6241  tgid:6240  ppid:5956   task_flags:0x400140 flags:0x00004006
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5397 [inline]
+ __schedule+0x165b/0x4c50 kernel/sched/core.c:6786
+ __schedule_loop kernel/sched/core.c:6864 [inline]
+ schedule+0x165/0x360 kernel/sched/core.c:6879
+ schedule_timeout+0x9a/0x270 kernel/time/sleep_timeout.c:75
+ ___down_common kernel/locking/semaphore.c:268 [inline]
+ __down_common+0x319/0x6a0 kernel/locking/semaphore.c:293
+ down+0x80/0xd0 kernel/locking/semaphore.c:100
+ bch2_run_recovery_passes+0x177/0x210 fs/bcachefs/recovery_passes.c:609
+ bch2_fs_recovery+0x28c9/0x3a50 fs/bcachefs/recovery.c:1050
+ bch2_fs_start+0xaaf/0xda0 fs/bcachefs/super.c:1213
+ bch2_fs_get_tree+0xb39/0x1520 fs/bcachefs/fs.c:2488
+ vfs_get_tree+0x92/0x2b0 fs/super.c:1815
+ do_new_mount+0x2a2/0x9e0 fs/namespace.c:3805
+ do_mount fs/namespace.c:4133 [inline]
+ __do_sys_mount fs/namespace.c:4344 [inline]
+ __se_sys_mount+0x317/0x410 fs/namespace.c:4321
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f05843e014a
+RSP: 002b:00007f058364de68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f058364def0 RCX: 00007f05843e014a
+RDX: 0000200000000080 RSI: 00002000000001c0 RDI: 00007f058364deb0
+RBP: 0000200000000080 R08: 00007f058364def0 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00002000000001c0
+R13: 00007f058364deb0 R14: 000000000000f628 R15: 00002000000000c0
+ </TASK>
+INFO: task syz.1.30:6287 blocked for more than 143 seconds.
+      Tainted: G        W           6.16.0-syzkaller-01056-gae388edd4a8f #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.1.30        state:D stack:21160 pid:6287  tgid:6286  ppid:5950   task_flags:0x400140 flags:0x00004006
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5397 [inline]
+ __schedule+0x165b/0x4c50 kernel/sched/core.c:6786
+ __schedule_loop kernel/sched/core.c:6864 [inline]
+ schedule+0x165/0x360 kernel/sched/core.c:6879
+ schedule_timeout+0x9a/0x270 kernel/time/sleep_timeout.c:75
+ ___down_common kernel/locking/semaphore.c:268 [inline]
+ __down_common+0x319/0x6a0 kernel/locking/semaphore.c:293
+ down+0x80/0xd0 kernel/locking/semaphore.c:100
+ bch2_run_recovery_passes+0x177/0x210 fs/bcachefs/recovery_passes.c:609
+ bch2_fs_recovery+0x28c9/0x3a50 fs/bcachefs/recovery.c:1050
+ bch2_fs_start+0xaaf/0xda0 fs/bcachefs/super.c:1213
+ bch2_fs_get_tree+0xb39/0x1520 fs/bcachefs/fs.c:2488
+ vfs_get_tree+0x92/0x2b0 fs/super.c:1815
+ do_new_mount+0x2a2/0x9e0 fs/namespace.c:3805
+ do_mount fs/namespace.c:4133 [inline]
+ __do_sys_mount fs/namespace.c:4344 [inline]
+ __se_sys_mount+0x317/0x410 fs/namespace.c:4321
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f3e578b014a
+RSP: 002b:00007f3e56b1de68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f3e56b1def0 RCX: 00007f3e578b014a
+RDX: 0000200000000080 RSI: 00002000000001c0 RDI: 00007f3e56b1deb0
+RBP: 0000200000000080 R08: 00007f3e56b1def0 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00002000000001c0
+R13: 00007f3e56b1deb0 R14: 000000000000f628 R15: 00002000000000c0
+ </TASK>
+
+Showing all locks held in the system:
+4 locks held by pr/legacy/17:
+1 lock held by khungtaskd/38:
+ #0: ffffffff8d9aa300 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:331 [inline]
+ #0: ffffffff8d9aa300 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:841 [inline]
+ #0: ffffffff8d9aa300 (rcu_read_lock){....}-{1:3}, at: debug_show_all_locks+0x2e/0x180 kernel/locking/lockdep.c:6770
+2 locks held by kworker/u8:5/1011:
+2 locks held by getty/5582:
+ #0: ffff88823bf4c8a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
+ #1: ffffc90003e932e0 (&ldata->atomic_read_lock){+.+.}-{4:4}, at: n_tty_read+0x444/0x1410 drivers/tty/n_tty.c:2222
+3 locks held by kworker/1:5/6095:
+1 lock held by udevd/6527:
+3 locks held by udevd/6529:
+3 locks held by syz.0.218/7187:
+2 locks held by syz.4.219/7189:
+
+=============================================
+
+NMI backtrace for cpu 1
+CPU: 1 UID: 0 PID: 38 Comm: khungtaskd Tainted: G        W           6.16.0-syzkaller-01056-gae388edd4a8f #0 PREEMPT_{RT,(full)} 
+Tainted: [W]=WARN
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2025
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
+ nmi_cpu_backtrace+0x39e/0x3d0 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x17a/0x300 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:158 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:307 [inline]
+ watchdog+0xe9e/0xee0 kernel/hung_task.c:470
+ kthread+0x70e/0x8a0 kernel/kthread.c:464
+ ret_from_fork+0x3f9/0x770 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 UID: 0 PID: 17 Comm: pr/legacy Tainted: G        W           6.16.0-syzkaller-01056-gae388edd4a8f #0 PREEMPT_{RT,(full)} 
+Tainted: [W]=WARN
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2025
+RIP: 0010:io_serial_in+0x77/0xc0 drivers/tty/serial/8250/8250_port.c:409
+Code: e8 9e 32 83 fc 44 89 f9 d3 e3 49 83 ee 80 4c 89 f0 48 c1 e8 03 42 80 3c 20 00 74 08 4c 89 f7 e8 ef 14 e1 fc 41 03 1e 89 da ec <0f> b6 c0 5b 41 5c 41 5e 41 5f e9 8a ad b9 05 cc 44 89 f9 80 e1 07
+RSP: 0018:ffffc90000167890 EFLAGS: 00000202
+RAX: 1ffffffff326fe00 RBX: 00000000000003fd RCX: 0000000000000000
+RDX: 00000000000003fd RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffffff9937f7d0 R08: 0000000000000000 R09: 0000000000000000
+R10: dffffc0000000000 R11: ffffffff853b0150 R12: dffffc0000000000
+R13: 0000000000000000 R14: ffffffff9937f540 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8881268fa000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2ed5ffff CR3: 0000000036c16000 CR4: 00000000003526f0
+Call Trace:
+ <TASK>
+ serial_in drivers/tty/serial/8250/8250.h:137 [inline]
+ serial_lsr_in drivers/tty/serial/8250/8250.h:159 [inline]
+ wait_for_lsr+0x1a7/0x2f0 drivers/tty/serial/8250/8250_port.c:2094
+ fifo_wait_for_lsr drivers/tty/serial/8250/8250_port.c:3348 [inline]
+ serial8250_console_fifo_write drivers/tty/serial/8250/8250_port.c:3371 [inline]
+ serial8250_console_write+0x11bd/0x1b40 drivers/tty/serial/8250/8250_port.c:3456
+ console_emit_next_record kernel/printk/printk.c:3118 [inline]
+ console_flush_all+0x695/0xcd0 kernel/printk/printk.c:3226
+ __console_flush_and_unlock+0xa4/0x240 kernel/printk/printk.c:3285
+ legacy_kthread_func+0x13b/0x1a0 kernel/printk/printk.c:3638
+ kthread+0x70e/0x8a0 kernel/kthread.c:464
+ ret_from_fork+0x3f9/0x770 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
