@@ -1,210 +1,75 @@
-Received: from mailrelay-egress16.pub.mailoutpod3-cph3.one.com (mailrelay-egress16.pub.mailoutpod3-cph3.one.com [46.30.212.3])
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35821221544
-	for <linux-bcachefs@vger.kernel.org>; Wed,  6 Aug 2025 12:58:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.212.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D98928CF64
+	for <linux-bcachefs@vger.kernel.org>; Wed,  6 Aug 2025 14:09:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754485120; cv=none; b=Ywec/SVlNhuKEM/o+fC0JOUBiPlAf/5/yA+4kBqvC8xIhvEPcVzawlfGgTWVb5clkUTD4L3bfCy5h7IOfnyC83epkrXhLo+g50hsfqNoITIPe0Kwz8vxb6rDfzrdrUSS0LPy4wEEIwwt9tRROV2nLuXy05eyjdR1uud4+O09d/k=
+	t=1754489343; cv=none; b=qmtsGHVKyvsiLzWkN+7vhEQ2mFA0um4jf4BAS6XctDCOI0uxOxolfTfzbQOVWCztpSSnDs2ztvZMTrumFpmVIkr4+cMsDTQPs6FHu1DZY4yLBggz62HmwyvOrQzjyS5ZBB929qywavT6zeToLHr7ZxpJatPgaNiqgmzyZsA2nfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754485120; c=relaxed/simple;
-	bh=9XRG/5GpA945fiS/Q4AstZSlN06ErQkYyWIrf1CmfBE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gWrf2sYbZBeskeEurV7Z05blIlw54DXTfDvlJp0mDjrB9R6X01YOftpqRlYHhRxjx6fWy6TsrrRsOWwmbuxw6+WXroJdrO8aQ0AtH3yOZRJU4QVm310Dbpe17Q9p/464Bc9QJG29ntDGxdA8xTPCqDyIj/J6wF7TDHE0ES+LqLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=konsulko.se; spf=none smtp.mailfrom=konsulko.se; dkim=pass (2048-bit key) header.d=konsulko.se header.i=@konsulko.se header.b=fDzJflG0; dkim=permerror (0-bit key) header.d=konsulko.se header.i=@konsulko.se header.b=nxrSyIPu; arc=none smtp.client-ip=46.30.212.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=konsulko.se
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=konsulko.se
+	s=arc-20240116; t=1754489343; c=relaxed/simple;
+	bh=WtBsYoZ+xjXmRYUCdhVuvTb11NkBubMafVqo/q56kto=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IJ4Gix+/+upY/V7xoQLoQuzXk0K3zcNND8lGnzC+EN/hwrHmQiMYcINYxQbTN5b+GxHxmfszrdIQaivXUb4USx54qjKqt4IjAkMWhpgNF+WhyLnZEJU/MMStST3HgmXO+qcKnYFiPIgQpgeY2hjRO3kX4NfaRyoNpU/oGlbTZN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vxoOKbJz; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=konsulko.se header.i=@konsulko.se header.b="fDzJflG0";
-	dkim=permerror (0-bit key) header.d=konsulko.se header.i=@konsulko.se header.b="nxrSyIPu"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1754485116; x=1755089916;
-	d=konsulko.se; s=rsa1;
-	h=content-transfer-encoding:mime-version:references:in-reply-to:message-id:date:
-	 subject:cc:to:from:from;
-	bh=sFGu5BXaHdw7qt33g/urIepCBkzhd5+wVoobk3GWVFk=;
-	b=fDzJflG0Xf+anBPajbpNMaIwDk1XtW0QZ2vsxOEf2MwhI5BbS7yxAkYZwA6ql7GqThbRpV9vQZ/1c
-	 ZEefaRToFFd7kEqUB+dH5cnmlO5XF+kt/Jjj+xCzgtLRzDh8YG+WRfZZ3p+/BzvxD8c8ywmTdmM2aq
-	 oPlXN0m8d34gvu8mk4E6rhnQ9WQqz+ZealKuz5Zm5PscCMUR9mPEBOZ2lvcWlSfOcEXUgU909eXwjZ
-	 Kh9EX1dvyt0Pcw8Bn0DKsUqr+2iQhJM7yH6Wq6rUsGmVYWsTqsVwMp7nccZ7X6/mfFh2yRejseFyCq
-	 FpsuIMEyv58485dfeDzxVfcxL3N/u9Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1754485116; x=1755089916;
-	d=konsulko.se; s=ed1;
-	h=content-transfer-encoding:mime-version:references:in-reply-to:message-id:date:
-	 subject:cc:to:from:from;
-	bh=sFGu5BXaHdw7qt33g/urIepCBkzhd5+wVoobk3GWVFk=;
-	b=nxrSyIPuFxJvBvGYzbokaEzckF2VsQhhDZ8WbQq3DvuqC84KGmIryiQNXeCVHEq8DDSuNhkm3L5Ny
-	 J1gw/pkDg==
-X-HalOne-ID: 0ff7d6ea-72c5-11f0-a1f4-f78b1f841584
-Received: from localhost.localdomain (host-95-203-16-218.mobileonline.telia.com [95.203.16.218])
-	by mailrelay1.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
-	id 0ff7d6ea-72c5-11f0-a1f4-f78b1f841584;
-	Wed, 06 Aug 2025 12:58:36 +0000 (UTC)
-From: Vitaly Wool <vitaly.wool@konsulko.se>
-To: linux-mm@kvack.org
-Cc: akpm@linux-foundation.org,
-	linux-kernel@vger.kernel.org,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Danilo Krummrich <dakr@kernel.org>,
-	Alice Ryhl <aliceryhl@google.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	rust-for-linux@vger.kernel.org,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	linux-bcachefs@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Jann Horn <jannh@google.com>,
-	Pedro Falcato <pfalcato@suse.de>,
-	Vitaly Wool <vitaly.wool@konsulko.se>
-Subject: [PATCH v15 4/4] rust: support large alignments in allocations
-Date: Wed,  6 Aug 2025 14:55:52 +0200
-Message-Id: <20250806125552.1727073-1-vitaly.wool@konsulko.se>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20250806124034.1724515-1-vitaly.wool@konsulko.se>
-References: <20250806124034.1724515-1-vitaly.wool@konsulko.se>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vxoOKbJz"
+Date: Wed, 6 Aug 2025 10:08:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1754489338;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2zFH7Qmqmf3rdGadgcaC9aQmAuiyP46ckl2aEB+Kowc=;
+	b=vxoOKbJz3zc1mZJq5dXniYIZq9InROjoP29M6msJsKIZaMu0wBOHOq8BNvrUUPQSDf+8Lt
+	RFH+7jTxtDesoLvV1I3rCA00pB39sMu8m7xPKuZXM7mTpSFV+9Bh0N16RzkBFHo/koGfWM
+	UoF6rsz3f9X2wmJKq2ev/fJQGr9eODY=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Alan Huang <mmpgouride@gmail.com>
+Cc: dan.carpenter@linaro.org, linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH] bcachefs: Fix possible pointer dereference
+Message-ID: <ki5kkqdlqkpaurjtojsm5ltvcphf2lwyz2ygjfdeqsu5oj7znz@xgv2lenx5gij>
+References: <20250806122018.552250-1-mmpgouride@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250806122018.552250-1-mmpgouride@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-Add support for large (> PAGE_SIZE) alignments in Rust allocators.
-All the preparations on the C side are already done, we just need
-to add bindings for <alloc>_node_align() functions and start
-using those.
+On Wed, Aug 06, 2025 at 08:20:18PM +0800, Alan Huang wrote:
+> c hasn't been set yet here.
+> 
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Fixes: 09b9c72bd4b7 ("bcachefs: bch_err_throw()")
+> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
 
-Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.se>
-Acked-by: Danilo Krummrich <dakr@kernel.org>
-Acked-by: Alice Ryhl <aliceryhl@google.com>
----
- rust/helpers/slab.c            | 10 ++++++----
- rust/helpers/vmalloc.c         |  5 +++--
- rust/kernel/alloc/allocator.rs | 30 +++++++++---------------------
- 3 files changed, 18 insertions(+), 27 deletions(-)
+Beat you to it, I fixed this one yesterday :)
 
-diff --git a/rust/helpers/slab.c b/rust/helpers/slab.c
-index 8472370a4338..7fac958907b0 100644
---- a/rust/helpers/slab.c
-+++ b/rust/helpers/slab.c
-@@ -3,13 +3,15 @@
- #include <linux/slab.h>
- 
- void * __must_check __realloc_size(2)
--rust_helper_krealloc_node(const void *objp, size_t new_size, gfp_t flags, int node)
-+rust_helper_krealloc_node_align(const void *objp, size_t new_size, unsigned long align,
-+				gfp_t flags, int node)
- {
--	return krealloc_node(objp, new_size, flags, node);
-+	return krealloc_node_align(objp, new_size, align, flags, node);
- }
- 
- void * __must_check __realloc_size(2)
--rust_helper_kvrealloc_node(const void *p, size_t size, gfp_t flags, int node)
-+rust_helper_kvrealloc_node_align(const void *p, size_t size, unsigned long align,
-+				 gfp_t flags, int node)
- {
--	return kvrealloc_node(p, size, flags, node);
-+	return kvrealloc_node_align(p, size, align, flags, node);
- }
-diff --git a/rust/helpers/vmalloc.c b/rust/helpers/vmalloc.c
-index 62d30db9a1a6..7d7f7336b3d2 100644
---- a/rust/helpers/vmalloc.c
-+++ b/rust/helpers/vmalloc.c
-@@ -3,7 +3,8 @@
- #include <linux/vmalloc.h>
- 
- void * __must_check __realloc_size(2)
--rust_helper_vrealloc_node(const void *p, size_t size, gfp_t flags, int node)
-+rust_helper_vrealloc_node_align(const void *p, size_t size, unsigned long align,
-+				gfp_t flags, int node)
- {
--	return vrealloc_node(p, size, flags, node);
-+	return vrealloc_node_align(p, size, align, flags, node);
- }
-diff --git a/rust/kernel/alloc/allocator.rs b/rust/kernel/alloc/allocator.rs
-index 8af7e04e3cc6..63f271624428 100644
---- a/rust/kernel/alloc/allocator.rs
-+++ b/rust/kernel/alloc/allocator.rs
-@@ -15,7 +15,6 @@
- 
- use crate::alloc::{AllocError, Allocator, NumaNode};
- use crate::bindings;
--use crate::pr_warn;
- 
- /// The contiguous kernel allocator.
- ///
-@@ -56,25 +55,26 @@ fn aligned_size(new_layout: Layout) -> usize {
- 
- /// # Invariants
- ///
--/// One of the following: `krealloc_node`, `vrealloc_node`, `kvrealloc_node`.
-+/// One of the following: `krealloc_node_align`, `vrealloc_node_align`, `kvrealloc_node_align`.
- struct ReallocFunc(
-     unsafe extern "C" fn(
-         *const crate::ffi::c_void,
-         usize,
-+        crate::ffi::c_ulong,
-         u32,
-         crate::ffi::c_int,
-     ) -> *mut crate::ffi::c_void,
- );
- 
- impl ReallocFunc {
--    // INVARIANT: `krealloc_node` satisfies the type invariants.
--    const KREALLOC: Self = Self(bindings::krealloc_node);
-+    // INVARIANT: `krealloc_node_align` satisfies the type invariants.
-+    const KREALLOC: Self = Self(bindings::krealloc_node_align);
- 
--    // INVARIANT: `vrealloc_node` satisfies the type invariants.
--    const VREALLOC: Self = Self(bindings::vrealloc_node);
-+    // INVARIANT: `vrealloc_node_align` satisfies the type invariants.
-+    const VREALLOC: Self = Self(bindings::vrealloc_node_align);
- 
--    // INVARIANT: `kvrealloc_node` satisfies the type invariants.
--    const KVREALLOC: Self = Self(bindings::kvrealloc_node);
-+    // INVARIANT: `kvrealloc_node_align` satisfies the type invariants.
-+    const KVREALLOC: Self = Self(bindings::kvrealloc_node_align);
- 
-     /// # Safety
-     ///
-@@ -116,7 +116,7 @@ unsafe fn call(
-         // - Those functions provide the guarantees of this function.
-         let raw_ptr = unsafe {
-             // If `size == 0` and `ptr != NULL` the memory behind the pointer is freed.
--            self.0(ptr.cast(), size, flags.0, nid.0).cast()
-+            self.0(ptr.cast(), size, layout.align(), flags.0, nid.0).cast()
-         };
- 
-         let ptr = if size == 0 {
-@@ -160,12 +160,6 @@ unsafe fn realloc(
-         flags: Flags,
-         nid: NumaNode,
-     ) -> Result<NonNull<[u8]>, AllocError> {
--        // TODO: Support alignments larger than PAGE_SIZE.
--        if layout.align() > bindings::PAGE_SIZE {
--            pr_warn!("Vmalloc does not support alignments larger than PAGE_SIZE yet.\n");
--            return Err(AllocError);
--        }
--
-         // SAFETY: If not `None`, `ptr` is guaranteed to point to valid memory, which was previously
-         // allocated with this `Allocator`.
-         unsafe { ReallocFunc::VREALLOC.call(ptr, layout, old_layout, flags, nid) }
-@@ -185,12 +179,6 @@ unsafe fn realloc(
-         flags: Flags,
-         nid: NumaNode,
-     ) -> Result<NonNull<[u8]>, AllocError> {
--        // TODO: Support alignments larger than PAGE_SIZE.
--        if layout.align() > bindings::PAGE_SIZE {
--            pr_warn!("KVmalloc does not support alignments larger than PAGE_SIZE yet.\n");
--            return Err(AllocError);
--        }
--
-         // SAFETY: If not `None`, `ptr` is guaranteed to point to valid memory, which was previously
-         // allocated with this `Allocator`.
-         unsafe { ReallocFunc::KVREALLOC.call(ptr, layout, old_layout, flags, nid) }
--- 
-2.39.2
-
+> ---
+>  fs/bcachefs/super.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
+> index b0019488f586..5992ca040bf6 100644
+> --- a/fs/bcachefs/super.c
+> +++ b/fs/bcachefs/super.c
+> @@ -2369,7 +2369,7 @@ struct bch_fs *bch2_fs_open(darray_const_str *devices,
+>  	}
+>  
+>  	if (opts->nochanges && !opts->read_only) {
+> -		ret = bch_err_throw(c, erofs_nochanges);
+> +		ret = -BCH_ERR_erofs_nochanges;
+>  		goto err_print;
+>  	}
+>  
+> -- 
+> 2.49.0
+> 
