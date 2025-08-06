@@ -1,68 +1,65 @@
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailrelay-egress16.pub.mailoutpod3-cph3.one.com (mailrelay-egress16.pub.mailoutpod3-cph3.one.com [46.30.212.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49EA1244666
-	for <linux-bcachefs@vger.kernel.org>; Wed,  6 Aug 2025 12:20:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5A9221D5BF
+	for <linux-bcachefs@vger.kernel.org>; Wed,  6 Aug 2025 12:40:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.212.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754482826; cv=none; b=ZLxu3JWTB40lxbe2pnkN8aERXms07PcWyEROuXRov9C9JLJRHjGqtg6xp69Pw3GsG9fUZgesoVn7zO7p90TteyX+6SebAhym70CVQh/nbkyyOFZsTyi/KKYFBAIuh1W/TyxVp38EhyZ4togn8PWTgMBdF40OXs8nKbFat2AsHZ0=
+	t=1754484051; cv=none; b=eEYL1zItoxtFbDjjKBmw3HC+4DJ1lEj3bM9AnGqGLmHy40nNb2rlEBfQQ99rm6BJqMQ9TPa2EBXpEajatnFJU0lQgV5nm/cUIk9+7WE+4bXuzm6E51QHcscw53jTNV19Vdp04cy53lpUAztd5IJRJpyk7IwA9XOz8k7qfMVe8PU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754482826; c=relaxed/simple;
-	bh=xlaQyDjDI9lYTaIe6ySzoJMPOvto5JwYxtN47pKzH2s=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NE1msWs1ftI/wWMEeN2OoXt/7nEpqslEtf5iq3WJdTudhI+ClXSp6Sa8aLQonWQUrIpkSIKlIvA/qIqHbsOmGRUKOzLYrpBUgGJteDQffQ4O4G7xgth729METQ+1oo1S1nqODdaWGkg0biZK80JwisO9G93pA/dA1kAwSzXOGig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CdLzlrHd; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1754484051; c=relaxed/simple;
+	bh=TOpPlTtS9gCy1fQQ1FgNK/Z+oOAScsjKFxLBYZ+wx5Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lmQZML3Hex/jgJEXNgAnShgPOhTl7j09/c/YDR88iihnk1TpeH6wAbZICAVhFkU+ZeUkHaWy7xc9ZGOlBgkRgozc6Tfrd7P7rMTcC+/FYi+nmSqzSOl9/yAuD6+mob4wVdtELm8XrF+iVeuRPnxlALt+PGLtuwHLqHSVp/mPee8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=konsulko.se; spf=none smtp.mailfrom=konsulko.se; dkim=pass (2048-bit key) header.d=konsulko.se header.i=@konsulko.se header.b=pQ8Xqu4v; dkim=permerror (0-bit key) header.d=konsulko.se header.i=@konsulko.se header.b=i5l+IAAh; arc=none smtp.client-ip=46.30.212.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=konsulko.se
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=konsulko.se
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CdLzlrHd"
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-76b8d289f73so4839782b3a.1
-        for <linux-bcachefs@vger.kernel.org>; Wed, 06 Aug 2025 05:20:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754482825; x=1755087625; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=j0cX2S3yVSp710Toj2Hy60+7B0ynKVV8AeoAoklO2nw=;
-        b=CdLzlrHdRS/IP8xhm5V+faqkEPor6JNAQxR4sfcuhrAu1hDc2+wDgmXYB6hxoBXncf
-         i9wuFlZlbqc76b3WHXKApdhd4vEqDAxBtx1GzHF3AigkosmP7xa8y/LcH2bQNFPXffZB
-         0jwg6NFL/K+XkX9Psd+C8OW/Mc4KdljkWLfJsV6L8ykKgWR6s+VdWqIgAmZdWdieetv9
-         kUKRM7dnTCkT9eZrOLSMUTyfdWEgW1s+qs4VHNzeTi33KOU1QOQnN+f1YrxFvPaiv6bS
-         vF3akoLV5herJ6A72HBPJcqY67M9eeMYQBI5DZD9kOB2HcDvkNEuNuduVtUhieFDirny
-         2YLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754482825; x=1755087625;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=j0cX2S3yVSp710Toj2Hy60+7B0ynKVV8AeoAoklO2nw=;
-        b=qarTgU0Et0AFu9Veej78B+QJZQUir+I4CMrrP8h5e1cZwGe7m37TrekPxEdYuB7crP
-         pfLms+DCup407tJSM6TuDtb6s2mfplC5ergJao/rkVLl8oGlFIQlF2wpEMnaiZ/1z1NG
-         07f+iko5HrabvzuZiZYtOrNnl5G//E5uWSrUXqKL0YJ5HHrkxTk+TpU4/GgZCgoPQFxg
-         T+sKq/+MbX5n9JDAnL6qNowD/VFR5cStb4k9s5s+DusEAQ7jkdm/WTh9DksrMQdsmfcP
-         MUgi7fnxowoiYnAd6+igmhuzR+vYf4nh7I7Ukbx7i9S5oIGIdCCbVeHpcqBzUgYM5GFq
-         oowg==
-X-Gm-Message-State: AOJu0YzfM9yC2SuLjPSfdheAAxa7Ur4yfP0svoY98IhlDIpTcVKdidJU
-	xPlAY+1kPeRVYlr/2tQNvAgxxJ18Ddr46yY/guhEs/ik0miIeBN5aiBn
-X-Gm-Gg: ASbGncsDTn5VEMFGanduwqFTZz4FpXd8m1NRSG4MfGotBT75B4FLAbNX83Epn6Sl/nJ
-	J4ETdsNYs9KrDVTA6yUXJ+2VOd016IoxTg0a1q7/cCbOriG97InujQozLaAuFgVOrVpnp4+YS7O
-	TicaRULJAH1i8sKiuxcQHgIQ7AvUhpysoPLso1jKzd+ABf360CJpylk2alivUtq/Qx7U1N9I7mv
-	e3MaWF6wM1ghQRvlioHaxXIQOLp2B2p+hNKb2HR0IVIzughc8iKUmVnVn6Xa5d8+JcA1HFmPQmN
-	6yPsagbT/wgeLt4HaDgiYvq46N2/YysPnHQHdRF6UMLaQtnjF1KqqiTY/r/RNv8NCJ8oITRp
-X-Google-Smtp-Source: AGHT+IGX5ZW6rwr1r/0w32zHTl1if0/fO5/tDYELQgh/AUEknmaeqLbYzKOqUgbKKoUQLtZ2zOwiPg==
-X-Received: by 2002:a05:6a21:9997:b0:23d:3513:935c with SMTP id adf61e73a8af0-2403137c84dmr3723957637.6.1754482824659;
-        Wed, 06 Aug 2025 05:20:24 -0700 (PDT)
-Received: from localhost ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b4289c5e123sm841489a12.3.2025.08.06.05.20.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Aug 2025 05:20:24 -0700 (PDT)
-From: Alan Huang <mmpgouride@gmail.com>
-To: kent.overstreet@linux.dev,
-	dan.carpenter@linaro.org
-Cc: linux-bcachefs@vger.kernel.org,
-	Alan Huang <mmpgouride@gmail.com>
-Subject: [PATCH] bcachefs: Fix possible pointer dereference
-Date: Wed,  6 Aug 2025 20:20:18 +0800
-Message-ID: <20250806122018.552250-1-mmpgouride@gmail.com>
-X-Mailer: git-send-email 2.49.0
+	dkim=pass (2048-bit key) header.d=konsulko.se header.i=@konsulko.se header.b="pQ8Xqu4v";
+	dkim=permerror (0-bit key) header.d=konsulko.se header.i=@konsulko.se header.b="i5l+IAAh"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1754484040; x=1755088840;
+	d=konsulko.se; s=rsa1;
+	h=content-transfer-encoding:mime-version:message-id:date:subject:cc:to:from:
+	 from;
+	bh=6NZAtsRQPRLEOnALjiUrPTbK1Ko1TPX/qvuOItNudmY=;
+	b=pQ8Xqu4vQVoFuzRNfkx8tDpO9pXYsqUSAgtU/nEVx76yuwztxDEQDHPe7PTlK3eczmunaTtBIgpb2
+	 pnRpl2zV8im/earTDa/GqC0MFxxTPCWVKCJMWjhquroMMjyVWq7KRFmkHc2YdAce3WQbHnnnBHNnYG
+	 Nx8LNmBp36TG7IMkzvfiPeL+6Bmaw0ql+FvaGgxQ2ajlNDeR5NYLuE1/2k2KkJA717U0yExEP9D3j3
+	 9PPtJX67h2Tx9r1TZyh6A7pcU6/qmqauLjoKt23Lw3pimQfEwyr0uchl4Gjd2+LdWKsBURXlduGEmJ
+	 mpA6bgGdm3WIBXQQuuI0G9YKpU3tdRg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1754484040; x=1755088840;
+	d=konsulko.se; s=ed1;
+	h=content-transfer-encoding:mime-version:message-id:date:subject:cc:to:from:
+	 from;
+	bh=6NZAtsRQPRLEOnALjiUrPTbK1Ko1TPX/qvuOItNudmY=;
+	b=i5l+IAAhCBevKEaEodC3AD/f5I2d0OS/oDuz/impr33Mg4QpfgQxw4yjoWNf7OQ+owvdOld3NLwVb
+	 QBDDwOLCw==
+X-HalOne-ID: 8e99376d-72c2-11f0-ab00-85eb291bc831
+Received: from localhost.localdomain (c188-150-224-8.bredband.tele2.se [188.150.224.8])
+	by mailrelay5.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
+	id 8e99376d-72c2-11f0-ab00-85eb291bc831;
+	Wed, 06 Aug 2025 12:40:39 +0000 (UTC)
+From: Vitaly Wool <vitaly.wool@konsulko.se>
+To: linux-mm@kvack.org
+Cc: akpm@linux-foundation.org,
+	linux-kernel@vger.kernel.org,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Danilo Krummrich <dakr@kernel.org>,
+	Alice Ryhl <aliceryhl@google.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	rust-for-linux@vger.kernel.org,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	linux-bcachefs@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Jann Horn <jannh@google.com>,
+	Pedro Falcato <pfalcato@suse.de>,
+	Vitaly Wool <vitaly.wool@konsulko.se>
+Subject: [PATCH v15 0/4] support large align and nid in Rust allocators
+Date: Wed,  6 Aug 2025 14:40:34 +0200
+Message-Id: <20250806124034.1724515-1-vitaly.wool@konsulko.se>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -71,28 +68,81 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-c hasn't been set yet here.
+The coming patches provide the ability for Rust allocators to set
+NUMA node and large alignment.
 
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Fixes: 09b9c72bd4b7 ("bcachefs: bch_err_throw()")
-Signed-off-by: Alan Huang <mmpgouride@gmail.com>
----
- fs/bcachefs/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
-index b0019488f586..5992ca040bf6 100644
---- a/fs/bcachefs/super.c
-+++ b/fs/bcachefs/super.c
-@@ -2369,7 +2369,7 @@ struct bch_fs *bch2_fs_open(darray_const_str *devices,
- 	}
- 
- 	if (opts->nochanges && !opts->read_only) {
--		ret = bch_err_throw(c, erofs_nochanges);
-+		ret = -BCH_ERR_erofs_nochanges;
- 		goto err_print;
- 	}
- 
--- 
-2.49.0
+Changelog:
+v2 -> v3:
+* fixed the build breakage for non-MMU configs
+v3 -> v4:
+* added NUMA node support for k[v]realloc (patch #2)
+* removed extra logic in Rust helpers
+* patch for Rust allocators split into 2 (align: patch #3 and
+  NUMA ids: patch #4)
+v4 -> v5:
+* reworked NUMA node support for k[v]realloc for all 3 <alloc>_node
+  functions to have the same signature
+* all 3 <alloc>_node slab/vmalloc functions now support alignment
+  specification
+* Rust helpers are extended with new functions, the old ones are left
+  intact
+* Rust support for NUMA nodes comes first now (as patch #3)
+v5 -> v6:
+* added <alloc>_node_align functions to keep the existing interfaces
+  intact
+* clearer separation for Rust support of MUNA ids and large alignments
+v6 -> v7:
+* NUMA identifier as a new Rust type (NumaNode)
+* better documentation for changed and new functions and constants
+v7 -> v8:
+* removed NumaError
+* small cleanups per reviewers' comments
+v8 -> v9:
+* realloc functions can now reallocate memory for a different NUMA
+  node
+* better comments/explanations in the Rust part
+v9 -> v10:
+* refined behavior when memory is being reallocated for a different
+  NUMA node, comments added
+* cleanups in the Rust part, rustfmt ran
+* typos corrected
+v10 -> v11:
+* added documentation for the NO_NODE constant
+* added node parameter to Allocator's alloc/realloc instead of adding
+  separate alloc_node resp. realloc_node functions, modified users of
+  alloc/realloc in accordance with that
+v11 -> v12:
+* some redundant _noprof functions removed in patch 2/4
+* c'n'p error fixed in patch 2/4 (vmalloc_to_page -> virt_to_page)
+* some typo corrections and documentation updates, primarily in patch
+  3/4
+v12 -> v13:
+* fixed wording in comments (patches 1, 3)
+* fixed bigger alignment handling in krealloc (patch 2)
+* removed pr_warn import (patch 4)
+v13 -> v14:
+* addressed Vlastimil's comments for the slub allocator's alignment
+  handling
+* added cnages to allocator_test.rs to match the new API
+v14 -> v15:
+* fixed allocator_test.rs changes added at the previous iteration
+Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.se>
+--
+ fs/bcachefs/darray.c                |    2 -
+ fs/bcachefs/util.h                  |    2 -
+ include/linux/bpfptr.h              |    2 -
+ include/linux/slab.h                |   39 +++++++++++++++++++++++--------------
+ include/linux/vmalloc.h             |   12 ++++++++---
+ lib/rhashtable.c                    |    4 +--
+ mm/nommu.c                          |    3 +-
+ mm/slub.c                           |   59 +++++++++++++++++++++++++++++++++++++++++++--------------
+ mm/vmalloc.c                        |   29 +++++++++++++++++++++++-----
+ rust/helpers/slab.c                 |   10 +++++----
+ rust/helpers/vmalloc.c              |    5 ++--
+ rust/kernel/alloc.rs                |   54 +++++++++++++++++++++++++++++++++++++++++++++++-----
+ rust/kernel/alloc/allocator.rs      |   49 ++++++++++++++++++++++-------------------------
+ rust/kernel/alloc/allocator_test.rs |    1 
+ rust/kernel/alloc/kbox.rs           |    4 +--
+ rust/kernel/alloc/kvec.rs           |   11 ++++++++--
+ 16 files changed, 202 insertions(+), 84 deletions(-)
 
