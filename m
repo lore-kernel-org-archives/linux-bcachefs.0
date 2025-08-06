@@ -1,70 +1,68 @@
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AE5B1DAC95
-	for <linux-bcachefs@vger.kernel.org>; Wed,  6 Aug 2025 06:26:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 956A51DAC95
+	for <linux-bcachefs@vger.kernel.org>; Wed,  6 Aug 2025 06:26:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754461569; cv=none; b=mJPQF0XPDGikgrJ234Teb2F+the6j+4g5loM14Ne1zp/VfwuhVXN9tNP4F+LSXet+JpHIfv3zdCYTJP574brTK6FlqiELPRT/gL+MojGMRxs8a1cIRSE6YiVWVycplgH1WvMfhBk5K/T8oW+CK3fbE83jLiYk3uwcjedBX90Krc=
+	t=1754461572; cv=none; b=KN4M0GFzVjAtWIp8Z06ZSx/bWuN4XEeI4OEVtfq5jPACmx6DTU2TYwwuAIndEPgZTBWjgq0KpMOZJ0kfiCKmFp8Kn1XvLJKJr0yKhDdPNjuLxfNMyRpEsVVUc9oWi1QkJggAIgnnVFcWM0frw1Qergewz2gWtMVgTLjXStwWwjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754461569; c=relaxed/simple;
-	bh=VXo9b3cWgCZAuSuSe0LdGP7qKqP2WicOK9+CvRZVVYU=;
+	s=arc-20240116; t=1754461572; c=relaxed/simple;
+	bh=Mmf5IuFwvOUs7jnrCbYJAXqA6ZPjt7eb4OAZY1RmQog=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QwY89RS+p0F1sGSaOssFaqcvJ8qFPiGHQiTADJ9Gd9onzmqSsJ7n+ftyHguzM1Lod6rkIwvTmobMXSnwCqx2jJbpEnRIOlPCeQ/P2l+nTRLQXdnlRfTEHRWuQWk58QDShWxbOcVwiLJRXs/oq2e4H6w3HAgpjtIgEXoIH+8ciA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NdbPmMCb; arc=none smtp.client-ip=209.85.215.172
+	 MIME-Version; b=sEb8vXAT+a58BYFierl+ARfzcSjUtV1/muTbmCdfQpk9SSYn3+uvGbpeNYWwhhNulQQOqWCXvP6wDhJJn1jjYnNfow4oYPp1IBveB5TPdYoXkq4HqcmRgd5wHG+aGx5Z1mnks/3GeCPM0RXjluYGPx20lXApQuyF/kNWbSKfUwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j6TqKRET; arc=none smtp.client-ip=209.85.216.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NdbPmMCb"
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-b34a6d0c9a3so6423304a12.3
-        for <linux-bcachefs@vger.kernel.org>; Tue, 05 Aug 2025 23:26:06 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j6TqKRET"
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-315f6b20cf9so5544511a91.2
+        for <linux-bcachefs@vger.kernel.org>; Tue, 05 Aug 2025 23:26:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754461566; x=1755066366; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1754461570; x=1755066370; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=x8FZts/d0bRWr1ttxABTxamh/wB/YRropo5ezOu5v00=;
-        b=NdbPmMCbMvsWkuVMUZVLfGZKtLU/Ilh1ueILXqaDLPAtuBdf5+Z5TIVnx1TzxZDD2d
-         HsCakOd55H/E8Vm/GZtQJpYHwoYDDUTUYrwCMcgjf2njQYj3ARzeB0m6iYp7lPVdno/I
-         IvtdvgblmE7dZYqDQzKfz63onMaSQPtJzif0+hNkLJEZB47eqrMquE33UjvwhGc4QfNq
-         M3LTHE3iHq4bDmHvhftF8AomybMeVHSINH4hVWvl3izxrlqGJWWzvHIeSoXVPaIMXuXC
-         riI9oBNkPtagWVgWL1BQW+2edN8rNWsM3ng12pVtkmAkjP3Daak7R8PejF9b9ePbnT2I
-         cSXQ==
+        bh=OYHVQEzHxglE28fEnurxP5NsWDUrRwhZymWc4m2u6jQ=;
+        b=j6TqKRETsYOuSI8BZRD1ksl+R2F+59jA7NaUbtGKQjoDT0mH0sDs6gHsepQ45jcWpf
+         Y2Luls5mPvKjJTmeHJU3d11p0YW5YNnM1VpAfjbck5fW49afK1o1mB/dDQNP+jQPKp88
+         4jzS+cY1U+usECJxEakEYJJd/xJyFK+cyGnw2qhwvj6yd/uxm5C+JOqDv54TVueUpSB3
+         GJGPByamyUtUdtD6bGUChydaDj7xRjPgdrqCrtilDSX7PT+y1OzXgGlfdJOhq5+pBPMZ
+         d9jN9F+wk2Sfvd4NzJ3LsEHHmcGarBi20J/qJdRv04y2ayeZ2M/fxnPRhpqz2QlVMQl7
+         QaOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754461566; x=1755066366;
+        d=1e100.net; s=20230601; t=1754461570; x=1755066370;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=x8FZts/d0bRWr1ttxABTxamh/wB/YRropo5ezOu5v00=;
-        b=f178yDycJzIxzjqjBgwZbgroz7LwQjjMFiyRPN13JWCVx392l1uCuYeHJtRtwsPAZ5
-         2n1H2c4WNvDv08AuFU8X+TXzyCo3pmXFcj8QwVszyVMBx2F382Ri17eODLFHIsBcehFG
-         EjPLIDltVsq/sYWTJ62my61uMOyWTZRhajl9Vk1z0V2iqfk5Qg+zLj5X0v97zYtqmhNl
-         7PtqZze7pztyvlD6IZzVZtiLsBpV25XE/mixia4praCMGOlQYmIupRwLpc9rIbx4i+zy
-         nvgdbgxMqN+aznXKVF8qYJh9VK/4zynLYAvG/cwLLF54K5zW2NvfEmqEeRLZP21KZYE3
-         oA6Q==
-X-Gm-Message-State: AOJu0YyQdiBSFsI8qzC45YG6AECkkk1Vcv9nTzvcdDLvMY+FfptO8lt+
-	W70HquE2RiJiTHHyphbJHjKkWF4Hukz3fDGBGUYw9u1B1OcJkbWUdrZ3qo5beg==
-X-Gm-Gg: ASbGnct4QAzECZxXZS8zlfH3igT8o4jUWQMeQXV39nYufGUvaZGNWhOVKsoQY3WohwO
-	4vcwBCzkcOLG7OqTYUuPDxSb4e9KDzc/iDX7SgK29GsryN7t6/tn6bzDzYfai/CbxXkTPoTAubZ
-	vItkDUeGdn9SWNA4pmjhjiP++8suLWH+Ha3rzdLOwypeclvzm09gvJBZ/2famvu1geVyb5cz+GJ
-	2AVlNfa9+/zikYqHhnqka0VWvOarl2QPKA2xunT0MLAfTfnBHFpz15SfieBGy+aJ9yQ4GQ5beT4
-	S47HS5/zacWTZzk+jm7vGTYKegexBiTxRJMxi1+LFNb/MGUPYBFkQP4JNY2m5PwzKMXl7SBZ9BP
-	Xn6AW5ic=
-X-Google-Smtp-Source: AGHT+IGBC2ljfHPf4e6qkveQ1v8EXdxt4RSo8iPD7OOOH3b98AB3Aa15uHQo7TVx4mNx/OhN72xWZg==
-X-Received: by 2002:a17:903:144b:b0:240:bf59:26ae with SMTP id d9443c01a7336-2429f4ad858mr24921585ad.36.1754461566265;
-        Tue, 05 Aug 2025 23:26:06 -0700 (PDT)
+        bh=OYHVQEzHxglE28fEnurxP5NsWDUrRwhZymWc4m2u6jQ=;
+        b=ROd2pbLxVOIEyJcEFxv2j6QwYyghuFI7Ytrst3unbpB8nW1sVGSa/q7h8Xqil0GGk6
+         ACbY/G0/JodODYq104D3HRPkRzmZw0NIaanqm1Tvculmp7jvDwdLiVa7MTrd6NqxvB19
+         FtJKxpgA7syUuavUUAa61zUloj4GBSnUfZuDpfw6EVpHz45mNKWKRPSu0AyKE2tnizyY
+         Msgs5JGIx3GjcrbV3n9VCcG8rBgOY686Jh9mxOwHG+O6slCtGZeqVJueWJFZt5jFrmDy
+         5MrAvDEfkLDiLCpjQj7aMB9clxIYCi19lK83R8iOn0I4PUqSLwZ4+dXG7+27MgG/kCK1
+         nVJA==
+X-Gm-Message-State: AOJu0YzTOxk2gX1YybWEKRic2TDUg6j+/Wil3WNccIlsz2uMMA4CFwzP
+	tuh9GDsXhg6T1F5iFmTtKHO8Cu4Pb/vyqyddan6z4GPVzU5E2UF0MZmF
+X-Gm-Gg: ASbGncvF+D4ceS/avQlUuehNLCfKoVVX1pkv0YcYNh11+ThBpER+QvvXfENjnxfuwaM
+	bkWPI2IGdUiZNRGA2yrXgVv7hgw8zNjyLM8tFto//7N2spYqFvmSZL4YAiQBToxOwlq8kuAl7F1
+	clg4gTbMinZLf9R5qMGwvWZ1T6p7EX5zBDfjrHUGJTFd7FM8o4LHirmCvWAsYX/qvqhjjXTsKhu
+	7pvAJbf5jEjtuq2DtVfrdqMWGxWbYLSgKN+e9w2FUMU4v9tplnshQpeoALx46vsCNL1e7LKstpZ
+	ozCrW0WzAkPCp23+rSO/mwWHamYuIDiw5m2L+JgfA2umxluCtHQJytTh6dXcgYbx/5ETHPTz
+X-Google-Smtp-Source: AGHT+IHCpcUEypiLKjmy4ln2TFhEr7IsFYHs2paOBEd75uWu6Gb43KX5Ge4I2HtAzs/9okby3vNirw==
+X-Received: by 2002:a17:90b:1350:b0:312:1ac5:c7c7 with SMTP id 98e67ed59e1d1-32166e0c12cmr1965979a91.2.1754461569789;
+        Tue, 05 Aug 2025 23:26:09 -0700 (PDT)
 Received: from localhost ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-241d1ef67aesm150127595ad.6.2025.08.05.23.26.04
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3216129c8cfsm1811338a91.34.2025.08.05.23.26.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Aug 2025 23:26:05 -0700 (PDT)
+        Tue, 05 Aug 2025 23:26:09 -0700 (PDT)
 From: Alan Huang <mmpgouride@gmail.com>
 To: kent.overstreet@linux.dev
 Cc: linux-bcachefs@vger.kernel.org,
-	Alan Huang <mmpgouride@gmail.com>,
-	syzbot+23e4a7772eb9a9715b85@syzkaller.appspotmail.com
-Subject: [PATCH v2 1/2] bcachefs: Fix readahead involved deadlock
-Date: Wed,  6 Aug 2025 14:25:56 +0800
-Message-ID: <20250806062557.458303-2-mmpgouride@gmail.com>
+	Alan Huang <mmpgouride@gmail.com>
+Subject: [PATCH v2 2/2] bcachefs: Factor out readpages_iter_folio_revert
+Date: Wed,  6 Aug 2025 14:25:57 +0800
+Message-ID: <20250806062557.458303-3-mmpgouride@gmail.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250806062557.458303-1-mmpgouride@gmail.com>
 References: <20250806062557.458303-1-mmpgouride@gmail.com>
@@ -76,63 +74,51 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-readahead first lock the folio, then invokes aops->readahead, which
-locks the two state lock to block subsequent direct I/O. However,
-direct IO or bchfs_fpunch first lock the two state lock to block
-subsequent buffered I/O, and then lock the folio to invalidate or
-truncate it. Therefore, there is a deadlock:
-
-thread1			thread2
-lock folio		bch2_pagecache_block_get
-bch2_pagecache_add_get 	lock folio
-
-Reported-by: syzbot+23e4a7772eb9a9715b85@syzkaller.appspotmail.com
 Signed-off-by: Alan Huang <mmpgouride@gmail.com>
 ---
- fs/bcachefs/fs-io-buffered.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ fs/bcachefs/fs-io-buffered.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
 diff --git a/fs/bcachefs/fs-io-buffered.c b/fs/bcachefs/fs-io-buffered.c
-index c5ed62a11f23..9f6f9f0f21ff 100644
+index 9f6f9f0f21ff..fd8beb5167ee 100644
 --- a/fs/bcachefs/fs-io-buffered.c
 +++ b/fs/bcachefs/fs-io-buffered.c
-@@ -64,6 +64,17 @@ static int readpages_iter_init(struct readpages_iter *iter,
- 	return 0;
- }
+@@ -42,6 +42,14 @@ struct readpages_iter {
+ 	folios			folios;
+ };
  
-+static void readpages_iter_exit(struct readpages_iter *iter,
-+			        struct readahead_control *ractl)
++static inline void readpages_iter_folio_revert(struct readahead_control *ractl,
++					       struct folio *folio)
 +{
-+	darray_for_each_reverse(iter->folios, folio) {
-+		bch2_folio_release(*folio);
-+		ractl->_nr_pages += folio_nr_pages(*folio);
-+		ractl->_index -= folio_nr_pages(*folio);
-+		folio_get(*folio);
-+	}
++	bch2_folio_release(folio);
++	ractl->_nr_pages += folio_nr_pages(folio);
++	ractl->_index -= folio_nr_pages(folio);
 +}
 +
- static inline struct folio *readpage_iter_peek(struct readpages_iter *iter)
+ static int readpages_iter_init(struct readpages_iter *iter,
+ 			       struct readahead_control *ractl)
  {
- 	if (iter->idx >= iter->folios.nr)
-@@ -290,7 +301,10 @@ void bch2_readahead(struct readahead_control *ractl)
- 	 * scheduling.
- 	 */
- 	blk_start_plug(&plug);
--	bch2_pagecache_add_get(inode);
-+	if (!bch2_pagecache_add_tryget(inode)) {
-+		readpages_iter_exit(&readpages_iter, ractl);
-+		goto out;
-+	}
+@@ -52,9 +60,7 @@ static int readpages_iter_init(struct readpages_iter *iter,
+ 	while ((folio = __readahead_folio(ractl))) {
+ 		if (!bch2_folio_create(folio, GFP_KERNEL) ||
+ 		    darray_push(&iter->folios, folio)) {
+-			bch2_folio_release(folio);
+-			ractl->_nr_pages += folio_nr_pages(folio);
+-			ractl->_index -= folio_nr_pages(folio);
++			readpages_iter_folio_revert(ractl, folio);
+ 			return iter->folios.nr ? 0 : -ENOMEM;
+ 		}
  
- 	struct btree_trans *trans = bch2_trans_get(c);
- 	while ((folio = readpage_iter_peek(&readpages_iter))) {
-@@ -317,6 +331,7 @@ void bch2_readahead(struct readahead_control *ractl)
- 	bch2_trans_put(trans);
- 
- 	bch2_pagecache_add_put(inode);
-+out:
- 	blk_finish_plug(&plug);
- 	darray_exit(&readpages_iter.folios);
+@@ -68,9 +74,7 @@ static void readpages_iter_exit(struct readpages_iter *iter,
+ 			        struct readahead_control *ractl)
+ {
+ 	darray_for_each_reverse(iter->folios, folio) {
+-		bch2_folio_release(*folio);
+-		ractl->_nr_pages += folio_nr_pages(*folio);
+-		ractl->_index -= folio_nr_pages(*folio);
++		readpages_iter_folio_revert(ractl, *folio);
+ 		folio_get(*folio);
+ 	}
  }
 -- 
 2.49.0
