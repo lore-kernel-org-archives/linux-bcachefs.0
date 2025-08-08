@@ -1,71 +1,37 @@
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55F33273D76
-	for <linux-bcachefs@vger.kernel.org>; Fri,  8 Aug 2025 13:43:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53E711DFD96
+	for <linux-bcachefs@vger.kernel.org>; Fri,  8 Aug 2025 18:28:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754660610; cv=none; b=aRExSG9JPvvC9+tKKR+L6bx3RGLJJ6obmWrHPdciV5E5Q2JDIs8o4xsW1cdX/o9rUj11TZtAGlcTjVYdDzg8+hfeM20hDrjTM1zNJYANL1d1RKlUffIlXvNaorRs3Z6h5azSOEONGrpBxYC3JxZ9vdIPbpO42qwrCiH5SAJAI/M=
+	t=1754677730; cv=none; b=Y2d6AddnIcc0ot7Y8SwbLuAr5m7GiTz0TIZuJeWxJCW9zzdgbXZFuMZ8Zew7mPGcw4BRx1K/a+Zk3K/+o2vHMXy9EqahEbU/SeUqqKOsxbUBy4K06wzt4hjI8xBrLniriXlrwDYEJYosZktdt+yGm3TtkEkJhNdWy5X85beO0+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754660610; c=relaxed/simple;
-	bh=RMMJcyE02djD26ACsJ8vHP0CAN5Pc2OUgA92VnMuqec=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=djPoMUoEgKLkGN3PZR3GDZOU8EWMVvXdfPmOBTb8cW6k0Fo1DON+8uDE3B8uwhVItWo30Q7ncFiri0qpAvwejfVN2qclmN6YwsS4kl9ODaa/wGjiR1YrmnN69w8MFw2iTh0SVkW4hJ1XSnNQm34yJb9Rp7bsavGSHXHKvqIuGGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=na4qfziw; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1754677730; c=relaxed/simple;
+	bh=h1zEDIOEH0sy6sNsFNfDv6ZJel+KUrxSyhjI1BzuqMU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Mh49gct+OCO/x4cVnix7moC7Q6jVhe/ubbI/PpME1nmeVgOe+qs5BXdcTcZHseqISBW7DAwcPf+bm719+2AxT41EPxoQSxMsqYlkXryjPTxzvMo9UQ01IojSilVz9xiiLdC85pzTsT2lppMlNHEs1vVSELmKtDI2DhfeFQa/9j0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BJl3WrDI; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="na4qfziw"
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-b170c99aa49so1381785a12.1
-        for <linux-bcachefs@vger.kernel.org>; Fri, 08 Aug 2025 06:43:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754660609; x=1755265409; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pOIn1fU2b0kASHCE5XqbnUxSmJ66h7Pi+DT4SumcRqg=;
-        b=na4qfziwU0bC9svyrdoZZyJCLm8a6a7ua/DtOPr+9tTNyAWu9VZcURuHXIxlcgEFBT
-         Gu8oX9WR714Xe0AXlOQ3mIIAbOwRFouQiEK9qO1Qs3wytpj6I5F9IK6iWGdVd5HhKS+J
-         Nt14p3zIbZf62x8xbqZCco+kNPXLBE2Uo+RMZyR7qgp3kF7rkHI9g1Rt4MfJY8z9Pn1U
-         Rrdfg0y8fbNdj3MW1utGRiKbN+og7r7AF+5+yc7XhxqrHrXB4CNOiShLofFD15uL5sm9
-         zDLpVY0Ou0SjgmyyWDk9DYUY7qhuMzteQP48JGwBcIcXtninupqeev4oSAJvPXWTnUZV
-         vRuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754660609; x=1755265409;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pOIn1fU2b0kASHCE5XqbnUxSmJ66h7Pi+DT4SumcRqg=;
-        b=W2xSHTbtQ5dNzsOCsJQnsn5N29qlnC+cFhy/XWFX0tolLWEYCWoGddQ99eKuVzhS90
-         k8/G+NVZO8y3Y2hLvbha7hnCJ4rO5mWlpOl0sAr+yGE8d3G8hEsctb8Qbrz6OpWRa/fv
-         DkyNV/qS2v9ZiOD0Cm5yI3Pg2Hie+L/4lHA/RvArRPP6sw34UMxhyRsFcFn6ZKsx1Cvv
-         522/qUbLg1PwpQrkaFXAYmYFo1wc7b3pYoBqaCChDTrRJAMEWP/aAwYdCDRw7TMk02u6
-         jS/UlBlf8yopWMuQHNR5T0bQ6FUA0pEAhVhLRCTAEHhTfFPwVFC/Z0bghgjbSpioig4C
-         7HFw==
-X-Gm-Message-State: AOJu0Yya76UgHrcpeVOlR2mgM5efeRUQqgdPAMjjT3cS9wWO6AgZjzMm
-	yi2zjF1Wx6M7gesGn+yaycz2lTrOuQEDxRRituhM22g0kgpTbv9vku2Q0QU5Tg==
-X-Gm-Gg: ASbGncvolkfvPZBhofE+14RSX53B01ZmIx2Z0tgXv+9Iwu1y+7I8xGGgQ5WERmvo/qh
-	OG1LaPfJff0xe+JL5kPfI1kh6XvRaB03psc/JrlXu3nEsG2euascRn8MJ0jR9hWMoT3TKNWI6H+
-	FwdLP+99lpIg03CPHTEd712cAsmra1gwtibd62miBJglOhAxGdGW+NhC70uj+FS1QLTHt0ZE2t8
-	gTGtFVW33L6RexRJKmIqdUlG8+wjQlJ5qBWON89QQPHUGqF7OeMOSD80lRZBJRD+mgOCeSEkb6n
-	NyLC8TfoqCR+kj+RdiU7ueIlCXf9P1G5J7XQLh88HDr2EisHfCn04ZtNuagdID7mgwXDsOrQHbu
-	n7ULOVsM=
-X-Google-Smtp-Source: AGHT+IFEAEg1oi33RYJwIk81rlPvCQIxxF7DBKn+vKE1NlBQllt7MDdDZsRgHVwaJkEozxO3AHUo4Q==
-X-Received: by 2002:a17:903:2352:b0:23f:c945:6081 with SMTP id d9443c01a7336-242c221b41fmr50370155ad.31.1754660608566;
-        Fri, 08 Aug 2025 06:43:28 -0700 (PDT)
-Received: from localhost ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2429b7dfc23sm77893155ad.105.2025.08.08.06.43.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Aug 2025 06:43:28 -0700 (PDT)
-From: Alan Huang <mmpgouride@gmail.com>
-To: kent.overstreet@linux.dev
-Cc: linux-bcachefs@vger.kernel.org,
-	Alan Huang <mmpgouride@gmail.com>
-Subject: [PATCH 3/3] bcachefs: Don't lock ei_pagecache_lock in bch2_readahead
-Date: Fri,  8 Aug 2025 21:43:12 +0800
-Message-ID: <20250808134312.878432-3-mmpgouride@gmail.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250808134312.878432-1-mmpgouride@gmail.com>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BJl3WrDI"
+Date: Fri, 8 Aug 2025 14:28:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1754677726;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RrniM/bMBvoi264bSxS177Yy+xqYWe+mCFZ/oQ7D4F4=;
+	b=BJl3WrDIoYgFQ8PqWDwKxKvn3E9wfD2dPJknQi8IMmC2XoSFk0dDPrnPM5RiGtySsj9+x3
+	r+7FrhXhcFq6bXUdlawv2C9HSqoo4qp3i6EEJXLLED/t9n88I6S8uDfmH9h664Ui3caixB
+	1Vj38vSyEOPxMi7soAlgiECwjcyy4b0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Alan Huang <mmpgouride@gmail.com>
+Cc: linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH 1/3] bcachefs: Introduce bch2_splice_read
+Message-ID: <patconq5iida3i5vr76bdui6wzbtzhkec3lshuklu7e76zxxeo@uqeumlxcnjb6>
 References: <20250808134312.878432-1-mmpgouride@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
@@ -73,55 +39,48 @@ List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250808134312.878432-1-mmpgouride@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-The lock should already be acquired from all code path.
+On Fri, Aug 08, 2025 at 09:43:10PM +0800, Alan Huang wrote:
+> This provides our own splice read, which locks ei_pagecache_lock around
+> filemap_splice_read.
+> 
+> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+> ---
+>  fs/bcachefs/fs-io-buffered.c | 12 ++++++++++++
+>  fs/bcachefs/fs-io-buffered.h |  4 ++++
+>  2 files changed, 16 insertions(+)
+> 
+> diff --git a/fs/bcachefs/fs-io-buffered.c b/fs/bcachefs/fs-io-buffered.c
+> index fd8beb5167ee..c16c45a72c47 100644
+> --- a/fs/bcachefs/fs-io-buffered.c
+> +++ b/fs/bcachefs/fs-io-buffered.c
+> @@ -1100,6 +1100,18 @@ ssize_t bch2_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>  	return bch2_err_class(ret);
+>  }
+>  
+> +ssize_t bch2_splice_read(struct file *in, loff_t *ppos,
+> +			 struct pipe_inode_info *pipe,
+> +			 size_t len, unsigned int flags)
+> +{
+> +	ssize_t ret;
+> +	struct bch_inode_info *inode = to_bch_ei(in->f_mapping->host);
+> +	bch2_pagecache_add_get(inode);
+> +	ret = filemap_splice_read(in, ppos, pipe, len, flags);
+> +	bch2_pagecache_add_put(inode);
+> +	return ret;
+> +}
 
-Signed-off-by: Alan Huang <mmpgouride@gmail.com>
----
- fs/bcachefs/fs-io-buffered.c | 15 ---------------
- 1 file changed, 15 deletions(-)
+Taking the lock here, around the entire splice_read() call sucks - most
+buffered reads (and this is the fastpath, which we care about) will be
+reading from cache, i.e. they aren't adding new folios to the pagecache
+and they don't need pagecache_add lock.
 
-diff --git a/fs/bcachefs/fs-io-buffered.c b/fs/bcachefs/fs-io-buffered.c
-index c16c45a72c47..01bc3e048542 100644
---- a/fs/bcachefs/fs-io-buffered.c
-+++ b/fs/bcachefs/fs-io-buffered.c
-@@ -70,15 +70,6 @@ static int readpages_iter_init(struct readpages_iter *iter,
- 	return 0;
- }
- 
--static void readpages_iter_exit(struct readpages_iter *iter,
--			        struct readahead_control *ractl)
--{
--	darray_for_each_reverse(iter->folios, folio) {
--		readpages_iter_folio_revert(ractl, *folio);
--		folio_get(*folio);
--	}
--}
--
- static inline struct folio *readpage_iter_peek(struct readpages_iter *iter)
- {
- 	if (iter->idx >= iter->folios.nr)
-@@ -305,10 +296,6 @@ void bch2_readahead(struct readahead_control *ractl)
- 	 * scheduling.
- 	 */
- 	blk_start_plug(&plug);
--	if (!bch2_pagecache_add_tryget(inode)) {
--		readpages_iter_exit(&readpages_iter, ractl);
--		goto out;
--	}
- 
- 	struct btree_trans *trans = bch2_trans_get(c);
- 	while ((folio = readpage_iter_peek(&readpages_iter))) {
-@@ -334,8 +321,6 @@ void bch2_readahead(struct readahead_control *ractl)
- 	}
- 	bch2_trans_put(trans);
- 
--	bch2_pagecache_add_put(inode);
--out:
- 	blk_finish_plug(&plug);
- 	darray_exit(&readpages_iter.folios);
- }
--- 
-2.49.0
+Meaning, we really don't want to add two new atomic ops on the inode to
+every buffered read.
 
+Does this help with lockdep at all? The main issue is still the fault
+path vs. mmap_lock.
