@@ -1,31 +1,31 @@
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2149D1E7C05
-	for <linux-bcachefs@vger.kernel.org>; Sat,  9 Aug 2025 20:38:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71EA9225419
+	for <linux-bcachefs@vger.kernel.org>; Sat,  9 Aug 2025 21:34:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754771890; cv=none; b=uBRnnxIhf787rvqGCz9fLbXXpy1v+DSbHhvd44ZH1ANMLTzk8UP5SWaLMmIENlXNydQ0Tg1VqzMqMxwfxrH/FCSV/UMePdS9Le+ai/44SH3YFB12/c8eUh4ay41vyxZUxx2bZgu823e7UiJBrV7WqzhYPVzXkJluHMGO7DOtTJk=
+	t=1754775299; cv=none; b=BSkwYBmFxna9B2b369ZzlEuPoJm38GTeUoueTrLG452j2KQb5DI3iChHyTpTwwT1EHf4CY1P1djsyWkgO+agyG+vl8E/17WFI5malGj2ElAW5TTP77m99SomPITZjptccj1WySwYO+IkOm7w1GBMM1umjJ06TSn+G2d6nCAyxuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754771890; c=relaxed/simple;
-	bh=sZgDLUIceb9be0h0ngV8e+sXSsmU2OGUiswsKtBY+NA=;
+	s=arc-20240116; t=1754775299; c=relaxed/simple;
+	bh=0U+2bvwtG3+Ixdx6wgI6eMv1jak/Ko5vKr/jWtgVvMI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dCHVn808+XDIVqdqEgdkA4Cx5KYu/T2x7RK6bgEBBY3uCHNxwrUkf3kas4+MHHSguqH1M2bUajE3uAlfcjQmoaO7LzVUKPZoxDYs80fMFgNjR+pmbUY3MNEtFnS0MBtzitn9tGwEsDMIA8VJ5budyBgRMcBQ4TI+vDdlV9jkGXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FVyZQuwM; arc=none smtp.client-ip=91.218.175.170
+	 Content-Type:Content-Disposition:In-Reply-To; b=fvG2HxkkHsaIAvRGMepyhcHyk7+FCECorzcLt8AJ6+hAqq4eqDHGExv0slRSHaEUE+ZCizvPOs5ehsYupJTd7J4Dn7r54i3mQmPwvHd3PNQBz7SztxPvP5mm7x3hNXWcX4OxwIlUNLAm4TrrtVwJMmTt/y+Ipj38n1/siaiJlhU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=s1xPi0PY; arc=none smtp.client-ip=91.218.175.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FVyZQuwM"
-Date: Sat, 9 Aug 2025 16:37:51 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="s1xPi0PY"
+Date: Sat, 9 Aug 2025 17:34:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1754771875;
+	t=1754775292;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kStFxE7DFQgif82GUSMYwqRr+44VVaP8Wn9TTyEkclo=;
-	b=FVyZQuwM0qH/U8n8sHbLXkpbSl9DFm6rd+ML+pTixhVW06QGYTApBrV6h2aE3qhXiIXM/k
-	RvLOAYUZTj6qD3zu5TfICjbtPuahR5oeDV2nJjZ4hdrH2TOXoXyV/s6R9nzDUkG2la6W80
-	oF7sdLNk9RdYZ62yjGctCFYGx66Htv0=
+	bh=0U+2bvwtG3+Ixdx6wgI6eMv1jak/Ko5vKr/jWtgVvMI=;
+	b=s1xPi0PYLSX/IuFioAucP59tJfJUn7c5MOdXTkVAgB4VxMI3c8B89R+UuAwcd0DNtfSSlm
+	cOIip6cudiOQ0I0g7llrp9EDhTYzTlk/a9Hwttx9ThQ9DKARBf5rSJju/BRJz+Y4vTDmF0
+	Vl7pvGCdK6qw6vZEXOqQkTUcbVXXg80=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: Josef Bacik <josef@toxicpanda.com>
@@ -34,13 +34,14 @@ Cc: Aquinas Admin <admin@aquinas.su>,
 	"Carl E. Thompson" <list-bcachefs@carlthompson.net>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
 	linux-kernel@vger.kernel.org
 Subject: Re: [GIT PULL] bcachefs changes for 6.17
-Message-ID: <2z3wpodivsysxhxmkk452pa4zrwxsu5jk64iqazwdzkh3rmg5y@xxtklrrebip2>
+Message-ID: <qivictc5jxyx62mqz6rlg6cix3tzaahqxbgk2ig3cq5d6esqyy@xydebz6gakxq>
 References: <22ib5scviwwa7bqeln22w2xm3dlywc4yuactrddhmsntixnghr@wjmmbpxjvipv>
  <f4be82e7-d98c-44d1-a65b-8c4302574fff@tnxip.de>
  <1869778184.298.1754433695609@mail.carlthompson.net>
  <5909824.DvuYhMxLoT@woolf>
  <3ik3h6hfm4v2y3rtpjshk5y4wlm5n366overw2lp72qk5izizw@k6vxp22uwnwa>
  <20250809192156.GA1411279@fedora>
+ <2z3wpodivsysxhxmkk452pa4zrwxsu5jk64iqazwdzkh3rmg5y@xxtklrrebip2>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -49,59 +50,26 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250809192156.GA1411279@fedora>
+In-Reply-To: <2z3wpodivsysxhxmkk452pa4zrwxsu5jk64iqazwdzkh3rmg5y@xxtklrrebip2>
 X-Migadu-Flow: FLOW_OUT
 
-On Sat, Aug 09, 2025 at 03:21:56PM -0400, Josef Bacik wrote:
-> On Sat, Aug 09, 2025 at 01:36:39PM -0400, Kent Overstreet wrote:
-> > On Thu, Aug 07, 2025 at 07:42:38PM +0700, Aquinas Admin wrote:
-> > > Generally, this drama is more like a kindergarten. I honestly don't understand 
-> > > why there's such a reaction. It's a management issue, solely a management 
-> > > issue. The fact is that there are plenty of administrative possibilities to 
-> > > resolve this situation.
-> > 
-> > Yes, this is accurate. I've been getting entirely too many emails from
-> > Linus about how pissed off everyone is, completely absent of details -
-> > or anything engineering related, for that matter. Lots of "you need to
-> > work with us better" - i.e. bend to demands - without being willing to
-> > put forth an argument that stands to scrutiny.
-> > 
-> > This isn't high school, and it's not a popularity contest. This is
-> > engineering, and it's about engineering standards.
-> > 
-> 
-> Exactly. Which is why the Meta infrastructure is built completely on btrfs and
-> its features. We have saved billions of dollars in infrastructure costs with the
-> features and robustness of btrfs.
+On Sat, Aug 09, 2025 at 04:37:56PM -0400, Kent Overstreet wrote:
+> At this point in the development and deployment in bcachefs I can say,
+> with confidence, that bcachefs is changing that, and that in time we
+> will deliver _better_ reliability than ext4/xfs.
 
-That's great for Facebook, but you're doing everyone else a disservice.
+I should add, based on the data I'm seeing - this isn't far off, but due
+to the sheer amount of deployment and usage ext4/xfs have had it'll be
+awhile (perhaps a year) before we have the data to make hard claims.
 
-The big cloud providers don't require as much reliability from
-individual nodes. I've provided data in the form of bug reports and
-actual user reports, you've provided no data on reliability within
-Facebook, nor which featureset is being used (it's the multi device
-stuff that's been absolutely notorious; Synology famously still uses md
-raid to avoid that, write hole and all).
+The data from users versus btrfs is much clearer, we're already
+delivering much better reliability in terms of "will my data be safe" -
+there are numerous failure modes that simply don't exist in bcachefs.
+And where we've had significant bugs (I count ~2 that have made it all
+the way to a mainline .0 release), good debugging tools and a clean
+design have meant that we've been able to resolve them by about the
+third report, and in every case with significant hardening done after
+the fact and real support for affected users.
 
-This is real, Josef. I've seen time and again how corporate development
-works; I've been at Google, I've worked with Redhat enough to see their
-model, and within the filesystem world engineering standards have not
-been what they should be, and the wider community (i.e. the rest of the
-world, not just the tech giants) is not being served.
-
-COW filesystems were supposed to bring improved reliability over
-conventional filesystems - it's been known for decades that "update in
-place" is a massive problem if we want real advances in reliability. ZFS
-showed that it was possible, but the common consensus in the user
-community, among people with the data (i.e. quite a few of the distros)
-is that btrfs dropped the ball, and regressed on reliability from
-ext4/xfs.
-
-That's common knowledge.
-
-At this point in the development and deployment in bcachefs I can say,
-with confidence, that bcachefs is changing that, and that in time we
-will deliver _better_ reliability than ext4/xfs.
-
-That's why my work has been funded, that's what people want, and that's
-why I'm talking about it.
+IOW: your data is safe on bcachefs, and that's priority #1 for a
+filesystem.
