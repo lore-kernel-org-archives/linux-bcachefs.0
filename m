@@ -1,47 +1,50 @@
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71EA9225419
-	for <linux-bcachefs@vger.kernel.org>; Sat,  9 Aug 2025 21:34:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 971871C2324;
+	Sat,  9 Aug 2025 23:01:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754775299; cv=none; b=BSkwYBmFxna9B2b369ZzlEuPoJm38GTeUoueTrLG452j2KQb5DI3iChHyTpTwwT1EHf4CY1P1djsyWkgO+agyG+vl8E/17WFI5malGj2ElAW5TTP77m99SomPITZjptccj1WySwYO+IkOm7w1GBMM1umjJ06TSn+G2d6nCAyxuA=
+	t=1754780491; cv=none; b=hef4NVK4k5nUreT2y6GsPysDb3xLfhj+sKUwLUx+x/GyHW41NdAu2IvD0mT7wSc5Vtpp8x+UU5n2sGE1/kUIdr/WVrK0SzrYId4L2GL12goITkUjZL3mgter53b5YayeSzFZ6J/FWJvRDFYZeYP/wvJLEqfX1d5KO2gGtoWJ8J0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754775299; c=relaxed/simple;
-	bh=0U+2bvwtG3+Ixdx6wgI6eMv1jak/Ko5vKr/jWtgVvMI=;
+	s=arc-20240116; t=1754780491; c=relaxed/simple;
+	bh=If17jhKfTfvnCrbpdWWKlNj01AnvZXZylbmRi/I12RU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fvG2HxkkHsaIAvRGMepyhcHyk7+FCECorzcLt8AJ6+hAqq4eqDHGExv0slRSHaEUE+ZCizvPOs5ehsYupJTd7J4Dn7r54i3mQmPwvHd3PNQBz7SztxPvP5mm7x3hNXWcX4OxwIlUNLAm4TrrtVwJMmTt/y+Ipj38n1/siaiJlhU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=s1xPi0PY; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	 Content-Type:Content-Disposition:In-Reply-To; b=aNnJ/3J1/uOJ0PaBasY1N+ioXGfC7mCDdc15A/LzkzNid8ZtF0rk0GDMGA9LjT3tUwuWpH4XDaR7IT7fMwbaBWYUL/aBP31zLvU2akridkYUaljI51vUEtKrvY8n3qEKSIyVyh3k2F9jCcPjyJNIFUWuzKyiqCBLcE/f6/NJvWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=T7m+UkYw; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="s1xPi0PY"
-Date: Sat, 9 Aug 2025 17:34:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1754775292;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0U+2bvwtG3+Ixdx6wgI6eMv1jak/Ko5vKr/jWtgVvMI=;
-	b=s1xPi0PYLSX/IuFioAucP59tJfJUn7c5MOdXTkVAgB4VxMI3c8B89R+UuAwcd0DNtfSSlm
-	cOIip6cudiOQ0I0g7llrp9EDhTYzTlk/a9Hwttx9ThQ9DKARBf5rSJju/BRJz+Y4vTDmF0
-	Vl7pvGCdK6qw6vZEXOqQkTUcbVXXg80=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: Aquinas Admin <admin@aquinas.su>, 
-	Malte =?utf-8?B?U2NocsO2ZGVy?= <malte.schroeder@tnxip.de>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	"Carl E. Thompson" <list-bcachefs@carlthompson.net>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="T7m+UkYw"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=+GHbL+2thnDTAchEhJDBnLOieaRoTv86wX69IAATfFE=; b=T7m+UkYwdpn1IGrDs8M6co92C0
+	TmJrfLYHXV8vKDyuQMkNXNOanLqnUcpHmVK7nUMPM2MqxYNtX56R2DpLiebN5H3NfyMdMX+lCnpCL
+	amcOLur3bN3YWHgZTO0nnTb5mK02hfVggHRztHSbj0Yfnm67qvKUd3w1neFGX8q8txgOeGBhZFLtS
+	dfOtbC8mgpfiX7FB60Q6jgYpQrhV8FRcQiySKh3eXVBKZLkzkJUi8XsO92NPq4IcWDU4E/sSaqbkB
+	M5K2DzAq90J4J+YWdib7tdPhlRKtZQrzR+thrd3Y200W1TgbDh/3ae5Pt5+aZQZ2eEiMXXYodXNx7
+	vBZ6vKHQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uksYw-00000009owE-3Qhe;
+	Sat, 09 Aug 2025 23:01:18 +0000
+Date: Sun, 10 Aug 2025 00:01:18 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Aquinas Admin <admin@aquinas.su>,
+	Malte =?iso-8859-1?Q?Schr=F6der?= <malte.schroeder@tnxip.de>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	"Carl E. Thompson" <list-bcachefs@carlthompson.net>,
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Subject: Re: [GIT PULL] bcachefs changes for 6.17
-Message-ID: <qivictc5jxyx62mqz6rlg6cix3tzaahqxbgk2ig3cq5d6esqyy@xydebz6gakxq>
+Message-ID: <aJfTPliez_WkwOF3@casper.infradead.org>
 References: <22ib5scviwwa7bqeln22w2xm3dlywc4yuactrddhmsntixnghr@wjmmbpxjvipv>
  <f4be82e7-d98c-44d1-a65b-8c4302574fff@tnxip.de>
  <1869778184.298.1754433695609@mail.carlthompson.net>
  <5909824.DvuYhMxLoT@woolf>
  <3ik3h6hfm4v2y3rtpjshk5y4wlm5n366overw2lp72qk5izizw@k6vxp22uwnwa>
- <20250809192156.GA1411279@fedora>
- <2z3wpodivsysxhxmkk452pa4zrwxsu5jk64iqazwdzkh3rmg5y@xxtklrrebip2>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -50,26 +53,28 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2z3wpodivsysxhxmkk452pa4zrwxsu5jk64iqazwdzkh3rmg5y@xxtklrrebip2>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <3ik3h6hfm4v2y3rtpjshk5y4wlm5n366overw2lp72qk5izizw@k6vxp22uwnwa>
 
-On Sat, Aug 09, 2025 at 04:37:56PM -0400, Kent Overstreet wrote:
-> At this point in the development and deployment in bcachefs I can say,
-> with confidence, that bcachefs is changing that, and that in time we
-> will deliver _better_ reliability than ext4/xfs.
+On Sat, Aug 09, 2025 at 01:36:39PM -0400, Kent Overstreet wrote:
+> Yes, this is accurate. I've been getting entirely too many emails from
+> Linus about how pissed off everyone is, completely absent of details -
+> or anything engineering related, for that matter. Lots of "you need to
+> work with us better" - i.e. bend to demands - without being willing to
+> put forth an argument that stands to scrutiny.
 
-I should add, based on the data I'm seeing - this isn't far off, but due
-to the sheer amount of deployment and usage ext4/xfs have had it'll be
-awhile (perhaps a year) before we have the data to make hard claims.
+Kent, if you genuinely don't understand by now what it is that you do
+that pisses people off, find someone you trust and get them to explain it
+to you.  I've tried.  Other people have tried.  You react by dismissing
+and insulting us, then pretending months later that you've done nothing
+wrong.  Now you've pissed off Linus and he has ultimate power to decide to
+accept your pull requests or not ... and he's decided not to.  You had
+a lot of chances to fix your behaviour before it got to this point.
+It's sad that you chose not to take any of them.
 
-The data from users versus btrfs is much clearer, we're already
-delivering much better reliability in terms of "will my data be safe" -
-there are numerous failure modes that simply don't exist in bcachefs.
-And where we've had significant bugs (I count ~2 that have made it all
-the way to a mainline .0 release), good debugging tools and a clean
-design have meant that we've been able to resolve them by about the
-third report, and in every case with significant hardening done after
-the fact and real support for affected users.
+Can you really not see the difference between, eg Palmer's response here:
+https://lore.kernel.org/lkml/mhng-655602B8-F102-4B0F-AF4A-4AB94A9F231F@Palmers-Mini.rwc.dabbelt.com/
 
-IOW: your data is safe on bcachefs, and that's priority #1 for a
-filesystem.
+and your response whenever Linus dares to critique even the smallest
+parts of your pull requests?
+
+[pointless attempt to divert the conversation to engineering snipped]
