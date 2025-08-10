@@ -1,74 +1,108 @@
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from mail.lichtvoll.de (lichtvoll.de [37.120.160.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A069D22B8D5
-	for <linux-bcachefs@vger.kernel.org>; Sun, 10 Aug 2025 06:51:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22DAF6DCE1;
+	Sun, 10 Aug 2025 08:02:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.120.160.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754808709; cv=none; b=F8Cm+7NIHv0l8qbAoq+GXVjcoKsZVC0db0lswRiH6fptPCFWv9ALPCh5YqYnCgG9MIyPZEVCld25vvKAbWteMXWMYAHC1JZgGgP8mC0ylZaRrSCNGbsHd1uDau+hseylUmeWStsCTo45F46iwp6ktY0BdeMHRVMPTfKZ4cUf6Qs=
+	t=1754812983; cv=none; b=mFo00cOkfCFLN0z7VjfoInbiixGq7YsKIQ3PK8yN65v103skkSbk+aPTlzH9G84BKg6MaaeQqQvpqttFRJtdKjy0VtHdikuF88toeb3AlqE9ur3CBapyPQHxbcVjC4wBNIT+SfeVY+4jc/FKBoAbZtQeOvsxOh5/D8wBtn/3FvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754808709; c=relaxed/simple;
-	bh=w4s6ef9QQuQTpsSCeAfALWWCxl+SH5jM25lC0VRVzBA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I26pPPKOifeElKhPkCwuMlL68Zq8H4nC+e+IKVCWkolLyqpJTy2OylwQTA8Bk1qe9ip8UkHMzJ4ZLJeuc5h0ZQOTeqKq6YVUF2L/Sn3Kt7xXne4LSstKUcYGRHurmqBx2qqoNspCONx6YN/1KyXE05a/CowJrIXk2ZRm35O1/6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=v6GKyG/R; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="v6GKyG/R"
-Date: Sun, 10 Aug 2025 02:51:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1754808695;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5opVV4qX373/TZHQ2Y1gR+gQdhGSWKpiSvpwpU6mgQ0=;
-	b=v6GKyG/RSDO9WYfTaWi5TYOt+TQ05SVVoGDvQgBNkNrkOYFnnN7EjqP8JZ0vfBQLJiasNe
-	VrdW40Fbg2tjBrKcgdH7eA5meOYM2a1PE6VXS6Z/oCwD/9DVCz2dQgj/I8ud6ERIGY++o+
-	b9hSpMNDch8nXHdFyFAWY6cftHZHzdg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: "Gerald B. Cox" <gbcox@bzb.us>, Sasha Levin <sashal@kernel.org>, 
-	Josef Bacik <josef@toxicpanda.com>, Aquinas Admin <admin@aquinas.su>, 
-	Malte =?utf-8?B?U2NocsO2ZGVy?= <malte.schroeder@tnxip.de>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	"Carl E. Thompson" <list-bcachefs@carlthompson.net>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1754812983; c=relaxed/simple;
+	bh=ADRozaRnU5m4kHiz5jjiFKrDWtNl3Wz0lFtyPVMGAZk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WqT0Z4MNCB4RVLU0IF9+NK0qacMA+WrRmsmLkYd4LRGGg92zO6YMMbYYcGKrKHRnFbiJ14PIIQNFYY86Pd8C5+pEOVb4gNZkZQiOCwRkiRMJgd+RcDsg3jCeEA5MejtquR9lXRw/2H6G04WBXNVzqhDZ/bh54ZkHWCi5m8T3EKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de; spf=pass smtp.mailfrom=lichtvoll.de; arc=none smtp.client-ip=37.120.160.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lichtvoll.de
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+	(No client certificate requested)
+	by mail.lichtvoll.de (Postfix) with ESMTPSA id 9612312DFD1;
+	Sun, 10 Aug 2025 08:02:48 +0000 (UTC)
+Authentication-Results: mail.lichtvoll.de;
+	auth=pass smtp.auth=martin@lichtvoll.de smtp.mailfrom=martin@lichtvoll.de
+From: Martin Steigerwald <martin@lichtvoll.de>
+To: Theodore Ts'o <tytso@mit.edu>, Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Josef Bacik <josef@toxicpanda.com>, Aquinas Admin <admin@aquinas.su>,
+ Malte =?UTF-8?B?U2NocsO2ZGVy?= <malte.schroeder@tnxip.de>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ "Carl E. Thompson" <list-bcachefs@carlthompson.net>,
+ linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 Subject: Re: [GIT PULL] bcachefs changes for 6.17
-Message-ID: <s3bemxtilqqkr4ncii23z2sjvwkkol5bab6ox5o76hifkzgqvk@uuiqgxzqhpnx>
-References: <5909824.DvuYhMxLoT@woolf>
- <3ik3h6hfm4v2y3rtpjshk5y4wlm5n366overw2lp72qk5izizw@k6vxp22uwnwa>
- <20250809192156.GA1411279@fedora>
- <2z3wpodivsysxhxmkk452pa4zrwxsu5jk64iqazwdzkh3rmg5y@xxtklrrebip2>
+Date: Sun, 10 Aug 2025 10:02:46 +0200
+Message-ID: <1935642.tdWV9SEqCh@lichtvoll.de>
+In-Reply-To: <k6e6f3evjptze7ifjmrz2g5vhm4mdsrgm7dqo7jdatkde5pfvi@3oiymjvy6f3e>
+References:
+ <22ib5scviwwa7bqeln22w2xm3dlywc4yuactrddhmsntixnghr@wjmmbpxjvipv>
  <20250810022436.GA966107@mit.edu>
  <k6e6f3evjptze7ifjmrz2g5vhm4mdsrgm7dqo7jdatkde5pfvi@3oiymjvy6f3e>
- <aJgaiFS3aAEEd78W@lappy>
- <2e47wkookxa2w6l2hv4qt2776jrjw5lyukul27nqhyqp5fsyq2@5mvbmay7qn2g>
- <CACLvpcxmnXFmgfwGCyUJe1chz5vLkxbg3=NzayYOKWi4efHrqQ@mail.gmail.com>
- <20250810055955.GA984814@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250810055955.GA984814@mit.edu>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 
-On Sun, Aug 10, 2025 at 01:59:55AM -0400, Theodore Ts'o wrote:
-> If Kent hadn't spoken up, I would have remained quiet and waited for
-> Linus to do what he was going to do --- but no, he decided to take
-> this public, and started slamming Linux's engineering standards.  I
-> will point out that a good engineer has to have good people skills[2].
-> In fact, there are many who have claimed that engineers' soft skills
-> are just as important, if not more important than their technical
-> abilities.
+Hi Kent, hi,
 
-If I had simply remained quiet until it happened, I think the entire
-bcachefs userbase, and my funders, would have been absolutely furious
-with me.
+Kent Overstreet - 10.08.25, 05:17:44 CEST:
+> I think you guys have been taking this a bit too far.
 
-And yes, the kernel engineering processes and standards that got us to
-the point are absolutely relevant to the discussion.
+I am not sure who is right here. Or right to what extend.
+
+And maybe that is not even the question.
+
+But Kent, if your priority is the users of BCacheFS, look at the result:
+
+The current result is a disservice to users.
+
+Maybe even a huge one.
+
+And likely a disservice to developers as well.
+
+Is this result really what you like to achieve?
+
+Cause if not, I can assure you that by doing the same thing over and over=20
+and over again you will yield exactly the same result over and over and=20
+over again. Just look at the past: This has been going in *predictable*=20
+cycles.
+
+If you go on to do the same thing over and over again that drives off=20
+people, then that is exactly the result you will be receiving.
+
+So if you do not adapt your behavior and do something *different* next=20
+time=E2=80=A6 *whether you like it or not* (!) you need to wait until someo=
+ne else=20
+does. And that "until" may never happen. You can only influence what you=20
+do. So do you like to continue to give the power to change something in=20
+here to someone else by blaming everyone but you? That would be a lot of=20
+wasted energy.
+
+You are not going to change the dynamics of power within the kernel=20
+development community by what you have been doing all the time.
+
+Of course this goes the other way around as well: As long as people try to=
+=20
+change each other in here, this is not going anywhere. The only change you=
+=20
+can affect is a change within yourself.
+
+So maybe take a while off mail, breathe deeply and meditate or do whatever=
+=20
+helps you to see what within you contributes to the result we see here. I=20
+will do the same.
+
+All in all again I point out: This cannot by solved by writing mails. You=20
+need to *speak* to each other.
+
+Enough already.
+
+Best,
+=2D-=20
+Martin
+
+
