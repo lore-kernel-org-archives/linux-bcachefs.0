@@ -1,101 +1,155 @@
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.carlthompson.net (charon.carlthompson.net [45.77.7.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2F872C21D7;
-	Mon, 11 Aug 2025 17:00:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E83A2D6E66;
+	Mon, 11 Aug 2025 18:14:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.77.7.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754931612; cv=none; b=a9QElHlVMeDCSgxd5MJA8X/lm9Ux4WlSdfXgEJOemZPxtRG49BsfsgOfEGavl+wOHkfJjJmhUjDZbiRUdrCR/8tUyeT/ufRDAlJcOenQMD3lB5uZTLyUYx3WBXjZZlSn2+NQhk0k/RbmieORpu7pTMy2N1GBhZ/JSiXQCoDusiU=
+	t=1754936049; cv=none; b=BoOxC5q8TZpmRCCllgaYZxlTX0Y6xfjDIJX7rnK6XV/mVOPFmjrFFgp3R6HoYOFDUdR1iVk+WUebgoytgqyXJfjk6Qey/ciIh44/b81cxGC7iAb4PnZ9spJzUyTJXOoVhp/t/CcLFKkQhSGyCx1vteP8xl0AKrYxnOsDEPViq/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754931612; c=relaxed/simple;
-	bh=k9z8ufONhwNETq3bfYfRYPDYJAMQBM2fYTjPqXGH+UM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=X6nR7sylY+gpfk/0F8IN5tQHLw9/97M9KMYyYbfyxXA04mo3IyVLlkmcwqlZ11C+AZAubFgUdPK/sjxODBl6yixin6HPB2ETW3Bawz9ywdwPr8p43rpeNLfagVtEtx+z7XE2kJ2KS9Z+A5kZtoYzf9s+ttiJ0qtRiiYpEtkj+hc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nhq2hFbH; arc=none smtp.client-ip=209.85.219.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nhq2hFbH"
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-7075ccb168bso38253296d6.0;
-        Mon, 11 Aug 2025 10:00:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754931610; x=1755536410; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k9z8ufONhwNETq3bfYfRYPDYJAMQBM2fYTjPqXGH+UM=;
-        b=nhq2hFbH2VeUxeUqeV8l2aRyrrTP7+TmRIyLnp9euY1874P7lmzjIox1ee1M6d9bXv
-         v+hoAXA8eksoLm1DzIRVTLu6usfI9kh4Kgt9ebhPUNyyE4u+Eqn8Q97F59rT/oNopBHd
-         BZceX97m9neO0BCyUQFDfS0JEp5wn8NwnKBfovQf1WYfDe1fD3HFEAU6ug+0EFSoEsGu
-         obIhYv0I/u/Y1gMnYM+ykjCMpMW0IL7k7tg53zXeqScSawLizlILM+1ynBHe1SovbwA5
-         WO8v+uAJ5JaBCVQaRycr3PDtqpH6J7GJB4Njonq+f4DCT21O1G7fZKQOEhMPheqYdHX2
-         9qEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754931610; x=1755536410;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k9z8ufONhwNETq3bfYfRYPDYJAMQBM2fYTjPqXGH+UM=;
-        b=DB9x3jBVRzBa4YMw0RXDGpq7qU9H1JVbJuWrfcRpL6GJduDlrvJN7vwr+OzpRLFUom
-         PlXlsPwH9oeSppnFg85CAgM7swKBZAyY8w4bHC69uRT4SwEbIwEFV1sDYLDCu8b8Tzkg
-         kD0AxN10t7MPojS0AuzE5PSod+YkBFcNSl3XtLaz6hZ5LlnWM566qjQYcKQOXeLt6S5F
-         ab8B6DN1uFDM57XTJMYSVBpOljj/qxOoLHMcubp2jjbkz66JazOwX+OSovCF4nVpXDVE
-         MSuBRH49uIWE2sjaw8YBYOXtVZztVM0HKf8IADiidqcfbw9CagPkaMxyM2bxLtYhPj3b
-         /nxw==
-X-Forwarded-Encrypted: i=1; AJvYcCU+hADaZPj9697p61BLZeX7IBE7LhD+XoazCitQ8xddeveVOV4XauLAdAlizTzCcxL2gqCH77JZFWaAgNFX@vger.kernel.org, AJvYcCWwgOrmoo87HHSSSZYe4kuvhwTmQTzTWa3ooDDaskEg+tAnh+NRtdcH9Otvtt6l1s9zD9zGtPkn5UVFHi1KRQ==@vger.kernel.org, AJvYcCWzeDuZsnFW4D1QalJkmQ7Pk+b2HaN32Bzto0cVP8bitTY9j4OvuwqUaIo/RJONB2WDErplINQH9/+VIju1FQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzzl5ucIZiaBYh/wNUzkU/uu8PdKx2O5xWyJ1lSYPuDE+GoYGSu
-	sgcNPKTRmGg2KuKMfw4Q2VPlPxTfQg5Y/A1QN3BZTIQGvSzJlh6+eSHi
-X-Gm-Gg: ASbGncsDKSpLl16y56haYQ8psBFl4UODxelmEHy2/ZSxrZazmGMp5FU1U3i1PzglIcl
-	TqYat1oUeP+YvPCYtMh5KCxz29kuMehib+0XdB9yS9EjAQd68Fp13IMq6uG6aPH0LwugL1x/v4U
-	pxGAOerwv5AjtSYwZRhJtYbof6j0eLsaQAAXcoy50obO5a3KN+Eh8fsOBcQ4Ij5fDyoFgU4cSHd
-	x9OmSfDs6cuq65Rfkz8Dtx7/vNSRz6UUfLo9dSoD99Cc806HTV7aygKXirTUk9GUKukovzku1K2
-	k69OPkQODqcIDstw43OyhmF/v+oP3Nu7JEDeJfZS2JETsS+NjoUr5VyvAkKHwOrrsIYQOgygHpS
-	wZQhiwMbK6dE=
-X-Google-Smtp-Source: AGHT+IEbIoEUmPYtQXdoxKp5+7KVr57UYJ4gZAVtnzvswzy3kWILO/2M1Q5p58gXAgLvATXXf6/V4Q==
-X-Received: by 2002:a05:6214:27ef:b0:709:302a:7aad with SMTP id 6a1803df08f44-7099a2dd887mr153816976d6.24.1754931609413;
-        Mon, 11 Aug 2025 10:00:09 -0700 (PDT)
-Received: from mambli.lan ([2600:4040:523f:fb00::254c:3ef2])
-        by smtp.googlemail.com with ESMTPSA id 6a1803df08f44-7077cde5a01sm158335396d6.70.2025.08.11.10.00.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Aug 2025 10:00:08 -0700 (PDT)
-From: James Lawrence <jalexanderlawrence@gmail.com>
-X-Google-Original-From: James Lawrence <james@egdaemon.com>
-To: kent.overstreet@linux.dev
-Cc: admin@aquinas.su,
-	gbcox@bzb.us,
-	jalexanderlawrence@gmail.com,
-	josef@toxicpanda.com,
-	linux-bcachefs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	list-bcachefs@carlthompson.net,
-	malte.schroeder@tnxip.de,
-	sashal@kernel.org,
-	torvalds@linux-foundation.org,
-	tytso@mit.edu
-Subject: Peanut gallery 2c
-Date: Mon, 11 Aug 2025 13:00:07 -0400
-Message-ID: <20250811170007.646981-1-james@egdaemon.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <ct5pqur2cwn2gulxuu277uomoknflxae32zzpyf4yqbrxcxj4d@p5j77u6xks4l>
-References: <ct5pqur2cwn2gulxuu277uomoknflxae32zzpyf4yqbrxcxj4d@p5j77u6xks4l>
+	s=arc-20240116; t=1754936049; c=relaxed/simple;
+	bh=cxoFCFETBOccsLdMwv3sh9Um/zOuhvG93S2CSNiIWzA=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=giYPVeQRDIHtVqmASBU+GL35FSAABeawanriJEBnltqVC+5d00RIyQvaclmcwwX5oorbemnfho+ee1BiB9K897NpKEleTGLL1+xV/wpLLAwVYfXo0T8hRW1eRv2SRL4iwSpAZ930dUODZcNI1LafgWBrbxh5gtDdG8JAvM6EJgo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=carlthompson.net; spf=pass smtp.mailfrom=carlthompson.net; arc=none smtp.client-ip=45.77.7.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=carlthompson.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=carlthompson.net
+Received: from mail.carlthompson.net (mail.home [10.35.20.252])
+	(Authenticated sender: cet@carlthompson.net)
+	by smtp.carlthompson.net (Postfix) with ESMTPSA id 775F11E3AE570;
+	Mon, 11 Aug 2025 11:13:58 -0700 (PDT)
+Date: Mon, 11 Aug 2025 11:13:58 -0700 (PDT)
+From: "Carl E. Thompson" <list-bcachefs@carlthompson.net>
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+	Konstantin Shelekhin <k.shelekhin@ftml.net>
+Cc: admin@aquinas.su, linux-bcachefs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	malte.schroeder@tnxip.de, torvalds@linux-foundation.org
+Message-ID: <514556110.413.1754936038265@mail.carlthompson.net>
+In-Reply-To: <iktaz2phgjvhixpb5a226ebar7hq6elw6l4evcrkeu3wwm2vs7@fsdav6kbz4og>
+References: <3ik3h6hfm4v2y3rtpjshk5y4wlm5n366overw2lp72qk5izizw@k6vxp22uwnwa>
+ <55e623db-ff03-4d33-98d1-1042106e83c6@ftml.net>
+ <iktaz2phgjvhixpb5a226ebar7hq6elw6l4evcrkeu3wwm2vs7@fsdav6kbz4og>
+Subject: Re: [GIT PULL] bcachefs changes for 6.17
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.6-Rev73
+X-Originating-Client: open-xchange-appsuite
 
-fair enough, I was less explicit about which are which. btrfs has mostly a branding issue at this stage, which is fairly rough to dig out of.
+I seriously hope none of the kernel developers are foolish enough to be foo=
+led (yet again) by this I'm-a-reasonable-guy-we-can-talk-this-out act. You'=
+ve been there and done that.
 
-You would know better than I would since you're directly in the weeds. I only have prior experiences and old cases to go off, of most of which are out dated at this point, and im primarily interested in raid 5/6 usecases.
+Kent's perplexing behavior almost makes me want to put on a tinfoil hat. Is=
+ it simply mental illness or is it something more? Is he being egged on by =
+backers who *want* to destabilize the leadership of Linux for whatever reas=
+on? It's hard to see how any individual could be this far out there without=
+ help.
 
-Which is why I've mostly stayed out of the lkml drama until now. But removal doesnt resolve the problems with the linux filesystem ecosystem
-and it'd be a disservice to everyone to lose convienent access to the work you've done.
+And I'll point out what's obvious to people who have followed this closely =
+but may not be to people who read an occasional email thread like this one:=
+ A very large portion of what Kent says including in this email is just fac=
+tually wrong. Either he is an unashamed and extremely prolific liar or he i=
+s very sick.
 
-crossing my fingers your work will remain,
-James Lawrence
-Principal Engineer
+Carl
 
-
+> On 2025-08-11 7:26 AM PDT Kent Overstreet <kent.overstreet@linux.dev> wro=
+te:
+>=20
+> =20
+> On Mon, Aug 11, 2025 at 12:51:11PM +0300, Konstantin Shelekhin wrote:
+> > > =C2=A0Yes, this is accurate. I've been getting entirely too many emai=
+ls from Linus about
+> > > how pissed off everyone is, completely absent of details - or anythin=
+g engineering
+> > > related, for that matter.
+> >=20
+> > That's because this is not an engineering problem, it's a communication=
+ problem. You just piss
+> > people off for no good reason. Then people get tired of dealing with yo=
+u and now we're here,
+> > with Linus thinking about `git rm -rf fs/bcachesfs`. Will your users be=
+ happy? Probably not.
+> > Will your sponsors be happy? Probably not either. Then why are you keep=
+ doing this?
+> >=20
+> > If you really want to change the way things work go see a therapist. A =
+competent enough doctor
+> > probably can fix all that in a couple of months.
+>=20
+> Konstantin, please tell me what you're basing this on.
+>=20
+> The claims I've been hearing have simply lacked any kind of specifics;
+> if there's people I'd pissed off for no reason, I would've been happy to
+> apologize, but I'm not aware of the incidences you're claiming - not
+> within a year or more; I have made real efforts to tone things down.
+>=20
+> On the other hand, for the only incidences I can remotely refer to in
+> the past year and a half, there has been:
+>=20
+> - the mm developer who started outright swearing at me on IRC in a
+>   discussion about assertions
+> - the block layer developer who went on a four email rant where he,
+>   charitably, misread the spec or the patchset or both; all this over a
+>   patch to simply bring a warning in line with the actual NVME and SCSI
+>   specs.
+> - and reference to an incident at LSF, but the only noteworthy event
+>   that I can recall at the last LSF (a year and a half ago) was where a
+>   filesystem developer chased a Rust developer out of the community.
+>=20
+> So: what am I supposed to make of all this?
+>=20
+> To an outsider, I don't think any of this looks like a reasonable or
+> measured response, or professional behaviour. The problems with toxic
+> behaviour have been around long before I was prominent, and they're
+> still in evidence.
+>=20
+> It is not reasonable or professional to jump from professional criticism
+> of code and work to personal attacks: it is our job to be critical of
+> our own and each other's code, and while that may bring up strong
+> feelings when we feel our work is attacked, that does not mean that it
+> is appropriate to lash out.
+>=20
+> We have to separate the professional criticism from the personal.
+>=20
+> It's also not reasonable or professional to always escelate tensions,
+> always look for the upper hand, and never de-escalate.
+>=20
+> As a reminder, this all stems from a single patch, purely internal to
+> fs/bcachefs/, that was a critical, data integrity hotfix.
+>=20
+> There has been a real pattern of hyper reactive, dramatic responses to
+> bugfixes in the bcachefs pull requests, all the way up to full blown
+> repeated threats of removing it from the kernel, and it's been toxic.
+>=20
+> And it's happening again, complete with full blown rants right off the
+> bat in the private maintainer thread about not trusting my work (and I
+> have provided data and comparisons with btrfs specifically to rebut
+> that), all the way to "everyone hates you and you need therapy". That is
+> not reasonable or constructive.
+>=20
+> This specific thread was in response to Linus saying that bcachefs was
+> imminently going to be git rm -rf'd, "or else", again with zero details
+> on that or else or anything that would make it actionable.
+>=20
+> Look, I'm always happy to sit down, have a beer, talk things out, and
+> listen.
+>=20
+> If there's people I have legitimately pissed off (and I do not include
+> anyone who starts swearing at me in a technical discussion) - let me
+> know, I'll listen. I'm not unapproachable, I'm not going to bite your
+> head off.
+>=20
+> I've mended fences with people in the past; there were people I thought
+> I'd be odds with forever, but all it really takes is just talking. Say
+> what it is that you feel has affected, be willing to listen and turn,
+> and it gets better.
