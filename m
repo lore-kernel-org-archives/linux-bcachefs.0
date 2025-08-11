@@ -1,42 +1,44 @@
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C0A296BA2;
-	Mon, 11 Aug 2025 16:08:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2286F29BDA2
+	for <linux-bcachefs@vger.kernel.org>; Mon, 11 Aug 2025 16:10:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754928502; cv=none; b=PZ9K3ZgQNoZRkgFfuaV2CgnuPq6ITzvdrTPz9xMlS3xv7HkQFMEdxDTmxt/u96fmbG8nnetB5bKOqJsDQqPx39fkddVlMojlDNqcs2AtkIrA8YPxubhgWuQqhy2vBNBtPSdCUjs6zWGS0/vt7xI+vOl6HDKps6as9qc+/rrgDI8=
+	t=1754928610; cv=none; b=sIiLRYJF6azPOh2MZmzbxJGnPp3BTRx5EexEY+vIVUPNwcqL6NVSjsZbb/vgSgYtV+78vxSF2dUKpytn4M4USeIBNhDmYqvfMDvQzy96R61wgYCNttCCQHkJ0eUfbI6PR1hebVUGtDtUoemQSdBf1KOLZB1s3yL3NhIfeWzd03s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754928502; c=relaxed/simple;
-	bh=gULV+9ocuXUCQKeLxStfFpyd+wgjqs5egYwZCe7mDlw=;
+	s=arc-20240116; t=1754928610; c=relaxed/simple;
+	bh=ZDyW6dGl3TULOg2U+r8tBlgs2lCFiNKeLALb7CoitC4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CPAxupd5qLrtYiDYiutp0zTzpaniBH/v8WxGjLVHg8wlCvRjpv8lzC960W2zGneMju/bVXyp/5WoJLlT5+L1lNr+CYRtpFgYmc+q0pD4u04Y2U1iD/yIyLIEqJEN+rfGWUbjeJc3YoiAxBaZryLvSI3vEdCMQKMm+i+Llw0uOSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WtqCiMzP; arc=none smtp.client-ip=91.218.175.170
+	 Content-Type:Content-Disposition:In-Reply-To; b=dqSHatnMpxOvmSCmD+G01c+y1uPPwn0n9QWaUD/x57X+SO02ZZuW4QyPb7Fbbhbva/+NtXhqV98Ncl2uzM1KRWoIV8z2uPiKTKmqPA1tWBnzaihpbvF9aEPlMKw7ProCkQnkgkCyFC0KwhGW1Z8CTNrmWZnS0/6C//K7nBLpZcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=D226lHnA; arc=none smtp.client-ip=95.215.58.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WtqCiMzP"
-Date: Mon, 11 Aug 2025 12:08:12 -0400
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="D226lHnA"
+Date: Mon, 11 Aug 2025 12:09:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1754928497;
+	t=1754928595;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JQ4kKog6D48XJVshhAwwLan60T01jfwSyzHyz06FY+0=;
-	b=WtqCiMzPGG5EeBoBEN2M+z1hQlSqZ/kg6rD5v6vp3oOAAn59Pq5iszEbegA27aAASQocRt
-	ngc6hdlxlmta6VoCFn894MlsgjfmWqxkv8ou6J+mtsIi0anIdKE3zee5PTceLMcI0HivOV
-	XAczChxDKvxskCS6v7Bc0ekpRvjIY1A=
+	bh=uIKvWA431gp23Shuwsp8vJ1z4SvvLDAXoswipYUi0bY=;
+	b=D226lHnAA5f0olDYynfGNLeLQaNrGZ02dyegR21shc3Kx3ElNbQMe5B8UR4Q+sSTscNfys
+	lwRsfrU3lZhlwOenIrfs4/MIfo2YdBSGOCLisXmOdyoDJ8KsG9bxrVMBvECcrhmCxlKj9G
+	nYmakBDgVfN04bk6XTvO0IBHXj8hjjk=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: James Lawrence <jalexanderlawrence@gmail.com>
-Cc: tytso@mit.edu, admin@aquinas.su, gbcox@bzb.us, josef@toxicpanda.com, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	list-bcachefs@carlthompson.net, malte.schroeder@tnxip.de, sashal@kernel.org, 
-	torvalds@linux-foundation.org
-Subject: Re: Peanut gallery 2c
-Message-ID: <ct5pqur2cwn2gulxuu277uomoknflxae32zzpyf4yqbrxcxj4d@p5j77u6xks4l>
-References: <20250810055955.GA984814@mit.edu>
- <20250811154826.509952-1-james@egdaemon.com>
+To: Aquinas Admin <admin@aquinas.su>
+Cc: Josef Bacik <josef@toxicpanda.com>, 
+	Malte =?utf-8?B?U2NocsO2ZGVy?= <malte.schroeder@tnxip.de>, Linus Torvalds <torvalds@linux-foundation.org>, 
+	"Carl E. Thompson" <list-bcachefs@carlthompson.net>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs changes for 6.17
+Message-ID: <6xvioxpjw4cavxqznocsgcqwmuc6yhws72mqp6jixm4ebmg3ev@asr4qaaita5z>
+References: <22ib5scviwwa7bqeln22w2xm3dlywc4yuactrddhmsntixnghr@wjmmbpxjvipv>
+ <3ik3h6hfm4v2y3rtpjshk5y4wlm5n366overw2lp72qk5izizw@k6vxp22uwnwa>
+ <20250809192156.GA1411279@fedora>
+ <5030625.31r3eYUQgx@woolf>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -45,30 +47,28 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250811154826.509952-1-james@egdaemon.com>
+In-Reply-To: <5030625.31r3eYUQgx@woolf>
 X-Migadu-Flow: FLOW_OUT
 
-On Mon, Aug 11, 2025 at 11:48:26AM -0400, James Lawrence wrote:
-> And since other FS maintainers are not stepping up to the plate and
-> improving or implementing new filesystems to address their own
-> featureset and branding short comings, I'm not terribly interested in
-> what they have tso say on the matter. And neither should you linus,
-> let them be upset that *experimental* *opt in* systems can
-> (and should) operate under different development processes. I
-> certainly give my engineers/researchers a ton of leeway long as their
-> work is opt in.
+On Mon, Aug 11, 2025 at 11:02:24PM +0700, Aquinas Admin wrote:
+> > Exactly. Which is why the Meta infrastructure is built completely on btrfs
+> > and its features. We have saved billions of dollars in infrastructure costs
+> > with the features and robustness of btrfs.
+> > 
+> > Btrfs doesn't need me or anybody else wandering around screaming about how
+> > everybody else sucks to gain users. The proof is in the pudding. If you read
+> > anything that I've wrote in my commentary about other file systems you will
+> > find nothing but praise and respect, because this is hard and we all make
+> > our tradeoffs.
+> > 
+> Sure, of course. The problem is that Meta doesn't need a general-purpose file 
+> system. And yes, and in general, Meta is not the kind of company that makes 
+> technically sound decisions.
 
-That one is unfair: btrfs has improved greatly, by most reports (but I
-also still see reports of e.g. multi device issues). 
+This is entirely unnecessary.
 
-I think bcachefs has been a bit of a kick in the pants for them, they've
-taken some stuff directly from bcachefs - e.g. I believe they took the
-basic design of raid5 v2, the stripes tree, directly from bcachefs. A
-btrfs engineer asked me and I explained the design at a conference some
-years back, and I've seen other solutions show up in btrfs that look
-cribbed from btrfs. Similarly, the basic user interface of subvolumes
-and snapshots in bcachefs is lifted directly from btrfs - it looked
-sane, so I stole it.
+> Has the problem with RAID5/6 (write hole) been solved in more than 20
+> years of development?
 
-That's where we're at our best, spurring each other on in friendly
-competition, stealing each other's good ideas...
+My understanding is that RAID5/6 v2, with the stripes tree, is intended
+to fix this (the same as how it works in bcachefs).
