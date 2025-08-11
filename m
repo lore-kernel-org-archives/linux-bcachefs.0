@@ -1,122 +1,107 @@
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+Received: from hope.aquinas.su (hope.aquinas.su [82.148.24.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B56982E2DE4;
-	Mon, 11 Aug 2025 15:48:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B01D311C0A;
+	Mon, 11 Aug 2025 16:02:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.148.24.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754927312; cv=none; b=YOOcE31WFjsuZ5aCz+x5U9azqNJS7aIkiAbk1fYEPldovJzP6zv398ctpw90HhV3r147zLPTK7BUcFlYbVRKT7nnH21j4Xk438XYGrmZ41bGKYYEto/UnJsEvnMbu5dyBUMWAFfRSu2Y5yHWXiGmumtwyBeYBg1jehgeOd3LvMw=
+	t=1754928161; cv=none; b=p1fzjobx2m6gaFCTxMPY+cfRS+th1/6KVOQQ1ezAUXPnRYiDMEcPOX0y7JeFiOxMepkFTJdRvLlfK0/i8zpKIxaWi1ZqsGZNgtryqna6SdTf2GxH8tFOUn7FMI2vPR27f0dUis5d7TjaOIFhZEufgAHFWz1ZV6wBPpgEUVX/85A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754927312; c=relaxed/simple;
-	bh=EBQ0QkaAv5cpHJjuhRc73J70XhiDX+eXJVtfJMjYzxs=;
+	s=arc-20240116; t=1754928161; c=relaxed/simple;
+	bh=gVKmCoAyy9x30EQWroVVZLSZOdXVdA6INBp7hov+ynI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Su3mqfTTE8/TA5t8is+g4Vh77UGtkw+fSX+a/IGDpbhoJYWO8JNO1xkEXkj+D1alakyuQxYZUTnQm7LwXPJgGzQLnPaw7+F/Zk8xf0+fxWDw2m+U7zhUvRZ+Sdg0vPARVKOTdib5iLPRpaRIKOxtLrvQ730lLwtrB48lW2Xxt4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mazr+Izh; arc=none smtp.client-ip=209.85.160.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	 MIME-Version:Content-Type; b=WGm5+uV0jM7l8h3Lgrrz408Qq4FPo0p7OoA49ZahVWLv5zHpcEZTFNdl4NNvNznLoT6/F7gRLafBOER9Shp0a5fye3js50uW2z7R5eJZZ5K/PUqtDCkc2UuRNt5eiyn8ZKtLMon0Ewy2DaFVr+5w4hoW7sVvlJTs12ivb1CuR1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aquinas.su; spf=pass smtp.mailfrom=aquinas.su; dkim=pass (2048-bit key) header.d=aquinas.su header.i=@aquinas.su header.b=Obxusw6B; arc=none smtp.client-ip=82.148.24.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aquinas.su
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aquinas.su
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mazr+Izh"
-Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-4b07275e0a4so56639081cf.3;
-        Mon, 11 Aug 2025 08:48:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754927310; x=1755532110; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EBQ0QkaAv5cpHJjuhRc73J70XhiDX+eXJVtfJMjYzxs=;
-        b=mazr+IzhE9mY3E6y1szjJ4hkvhroPZ/ZUF/H3mO2+5/7jfXD8ii1joVo5aD2U6V7fj
-         jAhY5vSuGpVGaCumTIko7IXynKfYGllMbYy00dshKUu5gxeC1cY0NRPcipZX80Dh0ur4
-         fZughJFRsVfJJJEMxLdVFNe7w2Fc0oAi0Ea2JyFP6Rhxwtn/zuLUfzLFpT0hiN9XHd3+
-         rsazR6qeFfASxBHJj+zJb9I0wNVG6NhCkNnFuq5ZoDbNpYh7RBMjvGS5P6+R0XHP+SMR
-         R/CU6ZBdlTWaN2+aBzlbeL7bbfzidZbuqSwI3lozEC9Hvev144N1lRrxp0ifiZ3mSPde
-         dtMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754927310; x=1755532110;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EBQ0QkaAv5cpHJjuhRc73J70XhiDX+eXJVtfJMjYzxs=;
-        b=bLzoUK2d+5CxF+qMFUMAtgQ1mWfWH3sKqIVpZCIq7tlDsM49flm4zsg+5SjEt4a0S0
-         v2NZ2s+iVn29o2fpuFT5G0/xOHaE3V/V+a3DNPw4ZdYc9IWEY5YjWBz6Gnz02AtN4CWD
-         6d/LzqYN5um+b96dgqcDBPTSng5EYY87bIIyFJ1YpaqzeuLWvxYv6afHxK21es7nk6ur
-         +nlk3Q0mSc8navFx93JOZyt2yR4ln3hEraHCLBIZsWs5q2R9uelp6GwRy6Y/5lt3jRQA
-         M2ku94CIM6qXo3Ao8GX3nYu9aq1ngwMhDXf2mz2j3LiEl62YtePsjHZ0zBgX0zIbDYps
-         Mtaw==
-X-Forwarded-Encrypted: i=1; AJvYcCUCOiIdKoGc3/EOTf3uWa97LPASxJm5WvGP3Al/TYERwAy+cipTPJ4BLP+nSlHJHI/zBUhaNFMSA+qje6BBGQ==@vger.kernel.org, AJvYcCV09ddUDoKJOZIMd8gTZ5FvJAPp52EnZiAZAABM8dJJCPs5guifFuCS/mfaOpW/4Fsd2LUsjd5p78MvZrZS5Q==@vger.kernel.org, AJvYcCWIRVe33xGEJGbFCN3wWTtH9pIo7e0PbBAUYDh5O7zFRJNRIzs65np4XnX0pEfImhqX4eZ7gVfzyXDOgkfV@vger.kernel.org
-X-Gm-Message-State: AOJu0YyRoSq9auXE/95Jt7UQbqx2QNlN5HDU3XIlBVSTtkiZIi0m9u5E
-	M5bY4wmgVpc7jzSdbBYj2lSkDGdNaG7UDd1IMs5vZrMwH6kSepTSEVWK
-X-Gm-Gg: ASbGncsROmfNYR7WIFkpiMX2OMBJSbrTeZ9escvR2M9Ua8SNTsAp9F4yfYZ3PY+B/Ki
-	T9m2BHFbQZjh9btEGtf9EJEvBmi/JFwdvWNvNVWgpLYmLHXnbi0vpdV25064+gTtZ9Vzw7gRAFO
-	TEv1AeYUMQ7p9ygcozIFBZ7EuUzj+mcaKfwcG0MCmY0BzJ9Jrenua2/pZ8HnJK8+oea2/V0BB94
-	UXmwncKU9Z2d1Iba6xnc7a+6puFdOaIPUeR//hzM41XzdKFb3W+toJrcg0rA93807w72Iy57794
-	YmQsAHCqmV/tjW0oLFg3hHMUbvjTQMGrcghaxKterxjaW8U0Op3hI6c4/bOWF8W7HLcS2ikTPPc
-	nlMr8pkSOL7Q=
-X-Google-Smtp-Source: AGHT+IFdnUv9qrJph7Hp7SIOe4NCYWKaM41QyCXBms9PdRcOtfMYS3QZKfUivI3rFW5GtngByCEfxQ==
-X-Received: by 2002:a05:622a:4c10:b0:4b0:6205:d22b with SMTP id d75a77b69052e-4b0aee3af76mr176061101cf.52.1754927309493;
-        Mon, 11 Aug 2025 08:48:29 -0700 (PDT)
-Received: from mambli.lan ([2600:4040:523f:fb00::254c:3ef2])
-        by smtp.googlemail.com with ESMTPSA id d75a77b69052e-4b07c80ddbbsm94537841cf.57.2025.08.11.08.48.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Aug 2025 08:48:28 -0700 (PDT)
-From: James Lawrence <jalexanderlawrence@gmail.com>
-X-Google-Original-From: James Lawrence <james@egdaemon.com>
-To: tytso@mit.edu
-Cc: admin@aquinas.su,
-	gbcox@bzb.us,
-	josef@toxicpanda.com,
-	kent.overstreet@linux.dev,
-	linux-bcachefs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	list-bcachefs@carlthompson.net,
-	malte.schroeder@tnxip.de,
-	sashal@kernel.org,
-	torvalds@linux-foundation.org
-Subject: Peanut gallery 2c
-Date: Mon, 11 Aug 2025 11:48:26 -0400
-Message-ID: <20250811154826.509952-1-james@egdaemon.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20250810055955.GA984814@mit.edu>
-References: <20250810055955.GA984814@mit.edu>
+	dkim=pass (2048-bit key) header.d=aquinas.su header.i=@aquinas.su header.b="Obxusw6B"
+Received: from woolf.localnet (host-46-241-65-133.bbcustomer.zsttk.net [46.241.65.133])
+	(Authenticated sender: admin@aquinas.su)
+	by hope.aquinas.su (Postfix) with ESMTPSA id 9FBD2649E0;
+	Mon, 11 Aug 2025 19:02:25 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aquinas.su; s=default;
+	t=1754928147;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gVKmCoAyy9x30EQWroVVZLSZOdXVdA6INBp7hov+ynI=;
+	b=Obxusw6BJYizYhPcNz4kfwVntrOX2OQ4eZoQOQACE/5NnXko3cFjs2lrj6SEWW+D+ab9k4
+	DBBWW6RiCH8u+zM9XqynNXfnC5bXUBAHsZy5ytf0+WQjJ0kMxO5GRweWRxAkSGQc2ZYcCW
+	J0CX1icyLc26dFzy+I6bdgFqa5VIhvGgK3vLT11gxqQ+7Mw1tlzUKbQrFAxKQqsU9W2O7V
+	HgrehzcScOCVr5rF3h/jMD9srEd7HQgZ8iRHNv5w4GGj75GIcGr0JAuQAMdQjMgStADvUj
+	16rQLfzsUkUyYNMdFLFEK1TVaBdwlRuETKckG+hismSGE6D8yXoJVzySca9oeQ==
+Authentication-Results: hope.aquinas.su;
+	auth=pass smtp.auth=admin@aquinas.su smtp.mailfrom=admin@aquinas.su
+From: Aquinas Admin <admin@aquinas.su>
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+ Josef Bacik <josef@toxicpanda.com>
+Cc: Malte =?UTF-8?B?U2NocsO2ZGVy?= <malte.schroeder@tnxip.de>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ "Carl E. Thompson" <list-bcachefs@carlthompson.net>,
+ linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs changes for 6.17
+Date: Mon, 11 Aug 2025 23:02:24 +0700
+Message-ID: <5030625.31r3eYUQgx@woolf>
+In-Reply-To: <20250809192156.GA1411279@fedora>
+References:
+ <22ib5scviwwa7bqeln22w2xm3dlywc4yuactrddhmsntixnghr@wjmmbpxjvipv>
+ <3ik3h6hfm4v2y3rtpjshk5y4wlm5n366overw2lp72qk5izizw@k6vxp22uwnwa>
+ <20250809192156.GA1411279@fedora>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 
-I've been a user of bcachefs for over 2 years now and I must say in that time watching the drama
-play out in the lkml most of it isn't coming from kent. Interestingly like ext4 its one of the few filesystems
-I have *not* had to think about while providing far more functionality all while marked as experimental.
+> Exactly. Which is why the Meta infrastructure is built completely on btrfs
+> and its features. We have saved billions of dollars in infrastructure cos=
+ts
+> with the features and robustness of btrfs.
+>=20
+> Btrfs doesn't need me or anybody else wandering around screaming about how
+> everybody else sucks to gain users. The proof is in the pudding. If you r=
+ead
+> anything that I've wrote in my commentary about other file systems you wi=
+ll
+> find nothing but praise and respect, because this is hard and we all make
+> our tradeoffs.
+>=20
+Sure, of course. The problem is that Meta doesn't need a general-purpose fi=
+le=20
+system. And yes, and in general, Meta is not the kind of company that makes=
+=20
+technically sound decisions. Tell me, does Meta still store user passwords =
+in=20
+plain text? At least in March 2019, Meta was fined for that. Should we ment=
+ion=20
+that the btrfs used at Meta differs from the btrfs in the kernel? Has "btrf=
+s=20
+check" stopped completely destroying the file system? Has the problem with=
+=20
+RAID5/6 (write hole) been solved in more than 20 years of development? Btrf=
+s=20
+is not the file system that users want to see as a general-purpose file sys=
+tem.=20
+It works, of course, in certain scenarios. But if you run out of space, you=
+=20
+even can't delete a file from it. That's the design=E2=80=94bravo! I'm surp=
+rised that a=20
+technically knowledgeable person would use "god-level" arguments. What file=
+=20
+system have they saved money on compared to? How does a specific use case a=
+lign=20
+with general-purpose scenarios? Why did you switch to discussing personal=20
+attacks in response to technical criticism?
+>=20
+> Thanks,
+>=20
+> Josef
 
-What I've found most interesting in watching it play out is that the criticisms of kent are rarely on the technical issues.
-its mostly 'how dare he point out the issues in other file systems', 'how dare he point out issues with the kernel's engineering processes'
-as if that is somehow unthinkable. Are we not allowed to critize poorly performing systems and processes?
-
-Isn't that *precisely* what engineering is all about *improving* poorly performing systems? Have we all forgotten this? How about instead of
-complaining that kent is critiquing your processes, fix them. address the actual critiques. its pretty hard to critique something that has been resolved no?
-
-linus if you dont like the timing of kent's pull requests just ignore it until the next cycle, no one is forcing you and kent certainly can't.
-It'll be inconvenient for those of us downstream who absolutely adore the fast pace of the fixes kent has provided when we run into problems, but we'll survive we went in knowing
-we'd run into issues and if they're serious we'll work around the delays caused by upstream in our own way.
-
-If maintainers have actual technical issues with bcachefs, then they can bring those up with some ideas for solutions. they can bring hard evidence to the table and
-not 'someone said something about code i work on, that i took offense to and then did nothing to address, as a reason for their code existing'.
-
-I would very much like to see bcachefs remain because its been a breeze to setup, use, and maintain. Backups are a breeze, I can safely mess with my entire
-system with a single command to produce a snapshot prior to starting that is basically instant. Something that previously required an entire esoteric distribution ecosystem dedicated to immutability to accomplish.
-
-And since other FS maintainers are not stepping up to the plate and improving or implementing new filesystems to address their own featureset and branding short comings,
-I'm not terribly interested in what they have tso say on the matter. And neither should you linus, let them be upset that *experimental* *opt in* systems can
-(and should) operate under different development processes. I certainly give my engineers/researchers a ton of leeway long as their work is opt in.
-
-And when kent is ready to take off the experimental label, then rake bcachefs over the coals as much as you want to make sure its actually ready.
-
-Until then maybe consider not making your own life harder by trying to gate keep the development process for an actively developing entirely opt in/experimental system?
-
-Apologies for bothering everyone with my 2c,
-James Lawrence
-Principal Engineer
 
 
