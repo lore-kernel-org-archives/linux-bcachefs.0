@@ -1,185 +1,120 @@
-Received: from fout-a1-smtp.messagingengine.com (fout-a1-smtp.messagingengine.com [103.168.172.144])
+Received: from smtp.carlthompson.net (charon.carlthompson.net [45.77.7.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F1B51F875A;
-	Mon, 11 Aug 2025 21:05:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CE531CF5C6;
+	Tue, 12 Aug 2025 00:44:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.77.7.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754946304; cv=none; b=Q3FIN0xAdp/Zs1WYlj8bae6z/87a1MsXTeuf3eVlUvtGvZ7F9KIJFxVKHGAqod9UlFPGSA7jcMI4Y3hS5ba5kF3ojCeXEA9KpBJiCizmW6GX+FWTtJZRMyNSBG+0Aie7XfcaxiaFdgu2TnWhtOanrLdtUVCioXu0IpyyBpKVpWE=
+	t=1754959447; cv=none; b=QmJfUq414fe/QZZdOt78yZt/TPWmikTGzLaHlRpEBCxc1pGyLhuIEhBls0kce45C0qYMWuQzyOEU1D1r4h7micf6tXqPrvomUI+ss6jMNmoeh1o1kzNlKIyiduTkLohnNovu/whWWo9LmcdkOnCJzOJT0ATt/J+VpDsZcl5g/mM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754946304; c=relaxed/simple;
-	bh=jNHvp3MbY7uZE4NVlRnm7/n0OTvqpb44HoPh3Wvy5W0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kwCJ3erKQ2z078miiu+JHXbzH0/Qr2apjuLkHP8t90qXsLogdzr0+CEyHV2yY1sd/a57VAVvgGIEGk4z6WC57FcEC2ChW6GgLz30EhVj4+QAu+CaYZ53iN3i9OVBcxmGWy3IGViV6delDht0cRWITNxYJswv/1bQa7LwyIpGhX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ftml.net; spf=pass smtp.mailfrom=ftml.net; dkim=pass (2048-bit key) header.d=ftml.net header.i=@ftml.net header.b=JhTha1LX; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ew2D1WR3; arc=none smtp.client-ip=103.168.172.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ftml.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ftml.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ftml.net header.i=@ftml.net header.b="JhTha1LX";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ew2D1WR3"
-Received: from phl-compute-07.internal (phl-compute-07.internal [10.202.2.47])
-	by mailfout.phl.internal (Postfix) with ESMTP id 98D89EC01AD;
-	Mon, 11 Aug 2025 17:05:00 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-07.internal (MEProxy); Mon, 11 Aug 2025 17:05:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ftml.net; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1754946300;
-	 x=1755032700; bh=eI+uci7II5o7HIMNDnzqiBnyPIO3lognkiNHaLdRtqI=; b=
-	JhTha1LXJLBJ9syMef5f+gTO0aHwgtXwzu1AUpQb84HWm7ZodLBP4cuE+fni8s25
-	VC1JcXLLe2VG+P+hJ+cEzPfY9kLxwP6JMy/ngjJbwje0DTVj6cCOOKmEM3TWU8MH
-	sXDq7rl01rW8ZDEzktPNilspRBPdXMW7mUGv/ImV0NDdW26RD9dmeXggaNS7OXzI
-	/+yxtm4DkVd4J8OsSTUfzctZY++xNzOUn67Z/6R3APaj6ieohXpEDQ5IeMF9BjyO
-	bKVRcy50Ypc8zvqwK8489xhU/Z/nAM0bjZ1avPQqe5lCuSzBRBOyHn+2Xmid1VoR
-	nCn18TOWbo0zZgeaAyKCbQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1754946300; x=
-	1755032700; bh=eI+uci7II5o7HIMNDnzqiBnyPIO3lognkiNHaLdRtqI=; b=e
-	w2D1WR3UE7JHcrssXIdnpJKT4ZEMSQskHmwYALCeZYMykVZEUKoVy9zuzhIN4mUo
-	3L2wAh0h2nUC8mZd6iWFHfe8Ym/U6tCS7FkmCujuFrt3iGWnZ2+85DfhsgxbO3/g
-	U0mZx9BGxwbnNZGX7GgTMZ5aui+WHgYlGb47cnF+wOUG+1dEJU8Kt/W927xA03GH
-	DcmM3oDzlfejNK8tFDtMGJIzKVZ6wvn9IyYMftZgccWuW85aeVKkR+dD0ly+EiIj
-	lPQX9Ajjle3W7n+LfaaxPZoMiBQSvsicsWNb9p6wC8JAxsVG5L6WUkCB234Nz6r9
-	nQMlkq2lUg6XriBt/7jWg==
-X-ME-Sender: <xms:-1qaaK7YlgC7cgOx5wtWXpEahwA1hHS0X2ySRpC7WfbfNj6FjTrSBg>
-    <xme:-1qaaKrmEe5iU93iCOFbGplMZQ2oDcSXBEnK3zRyGkFR59Wnrl9Rpm3jzq0C2RBj2
-    e-sJQCedE-VhvDiKiE>
-X-ME-Received: <xmr:-1qaaLPSR7ZefcM-UWaDTd7goyHKMppL9nDeGFSETar0-WdQSUQYNMfnlDSpri8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgddufeefgeekucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtvdejnecuhfhrohhmpefmohhnshht
-    rghnthhinhcuufhhvghlvghkhhhinhcuoehkrdhshhgvlhgvkhhhihhnsehfthhmlhdrnh
-    gvtheqnecuggftrfgrthhtvghrnhepiedvgeettdfgvedvueeigeetvdejueetudegteff
-    hfejvdehtedvffduleehveegnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlh
-    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehkrdhshhgvlhgv
-    khhhihhnsehfthhmlhdrnhgvthdpnhgspghrtghpthhtohepkedpmhhouggvpehsmhhtph
-    houhhtpdhrtghpthhtohepkhgvnhhtrdhovhgvrhhsthhrvggvtheslhhinhhugidruggv
-    vhdprhgtphhtthhopegrughmihhnsegrqhhuihhnrghsrdhsuhdprhgtphhtthhopehlih
-    hnuhigqdgstggrtghhvghfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthho
-    pehlihhnuhigqdhfshguvghvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpth
-    htoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
-    thhtoheplhhishhtqdgstggrtghhvghfshestggrrhhlthhhohhmphhsohhnrdhnvghtpd
-    hrtghpthhtohepmhgrlhhtvgdrshgthhhrohgvuggvrhesthhngihiphdruggvpdhrtghp
-    thhtohepthhorhhvrghlughssehlihhnuhigqdhfohhunhgurghtihhonhdrohhrgh
-X-ME-Proxy: <xmx:-1qaaC1dAyIz_K-sUIqXcJekYiWdh4NTsc5Gn9jnUhOEd2tH9qdYeg>
-    <xmx:-1qaaKDPLXoZydI-L9saiI5TzXtNX5aXm48YyaWJJrKd7PoLAiMsbw>
-    <xmx:-1qaaPJWC9evBpbXm15uTnkb_e0oaeE18u71zZqdq63565M7fVSItg>
-    <xmx:-1qaaDknq9QDlHcwP37lp2b1KJZKJ5GS9zbNA3Mea5OT_0ufPInWXg>
-    <xmx:_FqaaPKt7TP9bQ93z2zb_s_VCDBZWu6QLsWtAvAaxVZZIjjvnIaT_7jJ>
-Feedback-ID: ib7794740:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 11 Aug 2025 17:04:57 -0400 (EDT)
-Message-ID: <fd55b2ee-c54a-4eca-9406-92302ca61011@ftml.net>
-Date: Tue, 12 Aug 2025 00:04:53 +0300
+	s=arc-20240116; t=1754959447; c=relaxed/simple;
+	bh=mRAWBIV95BkuutBdA/+h8mf/Vigka9Kkrl/7nYZrY5w=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=lY+gvG8ruOCaDOpxLYlGqaCX6kZ8dBArxGq5SJrEy4oF7oh3bHWp5igl7km4AwEk+D16nnemghOT2CNX4JRRwUDXU1nivQu5GqTg2wzxxzcV7y23FEL0NlEYH4X5G0gdvDpOElE/8S6eJcSh/r5KLAuxpCGQOAVvOuTaXkJIQRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=carlthompson.net; spf=pass smtp.mailfrom=carlthompson.net; arc=none smtp.client-ip=45.77.7.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=carlthompson.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=carlthompson.net
+Received: from mail.carlthompson.net (mail.home [10.35.20.252])
+	(Authenticated sender: cet@carlthompson.net)
+	by smtp.carlthompson.net (Postfix) with ESMTPSA id 85A5F1E3AE570;
+	Mon, 11 Aug 2025 17:44:03 -0700 (PDT)
+Date: Mon, 11 Aug 2025 17:44:03 -0700 (PDT)
+From: "Carl E. Thompson" <list-bcachefs@carlthompson.net>
+To: =?UTF-8?Q?Malte_Schr=C3=B6der?= <malte.schroeder@tnxip.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Konstantin Shelekhin <k.shelekhin@ftml.net>
+Cc: admin@aquinas.su, linux-bcachefs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	torvalds@linux-foundation.org
+Message-ID: <145928469.642.1754959443409@mail.carlthompson.net>
+In-Reply-To: <28dbd3e0-8d5b-4dfe-a7e7-3a73347480f6@tnxip.de>
+References: <3ik3h6hfm4v2y3rtpjshk5y4wlm5n366overw2lp72qk5izizw@k6vxp22uwnwa>
+ <55e623db-ff03-4d33-98d1-1042106e83c6@ftml.net>
+ <iktaz2phgjvhixpb5a226ebar7hq6elw6l4evcrkeu3wwm2vs7@fsdav6kbz4og>
+ <514556110.413.1754936038265@mail.carlthompson.net>
+ <28dbd3e0-8d5b-4dfe-a7e7-3a73347480f6@tnxip.de>
+Subject: Re: [GIT PULL] bcachefs changes for 6.17
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] bcachefs changes for 6.17
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: admin@aquinas.su, linux-bcachefs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- list-bcachefs@carlthompson.net, malte.schroeder@tnxip.de,
- torvalds@linux-foundation.org
-References: <3ik3h6hfm4v2y3rtpjshk5y4wlm5n366overw2lp72qk5izizw@k6vxp22uwnwa>
- <55e623db-ff03-4d33-98d1-1042106e83c6@ftml.net>
- <iktaz2phgjvhixpb5a226ebar7hq6elw6l4evcrkeu3wwm2vs7@fsdav6kbz4og>
-Content-Language: en-US
-From: Konstantin Shelekhin <k.shelekhin@ftml.net>
-In-Reply-To: <iktaz2phgjvhixpb5a226ebar7hq6elw6l4evcrkeu3wwm2vs7@fsdav6kbz4og>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.6-Rev73
+X-Originating-Client: open-xchange-appsuite
 
-On 11/08/2025 17:26, Kent Overstreet wrote:
 
-> Konstantin, please tell me what you're basing this on.
+> On 2025-08-11 11:40 AM PDT Malte Schr=C3=B6der <malte.schroeder@tnxip.de>=
+ wrote:
+> ...
 
-This, for example: - 
-https://lore.kernel.org/all/9db17620-4b93-4c01-b7f8-ecab83b12d0f@kernel.dk/ 
-- 
-https://lore.kernel.org/all/20250308155011.1742461-1-kent.overstreet@linux.dev/ 
-I've just lurked around lore for a couple of minutes.
+> Frankly for me as a user who does probably not know the hole picture you
+> seem to just be spewing paranoid hate into these threads which I do not
+> quite understand.
 
-> The claims I've been hearing have simply lacked any kind of specifics;
-if there's people I'd pissed off for no reason, I would've been happy to
-apologize, but I'm not aware of the incidences you're claiming - not
-within a year or more; I have made real efforts to tone things down.
+I apologize for coming across that way. I guess I'm just very frustrated at=
+ this whole situation and the fact that it appears from my perspective to b=
+e damaging the reputation and credibility of Linux which is something I car=
+e about very deeply.
 
-Both links are four months old.
+And I'm angry. I'm angry because of the damage to Linux and because Kent ap=
+pears to be misrepresenting events in a way that make others whom I respect=
+ look bad. For example, here in this thread a key point Kent is claiming is=
+ that no one has ever told him specifically anything that he's done wrong a=
+nd essentially that other kernel developers are attacking him for no good r=
+eason. That's simply not true. Linus has explained his mistakes to Kent on =
+multiple occasions. Other kernel developers have tried to help him see what=
+ he's doing wrong. Random users (including I) have tried to help him intera=
+ct better with others. It is simply not true that no one has told him what =
+he's done wrong.
 
-> On the other hand, for the only incidences I can remotely refer to in
-the past year and a half, there has been:
->
-> - the mm developer who started outright swearing at me on IRC in a
-> discussion about assertions
+There are many other things about Kent's recounting of events and things he=
+ has said in this thread that also seem to be objectively not true. If anyo=
+ne thinks it would be useful I can itemize those things I've noticed.
 
-That is very unfortunate.
+I'm also angry because I'm a long-time bcachefs supporter. I started using =
+bcachefs years ago long before it was in the kernel. I've put a lot of my o=
+wn work into running it, testing it and submitting bug reports. Up until a =
+few months ago I had about 20 bcachefs filesystems of varying sizes spread =
+across my personal workstations, servers and lab. I even integrated bcachef=
+s as a core part of a relatively large (by my standards) project I'm hoping=
+ to release some time before the end of the year. There were some warning s=
+igns along the way but I ignored them because I really, really wanted bcach=
+efs.=20
 
-> - the block layer developer who went on a four email rant where he,
-> charitably, misread the spec or the patchset or both; all this over a
-> patch to simply bring a warning in line with the actual NVME and SCSI
-> specs.
+But eventually I had to ask myself... If Kent repeatedly brings conflict an=
+d discord to a group that needs to work closely and trust each other, and i=
+f Kent repeatedly makes the same interpersonal mistakes and doesn't learn f=
+rom them, and if Kent seemingly regularly misrepresents things... Can I rea=
+lly trust him or his code? My personal answer to that is "no." So I've migr=
+ated everything I have from bcachefs and I'm angry about wasting all the ti=
+me and effort I put into it.
 
-My team has contributed to NVMe and SCSI subsystems, so I have some
-experience working with Jens, Martin and Christoph. Nobody on my team
-had this level of drama, even when we were in disagreement about specs
-or intended behavior.
+Finally I'm angry because so many people appear to be thinking only of them=
+selves. They appear to think: *I* really want to use bcachefs and it would =
+be much more convenient for *me* if it were in the kernel therefore it shou=
+ld be in the kernel and the other kernel developers should let Kent do what=
+ever he wants no matter how it makes them feel about their work environment=
+.
 
-> - and reference to an incident at LSF, but the only noteworthy event
->  that I can recall at the last LSF (a year and a half ago) was where a
->  filesystem developer chased a Rust developer out of the community.
->
-> So: what am I supposed to make of all this?
+My opinion is that's a really great recipe for making Linux worse: Suck the=
+ joy out of the other kernel developers' jobs by forcing them to work with =
+someone who seemingly doesn't respect anyone but himself simply because *we=
+* (the users) really want bcachefs. Go that route and valuable contributors=
+ will mentally check out or worse leave altogether. It will spread like can=
+cer (and probably already is). It's an absolute fact that people who are un=
+happy in the workplace do worse work. Let's keep the kernel developers happ=
+y.
 
-That you're trying to excuse your communication issues with other people's
-communication issues?
+Again, I apologize for being overly harsh.
 
-> To an outsider, I don't think any of this looks like a reasonable or
-> measured response, or professional behaviour. The problems with toxic
-> behaviour have been around long before I was prominent, and they're
-> still in evidence.
+Carl
 
-Again, "Timmy also did that" is not a very good excuse for a grown up adult.
-
-> It is not reasonable or professional to jump from professional criticism
-> of code and work to personal attacks: it is our job to be critical of
-> our own and each other's code, and while that may bring up strong
-> feelings when we feel our work is attacked, that does not mean that it
-> is appropriate to lash out.
-
-This is _NOT_ about the code. That's the essence of your struggles. Forget
-about the code, the code is not the issue here. Communication is.
-
-> As a reminder, this all stems from a single patch, purely internal to
-> fs/bcachefs/, that was a critical, data integrity hotfix.
-
-But this does not matter. No matter how important your fix is.
-
-> There has been a real pattern of hyper reactive, dramatic responses to
-> bugfixes in the bcachefs pull requests, all the way up to full blown
-> repeated threats of removing it from the kernel, and it's been toxic.
-
-Play stupid games, win stupid prizes. Piss off a maintainer long enough,
-he will refuse to work with you. Who would've thought, eh?
-
-> And it's happening again, complete with full blown rants right off the
-> bat in the private maintainer thread about not trusting my work (and I
-> have provided data and comparisons with btrfs specifically to rebut
-> that), all the way to "everyone hates you and you need therapy". That is
-> not reasonable or constructive.
-
-You seem to ignore what people keep telling you: _COMMUNICATION_ is the
-problem, not the _CODE_. So arguments about how btrfs performs compared
-to bcachefs do not matter.
-
-Your result is not the issue, the journey with you is.
-
+PS: I do hope that Kent can work things out and figure out how to contribut=
+e in a way that's useful for others and makes him happy. But we sometimes h=
+ave to weigh giving someone like Kent another chance against the harm keepi=
+ng him around does to other people we care about.
