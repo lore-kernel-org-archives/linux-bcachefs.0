@@ -1,156 +1,121 @@
-Received: from se.sotapeli.fi (se.sotapeli.fi [206.168.212.219])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.lichtvoll.de (lichtvoll.de [37.120.160.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99D592DF3D1;
-	Tue, 12 Aug 2025 07:54:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=206.168.212.219
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 001B62EAB90;
+	Tue, 12 Aug 2025 10:09:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.120.160.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754985295; cv=none; b=C36Y3QIs5U85jewDxsv8muY8A7V0Llk3wqkEkPV92c//YQRzbifKiw+wvWwDvDydNWIhBrRl039aBzvjkYt/uY7hiuDlN/RBZhsDJ8IbadmLMV2VUpP74T+hh3ou4QBntsmTlx7hnnm3oOawT4BshfFZEAwioUi8zOpR7fqMuE0=
+	t=1754993353; cv=none; b=SMgAhCv21/25AOHTMILMJZevl9mIjz+WyzClJujZoVreu5+VDZR0G/EJx3F2rTpqgW6t4w053s6u/IUTF7AInynmfcsOEI4iQzOyLL7sq3p4XpkUZg7j1y5WqHmtA7h5BtZDC1R2+1sOfx4v3tn+fV1Olvj721dv5sX7GSokQnA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754985295; c=relaxed/simple;
-	bh=G0bZntmSwAfoPQ+6pF2OOgLr6cbO5CLZQzjcmfT3cKo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mXjR1MC6KBuLEwbLNPCMknQHNjar9S6EeVaWlUG7izlypog7hKVE1ldVbEbCzE0Wdm9hoL/UIKALjuXzK3N5+7crvreKsNycWnMgkyY0DQJUe3wG22TFX8JIRkgzrCRPduGnWBaGiveiv7gj+3Eo+sL4agF2PfOGo65l/cxXksQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sotapeli.fi; spf=pass smtp.mailfrom=sotapeli.fi; dkim=pass (2048-bit key) header.d=sotapeli.fi header.i=@sotapeli.fi header.b=NXV/aewe; arc=none smtp.client-ip=206.168.212.219
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sotapeli.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sotapeli.fi
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sotapeli.fi header.i=@sotapeli.fi header.b="NXV/aewe"
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C12A9181AA00;
-	Tue, 12 Aug 2025 09:49:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sotapeli.fi; s=dkim;
-	t=1754984950; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references:autocrypt;
-	bh=iUxUyma4bnNa8hrTNpMn9u9YO0iIOktTKvT27O4pMpw=;
-	b=NXV/aeweTNpKiHipLLyIIOf7bjsdBaFKQCGQGsTbqWsIUsk9FKi/G9ytWyOEZcQLpdpB/f
-	vQqy5Kslw6kf67M8yVK/2l4L1BxcagnkEV/iofucOuqId1iJT+Z5942mPHOyMKZktwJAld
-	d2wNMadMToBRHArSi4LhPrmoE3UOGby62+SCE/9GyV6WQNxoycXN/f9vrUibh8Yh4rbDSw
-	8G9KHW4dNWrJ65rtjdABdVyDMGfd8LKCCQ14Wkwfr/ZBa5rWEelnpf69eOLvg8uSNGZm2N
-	2WpSP6qTm4BalY4me8S2z9rsotrCiF3qq3fSPt9gkx/2UMxKNEpRpJ8vGHcIeA==
-Message-ID: <c55affa6-4b8e-4110-bf44-c595d4cda81f@sotapeli.fi>
-Date: Tue, 12 Aug 2025 10:49:03 +0300
+	s=arc-20240116; t=1754993353; c=relaxed/simple;
+	bh=rXldXyQYQNsTINwFWo1vCWq2u09zsOBrOqUDFtbCO9E=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=AeLryMh/7pozISQleItKkc0z9nXzwrit64dTsBMRzrJr8P2LAGCQ/6+62TOuWCAS2jyXR2DSYkIwUOWORJi5hcCFmswe9LdrYpFLYQ89bv+nvfGrhvCH9Ct4/ECwAtFIpqh8rQi49EeQrwktNCwG/h3m+2rPo2tifjpDIQI6+1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de; spf=pass smtp.mailfrom=lichtvoll.de; arc=none smtp.client-ip=37.120.160.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lichtvoll.de
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+	(No client certificate requested)
+	by mail.lichtvoll.de (Postfix) with ESMTPSA id D0AE712F5B5;
+	Tue, 12 Aug 2025 10:09:05 +0000 (UTC)
+Authentication-Results: mail.lichtvoll.de;
+	auth=pass smtp.auth=martin@lichtvoll.de smtp.mailfrom=martin@lichtvoll.de
+From: Martin Steigerwald <martin@lichtvoll.de>
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+ Matthew Wilcox <willy@infradead.org>, Jani Partanen <jiipee@sotapeli.fi>
+Cc: Aquinas Admin <admin@aquinas.su>,
+ Malte =?UTF-8?B?U2NocsO2ZGVy?= <malte.schroeder@tnxip.de>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ "Carl E. Thompson" <list-bcachefs@carlthompson.net>,
+ linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs changes for 6.17
+Date: Tue, 12 Aug 2025 12:09:03 +0200
+Message-ID: <3374793.44csPzL39Z@lichtvoll.de>
+In-Reply-To: <c55affa6-4b8e-4110-bf44-c595d4cda81f@sotapeli.fi>
+References:
+ <22ib5scviwwa7bqeln22w2xm3dlywc4yuactrddhmsntixnghr@wjmmbpxjvipv>
+ <5ip2wzfo32zs7uznaunpqj2bjmz3log4yrrdezo5audputkbq5@uoqutt37wmvp>
+ <c55affa6-4b8e-4110-bf44-c595d4cda81f@sotapeli.fi>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] bcachefs changes for 6.17
-To: Kent Overstreet <kent.overstreet@linux.dev>,
- Matthew Wilcox <willy@infradead.org>
-Cc: Aquinas Admin <admin@aquinas.su>,
- =?UTF-8?Q?Malte_Schr=C3=B6der?= <malte.schroeder@tnxip.de>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- "Carl E. Thompson" <list-bcachefs@carlthompson.net>,
- linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <22ib5scviwwa7bqeln22w2xm3dlywc4yuactrddhmsntixnghr@wjmmbpxjvipv>
- <f4be82e7-d98c-44d1-a65b-8c4302574fff@tnxip.de>
- <1869778184.298.1754433695609@mail.carlthompson.net>
- <5909824.DvuYhMxLoT@woolf>
- <3ik3h6hfm4v2y3rtpjshk5y4wlm5n366overw2lp72qk5izizw@k6vxp22uwnwa>
- <aJfTPliez_WkwOF3@casper.infradead.org>
- <5ip2wzfo32zs7uznaunpqj2bjmz3log4yrrdezo5audputkbq5@uoqutt37wmvp>
-Content-Language: en-US
-From: Jani Partanen <jiipee@sotapeli.fi>
-Autocrypt: addr=jiipee@sotapeli.fi; keydata=
- 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
-In-Reply-To: <5ip2wzfo32zs7uznaunpqj2bjmz3log4yrrdezo5audputkbq5@uoqutt37wmvp>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 
-On 10/08/2025 2.13, Kent Overstreet wrote:
-> And now, I just got an email from Linus saying "we're now talking about
-> git rm -rf in 6.18", after previously saying we just needed a
-> go-between.
->
-> So if that's the plan, I need to be arguing forcefully here, because a
-> lot is on the line for a lot of people.
+Hi Jani, hi.
 
+Jani Partanen - 12.08.25, 09:49:03 CEST:
+> On 10/08/2025 2.13, Kent Overstreet wrote:
+> > And now, I just got an email from Linus saying "we're now talking
+> > about
+> > git rm -rf in 6.18", after previously saying we just needed a
+> > go-between.
+> > 
+> > So if that's the plan, I need to be arguing forcefully here, because a
+> > lot is on the line for a lot of people.
+> 
+> No that is not what you need to do. Arguing is the guarantee way that rm
+> -rf will happen.
+> 
+> You need to *SHUT* *THE* *FUCK* *UP* *RIGHT* *NOW!* That is what you
+> need to do and find very very fast some spokesman/woman/person who deal
+> all the communication.
 
-No that is not what you need to do. Arguing is the guarantee way that rm 
--rf will happen.
+I might have worded this differently, but in essence I agree.
 
-You need to *SHUT* *THE* *FUCK* *UP* *RIGHT* *NOW!* That is what you 
-need to do and find very very fast some spokesman/woman/person who deal 
-all the communication.
+The likely hood of BCacheFS pull requests being accepted again would have 
+been far better without that initial comment and subsequent comments from 
+you, Kent, (and some others) on this thread. Actually I felt that the 
+thread was even going in a quite good direction, before your first comment 
+to it. Some users spoke in favor of accepting the pull request. And I feel 
+after your comment that momentum was completely destroyed. As I read your 
+first comment, Kent, I thought: Oh no, now this is going to go downhill 
+just like the other threads about the topic. And unfortunately that 
+happened. It was predictable. Completely predictable.
 
-As I already said like month or 2 back, you are unable to do code and 
-communication. You do one well (what I understand from comments, I am 
-not a coder myself) and you suck on the other.
+And avoidable.
 
+See, Kent, you argued all the time. Look at the results.
 
-It does not help:
+Again: Look at your behavior and look at the results. Really do it. Take 
+time to do it.
 
-- that you are trashing constantly other filesystems.
+It is not even about to what extent your arguments have been accurate or 
+not. But more about the *way* you argued.
 
-- that you are bragging that you are here to challenge Linus.
+If you continue to do the same thing all over again, you will receive the 
+same result. (Unless someone in charge changes their behavior in a 
+significant way, but do you really like to make BCacheFS acceptance in 
+kernel community dependent on that? You may wait a very long time then.)
 
-  -that you cannot see your own faults.
+See, it is not about right or wrong, but it is about where the lever to 
+change the outcome actually is. And that lever is not in asking others to 
+change. And it is also not within insisting that you are right, even in 
+case you are right at least to some extent.
 
-- that you are playing the victim when shit hits the fan.
+It may very well be that others overreacted. But it is outside of your 
+power to change that. Especially not by blaming or asking them to change. 
+Blaming is a certain way to give away power over what you experience to 
+someone else.
 
+Step back. Take some time to contemplate about what happened. Actually 
+that is a good approach for everyone involved, I think.
 
-You and I have much same. I am also asshole who will argue for the sake 
-of argument. So even when I know that I am wrong, I still keep going and 
-that is behavior what I am not proud and I start to be too old that I 
-can be fixed. After all, I am always right.
+Seek another approach to communicate *differently* from what you have 
+already been doing all the time. Then you *might* achieve a different 
+result.
 
-Linus is that kind of person who would really feed my hunger to argue. 
-Seems like he works for you also.
+Doing the same thing over and over again and expecting a different result 
+is insane.
 
+Best,
+-- 
+Martin
 
-Minor stuff I want to point out is that you do fearmongering by telling 
-how other filesystems constantly break up and world really need bcachefs 
-to save the world. This is quite pointless and stupid marketing. I have 
-been running btrfs, ext4 and xfs years, sorry decades in multiple 
-systems and I cannot even recall when I had last  time any issues with 
-them what wasn't user error or hardware error. I am running even btrfs 
-raid-5 on system what is not behind UPS and power outtakes is a thing here.
-
-
-// Jani
 
