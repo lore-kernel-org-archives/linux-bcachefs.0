@@ -1,74 +1,98 @@
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A5082765C9
-	for <linux-bcachefs@vger.kernel.org>; Mon, 18 Aug 2025 10:41:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE2AC2C2370;
+	Mon, 18 Aug 2025 11:17:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755513665; cv=none; b=m40LIYC/o+5RzeauQA/cbfkNI1qs9+5WVxmMVPaKAPbwVhkC0nfCOO1mIQ5PAbgh8RHYsvsMaPlfJ8/TiNDIy9SzcVF4v7iCd3gxkLxYqYr1wMBUCRjGwfdET54Ccy0ysEbX/xHWFGCBQ3HfPlcVg0N+aqXrk+OXGewCJn0wAH0=
+	t=1755515844; cv=none; b=UY43weJU0Zj2oTiJRey1H3k/3fTEcj8rSUEK42aKBBNSMp00eDYZDoKWTwBfDpUJm3HNfxT4RUwuGbQFawhUX641iK+brpAm9pAT7uL5oG4dKS+Y1ygPCXa58yzN/VWjo0LHUwQ1amPHiZRCsYVh1YXlNbFGfBBgBqmyEZsdoN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755513665; c=relaxed/simple;
-	bh=Mqo3UGE1Bme+tAtLCwb1TjVSd0SAvNdv83hNNSqLSRo=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=e227QFYLb9eGj1Qz+r3iKLc2GC/R5rQ2Cvf+1Zcdzz3yJxcAYRQsLxC47LvDMQLlJiU5EH9rmIIErZlat78C/3FJFFDdKY3iYKsQ/CwWB2WQmcs+RiKUn59wKr46bwd9xMsUiJCZ+RufH6wbJboBR/QmBrHtzIw1NAaHT7GBWkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3e66b7e4a94so29903635ab.1
-        for <linux-bcachefs@vger.kernel.org>; Mon, 18 Aug 2025 03:41:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755513663; x=1756118463;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NrG4Vx3qtfYQeDvjaRE/m7vDhTfLYlJ5GgLEgzLgGuM=;
-        b=WYtRQoEFzw7WntpTXzvsWrrWp+77lHkPWaBLklw8tv/abX6cYwti6UbdhDkjZpNOA4
-         IFS1PcWQLWpuwQSg9tPL5MaXBNoJIzB9UOdVhYdXJdBs4CRMM2u1SenT2R/JIHSj0MT2
-         F9XOCHeb1VVM/6YnUqTKUFnW4dSHHzzTlGahq1h8FV3Vq5B/cf+6Upkbs6czAiiMcJ17
-         qj5vnR61dnM1vtPrkIWozbFT1h6QphhoFCSKY2IYIAX9CBe/MbGsL9F/Dz7HSOOtJNJU
-         7QRSPk7WUBZo35jzwt3/KdlFCCl+sQMINKgcmtel9M/5nMseMzxb/VpEPmheycQd0DK7
-         IIgw==
-X-Forwarded-Encrypted: i=1; AJvYcCU76AQxvnOpAd4WOdg7x0bwwkFFuyfKXPiuawnMWDvB1ZxostXkAtIkdP3X+eLjWeZac4E/pQ43JoZpEfVDIw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzodOZaCjWIwcBJa9vVbK1oGrGGQx8QVk6570KE6cUmuQITuhva
-	EcmalQyqBEzWyuRBx4InEsqlJlxCKcvjGkGTL67/j0FUpdRkzpyLVpcdxxqHF39ta5jCaF6OU3h
-	mE+Ng91JlCdc5t45AJvVIrjkat2SSQigpZcPUBnpiQhKep3gZSmiNzSVbLbU=
-X-Google-Smtp-Source: AGHT+IHfdTrRhdyZ3XB6wJijBqmptBu3DqMxOJvCyZB34vSwaAse6RzFijYi6lrsi/1vwFX0auHyhwvXsWtaLfATYZ17mRqpsOtE
+	s=arc-20240116; t=1755515844; c=relaxed/simple;
+	bh=Vn+6AoeFfOC2dEOVUivoL+u8+xhCzZN6tjBzp+tZRCA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ufu2PCnbUBPt4Be6CfXYvgceicUB2vatlZY6QLqyKDERV4Ed7Xr5kT31NZk7QoBNWyBw/dcHvbnNdIH9+NV1kyFk0DaAAt5CHO3S4sT84IkEH2AhMi+lJFN9GiWPhDOu08Ds9DFYMMmz0Si22dShigc8hpjwdlcWapp/e7zEmmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gWNgzXFv; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gWNgzXFv"
+Date: Mon, 18 Aug 2025 07:17:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1755515839;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m7eARwxjHrjiUlBOiogcNArJCMPY65GQtpA9M3yDfEg=;
+	b=gWNgzXFvM2QaqbmFBRvkjWKcwPYU1DAMKzIajtoC5k/zXPy73UOBOMiOt7CHhgObe/sVRc
+	oJHt9snDy24PGD8frtEgFgwK122zorE+Ab22ALq5Qpw/bYsQa9alBQNERUDIRSXwKD90Cz
+	R/c+5G3y4tj3D8DnaLGniWIm3XOhof8=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Christoph Hellwig <hch@lst.de>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, 
+	linux-bcachefs@vger.kernel.org, ntfs3@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
+	linux-mm@kvack.org
+Subject: Re: [PATCH 2/3] bcachefs: stop using write_cache_pages
+Message-ID: <3zji6rc56egwqvy2gy63aj2wjfo5pyeuq2iikhgudcttdcif2m@dphqqiozruka>
+References: <20250818061017.1526853-1-hch@lst.de>
+ <20250818061017.1526853-3-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:ca07:0:b0:3e5:5937:e576 with SMTP id
- e9e14a558f8ab-3e583804f82mr160391565ab.13.1755513663154; Mon, 18 Aug 2025
- 03:41:03 -0700 (PDT)
-Date: Mon, 18 Aug 2025 03:41:03 -0700
-In-Reply-To: <CAOQ4uxiPPb70mx0Pr4Ph6hw2j63Q8=PZaxBx3N0KP=d7Ko=1KQ@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68a3033f.050a0220.e29e5.00a0.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] possible deadlock in bch2_symlink
-From: syzbot <syzbot+7836a68852a10ec3d790@syzkaller.appspotmail.com>
-To: amir73il@gmail.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-unionfs@vger.kernel.org, miklos@szeredi.hu, mmpgouride@gmail.com, 
-	syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250818061017.1526853-3-hch@lst.de>
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
+On Mon, Aug 18, 2025 at 08:10:09AM +0200, Christoph Hellwig wrote:
+> Stop using the obsolete write_cache_pages and use writeback_iter
+> directly.  This basically just open codes write_cache_pages
+> without the indirect call, but there's probably ways to structure
+> the code even nicer as a follow on.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Wouldn't inlining write_cache_pages() achieve the same thing?
 
-Reported-by: syzbot+7836a68852a10ec3d790@syzkaller.appspotmail.com
-Tested-by: syzbot+7836a68852a10ec3d790@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         9e7e7e36 ovl: use I_MUTEX_PARENT when locking parent i..
-git tree:       https://github.com/amir73il/linux ovl-fixes
-console output: https://syzkaller.appspot.com/x/log.txt?x=11d09ba2580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=41498776bd40da1
-dashboard link: https://syzkaller.appspot.com/bug?extid=7836a68852a10ec3d790
-compiler:       Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
-
-Note: no patches were applied.
-Note: testing is done by a robot and is best-effort only.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/bcachefs/fs-io-buffered.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/bcachefs/fs-io-buffered.c b/fs/bcachefs/fs-io-buffered.c
+> index 1c54b9b5bd69..fdeaa25189f2 100644
+> --- a/fs/bcachefs/fs-io-buffered.c
+> +++ b/fs/bcachefs/fs-io-buffered.c
+> @@ -655,6 +655,17 @@ static int __bch2_writepage(struct folio *folio,
+>  	return 0;
+>  }
+>  
+> +static int bch2_write_cache_pages(struct address_space *mapping,
+> +		      struct writeback_control *wbc, void *data)
+> +{
+> +	struct folio *folio = NULL;
+> +	int error;
+> +
+> +	while ((folio = writeback_iter(mapping, wbc, folio, &error)))
+> +		error = __bch2_writepage(folio, wbc, data);
+> +	return error;
+> +}
+> +
+>  int bch2_writepages(struct address_space *mapping, struct writeback_control *wbc)
+>  {
+>  	struct bch_fs *c = mapping->host->i_sb->s_fs_info;
+> @@ -663,7 +674,7 @@ int bch2_writepages(struct address_space *mapping, struct writeback_control *wbc
+>  	bch2_inode_opts_get(&w->opts, c, &to_bch_ei(mapping->host)->ei_inode);
+>  
+>  	blk_start_plug(&w->plug);
+> -	int ret = write_cache_pages(mapping, wbc, __bch2_writepage, w);
+> +	int ret = bch2_write_cache_pages(mapping, wbc, w);
+>  	if (w->io)
+>  		bch2_writepage_do_io(w);
+>  	blk_finish_plug(&w->plug);
+> -- 
+> 2.47.2
+> 
