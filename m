@@ -1,84 +1,78 @@
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37C0C346A13;
-	Thu, 21 Aug 2025 19:10:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D3FC2C0261
+	for <linux-bcachefs@vger.kernel.org>; Thu, 21 Aug 2025 21:35:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755803402; cv=none; b=jXdoaQT1H1MCaQL4VnFuBOqc8b4DaEYKDxydwc6ida3z+fLsGiZBbF+327g68ebcD0OeVKdFNQyAPp+jWMvsauzmInZkbRqDVeFJ+Uf45dritbD+KNEb4Nvx02B7P8gU4ScS0MJXhw3itnQhL63Vk+hWzWRoq8Oug0maN3qcg3w=
+	t=1755812113; cv=none; b=YgdAGkAaRVPddx6MAupPLAPRZyn7C/AGsMJ5JpyamiNK6geKmnFz0p5qlZ38OtrHA0tNZ0x0eHzB+jur8YTu7ASwYbv1jJw21bK3iRViT7TBJBeYt5UXU5r1CmbH8MQoj3ryvmLKl2RKoPmNdg5/Gv9fQJkxPsb7q2vbiopEVdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755803402; c=relaxed/simple;
-	bh=RqaKHsUnY8ZpE16ezGuvNa6u2HglQRzPt+MIDv+XSik=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sKTQJaPpUdOrWGd1XSMExgG/2d9ziOQDuLHj1lS6O7TvjTgqoitqbHnBya8cD1GzYvXvapE8UY/6ue4N+p35W7UbLizOIkQfcAppS3U/4hlbw7Y60arhAo2NBzEipQhbGcJlhfL/Ap4uw4cGJGUx+bVyipczNwEFv8dN8oFOrw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=FLRo7wbp; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1755812113; c=relaxed/simple;
+	bh=bAmN/AfX5lwIEYmHilniwpETgpxib6iulemfl4KOa1k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IwFJBU4Yld2VhgghloFhZdOxtKLkDZ+1OI2JF5ioponqbYAZOwfVgew3f4SCpwOLAuZ2uvtWnOTZayxQ47kc+7T0fHSJfuaLMm+seUuiHWOKJGuXTjnsJRwz2HKvNGUn1X9BmQer5zvv6qP5Gu63C2lfylZVR+RpxztgXOB+cJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cKVa/0E1; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="FLRo7wbp"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=AZd0cgU/MbuYTGO6sr/f9a7i3dIJ9uqk3pbudrbqon4=; b=FLRo7wbpbNYwSsQW69+1lbiJKd
-	p1kfY3fzg5EbM15+8HYEYzoJryC1zsHxTYFajiqtqqXE35tEaObAUtWhU0yV36NoTicov8m37Br2Q
-	Mk4gMZWLA2togwH4iUyY+R1axjbWGR3D1A5PYHsRG2KridoJrnk5DUTa/FS8vcwhVRvU3lkDZ+rZZ
-	fDFMUX/zLYZAwyKySCy7Wn5OR9MiTg9jRZcFPC5TzAHJwIB2a9iPw7x3ycCnQ8aHfXXQgstE5XyY3
-	i8yiyMEKgdLb4pIzi3eJt88kmDm4haEfwFdY1/Sov7rAyjE7GPYROAkEeYBeAay2Tx79wvV6KZ731
-	dtXtcOLA==;
-Received: from [50.53.25.54] (helo=[192.168.254.17])
-	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1upAfe-00000000E2q-3f3j;
-	Thu, 21 Aug 2025 19:09:58 +0000
-Message-ID: <4cae933a-d171-48aa-a854-b4323d10b347@infradead.org>
-Date: Thu, 21 Aug 2025 12:09:57 -0700
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cKVa/0E1"
+Date: Thu, 21 Aug 2025 17:34:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1755812099;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6l9aSgAb2E3cUwpa0ZqVYq3A36zEuUkKRZnMLOQjDf8=;
+	b=cKVa/0E117buhr5K37hgJtj77Pc13bOzosQtOW8ViKUo5puIjXVou9iw13GGpUM01YbA2g
+	9WYuRCTqBCClWY7v9v/iJHFJYU9SgNCws9F3lyh4TB3azy0TfEjV5kwHqRzpgmhHj/9b8B
+	BLVZRZ8axbAUdLovgVvsMfxZ3JRdkak=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Sahil Chandna <chandna.linuxkernel@gmail.com>, corbet@lwn.net, 
+	linux-doc@vger.kernel.org, tj@kernel.org, cem@kernel.org, linux-bcachefs@vger.kernel.org, 
+	cgroups@vger.kernel.org, linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	skhan@linuxfoundation.org
+Subject: Re: [PATCH] Documentation: Fix documentation typos
+Message-ID: <23de3jgp44vih5g6hjgc2ji6momi5t3w7rfkm5mgtajicbbg7a@7r5hgt5e7eir>
+References: <20250821185145.18944-1-chandna.linuxkernel@gmail.com>
+ <4cae933a-d171-48aa-a854-b4323d10b347@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Documentation: Fix documentation typos
-To: Sahil Chandna <chandna.linuxkernel@gmail.com>, corbet@lwn.net,
- linux-doc@vger.kernel.org, kent.overstreet@linux.dev, tj@kernel.org,
- cem@kernel.org
-Cc: linux-bcachefs@vger.kernel.org, cgroups@vger.kernel.org,
- linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- skhan@linuxfoundation.org
-References: <20250821185145.18944-1-chandna.linuxkernel@gmail.com>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20250821185145.18944-1-chandna.linuxkernel@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4cae933a-d171-48aa-a854-b4323d10b347@infradead.org>
+X-Migadu-Flow: FLOW_OUT
 
-
-
-On 8/21/25 11:51 AM, Sahil Chandna wrote:
-> Fix several spelling mistakes in documentation:
+On Thu, Aug 21, 2025 at 12:09:57PM -0700, Randy Dunlap wrote:
 > 
-> - Availablity -> Availability
-> - heirarchy  -> hierarchy
-> - maping     -> mapping
-> Findings are based on v6.17-rc2.
 > 
-> Signed-off-by: Sahil Chandna <chandna.linuxkernel@gmail.com>
-> ---
->  Documentation/admin-guide/cgroup-v2.rst                  | 2 +-
->  Documentation/filesystems/bcachefs/future/idle_work.rst  | 6 +++---
->  Documentation/filesystems/xfs/xfs-online-fsck-design.rst | 2 +-
->  3 files changed, 5 insertions(+), 5 deletions(-)
+> On 8/21/25 11:51 AM, Sahil Chandna wrote:
+> > Fix several spelling mistakes in documentation:
+> > 
+> > - Availablity -> Availability
+> > - heirarchy  -> hierarchy
+> > - maping     -> mapping
+> > Findings are based on v6.17-rc2.
+> > 
+> > Signed-off-by: Sahil Chandna <chandna.linuxkernel@gmail.com>
+> > ---
+> >  Documentation/admin-guide/cgroup-v2.rst                  | 2 +-
+> >  Documentation/filesystems/bcachefs/future/idle_work.rst  | 6 +++---
+> >  Documentation/filesystems/xfs/xfs-online-fsck-design.rst | 2 +-
+> >  3 files changed, 5 insertions(+), 5 deletions(-)
+> > 
 > 
+> Looks good, although there was just another patch that also fixed the maping/mapping
+> spelling for XFS.
+> 
+> And various maintainers might request that you split the patch up by
+> subsystem/filesystem (i.e., 3 patches here) unless Jon merges it as is.
+> 
+> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-Looks good, although there was just another patch that also fixed the maping/mapping
-spelling for XFS.
-
-And various maintainers might request that you split the patch up by
-subsystem/filesystem (i.e., 3 patches here) unless Jon merges it as is.
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-thanks.
--- 
-~Randy
+I'll take the bcachefs patch if it's split up.
