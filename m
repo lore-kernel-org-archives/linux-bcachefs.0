@@ -1,141 +1,117 @@
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABDC2182D2
-	for <linux-bcachefs@vger.kernel.org>; Wed, 20 Aug 2025 15:31:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A41B610B;
+	Thu, 21 Aug 2025 00:46:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755703873; cv=none; b=Xw5PiXs++Ep3kCogNhMDb2q/3kpTbpSGaxrjwN/JTxKkhxjh7IgaQAmmUlxqv7TKMjNtSuCvuXNnXKYSmOKOok+cHhOR542GIWVoe3RqF38MhrRibu5OBAIW2oO28/n/y3Ij3YByfdc8o7nI/pRLA9ggy6YP+XulY5pT59bOnv4=
+	t=1755737202; cv=none; b=JJ9r8YXG/Lm9v9s6vJIGAwBz5EyIYDPctPY974W2t9BbXY55EzrbDEkhdahRzPkcJU3yxT+fExbSkw9HmSGsEbyRc92FAQnhnX3Pq1Vr3rA7K8sMHUfm6YiNz5o1YOHd7O6zuBX6G4vbdPilMxeexUsVTNIctXbkZhBgTBsdTk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755703873; c=relaxed/simple;
-	bh=TJWl7ubMPHy5f7ZMC2mAyUcbaCZZBbUr1u6iUSxgDzY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qapiqyT8MmrjhKREBBX2jSWET0r3rSeU4gmYc4wum7APQHl0Qkm0g/+CqoH2M+sSIhCAlQYrbecpRF2URS8Ep8PAv/gT5hIIro9lla9eiOQ5rDMRqvA7GaaP7NRJEK3HnjgOACH+giKycqNstp/H4YYrCzg1xehm0m4RaWwZO7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UmSVSOcw; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1755737202; c=relaxed/simple;
+	bh=ZYe5JE5AzYcba781Xa+Tyj5qUu469y8s0aRLOaLmMDw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Qz9YyLWrPT76Z08oKjA+RBCL+sfq/lZjAloO0nR8UiLks8/Bb18xAkasMAb8f4+W5huaU7Jqxbr5quJHOenwWhn/sZD4Gy5IqXlYL1exqQ8gicrhbyTwFUjLrT7fOq0109Y1WMxbH78ZThDoYTZfSBqz9i6h2NLS3VvD4lWgVc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kYLLNtjG; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UmSVSOcw"
-Date: Wed, 20 Aug 2025 11:31:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1755703868;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/67YTJi91+wJYTcsEgdWNoASEtxSGtYy70RSlLsO8ao=;
-	b=UmSVSOcw+y2qMVn3mMMvmIMCxKsRLXotPs2Cm4SwF6ucyiYqbQr6WWPi0RJb5SufCS1tf8
-	Ooec+5YtCDxVPn7YvZhI0Zwr8Z1GL7PBTfMO2rg5gfYjVeNw+6/A2JIu/uz6bpFt6aL9wJ
-	2fSWEn3uMxOmVjF63MAxBGALhq7iIo0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Gerhard Wiesinger <lists@wiesinger.com>
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: Corrupt bcachefs can't be transferred into a consistent state
-Message-ID: <ct4xs2rtqsl3ovjgcozl5neky3r3glw6exvu7hbs5geqtflybk@g3f6ciwq7y7r>
-References: <aa613c37-153c-43e4-b68e-9d50744be7de@wiesinger.com>
- <ppqn3gvkjjsbg4sprijlqbldkuetnaco5orl4wxapsydee65g5@3nwlodfwjwcx>
- <a9f73879-cc08-45d9-9a3c-fb1f853739b9@wiesinger.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kYLLNtjG"
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-b476cfc2670so266359a12.3;
+        Wed, 20 Aug 2025 17:46:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755737201; x=1756342001; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kMVT+kKZTHe2OyEbS0gfrhGsxk3Z5Axh7St6QKerpQg=;
+        b=kYLLNtjGH3j4FCOsq5zsAXHtOoPD5q/+ss50m3nTZ2foM/TSChBAn2yQJ9FwySYrGr
+         2Fz2lF8W7FACuHyF9I4zTCUJjiO61xR00o65pJnFCJ3us0PA6R3M+FQp23JPI+/f36KP
+         O6vUtSrd68mxDFUPquxKcqYDjAEsgD5PtYA9Izi+TgIIoBqUqCyRAYYNRmBOrfMf8iDw
+         7HFqcxLSKaM/27I+pUswGQHEglU1zckyzpGvTwz8UheGh23sVY0CV5XEV4ozkUzWQuvf
+         yV7WtgvcJhOYmAxKE52za3BhYtg+EWayQ6/VIT1EJYMjsJkEORzPpcLSmPYa1vCFlqzS
+         PtKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755737201; x=1756342001;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kMVT+kKZTHe2OyEbS0gfrhGsxk3Z5Axh7St6QKerpQg=;
+        b=U6ng+ParioBoUrpQXZYApgpDyDkVUgq/OqMJJAbXd7ZGYWFsoE15V6sRtYolOp7MPZ
+         2PXLYTaJXaaFWuC9HRMjRw/pj8oujaAJEVgamvmj/vY1vdrecpYrd0gcoYPae75zAPIK
+         EiaSzczietew9T2bEvJdqjh5+KtD3wLNo7f+fbEb1o8PWIWvj6WJ/5yZgR9KoQTHAaOB
+         h2mhuxvSrT/sLzaYyrEdoVC7jGLHH2UPCxRTK0OW/0BgrktLdc5Axu5LE3i+h7BXsXwW
+         Gofi3Fy4/C3AcIG8S3Z0DYvGt21Ib5hanagiwggwGrHXRq/Ee+QxnfECrjK7UI9stm4R
+         /5jQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWbSPDK3ukwdje3q8CQwhiEBNtrSoH5bR6L298Las4I/EUmXh1BcE22jYSpPCcHVqPbLWMLI74bOGsV1GR3mQ==@vger.kernel.org, AJvYcCWqvSOcRgCyV1Uomkp7SxKEqof+C6JneVkYOgqV/tPsiTeVVWU4wHays2zuS2Qn/HkWBtbGVHGxeyOx@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywe4+9llmf52wnT95/3pywNmECq4xzQkh1NkSWHuXHLRsCxPdBd
+	LeO23rUkZQ6eX1r5CDVcnSSenefK03dno8K3YeXAXRQSPRxkeYGK4YGi
+X-Gm-Gg: ASbGnctL7jEgZUESCxnGKQnqDoGu6cxEWCTQxvNBLDDVZ+tP8oOBRV6ytPNifBAbhZe
+	/gv69sFMnNmc0Z07vIa0fj2VFPqPkIiRmfkhkJsOIuGD6JxnFH1dQKOo5xcEmX3EC3naWrKYSYw
+	6fZX3iq55a3oa0R3VQHyXvjHSzt3QkU6/eLMTjduiVSjUwZJQt/NENvU74P0CqwKQKfe+xMXGaZ
+	bZcFwtde4X/JaCQ486IYqVMy2fchajWaf3MispxHITGHIwkQsBt0vM8BnvD+5GB0QdxiUc8XEZp
+	qVxcuUIZ/bv5yQFHj3MlhAKN8hAQN2Awp6EANxSl4UXWWS5PGasA17liMJJjhN41hF1ZoRVJd+P
+	0sRpt//4LjkPSkCXGM6tGNA==
+X-Google-Smtp-Source: AGHT+IG5X1O4EUAyYLH751+5LmCK1uRJZoilG8Hq5W9rsLq9nVtEeldXX2hkyouM0xAPeeSn9g8YEw==
+X-Received: by 2002:a17:902:ce12:b0:240:981d:a4f5 with SMTP id d9443c01a7336-245fedb8cdamr8288585ad.42.1755737200526;
+        Wed, 20 Aug 2025 17:46:40 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-245ed35a632sm38471705ad.38.2025.08.20.17.46.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Aug 2025 17:46:39 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id 8A083419B2BE; Thu, 21 Aug 2025 07:46:37 +0700 (WIB)
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Documentation <linux-doc@vger.kernel.org>,
+	Linux bcachefs <linux-bcachefs@vger.kernel.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: [PATCH v2] Documentation: bcachefs: Add explicit title for idle work design doc
+Date: Thu, 21 Aug 2025 07:46:21 +0700
+Message-ID: <20250821004620.10772-2-bagasdotme@gmail.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a9f73879-cc08-45d9-9a3c-fb1f853739b9@wiesinger.com>
-X-Migadu-Flow: FLOW_OUT
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1368; i=bagasdotme@gmail.com; h=from:subject; bh=ZYe5JE5AzYcba781Xa+Tyj5qUu469y8s0aRLOaLmMDw=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBnLskueXZ7H6PBuxYnd30onX2+beivsVOBDxQXrTLh6O m5d9NzJ31HKwiDGxSArpsgyKZGv6fQuI5EL7WsdYeawMoEMYeDiFICJzLvKyDBFrWtmQPLWT42t 8QpfQyS2TZh4OmrSIdZ4ZY69jZ/8DTsYGdYVm8sbTD9xZb7Ing3BryWDbj+ZKFG2j9U/TVT2mJl nNh8A
+X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 22, 2025 at 07:51:04AM +0100, Gerhard Wiesinger wrote:
-> On 05.09.2024 06:29, Kent Overstreet wrote:
-> > On Sun, Sep 01, 2024 at 02:01:25PM GMT, Gerhard Wiesinger wrote:
-> > > Hello,
-> > > 
-> > > I'm having some Fedora Linux VMs (actual versions, latest updates) in a
-> > > virtual test infrastructure on Virtualbox. There I run different VMs with
-> > > different filesystems (ext4, xfs, zfs, bcachefs and btrfs).
-> > > 
-> > > I had a hardware problem on the underlying hardware where around 1000 4k
-> > > blocks could not be read anymore. I migrated with ddrescure the whole disk
-> > > which worked well.
-> > > 
-> > > Of course I was expecting some data loss in the VMs but wanted to get them
-> > > in a consistent state.
-> > > 
-> > > The following file systems got very easy in a consistent state with the
-> > > corresponding repair/scrub tools of the filesystems:
-> > > - ext4
-> > > - xfs
-> > > - zfs
-> > > 
-> > > Unfortunately 2 filesystem can't get into a state, where the filesystem
-> > > repair tools report "everything fine" (of course with some loss data, but
-> > > that's fine):
-> > > - btrfs
-> > > - bcachefs
-> > > 
-> > > commands run with bcachefs (git version):
-> > > git log -n1 | head -n1
-> > > commit 1e058db4b603f8992b781b4654b48221dd04407a
-> > > ./bcachefs version
-> > > 1.12.0
-> > > 
-> > > But bcachefs never got into a consistent state, also with newer versions.
-> > > Also check with older versions (1.7.0) run for a long time.
-> > > 
-> > > To reproduce the problem I created a new filesystem and copied some files
-> > > there:
-> > > mkfs.bcachefs -f /dev/sdb
-> > > time cp -Rap /usr /mnt
-> > > 
-> > > Afterwards I created a (quick&dirty) script "corrupt_device.sh" to corrupt
-> > > the device in the same manner as the original failure (1000 4k blocks will
-> > > be randomly overwritten).
-> > > Script: see below
-> > > 
-> > > ~/corrupt_device.sh
-> > > ./bcachefs fsck -pf /dev/sdb
-> > > ./bcachefs fsck -pfR /dev/sdb
-> > > 
-> > > Result: It can be reproduced, that bcachefs can't be brought into a
-> > > consistent state even after several runs of the repair.
-> > > 
-> > > You can also try to reproduce it and create a testcase out of it.
-> > > 
-> > > Any ideas how to repair and what can be done to get it into a consistent
-> > > state?
-> > If you've got a filesystem you want data off of - send me a metadata
-> > dump (join the IRC channel, send it via magic wormhole) and I'll debug.
-> > 
-> > We still haven't comprehensively torture tested all the repair paths
-> > (which is probably the biggest reason it's still marked as
-> > experimental); all the repair paths are there, but there's still bugs to
-> > shake out.
-> > 
-> > Thanks for the test - I'll try to make use of it when I'm working in
-> > that area again.
-> 
-> Did you find the time for using the test and fix the issues?
+Commit 9e260e4590e044 ("docs: bcachefs: idle work scheduling design
+doc") adds design doc for idle work scheduling, but misses explicit
+title heading, causing its two section headings to be toctree entries
+instead.
 
-No, not yet... :)
+Add the title.
 
-> As bcachefs gets more stable I think we should focus on such
-> "destroy&repair" test cases to get consistent again and get trust.
+Fixes: 9e260e4590e0 ("docs: bcachefs: idle work scheduling design doc")
+Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+---
+Changes since v1 [1]:
 
-I agree, but still got user bug reports to work through :)
+  * Keep original "design doc" title (Kent)
 
-Yesterday we discovered a filesystem where io path options weren't being
-correctly applied, and it's serious because the checksum option wasn't
-being applied correctly - we found data that wasn't checksummed - so
-right now I'm working on extending check_rebalance_work to check/repair
-extents that weren't written with the correct options.
+[1]: https://lore.kernel.org/linux-doc/20250820002218.11547-1-bagasdotme@gmail.com/
 
-If you wanted to help out a bit and bump this up in the queue, have you
-looked at ktest? If we could get your test wrapped in a ktest test,
-it'll show up in the automated test dashboard and I'll get to it sooner.
+ Documentation/filesystems/bcachefs/future/idle_work.rst | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-(Plus we've already got tests for blowing away btree nodes in
-single_device.ktest, maybe have a look at how those work and see if we
-can cover the missing cases in a more structured way)
+diff --git a/Documentation/filesystems/bcachefs/future/idle_work.rst b/Documentation/filesystems/bcachefs/future/idle_work.rst
+index 59a332509dcd97..8519fdcaa5ff49 100644
+--- a/Documentation/filesystems/bcachefs/future/idle_work.rst
++++ b/Documentation/filesystems/bcachefs/future/idle_work.rst
+@@ -1,4 +1,5 @@
+-Idle/background work classes design doc:
++Idle/background work classes design doc
++=======================================
+ 
+ Right now, our behaviour at idle isn't ideal, it was designed for servers that
+ would be under sustained load, to keep pending work at a "medium" level, to
 
-https://evilpiepirate.org/git/ktest.git/
+base-commit: 37c52167b007d9d0bb8c5ed53dd6efc4969a1356
+-- 
+An old man doll... just what I always wanted! - Clara
+
