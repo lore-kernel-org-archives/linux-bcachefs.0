@@ -1,129 +1,124 @@
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0DBE213237
-	for <linux-bcachefs@vger.kernel.org>; Sat, 23 Aug 2025 17:35:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 650AE134CB
+	for <linux-bcachefs@vger.kernel.org>; Sat, 23 Aug 2025 18:41:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755970529; cv=none; b=YdlGZt8IJlwQE1IyxAJDYaKuxDueniEwB/+dnfuYOHGPp6FdCtioHLiROZfhMeQyc7R6VE2UJiXrDkKZWitmAf0+n4vKi7ipvJLx73r4ctpG5L96Su2lmrAK/LfirC+uOhZuIruAPwyQQ1wWIiq+j9VlMB+f2UCObJ+tkJXDvW0=
+	t=1755974501; cv=none; b=P535xxAJD7ZJnCnI8b/FQZpBxYDHxABxVGkmX7uIbe2cqazhzORYrBTYO3yV4LbfXqjGeOtav/Y1xsPrauZ+Gs/zoxUSbkJBoGaYGjt/CQlW2pq8ry1q+ccsSSMGlXdBVHfuQqoAS2gODmwwvF3WBujW1sMlwWwxa0lAN7jrFu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755970529; c=relaxed/simple;
-	bh=z4XDfxPwGdpmWWAQPeZGINlm7pxbA2dIEUnQ6LjogNQ=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=l0XLv0ahgIdgaKu6IbogRvM5vtxSxWJm/+gQzquAYbvvTLyv/xh+fU36X6Qk+nOfL6n+e0l40ci9u7GelfPiO7FxzSW3MkzSwgUkn7r3N0UpvcnnHQ1/UpLKToCB/ZIv0zmtAc6jcwwNadtbNGpVh6VpBks7UZGM/awzlva3cms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3e570044f0eso80543695ab.2
-        for <linux-bcachefs@vger.kernel.org>; Sat, 23 Aug 2025 10:35:27 -0700 (PDT)
+	s=arc-20240116; t=1755974501; c=relaxed/simple;
+	bh=cIsNhJljikm44M6CwSrLxp4CA24AUGjeyll1iSOZTDU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Els9lpgRcj4Ay+yEtmpefjd4VYSsnnieuLTzlNSBLHC5l+ZZiY/SO0yF3IA5JNnO8xnV6sZwZ3x5JrV1wlVGIiIrGjA9U0Ly2FslsPeCl/VTwl4ZhhuAHbk/sNBYZzToM5SjSumQRvkMV6AyQhBPvtuzRDEie4yFWBfiIMqVKd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YIe/7wH3; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YIe/7wH3"
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-b47475cf8ecso2242838a12.0
+        for <linux-bcachefs@vger.kernel.org>; Sat, 23 Aug 2025 11:41:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755974498; x=1756579298; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XrzGQOfmPlJY3agjJKueg+y/YlL/pw26L6RW8Zpdf/8=;
+        b=YIe/7wH3BeQzWrARruVdT/l6uzfioIaTuMEYRICd41eiUTuJRdG8IGpImy/NFiz+lm
+         olxntPKGqWsP7WpQLvVBVSLZVzOdHOfgGXAFiKNLn+piQKIzGMXXwNaFLXK74AMNVfcd
+         80hmE3Ozd4PwvY+BtlzpVL13MyWDwS+rpj02W1luenIgikjU/Dm05zjHLNdec5pWdzq8
+         BAR4ApRY18MhtJhIKyjFSS2/WIhRDxF2TiL9yn0O2zYLjK2uNxySVxyw/xHhf5z4k1VF
+         ncfOikqThQ5BIzHnAGE3AAexbI/eYfM2kYweZbuzUDvzylaNiZRtxYhE21YbP6BNPhuG
+         3yUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755970527; x=1756575327;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CIK+Z64BawigwUNtIIcncS8nuJuKSIHFqAyEqu8pJP0=;
-        b=th6U/81x3X7SnlE/5OKgQcJOcnMt3gNvDMzUZQa2T+eWRwaylUnxc9qN5Vfo1n9gfZ
-         x835vy1o3l7zI+ZG3uiA1eKoJycRb4TC5QKVEsOMdTOoAJup6Hof9W+AgFaVcLcrcFlL
-         6Xnrk5PXLjog+2E6DzT6Dr7jIoS/M9uTHeHqQQ8XNWhQ2zz8UiycS9AUccZli1f18SDk
-         0MML34msDXiJrYOIGXBQrO8LfWDNm36vONT9UK39HomERX/e5kcr/SioPeHOCHL83424
-         3QllptySVy3NAckOPDnTgGzLS+y+yD2Hiu7pPM5o9wVeQ3o0rAdAFQ2M8xDIrkC3YSy5
-         AfZA==
-X-Forwarded-Encrypted: i=1; AJvYcCUMDCCH7shjVFH4mg/rRiI9ph6H/vurKYM8Q51UQZ4SBa+xaItZbmxm4eVQqwlHchW33hzGLUNtTwXOQqbzQA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxBhjkTSVyHGt7iNCFnAB0Db0Rcx1JbmXIdPVQdNjvjKzsR6Iwv
-	lAbU3tzS4d5T9fUsjoPjiwnb4fSq/MZ6g+t1XbDyEk50DwvN1Tm4GIHJNS206qJT6t2iTHYqJhd
-	RHbEhWKceHYVeWcZyDfqqIegYZBh9emt4pXU6OW/leqbX91G/AzcFkDSADjA=
-X-Google-Smtp-Source: AGHT+IFN4sYUS+3wAl1sVL8cHYrc7JAzF9MqsftD3EXoo0iiSvEpqOhgRpfvi2nx2QwAa4mn8DCk9OBwnTm2Q77cA9lnkxuLzR3W
+        d=1e100.net; s=20230601; t=1755974498; x=1756579298;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XrzGQOfmPlJY3agjJKueg+y/YlL/pw26L6RW8Zpdf/8=;
+        b=CXAteNed9V7H/LrsFTh7AZk2fvbbZ1aoZgb5xUQDhCPY0W2FBoJMqU8/M/p+7HOErR
+         O1eKAAPQ35XrlG8R2jjfxo0wjahCJssLwtJH5NNGR+MMeAqyCgw4ywC48BdHcTiYULpA
+         riUSZUQYFx3j5mDczmqjD6+JXt4wSYyiX7OrUDCHo1wt0UXfPJN8Nrq63W8Kxp/9QD7s
+         ikiSl6yYHuqOv6tMBsDZE7nlXvjsC7UWjRJe+LxZ6VBYWfqETFgEgdo46S6mBGb2Weps
+         zd6RxPCiwW5gzsXxdrFR3VUaLkQt4bsceN4b9pz2RGsT/O50Y9HqMJ0xlJ038ZxiSDXQ
+         0Ikg==
+X-Gm-Message-State: AOJu0YzS+52G9vc85WRMDmKIOH6l9Z0mex8l58v2IkdwglVOgvV3aj1A
+	ovKnL1y5ot7/InOnwxpccxs4yRKVv0BolYHJ+DN7rzkAHFqhR+MBcSR4
+X-Gm-Gg: ASbGnctlz2XGsp9cZ7zyHcmSuii6k01TVU1m+xG1BZEAx/jUOJ+ZDlEt1LoDkZcVZiI
+	dA5n8r+Mw8U7NLxeqad1buhnyUAmW7cZRpg31NcAHVFLvKp0nuosUHW9lqdnPLOC6JOrewfIq8o
+	o7NJKmvf1Vu21ESjJWSlUP0e4Q7ds6Su9I4UdXsMJ+axoV7sZvFMu9xS7YFaRKsiqFOcmPtINi9
+	X3GCLskFOvggh6Ho3gEMpVSIhjO6If9w6Tz1F7ewQu0Dc5D7M9S4rmnKsFt+d6yVARmlbLrQl2I
+	QPIlPaJmotL2PXUz4vU5DIqdYTSxtbmeHi3BFklRT8MFybO5UzGMKkEQnk2HpETllsSUmAGLU8x
+	ccR6n2uw=
+X-Google-Smtp-Source: AGHT+IE9tmaPe7bTY0kG8cBqtOeCmH/btCAu4GzjwrE4v/msY9NbMP4LrnCNpqwod/A8WgzOp+WYEQ==
+X-Received: by 2002:a17:903:2289:b0:240:a222:230c with SMTP id d9443c01a7336-2462eddceedmr109917535ad.12.1755974497564;
+        Sat, 23 Aug 2025 11:41:37 -0700 (PDT)
+Received: from localhost ([2402:d0c0:11:86::1])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24668864a5asm27257185ad.84.2025.08.23.11.41.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Aug 2025 11:41:37 -0700 (PDT)
+From: Alan Huang <mmpgouride@gmail.com>
+To: kent.overstreet@linux.dev
+Cc: linux-bcachefs@vger.kernel.org,
+	Alan Huang <mmpgouride@gmail.com>
+Subject: [PATCH] bcachefs: Kill duplicate error code
+Date: Sun, 24 Aug 2025 02:41:32 +0800
+Message-ID: <20250823184132.235684-1-mmpgouride@gmail.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cd88:0:b0:3e5:7c6d:ec8a with SMTP id
- e9e14a558f8ab-3e921f3c3d3mr103125815ab.16.1755970526888; Sat, 23 Aug 2025
- 10:35:26 -0700 (PDT)
-Date: Sat, 23 Aug 2025 10:35:26 -0700
-In-Reply-To: <68721d9e.a00a0220.26a83e.0074.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68a9fbde.050a0220.37038e.0067.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] kernel BUG in __bch2_trans_commit (3)
-From: syzbot <syzbot+b6ef9edaba01d5b4e43f@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-syzbot has found a reproducer for the following issue on:
+btree_node_read_error is duplicate of btree_node_read_err, which impacts
+repair path if misused.
 
-HEAD commit:    8f5ae30d69d7 Linux 6.17-rc1
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=1157bfa2580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8c5ac3d8b8abfcb
-dashboard link: https://syzkaller.appspot.com/bug?extid=b6ef9edaba01d5b4e43f
-compiler:       Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1424cc42580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1120a7bc580000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/18a2e4bd0c4a/disk-8f5ae30d.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/3b5395881b25/vmlinux-8f5ae30d.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/e875f4e3b7ff/Image-8f5ae30d.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/42de714fb1cc/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b6ef9edaba01d5b4e43f@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-kernel BUG at fs/bcachefs/btree_trans_commit.c:348!
-Internal error: Oops - BUG: 00000000f2000800 [#1]  SMP
-Modules linked in:
-CPU: 1 UID: 0 PID: 15 Comm: kworker/u8:1 Not tainted 6.17.0-rc1-syzkaller-g8f5ae30d69d7 #0 PREEMPT 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/30/2025
-Workqueue: writeback wb_workfn (flush-bcachefs-1)
-pstate: 83400005 (Nzcv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
-pc : btree_insert_entry_checks fs/bcachefs/btree_trans_commit.c:343 [inline]
-pc : bch2_trans_commit_write_locked fs/bcachefs/btree_trans_commit.c:725 [inline]
-pc : do_bch2_trans_commit fs/bcachefs/btree_trans_commit.c:854 [inline]
-pc : __bch2_trans_commit+0x6054/0x625c fs/bcachefs/btree_trans_commit.c:1085
-lr : btree_insert_entry_checks fs/bcachefs/btree_trans_commit.c:343 [inline]
-lr : bch2_trans_commit_write_locked fs/bcachefs/btree_trans_commit.c:725 [inline]
-lr : do_bch2_trans_commit fs/bcachefs/btree_trans_commit.c:854 [inline]
-lr : __bch2_trans_commit+0x6054/0x625c fs/bcachefs/btree_trans_commit.c:1085
-sp : ffff800097c46c40
-x29: ffff800097c46f60 x28: 00000000ffffffff x27: ffff0000cbb7e4d8
-x26: ffff800092df2000 x25: 0000000000000000 x24: dfff800000000000
-x23: ffff800092df2000 x22: ffff0000cbb7c020 x21: ffff0000cbb7c042
-x20: 0000000000000001 x19: 0000000000000001 x18: 00000000ffffffff
-x17: ffff800093507000 x16: ffff80008b007340 x15: 0000000000000002
-x14: 1ffff00012f88cb0 x13: 0000000000000000 x12: 0000000000000000
-x11: 00000000eacee03a x10: 0000000000ff0100 x9 : 0000000000000000
-x8 : ffff0000c1a03d00 x7 : ffff8000828f3158 x6 : 0000000000000000
-x5 : 0000000000000000 x4 : 0000000000000000 x3 : 0000000000000002
-x2 : 0000000000000008 x1 : 0000000000000080 x0 : ffff0000c1a03d00
-Call trace:
- btree_insert_entry_checks fs/bcachefs/btree_trans_commit.c:343 [inline] (P)
- bch2_trans_commit_write_locked fs/bcachefs/btree_trans_commit.c:725 [inline] (P)
- do_bch2_trans_commit fs/bcachefs/btree_trans_commit.c:854 [inline] (P)
- __bch2_trans_commit+0x6054/0x625c fs/bcachefs/btree_trans_commit.c:1085 (P)
- bch2_trans_commit fs/bcachefs/btree_update.h:241 [inline]
- bch2_write_inode+0x52c/0x92c fs/bcachefs/fs.c:136
- bch2_vfs_write_inode+0x84/0xcc fs/bcachefs/fs.c:2148
- write_inode fs/fs-writeback.c:1525 [inline]
- __writeback_single_inode+0x5ac/0x13e8 fs/fs-writeback.c:1745
- writeback_sb_inodes+0x55c/0xe40 fs/fs-writeback.c:1976
- wb_writeback+0x3cc/0xd70 fs/fs-writeback.c:2156
- wb_do_writeback fs/fs-writeback.c:2303 [inline]
- wb_workfn+0x338/0xdc0 fs/fs-writeback.c:2343
- process_one_work+0x7e8/0x155c kernel/workqueue.c:3236
- process_scheduled_works kernel/workqueue.c:3319 [inline]
- worker_thread+0x958/0xed8 kernel/workqueue.c:3400
- kthread+0x5fc/0x75c kernel/kthread.c:463
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:844
-Code: f940abe0 978e09e2 17ffffe0 97790f85 (d4210000) 
----[ end trace 0000000000000000 ]---
-
-
+Signed-off-by: Alan Huang <mmpgouride@gmail.com>
 ---
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+ fs/bcachefs/btree_io.c         | 2 +-
+ fs/bcachefs/errcode.h          | 1 -
+ fs/bcachefs/sb-errors_format.h | 2 +-
+ 3 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/fs/bcachefs/btree_io.c b/fs/bcachefs/btree_io.c
+index 2e3dd9bacac5..3d594c4ae9d8 100644
+--- a/fs/bcachefs/btree_io.c
++++ b/fs/bcachefs/btree_io.c
+@@ -1902,7 +1902,7 @@ static int __bch2_btree_root_read(struct btree_trans *trans, enum btree_id id,
+ 		scoped_guard(mutex, &c->btree_cache.lock)
+ 			bch2_btree_node_hash_remove(&c->btree_cache, b);
+ 
+-		ret = bch_err_throw(c, btree_node_read_error);
++		ret = bch_err_throw(c, btree_node_read_err);
+ 		goto err;
+ 	}
+ 
+diff --git a/fs/bcachefs/errcode.h b/fs/bcachefs/errcode.h
+index adc1f9315eab..7106d72fca80 100644
+--- a/fs/bcachefs/errcode.h
++++ b/fs/bcachefs/errcode.h
+@@ -295,7 +295,6 @@
+ 	x(BCH_ERR_btree_node_read_err,	btree_node_read_err_cached)		\
+ 	x(EIO,				sb_not_downgraded)			\
+ 	x(EIO,				btree_node_write_all_failed)		\
+-	x(EIO,				btree_node_read_error)			\
+ 	x(EIO,				btree_need_topology_repair)		\
+ 	x(EIO,				bucket_ref_update)			\
+ 	x(EIO,				trigger_alloc)				\
+diff --git a/fs/bcachefs/sb-errors_format.h b/fs/bcachefs/sb-errors_format.h
+index aa0ea1ec9f10..483358588abc 100644
+--- a/fs/bcachefs/sb-errors_format.h
++++ b/fs/bcachefs/sb-errors_format.h
+@@ -73,7 +73,7 @@ enum bch_fsck_flags {
+ 	x(btree_root_read_error,				 59,	FSCK_AUTOFIX)	\
+ 	x(btree_root_bad_min_key,				 60,	0)		\
+ 	x(btree_root_bad_max_key,				 61,	0)		\
+-	x(btree_node_read_error,				 62,	FSCK_AUTOFIX)	\
++	x(btree_node_read_err,				 	 62,	FSCK_AUTOFIX)	\
+ 	x(btree_node_topology_bad_min_key,			 63,	FSCK_AUTOFIX)	\
+ 	x(btree_node_topology_bad_max_key,			 64,	FSCK_AUTOFIX)	\
+ 	x(btree_node_topology_bad_root_min_key,			 323,	FSCK_AUTOFIX)	\
+-- 
+2.49.0
+
