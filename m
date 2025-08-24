@@ -1,68 +1,40 @@
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 650AE134CB
-	for <linux-bcachefs@vger.kernel.org>; Sat, 23 Aug 2025 18:41:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1E6F2749D9
+	for <linux-bcachefs@vger.kernel.org>; Sun, 24 Aug 2025 12:38:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755974501; cv=none; b=P535xxAJD7ZJnCnI8b/FQZpBxYDHxABxVGkmX7uIbe2cqazhzORYrBTYO3yV4LbfXqjGeOtav/Y1xsPrauZ+Gs/zoxUSbkJBoGaYGjt/CQlW2pq8ry1q+ccsSSMGlXdBVHfuQqoAS2gODmwwvF3WBujW1sMlwWwxa0lAN7jrFu8=
+	t=1756039092; cv=none; b=DQtL0Jvdt3Uh0jczdB4zHDmVIFXtP/8ECWqFqHz3V3lq1qEAArSemGF0r43XDWjJHsoDPgMs0JxmLYdyycJoZiXhz350HSNPwPJKAd3U6oPOq2CdO9W+LFeTPR1eY1yjUFo91QFL/7qta+aqHjfainfW3kRcRMrdI6vwWrbTYfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755974501; c=relaxed/simple;
-	bh=cIsNhJljikm44M6CwSrLxp4CA24AUGjeyll1iSOZTDU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Els9lpgRcj4Ay+yEtmpefjd4VYSsnnieuLTzlNSBLHC5l+ZZiY/SO0yF3IA5JNnO8xnV6sZwZ3x5JrV1wlVGIiIrGjA9U0Ly2FslsPeCl/VTwl4ZhhuAHbk/sNBYZzToM5SjSumQRvkMV6AyQhBPvtuzRDEie4yFWBfiIMqVKd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YIe/7wH3; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1756039092; c=relaxed/simple;
+	bh=y3hq6GKZHhqiXrr61T9nFlXBjizBwMD6kFUKTObThIg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=FfowYEBhzXlrNxO1Hdr49ID8WTwg6VYhGEcNJzg6zJze5rxyrERpHVJhIDwWoVZwNlnDaAhx6n1Od85MDjucOvYQGpx3ma2GB5erjUVgCorrzgCwl53ETgWy+gj6EYdRS5dq3b0zScXJKcQExrzIJGtrY2gRFEFVFFikvS6HacQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kBPXeiqs; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YIe/7wH3"
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-b47475cf8ecso2242838a12.0
-        for <linux-bcachefs@vger.kernel.org>; Sat, 23 Aug 2025 11:41:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755974498; x=1756579298; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XrzGQOfmPlJY3agjJKueg+y/YlL/pw26L6RW8Zpdf/8=;
-        b=YIe/7wH3BeQzWrARruVdT/l6uzfioIaTuMEYRICd41eiUTuJRdG8IGpImy/NFiz+lm
-         olxntPKGqWsP7WpQLvVBVSLZVzOdHOfgGXAFiKNLn+piQKIzGMXXwNaFLXK74AMNVfcd
-         80hmE3Ozd4PwvY+BtlzpVL13MyWDwS+rpj02W1luenIgikjU/Dm05zjHLNdec5pWdzq8
-         BAR4ApRY18MhtJhIKyjFSS2/WIhRDxF2TiL9yn0O2zYLjK2uNxySVxyw/xHhf5z4k1VF
-         ncfOikqThQ5BIzHnAGE3AAexbI/eYfM2kYweZbuzUDvzylaNiZRtxYhE21YbP6BNPhuG
-         3yUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755974498; x=1756579298;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XrzGQOfmPlJY3agjJKueg+y/YlL/pw26L6RW8Zpdf/8=;
-        b=CXAteNed9V7H/LrsFTh7AZk2fvbbZ1aoZgb5xUQDhCPY0W2FBoJMqU8/M/p+7HOErR
-         O1eKAAPQ35XrlG8R2jjfxo0wjahCJssLwtJH5NNGR+MMeAqyCgw4ywC48BdHcTiYULpA
-         riUSZUQYFx3j5mDczmqjD6+JXt4wSYyiX7OrUDCHo1wt0UXfPJN8Nrq63W8Kxp/9QD7s
-         ikiSl6yYHuqOv6tMBsDZE7nlXvjsC7UWjRJe+LxZ6VBYWfqETFgEgdo46S6mBGb2Weps
-         zd6RxPCiwW5gzsXxdrFR3VUaLkQt4bsceN4b9pz2RGsT/O50Y9HqMJ0xlJ038ZxiSDXQ
-         0Ikg==
-X-Gm-Message-State: AOJu0YzS+52G9vc85WRMDmKIOH6l9Z0mex8l58v2IkdwglVOgvV3aj1A
-	ovKnL1y5ot7/InOnwxpccxs4yRKVv0BolYHJ+DN7rzkAHFqhR+MBcSR4
-X-Gm-Gg: ASbGnctlz2XGsp9cZ7zyHcmSuii6k01TVU1m+xG1BZEAx/jUOJ+ZDlEt1LoDkZcVZiI
-	dA5n8r+Mw8U7NLxeqad1buhnyUAmW7cZRpg31NcAHVFLvKp0nuosUHW9lqdnPLOC6JOrewfIq8o
-	o7NJKmvf1Vu21ESjJWSlUP0e4Q7ds6Su9I4UdXsMJ+axoV7sZvFMu9xS7YFaRKsiqFOcmPtINi9
-	X3GCLskFOvggh6Ho3gEMpVSIhjO6If9w6Tz1F7ewQu0Dc5D7M9S4rmnKsFt+d6yVARmlbLrQl2I
-	QPIlPaJmotL2PXUz4vU5DIqdYTSxtbmeHi3BFklRT8MFybO5UzGMKkEQnk2HpETllsSUmAGLU8x
-	ccR6n2uw=
-X-Google-Smtp-Source: AGHT+IE9tmaPe7bTY0kG8cBqtOeCmH/btCAu4GzjwrE4v/msY9NbMP4LrnCNpqwod/A8WgzOp+WYEQ==
-X-Received: by 2002:a17:903:2289:b0:240:a222:230c with SMTP id d9443c01a7336-2462eddceedmr109917535ad.12.1755974497564;
-        Sat, 23 Aug 2025 11:41:37 -0700 (PDT)
-Received: from localhost ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24668864a5asm27257185ad.84.2025.08.23.11.41.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Aug 2025 11:41:37 -0700 (PDT)
-From: Alan Huang <mmpgouride@gmail.com>
-To: kent.overstreet@linux.dev
-Cc: linux-bcachefs@vger.kernel.org,
-	Alan Huang <mmpgouride@gmail.com>
-Subject: [PATCH] bcachefs: Kill duplicate error code
-Date: Sun, 24 Aug 2025 02:41:32 +0800
-Message-ID: <20250823184132.235684-1-mmpgouride@gmail.com>
-X-Mailer: git-send-email 2.49.0
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kBPXeiqs"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1756039088;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l+xWX3+o8MeepWfdkYY56uv05e/jkva0ZlrDAmc0aIQ=;
+	b=kBPXeiqs4iBolqQ8bYpoY8E2VHXuthGNi7xgae8/qf5OCIB2rZeLA9HJQ2xi4NXTN2q01c
+	VFVFUl7iQuXM2rPKIeZhJzjAWlFX1toJ0mFvwt6jvOgx7ePrHTb7xBJOHWV7b8m3e4unST
+	KQQrbCS/2LUubfppfx2cBURJg75BB+U=
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: linux-bcachefs@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Subject: [PATCH 03/21] bcachefs: opt_change_cookie
+Date: Sun, 24 Aug 2025 08:37:40 -0400
+Message-ID: <20250824123800.1617669-4-kent.overstreet@linux.dev>
+In-Reply-To: <20250824123800.1617669-1-kent.overstreet@linux.dev>
+References: <20250824123800.1617669-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -70,55 +42,99 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-btree_node_read_error is duplicate of btree_node_read_err, which impacts
-repair path if misused.
+Add a sequence number for detecting races between when we read the io
+path options and when we do the btree update with the new extent.
 
-Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/btree_io.c         | 2 +-
- fs/bcachefs/errcode.h          | 1 -
- fs/bcachefs/sb-errors_format.h | 2 +-
- 3 files changed, 2 insertions(+), 3 deletions(-)
+ fs/bcachefs/bcachefs.h | 2 ++
+ fs/bcachefs/inode.c    | 2 ++
+ fs/bcachefs/opts.c     | 4 ++++
+ fs/bcachefs/opts.h     | 3 +++
+ fs/bcachefs/xattr.c    | 3 +++
+ 5 files changed, 14 insertions(+)
 
-diff --git a/fs/bcachefs/btree_io.c b/fs/bcachefs/btree_io.c
-index 2e3dd9bacac5..3d594c4ae9d8 100644
---- a/fs/bcachefs/btree_io.c
-+++ b/fs/bcachefs/btree_io.c
-@@ -1902,7 +1902,7 @@ static int __bch2_btree_root_read(struct btree_trans *trans, enum btree_id id,
- 		scoped_guard(mutex, &c->btree_cache.lock)
- 			bch2_btree_node_hash_remove(&c->btree_cache, b);
+diff --git a/fs/bcachefs/bcachefs.h b/fs/bcachefs/bcachefs.h
+index 16d08dfb5f19..7eb8b8f37f95 100644
+--- a/fs/bcachefs/bcachefs.h
++++ b/fs/bcachefs/bcachefs.h
+@@ -807,6 +807,8 @@ struct bch_fs {
+ 	struct bch_disk_groups_cpu __rcu *disk_groups;
  
--		ret = bch_err_throw(c, btree_node_read_error);
-+		ret = bch_err_throw(c, btree_node_read_err);
- 		goto err;
+ 	struct bch_opts		opts;
++	atomic_t		opt_change_cookie;
++
+ 	unsigned		loglevel;
+ 	unsigned		prev_loglevel;
+ 
+diff --git a/fs/bcachefs/inode.c b/fs/bcachefs/inode.c
+index b7fcdb76483c..c1d673374e02 100644
+--- a/fs/bcachefs/inode.c
++++ b/fs/bcachefs/inode.c
+@@ -1239,6 +1239,8 @@ void bch2_inode_opts_get_inode(struct bch_fs *c,
+ 	BCH_INODE_OPTS()
+ #undef x
+ 
++	ret->opt_change_cookie = atomic_read(&c->opt_change_cookie);
++
+ 	bch2_io_opts_fixups(ret);
+ }
+ 
+diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
+index 10d472d3e7d1..16d210cbc849 100644
+--- a/fs/bcachefs/opts.c
++++ b/fs/bcachefs/opts.c
+@@ -606,6 +606,8 @@ void bch2_opt_hook_post_set(struct bch_fs *c, struct bch_dev *ca, u64 inum,
+ 	default:
+ 		break;
  	}
++
++	atomic_inc(&c->opt_change_cookie);
+ }
  
-diff --git a/fs/bcachefs/errcode.h b/fs/bcachefs/errcode.h
-index adc1f9315eab..7106d72fca80 100644
---- a/fs/bcachefs/errcode.h
-+++ b/fs/bcachefs/errcode.h
-@@ -295,7 +295,6 @@
- 	x(BCH_ERR_btree_node_read_err,	btree_node_read_err_cached)		\
- 	x(EIO,				sb_not_downgraded)			\
- 	x(EIO,				btree_node_write_all_failed)		\
--	x(EIO,				btree_node_read_error)			\
- 	x(EIO,				btree_need_topology_repair)		\
- 	x(EIO,				bucket_ref_update)			\
- 	x(EIO,				trigger_alloc)				\
-diff --git a/fs/bcachefs/sb-errors_format.h b/fs/bcachefs/sb-errors_format.h
-index aa0ea1ec9f10..483358588abc 100644
---- a/fs/bcachefs/sb-errors_format.h
-+++ b/fs/bcachefs/sb-errors_format.h
-@@ -73,7 +73,7 @@ enum bch_fsck_flags {
- 	x(btree_root_read_error,				 59,	FSCK_AUTOFIX)	\
- 	x(btree_root_bad_min_key,				 60,	0)		\
- 	x(btree_root_bad_max_key,				 61,	0)		\
--	x(btree_node_read_error,				 62,	FSCK_AUTOFIX)	\
-+	x(btree_node_read_err,				 	 62,	FSCK_AUTOFIX)	\
- 	x(btree_node_topology_bad_min_key,			 63,	FSCK_AUTOFIX)	\
- 	x(btree_node_topology_bad_max_key,			 64,	FSCK_AUTOFIX)	\
- 	x(btree_node_topology_bad_root_min_key,			 323,	FSCK_AUTOFIX)	\
+ int bch2_parse_one_mount_opt(struct bch_fs *c, struct bch_opts *opts,
+@@ -810,6 +812,8 @@ void bch2_inode_opts_get(struct bch_fs *c, struct bch_inode_opts *ret)
+ 	BCH_INODE_OPTS()
+ #undef x
+ 
++	ret->opt_change_cookie = atomic_read(&c->opt_change_cookie);
++
+ 	bch2_io_opts_fixups(ret);
+ }
+ 
+diff --git a/fs/bcachefs/opts.h b/fs/bcachefs/opts.h
+index 9e0c73b7bd3a..2425ba247201 100644
+--- a/fs/bcachefs/opts.h
++++ b/fs/bcachefs/opts.h
+@@ -674,9 +674,12 @@ struct bch_inode_opts {
+ #define x(_name, _bits)	u##_bits _name;
+ 	BCH_INODE_OPTS()
+ #undef x
++
+ #define x(_name, _bits)	u64 _name##_from_inode:1;
+ 	BCH_INODE_OPTS()
+ #undef x
++
++	u32 opt_change_cookie;
+ };
+ 
+ static inline void bch2_io_opts_fixups(struct bch_inode_opts *opts)
+diff --git a/fs/bcachefs/xattr.c b/fs/bcachefs/xattr.c
+index 6d7303008b19..de72a735a49d 100644
+--- a/fs/bcachefs/xattr.c
++++ b/fs/bcachefs/xattr.c
+@@ -590,6 +590,9 @@ static int bch2_xattr_bcachefs_set(const struct xattr_handler *handler,
+ 		}
+ 
+ 		ret = bch2_write_inode(c, inode, inode_opt_set_fn, &s, 0);
++
++		if (!ret)
++			atomic_inc(&c->opt_change_cookie);
+ 	}
+ err:
+ 	return bch2_err_class(ret);
 -- 
-2.49.0
+2.50.1
 
