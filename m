@@ -1,38 +1,38 @@
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 751A4274658
-	for <linux-bcachefs@vger.kernel.org>; Sun, 24 Aug 2025 12:38:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46E442D8788
+	for <linux-bcachefs@vger.kernel.org>; Sun, 24 Aug 2025 12:38:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756039103; cv=none; b=TH3NPahA6n/JGR7GzF9e0Rl4RqPxyeAI33FvQ5mWo7b/ogPjvSsMfAgCs3+uQ4miSwRVyOOtfOXowICv/okEvfb7UBGi00AUrOTjDVxr4pxBQHtVQLSAgMeDIIkgi5K4FsXJKKVQ022yTuR1vv9/cxX0zLeAYkvOV5dPrmjjn78=
+	t=1756039103; cv=none; b=WpvXjVQ1ZkbZG/vFpCLQR1EIt56ldDTMm+a/ABI47aEND3s52dE2mIe9Yp52MA7SfBstlabf4NKizXD86jtRh1e2iA1l9Bi46Z4UO72/rwx4WNPEBFJJVN1nHPHG0DnVwdTUzH/kM8DJgGgJwlEhpgix/7ayRMiTYZq7bgBlXjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1756039103; c=relaxed/simple;
-	bh=PQI9af9OTjIIwa4+7K2uEx/YtfyoXpTIK0H5Ac5VZA4=;
+	bh=Egf/UAZ+yuLCgJI89eRL4wnXjquI+olt6OjYy7acPSM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cK0OpdToKp5oqqcC4OQbtwIsku7Awd20laylfUfOB1+HHHXpbXY/TK0DztimIy2vYjmimisTIZhB/tRpdkDeaAPRAQEj9ndGVjiq7EU1IMcJKOxLRxjj3wvwx8QZF6X1W4Qa1K9tKG66v2m38Ubb8VoTr4I4tZOpAPfFsPZGP1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cj0/Fzfu; arc=none smtp.client-ip=91.218.175.172
+	 MIME-Version; b=W50NwDlMAmgML3RQKoMmtr2ltazLIjXgK3W6v6zShIMaSAPg1KI3VkBavLs/Ocs7Knam9airiGNWD352DNtf2clfMuxksYAZnPHqf/+qxpuIH7JfK42xGdE//x50clTBY/8hEo1AlOORlx/ziOC8u5acQLewsg6sKmmdUqzDLoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mzOZpeCB; arc=none smtp.client-ip=91.218.175.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cj0/Fzfu"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mzOZpeCB"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756039099;
+	t=1756039097;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=HS0LPQVJ1VaaCpDms1AzF/YuW/oPzkwm0/WNVhV7maM=;
-	b=cj0/FzfuZSLVwZvujmki9NH7k0fikDEyGn4FHZsg9zMuyWESMzACZIruDkwxRTmIC87kUM
-	/nq3xWFHTgAmzcB/bprspXLRA4etqg90BQ5cTtaKwbgoGVE8aOrCXT+2eVf+A67twHd8Pk
-	nDchI9qTEb/WhqCbpHb4vJgIf/8IAHw=
+	bh=AuPHVGQMq53KTbV2tPbx4XrmimXkMQRN1C4r6O4Ro3s=;
+	b=mzOZpeCBT0QTolzwmzWdloOxp/Hp6kccJfJkN0PakFsngNIvp0Tcvq0CtGAuMjrVUo7+Oo
+	4/XGhdGoTiMlTPu86PyNKNmEKRoAPLYUB6po64uxJhgM8M1PFvgZAWELXjSMBvZ/1x5xO/
+	98Oy4bIq0O0l43cRHgCcteY/LyVc9r0=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 19/21] bcachefs: next_rebalance_extent() now handles replicas changes
-Date: Sun, 24 Aug 2025 08:37:56 -0400
-Message-ID: <20250824123800.1617669-20-kent.overstreet@linux.dev>
+Subject: [PATCH 16/21] bcachefs: bch2_bkey_set_needs_rebalance() now takes per_snapshot_io_opts
+Date: Sun, 24 Aug 2025 08:37:53 -0400
+Message-ID: <20250824123800.1617669-17-kent.overstreet@linux.dev>
 In-Reply-To: <20250824123800.1617669-1-kent.overstreet@linux.dev>
 References: <20250824123800.1617669-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,86 +44,122 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-This obsoletes BCH_DATA_OP_drop_extra_replicas, BCH_DATA_OP_rereplicate.
-
-(And the code is taken from drop_extra_replicas_pred() and
-rereplicate_pred() in move.c).
-
-Changes to the data_replicas setting will now automatically be applied
-to existing data without any additional user action.
-
-NOTE: we don't yet have a mechanism for guessing how much space an
-option change will require (and reserving said space), until we have
-that users will have to be careful not to run a filesystem out of free
-space with an option change.
-
-XXX: support metadata
-
-XXX: BCH_DATA_OP_rereplicate additionally calls bch2_replicas_gc2():
-this clears out stale replicas entries from the superblock (based on the
-accounting btree), ensuring the "can we mount degraded without missing
-data?" table is accurate.
-
-We'll need to figure out a new place to plumb this.
+To be used for caching the existence of scan cookies.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/rebalance.c | 42 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ fs/bcachefs/data_update.c |  2 +-
+ fs/bcachefs/io_write.c    |  4 ++--
+ fs/bcachefs/rebalance.c   |  7 +++++--
+ fs/bcachefs/rebalance.h   | 21 +++++++++++----------
+ 4 files changed, 19 insertions(+), 15 deletions(-)
 
+diff --git a/fs/bcachefs/data_update.c b/fs/bcachefs/data_update.c
+index e932ee5488da..0f968bab7d93 100644
+--- a/fs/bcachefs/data_update.c
++++ b/fs/bcachefs/data_update.c
+@@ -438,7 +438,7 @@ static int __bch2_data_update_index_update(struct btree_trans *trans,
+ 			bch2_insert_snapshot_whiteouts(trans, m->btree_id,
+ 						k.k->p, insert->k.p) ?:
+ 			bch2_inum_snapshot_opts_get(trans, k.k->p.inode, k.k->p.snapshot, &opts) ?:
+-			bch2_bkey_set_needs_rebalance(c, &opts, insert,
++			bch2_bkey_set_needs_rebalance(trans, NULL, &opts, insert,
+ 						      SET_NEEDS_REBALANCE_foreground,
+ 						      m->op.opts.change_cookie) ?:
+ 			bch2_trans_update(trans, &iter, insert,
+diff --git a/fs/bcachefs/io_write.c b/fs/bcachefs/io_write.c
+index 16bcdada8cf1..cf1dd8bc7fe9 100644
+--- a/fs/bcachefs/io_write.c
++++ b/fs/bcachefs/io_write.c
+@@ -365,7 +365,7 @@ int bch2_extent_update(struct btree_trans *trans,
+ 						  min(k->k.p.offset << 9, new_i_size),
+ 						  i_sectors_delta, &inode) ?:
+ 		(bch2_inode_opts_get_inode(c, &inode, &opts),
+-		 bch2_bkey_set_needs_rebalance(c, &opts, k,
++		 bch2_bkey_set_needs_rebalance(trans, NULL, &opts, k,
+ 					       SET_NEEDS_REBALANCE_foreground,
+ 					       change_cookie)) ?:
+ 		bch2_trans_update(trans, iter, k, 0) ?:
+@@ -1271,7 +1271,7 @@ static int bch2_nocow_write_convert_one_unwritten(struct btree_trans *trans,
+ 	return  bch2_extent_update_i_size_sectors(trans, iter,
+ 					min(new->k.p.offset << 9, new_i_size), 0, &inode) ?:
+ 		(bch2_inode_opts_get_inode(c, &inode, &opts),
+-		 bch2_bkey_set_needs_rebalance(c, &opts, new,
++		 bch2_bkey_set_needs_rebalance(trans, NULL, &opts, new,
+ 					       SET_NEEDS_REBALANCE_foreground,
+ 					       op->opts.change_cookie)) ?:
+ 		bch2_trans_update(trans, iter, new,
 diff --git a/fs/bcachefs/rebalance.c b/fs/bcachefs/rebalance.c
-index 7ebd1c982810..29e12dbf3710 100644
+index 70000d9a1ec4..33bddbd33088 100644
 --- a/fs/bcachefs/rebalance.c
 +++ b/fs/bcachefs/rebalance.c
-@@ -593,6 +593,48 @@ static struct bkey_s_c next_rebalance_extent(struct btree_trans *trans,
- 	data_opts->target		= opts->background_target;
- 	data_opts->write_flags		|= BCH_WRITE_only_specified_devs;
+@@ -153,7 +153,9 @@ static inline bool bkey_should_have_rb_opts(struct bch_fs *c,
+ 	return k.k->type == KEY_TYPE_reflink_v || bch2_bkey_ptrs_need_rebalance(c, opts, k);
+ }
  
-+	if (r.need_rb & BIT(BCH_REBALANCE_data_replicas)) {
-+		unsigned durability = bch2_bkey_durability(c, k);
-+		struct bkey_ptrs_c ptrs = bch2_bkey_ptrs_c(k);
-+		unsigned ptr_bit = 1;
+-int bch2_bkey_set_needs_rebalance(struct bch_fs *c, struct bch_inode_opts *opts,
++int bch2_bkey_set_needs_rebalance(struct btree_trans *trans,
++				  struct per_snapshot_io_opts *snapshot_io_opts,
++				  struct bch_inode_opts *opts,
+ 				  struct bkey_i *_k,
+ 				  enum set_needs_rebalance_ctx ctx,
+ 				  u32 change_cookie)
+@@ -161,6 +163,7 @@ int bch2_bkey_set_needs_rebalance(struct bch_fs *c, struct bch_inode_opts *opts,
+ 	if (!bkey_extent_is_direct_data(&_k->k))
+ 		return 0;
+ 
++	struct bch_fs *c = trans->c;
+ 	struct bkey_s k = bkey_i_to_s(_k);
+ 	struct bch_extent_rebalance *old =
+ 		(struct bch_extent_rebalance *) bch2_bkey_rebalance_opts(k.s_c);
+@@ -286,7 +289,7 @@ static int bch2_get_update_rebalance_opts(struct btree_trans *trans,
+ 
+ 	/* On successfull transaction commit, @k was invalidated: */
+ 
+-	ret = bch2_bkey_set_needs_rebalance(c, io_opts, n, ctx, 0) ?:
++	ret = bch2_bkey_set_needs_rebalance(trans, NULL, io_opts, n, ctx, 0) ?:
+ 		bch2_trans_update(trans, iter, n, BTREE_UPDATE_internal_snapshot_node) ?:
+ 		bch2_trans_commit(trans, NULL, NULL, 0) ?:
+ 		bch_err_throw(c, transaction_restart_commit);
+diff --git a/fs/bcachefs/rebalance.h b/fs/bcachefs/rebalance.h
+index fd33e7aa2ecb..fd873894c8b6 100644
+--- a/fs/bcachefs/rebalance.h
++++ b/fs/bcachefs/rebalance.h
+@@ -28,16 +28,6 @@ static inline struct bch_extent_rebalance io_opts_to_rebalance_opts(struct bch_f
+ 
+ u64 bch2_bkey_sectors_need_rebalance(struct bch_fs *, struct bkey_s_c);
+ 
+-enum set_needs_rebalance_ctx {
+-	SET_NEEDS_REBALANCE_opt_change,
+-	SET_NEEDS_REBALANCE_opt_change_indirect,
+-	SET_NEEDS_REBALANCE_foreground,
+-	SET_NEEDS_REBALANCE_other,
+-};
+-
+-int bch2_bkey_set_needs_rebalance(struct bch_fs *, struct bch_inode_opts *,
+-				  struct bkey_i *, enum set_needs_rebalance_ctx, u32);
+-
+ /* Inodes in different snapshots may have different IO options: */
+ struct snapshot_io_opts_entry {
+ 	u32			snapshot;
+@@ -61,6 +51,17 @@ static inline void per_snapshot_io_opts_exit(struct per_snapshot_io_opts *io_opt
+ 	darray_exit(&io_opts->d);
+ }
+ 
++enum set_needs_rebalance_ctx {
++	SET_NEEDS_REBALANCE_opt_change,
++	SET_NEEDS_REBALANCE_opt_change_indirect,
++	SET_NEEDS_REBALANCE_foreground,
++	SET_NEEDS_REBALANCE_other,
++};
 +
-+		guard(rcu)();
-+		if (durability <= opts->data_replicas) {
-+			bkey_for_each_ptr(ptrs, ptr) {
-+				struct bch_dev *ca = bch2_dev_rcu_noerror(c, ptr->dev);
-+				if (ca && !ptr->cached && !ca->mi.durability)
-+					data_opts->kill_ptrs |= ptr_bit;
-+				ptr_bit <<= 1;
-+			}
++int bch2_bkey_set_needs_rebalance(struct btree_trans *,
++				  struct per_snapshot_io_opts *, struct bch_inode_opts *,
++				  struct bkey_i *, enum set_needs_rebalance_ctx, u32);
 +
-+			data_opts->extra_replicas = opts->data_replicas - durability;
-+		} else {
-+			const union bch_extent_entry *entry;
-+			struct extent_ptr_decoded p;
-+
-+			bkey_for_each_ptr_decode(k.k, ptrs, p, entry) {
-+				unsigned d = bch2_extent_ptr_durability(c, &p);
-+
-+				if (d && durability - d >= opts->data_replicas) {
-+					data_opts->kill_ptrs |= ptr_bit;
-+					durability -= d;
-+				}
-+
-+				ptr_bit <<= 1;
-+			}
-+
-+			ptr_bit = 1;
-+			bkey_for_each_ptr_decode(k.k, ptrs, p, entry) {
-+				if (p.has_ec && durability - p.ec.redundancy >= opts->data_replicas) {
-+					data_opts->kill_ec_ptrs |= ptr_bit;
-+					durability -= p.ec.redundancy;
-+				}
-+
-+				ptr_bit <<= 1;
-+			}
-+		}
-+	}
-+
- 	if (!data_opts->rewrite_ptrs &&
- 	    !data_opts->kill_ptrs &&
- 	    !data_opts->kill_ec_ptrs &&
+ struct bch_inode_opts *bch2_extent_get_apply_io_opts(struct btree_trans *,
+ 			  struct per_snapshot_io_opts *, struct bpos,
+ 			  struct btree_iter *, struct bkey_s_c,
 -- 
 2.50.1
 
