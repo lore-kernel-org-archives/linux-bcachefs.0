@@ -1,38 +1,38 @@
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3879B274658
-	for <linux-bcachefs@vger.kernel.org>; Sun, 24 Aug 2025 12:38:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BED428980A
+	for <linux-bcachefs@vger.kernel.org>; Sun, 24 Aug 2025 12:38:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756039100; cv=none; b=fByse1Z8wP8i9WSzF81Nx2J0BA7iZCiwNGn4sekRBxzTUKXP2PYtiRtUKmEZ27t9j/1t6tu+J2dlj+3OaN+p9VntJ4jt3V7hT3JNFbx4dLBpsBu0Znk5xq3veb/oKvS4oECjwulWPCMz03LKCjF9+aB7LQdqGMo9mGobaNkfnbs=
+	t=1756039102; cv=none; b=ggkjgniE1gHSEw9mAV0tvaNJXy6fqsafAs5RE4hkoz/eZ8aPRWLDEz7x9pAjzk/wzVq4bFQZVMIJ2JLZ5WGTJ/3laGc3fnfY2RkiYrPUE042FgG99wvBipe5AKpbemmbm21CnvJ0nQjiRSLbc25TJ+cPJAArxA6YkZiixrX/qp4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756039100; c=relaxed/simple;
-	bh=bWRJLucl1g9IBIMBa4JHOxV5wgH6ZmUD4eVCT2JoSwQ=;
+	s=arc-20240116; t=1756039102; c=relaxed/simple;
+	bh=AfmoaStBG06scPJIKjRB4ZFahtb+AIiRifnZB1A4dok=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=P3hTSdnicxKN2uMbKEALeD9Sodug6RMlXJXWJSIO3yUWKmtp3sEuBsu/8Npmw23XxYH31ylUmgyiQTTL4NkOhYL8CuEpQl0+izyqnDz09kjpC34rHrVVMK9RTJIaLnqhNRKxrmD2h7iAWR98aCA5NaO8j8vQKaDDbhrqYfzLu08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ud+xCn0T; arc=none smtp.client-ip=91.218.175.180
+	 MIME-Version; b=Aedj3khbWiDQu0kNWEsIeeF1gD46jePvDK8cQYbnWOn5KquOjjHVItn3iXjXHUEbSzAGpt/vkG7Oy38YYsZuyYs0ZZprAwohe+bNML3A8sdKdWQh1UV7V+ekQAgNvrP4T4G/NEAkMyB49Bellg9i0CXWJYNKNoHtrO8/6zZqh4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=skdyfppy; arc=none smtp.client-ip=91.218.175.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ud+xCn0T"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="skdyfppy"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756039097;
+	t=1756039095;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9POyBvo9jBQ/ggosAYBESQrv3W435OxEV9NnCfAxOjc=;
-	b=ud+xCn0TA0Fa4j5xxjl4PIxmhNJziL8ydpU/kKslTz6JMWBcQNkX0W67GDd4Hsjn0Mca/i
-	cFXFyq2s2XFuSZYTBkwAK8TGCbhoUWuGyrSVP9UCeh31wjU8arXGw2gS+kr1VeqZdfd13s
-	sW2hOw6ciwO58s6+E40nSEP9a/UxPO4=
+	bh=m2rFyAdabdWKDcoffdOn22k3lw2h0EwhxPuWGN9Yn7E=;
+	b=skdyfppybdtAfOZfsxuhF+F67PpP1pZQIO2LvVcZFG+FnOlBQDmwM+jErhkzpR7ZTv0XEy
+	szwrXpPVVqYPUJ7f0wkRz8Sp/MOY3EuguF1fvG54caZQYTzip5RwEXTDeI/cO8QbJESiSh
+	8RMn1lj6P9CkgUDEwOYX3UrrU6TuZV4=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 15/21] bcachefs: check_rebalance_work checks option inconsistency
-Date: Sun, 24 Aug 2025 08:37:52 -0400
-Message-ID: <20250824123800.1617669-16-kent.overstreet@linux.dev>
+Subject: [PATCH 13/21] bcachefs: rebalance now supports changing checksum type
+Date: Sun, 24 Aug 2025 08:37:50 -0400
+Message-ID: <20250824123800.1617669-14-kent.overstreet@linux.dev>
 In-Reply-To: <20250824123800.1617669-1-kent.overstreet@linux.dev>
 References: <20250824123800.1617669-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,72 +44,122 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-The previous patch added consistency checking for bch_extent_rebalance
-whenever the move or rebalance paths update an extent; now we
-additionally check in the check_rebalance_work recovery pass.
+We had a user report with a filesystem where data has been written out
+with the incorrect checksum type - including no checksum.
+
+That means we need to check/repair such cases, and rebalance is
+responsible for handling io path option propagation to extents; thus,
+rebalance needs to support checksum type.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/rebalance.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ fs/bcachefs/rebalance.c | 31 +++++++++++++++++++++++++------
+ 1 file changed, 25 insertions(+), 6 deletions(-)
 
 diff --git a/fs/bcachefs/rebalance.c b/fs/bcachefs/rebalance.c
-index 872fff940c5a..70000d9a1ec4 100644
+index 0d1abb0eeb88..a2fb2f1cec70 100644
 --- a/fs/bcachefs/rebalance.c
 +++ b/fs/bcachefs/rebalance.c
-@@ -1003,6 +1003,7 @@ int bch2_fs_rebalance_init(struct bch_fs *c)
- static int check_rebalance_work_one(struct btree_trans *trans,
- 				    struct btree_iter *extent_iter,
- 				    struct btree_iter *rebalance_iter,
-+				    struct per_snapshot_io_opts *snapshot_io_opts,
- 				    struct bkey_buf *last_flushed)
+@@ -47,10 +47,12 @@ static void bch2_bkey_needs_rebalance(struct bch_fs *c, struct bkey_s_c k,
+ 				      struct bch_inode_opts *io_opts,
+ 				      unsigned *move_ptrs,
+ 				      unsigned *compress_ptrs,
++				      unsigned *csum_ptrs,
+ 				      u64 *sectors)
  {
- 	struct bch_fs *c = trans->c;
-@@ -1073,6 +1074,13 @@ static int check_rebalance_work_one(struct btree_trans *trans,
- 			return ret;
+ 	*move_ptrs	= 0;
+ 	*compress_ptrs	= 0;
++	*csum_ptrs	= 0;
+ 	*sectors	= 0;
+ 
+ 	struct bkey_ptrs_c ptrs = bch2_bkey_ptrs_c(k);
+@@ -66,6 +68,9 @@ static void bch2_bkey_needs_rebalance(struct bch_fs *c, struct bkey_s_c k,
+ 		bch2_compression_opt_to_type(io_opts
+ 					     ? io_opts->background_compression
+ 					     : rb_opts->background_compression);
++	unsigned csum_type = bch2_csum_opt_to_type(io_opts
++						   ? io_opts->data_checksum
++						   : rb_opts->data_checksum, true);
+ 	unsigned target = io_opts
+ 		? io_opts->background_target
+ 		: rb_opts->background_target;
+@@ -87,6 +92,9 @@ static void bch2_bkey_needs_rebalance(struct bch_fs *c, struct bkey_s_c k,
+ 			if (p.crc.compression_type != compression_type)
+ 				*compress_ptrs |= ptr_idx;
+ 
++			if (p.crc.csum_type != csum_type)
++				*csum_ptrs |= ptr_idx;
++
+ 			if (target && !bch2_dev_in_target(c, p.ptr.dev, target))
+ 				*move_ptrs |= ptr_idx;
+ 		}
+@@ -95,11 +103,11 @@ static void bch2_bkey_needs_rebalance(struct bch_fs *c, struct bkey_s_c k,
  	}
  
-+	struct bch_inode_opts *opts = bch2_extent_get_apply_io_opts(trans,
-+				snapshot_io_opts, extent_iter->pos, extent_iter, extent_k,
-+				SET_NEEDS_REBALANCE_other);
-+	ret = PTR_ERR_OR_ZERO(opts);
-+	if (ret)
-+		return ret;
-+
- 	if (cmp <= 0)
- 		bch2_btree_iter_advance(extent_iter);
- 	if (cmp >= 0)
-@@ -1085,10 +1093,14 @@ int bch2_check_rebalance_work(struct bch_fs *c)
+ 	if (unwritten)
+-		*compress_ptrs = 0;
++		*compress_ptrs = *csum_ptrs = 0;
+ 	if (incompressible)
+ 		*compress_ptrs = 0;
+ 
+-	unsigned rb_ptrs = *move_ptrs | *compress_ptrs;
++	unsigned rb_ptrs = *move_ptrs | *compress_ptrs | *csum_ptrs;
+ 
+ 	if (!rb_ptrs)
+ 		return;
+@@ -116,9 +124,10 @@ u64 bch2_bkey_sectors_need_rebalance(struct bch_fs *c, struct bkey_s_c k)
  {
- 	CLASS(btree_trans, trans)(c);
- 	CLASS(btree_iter, extent_iter)(trans, BTREE_ID_reflink, POS_MIN,
-+				       BTREE_ITER_not_extents|
- 				       BTREE_ITER_prefetch);
- 	CLASS(btree_iter, rebalance_iter)(trans, BTREE_ID_rebalance_work, POS_MIN,
- 					  BTREE_ITER_prefetch);
+ 	unsigned move_ptrs	= 0;
+ 	unsigned compress_ptrs	= 0;
++	unsigned csum_ptrs	= 0;
+ 	u64 sectors		= 0;
  
-+	struct per_snapshot_io_opts snapshot_io_opts;
-+	per_snapshot_io_opts_init(&snapshot_io_opts, c);
-+
- 	struct bkey_buf last_flushed;
- 	bch2_bkey_buf_init(&last_flushed);
- 	bkey_init(&last_flushed.k->k);
-@@ -1102,12 +1114,14 @@ int bch2_check_rebalance_work(struct bch_fs *c)
- 
- 		bch2_trans_begin(trans);
- 
--		ret = check_rebalance_work_one(trans, &extent_iter, &rebalance_iter, &last_flushed);
-+		ret = check_rebalance_work_one(trans, &extent_iter, &rebalance_iter,
-+					       &snapshot_io_opts, &last_flushed);
- 
- 		if (bch2_err_matches(ret, BCH_ERR_transaction_restart))
- 			ret = 0;
- 	}
- 
-+	per_snapshot_io_opts_exit(&snapshot_io_opts);
- 	bch2_bkey_buf_exit(&last_flushed, c);
- 	return ret < 0 ? ret : 0;
+-	bch2_bkey_needs_rebalance(c, k, NULL, &move_ptrs, &compress_ptrs, &sectors);
++	bch2_bkey_needs_rebalance(c, k, NULL, &move_ptrs, &compress_ptrs, &csum_ptrs, &sectors);
+ 	return sectors;
  }
+ 
+@@ -128,10 +137,11 @@ static unsigned bch2_bkey_ptrs_need_rebalance(struct bch_fs *c,
+ {
+ 	unsigned move_ptrs	= 0;
+ 	unsigned compress_ptrs	= 0;
++	unsigned csum_ptrs	= 0;
+ 	u64 sectors		= 0;
+ 
+-	bch2_bkey_needs_rebalance(c, k, opts, &move_ptrs, &compress_ptrs, &sectors);
+-	return move_ptrs|compress_ptrs;
++	bch2_bkey_needs_rebalance(c, k, opts, &move_ptrs, &compress_ptrs, &csum_ptrs, &sectors);
++	return move_ptrs|compress_ptrs|csum_ptrs;
+ }
+ 
+ static inline bool bkey_should_have_rb_opts(struct bch_fs *c,
+@@ -509,9 +519,10 @@ static struct bkey_s_c next_rebalance_extent(struct btree_trans *trans,
+ 
+ 		unsigned move_ptrs	= 0;
+ 		unsigned compress_ptrs	= 0;
++		unsigned csum_ptrs	= 0;
+ 		u64 sectors		= 0;
+ 
+-		bch2_bkey_needs_rebalance(c, k, opts, &move_ptrs, &compress_ptrs, &sectors);
++		bch2_bkey_needs_rebalance(c, k, opts, &move_ptrs, &compress_ptrs, &csum_ptrs, &sectors);
+ 
+ 		if (move_ptrs) {
+ 			prt_str(&buf, "move=");
+@@ -529,6 +540,14 @@ static struct bkey_s_c next_rebalance_extent(struct btree_trans *trans,
+ 			prt_newline(&buf);
+ 		}
+ 
++		if (csum_ptrs) {
++			prt_str(&buf, "csum=");
++			bch2_prt_csum_opt(&buf, opts->data_checksum);
++			prt_str(&buf, " ");
++			bch2_prt_u64_base2(&buf, csum_ptrs);
++			prt_newline(&buf);
++		}
++
+ 		trace_rebalance_extent(c, buf.buf);
+ 	}
+ 	count_event(c, rebalance_extent);
 -- 
 2.50.1
 
