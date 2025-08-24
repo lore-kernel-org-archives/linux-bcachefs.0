@@ -1,38 +1,38 @@
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C3528980A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B4792D5A14
 	for <linux-bcachefs@vger.kernel.org>; Sun, 24 Aug 2025 12:38:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756039094; cv=none; b=BsJGJhlr+8ULDDB8fbzWVmsDg/YYGmPEI+IgIMSf1kHcmd3JWZXKGNmw9DF7aPb+CHrSI1nFcn9b1pPE0sooxvuEMYC3t2CGVwuSJZY86pPPtPdEwNnlaLsu8RuJg5ikhhDViro7OhGNXEq+8UdVlRRNqQaU7iC8pRJwiknVOro=
+	t=1756039094; cv=none; b=lafVSYiyxtH0UCprIdv5Gq7ZW476QC0SaaBxshjrhJkd8ZS7YY0T1K/O2WeN4nKvrETYRayZe3MuSdTpA4suvuxVW5PWDC/uFtI9ojIHCBu16Au030IqZE+4e1lmWl1A6zkAGwgx2PENulFhhrIQny2vqI3jSraVtpuR9UujLeQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1756039094; c=relaxed/simple;
-	bh=ldfofiVx2hGx8EXcxiC2OytmsT757ge+pgcI6OzbVYo=;
+	bh=akP87mUgB/TXCJ+Hh0IYT5EWdu5DAfHWybJuGXFXMPo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=r6X8m5sFZU8WnQ7i/hMrSCRVup4hxhkjhngyNnirRK1Wd6XBPg841ZMd3t75TI0vzrRFXhhhQuxqsRwR9x6bAzCYofm/zLqyeZCz/I0YG9eR365qvrfq1mMmuhC7sjGQvhJcQCVYSkCejK5Hnqt89iI3oJqDZGoX+ERl6yQdiI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Itk01zWa; arc=none smtp.client-ip=91.218.175.177
+	 MIME-Version; b=P9hW/hfmQn+AcYkkwDVpvUDEVGQbZZjgwRBKYTHgsSHvXwSrPnlbuNSGITH0luX1bBCKrooFO6F4heIH9sUtRpWQ5wjFg1nVQ1KrHdC2apUZFFj6mzQK9ZgzHBzzH16RefZRSa8Zwf1O7aS43NoT7DUJzty0gNCuk5USk7Txed8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WVpennUT; arc=none smtp.client-ip=91.218.175.186
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Itk01zWa"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WVpennUT"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756039090;
+	t=1756039089;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vZ9S85Nb0R9o3C+J8lDcoSfFXemOOQkSHgSggfSCwzg=;
-	b=Itk01zWar4ygHYizllVcm/kyhZ5Z8qoj3/U17I/15THDfnhb587FOOvs/syBkSw6jBmAYG
-	n4C1iNoTG3xAU4DKe6dKjvLyu7z2HF0vamfCd4c2UXd7SrcSNQvuS3kOuQyrjaZC7sZaOS
-	+0TtwXhRshYr2NuUL1CdRJ5jgC5wLyk=
+	bh=2sAMJK+CBqrTjduLiJ80Jfsc1pt0O5Lhz9iFFY8mKWc=;
+	b=WVpennUTcApOvKPF+32Rto/BfR3tgJxxfn/morNoBLqrOXYnj6LcdzCsAeuJRQ4UxjGtin
+	vVOvlJ8Z1Q0XeJus8O63/LrJMCrFZslITEFvvB2BaKzsTVoQyv6RP871ZOULlEa1w96DhE
+	S2Ng8K+44V82bNk7dE6cKNCWd/eudwg=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 05/21] bcachefs: Plumb bch_inode_opts.change_cookie
-Date: Sun, 24 Aug 2025 08:37:42 -0400
-Message-ID: <20250824123800.1617669-6-kent.overstreet@linux.dev>
+Subject: [PATCH 04/21] bcachefs: Transactional consistency for set_needs_rebalance
+Date: Sun, 24 Aug 2025 08:37:41 -0400
+Message-ID: <20250824123800.1617669-5-kent.overstreet@linux.dev>
 In-Reply-To: <20250824123800.1617669-1-kent.overstreet@linux.dev>
 References: <20250824123800.1617669-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,199 +44,304 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
+We're going to be strictly enforcing that extents match the IO path
+options, as defined by the filesystem/inode options: that means when we
+call set_needs_rebalance(), we need to pass it the opts we got from the
+inode in that same transaction.
+
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/data_update.c |  3 ++-
- fs/bcachefs/inode.c       |  2 +-
- fs/bcachefs/io_misc.c     |  4 ++--
- fs/bcachefs/io_write.c    | 11 +++++++----
- fs/bcachefs/io_write.h    |  2 +-
- fs/bcachefs/opts.c        |  2 +-
- fs/bcachefs/opts.h        |  2 +-
- fs/bcachefs/rebalance.c   |  4 ++--
- fs/bcachefs/rebalance.h   |  2 +-
- fs/bcachefs/reflink.c     |  2 +-
- 10 files changed, 19 insertions(+), 15 deletions(-)
+ fs/bcachefs/data_update.c |  6 +++++-
+ fs/bcachefs/inode.c       | 28 ++++++++++++++++++---------
+ fs/bcachefs/inode.h       |  2 +-
+ fs/bcachefs/io_misc.c     |  8 +-------
+ fs/bcachefs/io_write.c    | 40 ++++++++++++++++++++++++++++-----------
+ fs/bcachefs/reflink.c     | 16 +++++-----------
+ 6 files changed, 60 insertions(+), 40 deletions(-)
 
 diff --git a/fs/bcachefs/data_update.c b/fs/bcachefs/data_update.c
-index 43d318ff488e..b62d890003ec 100644
+index 968850da0d23..43d318ff488e 100644
 --- a/fs/bcachefs/data_update.c
 +++ b/fs/bcachefs/data_update.c
-@@ -438,7 +438,8 @@ static int __bch2_data_update_index_update(struct btree_trans *trans,
+@@ -11,6 +11,7 @@
+ #include "ec.h"
+ #include "error.h"
+ #include "extents.h"
++#include "inode.h"
+ #include "io_write.h"
+ #include "keylist.h"
+ #include "move.h"
+@@ -428,13 +429,16 @@ static int __bch2_data_update_index_update(struct btree_trans *trans,
+ 			goto out;
+ 		}
+ 
++		struct bch_inode_opts opts;
++
+ 		ret =   bch2_trans_log_str(trans, bch2_data_update_type_strs[m->type]) ?:
+ 			bch2_trans_log_bkey(trans, m->btree_id, 0, m->k.k) ?:
+ 			bch2_insert_snapshot_whiteouts(trans, m->btree_id,
+ 						k.k->p, bkey_start_pos(&insert->k)) ?:
  			bch2_insert_snapshot_whiteouts(trans, m->btree_id,
  						k.k->p, insert->k.p) ?:
- 			bch2_inum_snapshot_opts_get(trans, k.k->p.inode, k.k->p.snapshot, &opts) ?:
--			bch2_bkey_set_needs_rebalance(c, &opts, insert) ?:
-+			bch2_bkey_set_needs_rebalance(c, &opts, insert,
-+						      m->op.opts.change_cookie) ?:
+-			bch2_bkey_set_needs_rebalance(c, &op->opts, insert) ?:
++			bch2_inum_snapshot_opts_get(trans, k.k->p.inode, k.k->p.snapshot, &opts) ?:
++			bch2_bkey_set_needs_rebalance(c, &opts, insert) ?:
  			bch2_trans_update(trans, &iter, insert,
  				BTREE_UPDATE_internal_snapshot_node);
  		if (ret)
 diff --git a/fs/bcachefs/inode.c b/fs/bcachefs/inode.c
-index d1ec33edcc0b..c222fb8a7d07 100644
+index c1d673374e02..d1ec33edcc0b 100644
 --- a/fs/bcachefs/inode.c
 +++ b/fs/bcachefs/inode.c
-@@ -1239,7 +1239,7 @@ void bch2_inode_opts_get_inode(struct bch_fs *c,
- 	BCH_INODE_OPTS()
- #undef x
+@@ -369,9 +369,9 @@ int __bch2_inode_peek(struct btree_trans *trans,
+ }
  
--	ret->opt_change_cookie = atomic_read(&c->opt_change_cookie);
-+	ret->change_cookie = atomic_read(&c->opt_change_cookie);
- 
+ int bch2_inode_find_by_inum_snapshot(struct btree_trans *trans,
+-					    u64 inode_nr, u32 snapshot,
+-					    struct bch_inode_unpacked *inode,
+-					    unsigned flags)
++				     u64 inode_nr, u32 snapshot,
++				     struct bch_inode_unpacked *inode,
++				     unsigned flags)
+ {
+ 	CLASS(btree_iter, iter)(trans, BTREE_ID_inodes, SPOS(0, inode_nr, snapshot), flags);
+ 	struct bkey_s_c k = bch2_btree_iter_peek_slot(&iter);
+@@ -1244,15 +1244,25 @@ void bch2_inode_opts_get_inode(struct bch_fs *c,
  	bch2_io_opts_fixups(ret);
  }
+ 
+-int bch2_inum_opts_get(struct btree_trans *trans, subvol_inum inum, struct bch_inode_opts *opts)
++int bch2_inum_snapshot_opts_get(struct btree_trans *trans,
++				u64 inum, u32 snapshot,
++				struct bch_inode_opts *opts)
+ {
+-	struct bch_inode_unpacked inode;
+-	int ret = lockrestart_do(trans, bch2_inode_find_by_inum_trans(trans, inum, &inode));
++	if (inum) {
++		struct bch_inode_unpacked inode;
++		int ret = bch2_inode_find_by_inum_snapshot(trans, inum, snapshot, &inode, 0);
++		if (ret)
++			return ret;
+ 
+-	if (ret)
+-		return ret;
++		bch2_inode_opts_get_inode(trans->c, &inode, opts);
++	} else {
++		/*
++		 * data_update_index_update may call us for reflink btree extent
++		 * updates, inum will be 0
++		 */
+ 
+-	bch2_inode_opts_get_inode(trans->c, &inode, opts);
++		bch2_inode_opts_get(trans->c, opts);
++	}
+ 	return 0;
+ }
+ 
+diff --git a/fs/bcachefs/inode.h b/fs/bcachefs/inode.h
+index 12e0a104c196..63b7088811fb 100644
+--- a/fs/bcachefs/inode.h
++++ b/fs/bcachefs/inode.h
+@@ -290,7 +290,7 @@ void bch2_inode_nlink_dec(struct btree_trans *, struct bch_inode_unpacked *);
+ 
+ struct bch_opts bch2_inode_opts_to_opts(struct bch_inode_unpacked *);
+ void bch2_inode_opts_get_inode(struct bch_fs *, struct bch_inode_unpacked *, struct bch_inode_opts *);
+-int bch2_inum_opts_get(struct btree_trans *, subvol_inum, struct bch_inode_opts *);
++int bch2_inum_snapshot_opts_get(struct btree_trans *, u64, u32, struct bch_inode_opts *);
+ int bch2_inode_set_casefold(struct btree_trans *, subvol_inum,
+ 			    struct bch_inode_unpacked *, unsigned);
+ 
 diff --git a/fs/bcachefs/io_misc.c b/fs/bcachefs/io_misc.c
-index 6d204b980f76..04eb5ecd102b 100644
+index 5e03574059e0..6d204b980f76 100644
 --- a/fs/bcachefs/io_misc.c
 +++ b/fs/bcachefs/io_misc.c
-@@ -109,7 +109,7 @@ int bch2_extent_fallocate(struct btree_trans *trans,
- 	}
+@@ -373,7 +373,6 @@ static int __bch2_resume_logged_op_finsert(struct btree_trans *trans,
+ 	struct btree_iter iter;
+ 	struct bkey_i_logged_op_finsert *op = bkey_i_to_logged_op_finsert(op_k);
+ 	subvol_inum inum = { le32_to_cpu(op->v.subvol), le64_to_cpu(op->v.inum) };
+-	struct bch_inode_opts opts;
+ 	u64 dst_offset = le64_to_cpu(op->v.dst_offset);
+ 	u64 src_offset = le64_to_cpu(op->v.src_offset);
+ 	s64 shift = dst_offset - src_offset;
+@@ -384,10 +383,6 @@ static int __bch2_resume_logged_op_finsert(struct btree_trans *trans,
+ 	bool warn_errors = i_sectors_delta != NULL;
+ 	int ret = 0;
  
- 	ret = bch2_extent_update(trans, inum, iter, new.k, &disk_res,
--				 0, i_sectors_delta, true);
-+				 0, i_sectors_delta, true, 0);
- err:
- 	if (!ret && sectors_allocated)
- 		bch2_increment_clock(c, sectors_allocated, WRITE);
-@@ -211,7 +211,7 @@ int bch2_fpunch_at(struct btree_trans *trans, struct btree_iter *iter,
- 		bch2_cut_back(end_pos, &delete);
+-	ret = bch2_inum_opts_get(trans, inum, &opts);
+-	if (ret)
+-		return ret;
+-
+ 	/*
+ 	 * check for missing subvolume before fpunch, as in resume we don't want
+ 	 * it to be a fatal error
+@@ -476,8 +471,7 @@ case LOGGED_OP_FINSERT_shift_extents:
  
- 		ret = bch2_extent_update(trans, inum, iter, &delete,
--				&disk_res, 0, i_sectors_delta, false);
-+				&disk_res, 0, i_sectors_delta, false, 0);
- 		bch2_disk_reservation_put(c, &disk_res);
- 	}
+ 		op->v.pos = cpu_to_le64(insert ? bkey_start_offset(&delete.k) : delete.k.p.offset);
  
+-		ret =   bch2_bkey_set_needs_rebalance(c, &opts, copy) ?:
+-			bch2_btree_insert_trans(trans, BTREE_ID_extents, &delete, 0) ?:
++		ret =   bch2_btree_insert_trans(trans, BTREE_ID_extents, &delete, 0) ?:
+ 			bch2_btree_insert_trans(trans, BTREE_ID_extents, copy, 0) ?:
+ 			bch2_logged_op_update(trans, &op->k_i) ?:
+ 			bch2_trans_commit(trans, &disk_res, NULL, BCH_TRANS_COMMIT_no_enospc);
 diff --git a/fs/bcachefs/io_write.c b/fs/bcachefs/io_write.c
-index a0cb5d2dd0f8..0122d8b3292a 100644
+index 1d83dcc9731e..a0cb5d2dd0f8 100644
 --- a/fs/bcachefs/io_write.c
 +++ b/fs/bcachefs/io_write.c
-@@ -310,7 +310,8 @@ int bch2_extent_update(struct btree_trans *trans,
- 		       struct disk_reservation *disk_res,
- 		       u64 new_i_size,
- 		       s64 *i_sectors_delta_total,
--		       bool check_enospc)
-+		       bool check_enospc,
-+		       u32 change_cookie)
+@@ -205,7 +205,8 @@ int bch2_sum_sector_overwrites(struct btree_trans *trans,
+ static inline int bch2_extent_update_i_size_sectors(struct btree_trans *trans,
+ 						    struct btree_iter *extent_iter,
+ 						    u64 new_i_size,
+-						    s64 i_sectors_delta)
++						    s64 i_sectors_delta,
++						    struct bch_inode_unpacked *inode_u)
  {
- 	struct bch_fs *c = trans->c;
+ 	/*
+ 	 * Crazy performance optimization:
+@@ -227,7 +228,13 @@ static inline int bch2_extent_update_i_size_sectors(struct btree_trans *trans,
+ 				BTREE_ITER_intent|
+ 				BTREE_ITER_cached);
+ 	struct bkey_s_c k = bch2_btree_iter_peek_slot(&iter);
+-	int ret = bkey_err(k);
++
++	/*
++	 * XXX: we currently need to unpack the inode on every write because we
++	 * need the current io_opts, for transactional consistency - inode_v4?
++	 */
++	int ret = bkey_err(k) ?:
++		  bch2_inode_unpack(k, inode_u);
+ 	if (unlikely(ret))
+ 		return ret;
+ 
+@@ -305,6 +312,7 @@ int bch2_extent_update(struct btree_trans *trans,
+ 		       s64 *i_sectors_delta_total,
+ 		       bool check_enospc)
+ {
++	struct bch_fs *c = trans->c;
  	struct bpos next_pos;
-@@ -364,7 +365,8 @@ int bch2_extent_update(struct btree_trans *trans,
+ 	bool usage_increasing;
+ 	s64 i_sectors_delta = 0, disk_sectors_delta = 0;
+@@ -335,7 +343,7 @@ int bch2_extent_update(struct btree_trans *trans,
+ 
+ 	if (disk_res &&
+ 	    disk_sectors_delta > (s64) disk_res->sectors) {
+-		ret = bch2_disk_reservation_add(trans->c, disk_res,
++		ret = bch2_disk_reservation_add(c, disk_res,
+ 					disk_sectors_delta - disk_res->sectors,
+ 					!check_enospc || !usage_increasing
+ 					? BCH_DISK_RESERVATION_NOFAIL : 0);
+@@ -349,9 +357,14 @@ int bch2_extent_update(struct btree_trans *trans,
+ 	 * aren't changing - for fsync to work properly; fsync relies on
+ 	 * inode->bi_journal_seq which is updated by the trigger code:
+ 	 */
++	struct bch_inode_unpacked inode;
++	struct bch_inode_opts opts;
++
+ 	ret =   bch2_extent_update_i_size_sectors(trans, iter,
  						  min(k->k.p.offset << 9, new_i_size),
- 						  i_sectors_delta, &inode) ?:
- 		(bch2_inode_opts_get_inode(c, &inode, &opts),
--		 bch2_bkey_set_needs_rebalance(c, &opts, k)) ?:
-+		 bch2_bkey_set_needs_rebalance(c, &opts, k,
-+					       change_cookie)) ?:
+-						  i_sectors_delta) ?:
++						  i_sectors_delta, &inode) ?:
++		(bch2_inode_opts_get_inode(c, &inode, &opts),
++		 bch2_bkey_set_needs_rebalance(c, &opts, k)) ?:
  		bch2_trans_update(trans, iter, k, 0) ?:
  		bch2_trans_commit(trans, disk_res, NULL,
  				BCH_TRANS_COMMIT_no_check_rw|
-@@ -415,7 +417,8 @@ static int bch2_write_index_default(struct bch_write_op *op)
- 		ret =   bch2_extent_update(trans, inum, &iter, sk.k,
- 					&op->res,
- 					op->new_i_size, &op->i_sectors_delta,
--					op->flags & BCH_WRITE_check_enospc);
-+					op->flags & BCH_WRITE_check_enospc,
-+					op->opts.change_cookie);
+@@ -792,10 +805,6 @@ static void init_append_extent(struct bch_write_op *op,
  
- 		if (bch2_err_matches(ret, BCH_ERR_transaction_restart))
- 			continue;
-@@ -1267,7 +1270,7 @@ static int bch2_nocow_write_convert_one_unwritten(struct btree_trans *trans,
+ 	bch2_alloc_sectors_append_ptrs_inlined(op->c, wp, &e->k_i, crc.compressed_size,
+ 				       op->flags & BCH_WRITE_cached);
+-
+-	if (!(op->flags & BCH_WRITE_move))
+-		bch2_bkey_set_needs_rebalance(op->c, &op->opts, &e->k_i);
+-
+ 	bch2_keylist_push(&op->insert_keys);
+ }
+ 
+@@ -1225,6 +1234,7 @@ static int bch2_nocow_write_convert_one_unwritten(struct btree_trans *trans,
+ 		return 0;
+ 	}
+ 
++	struct bch_fs *c = trans->c;
+ 	struct bkey_i *new = bch2_trans_kmalloc_nomemzero(trans,
+ 				bkey_bytes(k.k) + sizeof(struct bch_extent_rebalance));
+ 	int ret = PTR_ERR_OR_ZERO(new);
+@@ -1239,8 +1249,6 @@ static int bch2_nocow_write_convert_one_unwritten(struct btree_trans *trans,
+ 	bkey_for_each_ptr(ptrs, ptr)
+ 		ptr->unwritten = 0;
+ 
+-	bch2_bkey_set_needs_rebalance(op->c, &op->opts, new);
+-
+ 	/*
+ 	 * Note that we're not calling bch2_subvol_get_snapshot() in this path -
+ 	 * that was done when we kicked off the write, and here it's important
+@@ -1248,8 +1256,18 @@ static int bch2_nocow_write_convert_one_unwritten(struct btree_trans *trans,
+ 	 * since been created. The write is still outstanding, so we're ok
+ 	 * w.r.t. snapshot atomicity:
+ 	 */
++
++	/*
++	 * For transactional consistency, set_needs_rebalance() has to be called
++	 * with the io_opts from the btree in the same transaction:
++	 */
++	struct bch_inode_unpacked inode;
++	struct bch_inode_opts opts;
++
  	return  bch2_extent_update_i_size_sectors(trans, iter,
- 					min(new->k.p.offset << 9, new_i_size), 0, &inode) ?:
- 		(bch2_inode_opts_get_inode(c, &inode, &opts),
--		 bch2_bkey_set_needs_rebalance(c, &opts, new)) ?:
-+		 bch2_bkey_set_needs_rebalance(c, &opts, new, op->opts.change_cookie)) ?:
+-					min(new->k.p.offset << 9, new_i_size), 0) ?:
++					min(new->k.p.offset << 9, new_i_size), 0, &inode) ?:
++		(bch2_inode_opts_get_inode(c, &inode, &opts),
++		 bch2_bkey_set_needs_rebalance(c, &opts, new)) ?:
  		bch2_trans_update(trans, iter, new,
  				  BTREE_UPDATE_internal_snapshot_node);
  }
-diff --git a/fs/bcachefs/io_write.h b/fs/bcachefs/io_write.h
-index 6c05ba6e15d6..692529bf401d 100644
---- a/fs/bcachefs/io_write.h
-+++ b/fs/bcachefs/io_write.h
-@@ -28,7 +28,7 @@ int bch2_sum_sector_overwrites(struct btree_trans *, struct btree_iter *,
- 			       struct bkey_i *, bool *, s64 *, s64 *);
- int bch2_extent_update(struct btree_trans *, subvol_inum,
- 		       struct btree_iter *, struct bkey_i *,
--		       struct disk_reservation *, u64, s64 *, bool);
-+		       struct disk_reservation *, u64, s64 *, bool, u32);
- 
- static inline void bch2_write_op_init(struct bch_write_op *op, struct bch_fs *c,
- 				      struct bch_inode_opts opts)
-diff --git a/fs/bcachefs/opts.c b/fs/bcachefs/opts.c
-index 16d210cbc849..9f5684ec056a 100644
---- a/fs/bcachefs/opts.c
-+++ b/fs/bcachefs/opts.c
-@@ -812,7 +812,7 @@ void bch2_inode_opts_get(struct bch_fs *c, struct bch_inode_opts *ret)
- 	BCH_INODE_OPTS()
- #undef x
- 
--	ret->opt_change_cookie = atomic_read(&c->opt_change_cookie);
-+	ret->change_cookie = atomic_read(&c->opt_change_cookie);
- 
- 	bch2_io_opts_fixups(ret);
- }
-diff --git a/fs/bcachefs/opts.h b/fs/bcachefs/opts.h
-index 2425ba247201..f0f3483c1aab 100644
---- a/fs/bcachefs/opts.h
-+++ b/fs/bcachefs/opts.h
-@@ -679,7 +679,7 @@ struct bch_inode_opts {
- 	BCH_INODE_OPTS()
- #undef x
- 
--	u32 opt_change_cookie;
-+	u32 change_cookie;
- };
- 
- static inline void bch2_io_opts_fixups(struct bch_inode_opts *opts)
-diff --git a/fs/bcachefs/rebalance.c b/fs/bcachefs/rebalance.c
-index 9590c57798c6..d8e214e6f671 100644
---- a/fs/bcachefs/rebalance.c
-+++ b/fs/bcachefs/rebalance.c
-@@ -162,7 +162,7 @@ static bool bch2_bkey_rebalance_needs_update(struct bch_fs *c, struct bch_inode_
- }
- 
- int bch2_bkey_set_needs_rebalance(struct bch_fs *c, struct bch_inode_opts *opts,
--				  struct bkey_i *_k)
-+				  struct bkey_i *_k, u32 change_cookie)
- {
- 	if (!bkey_extent_is_direct_data(&_k->k))
- 		return 0;
-@@ -218,7 +218,7 @@ int bch2_get_update_rebalance_opts(struct btree_trans *trans,
- 
- 	/* On successfull transaction commit, @k was invalidated: */
- 
--	return bch2_bkey_set_needs_rebalance(trans->c, io_opts, n) ?:
-+	return bch2_bkey_set_needs_rebalance(trans->c, io_opts, n, 0) ?:
- 		bch2_trans_update(trans, iter, n, BTREE_UPDATE_internal_snapshot_node) ?:
- 		bch2_trans_commit(trans, NULL, NULL, 0) ?:
- 		bch_err_throw(trans->c, transaction_restart_nested);
-diff --git a/fs/bcachefs/rebalance.h b/fs/bcachefs/rebalance.h
-index 9f2839ddb60e..62b7f0b3aec7 100644
---- a/fs/bcachefs/rebalance.h
-+++ b/fs/bcachefs/rebalance.h
-@@ -27,7 +27,7 @@ static inline struct bch_extent_rebalance io_opts_to_rebalance_opts(struct bch_f
- };
- 
- u64 bch2_bkey_sectors_need_rebalance(struct bch_fs *, struct bkey_s_c);
--int bch2_bkey_set_needs_rebalance(struct bch_fs *, struct bch_inode_opts *, struct bkey_i *);
-+int bch2_bkey_set_needs_rebalance(struct bch_fs *, struct bch_inode_opts *, struct bkey_i *, u32);
- int bch2_get_update_rebalance_opts(struct btree_trans *,
- 				   struct bch_inode_opts *,
- 				   struct btree_iter *,
 diff --git a/fs/bcachefs/reflink.c b/fs/bcachefs/reflink.c
-index 5e62eddf30ba..d54468fdcb18 100644
+index 55ad8ab7a148..5e62eddf30ba 100644
 --- a/fs/bcachefs/reflink.c
 +++ b/fs/bcachefs/reflink.c
-@@ -707,7 +707,7 @@ s64 bch2_remap_range(struct bch_fs *c,
- 		ret = bch2_extent_update(trans, dst_inum, &dst_iter,
- 					 new_dst.k, &disk_res,
- 					 new_i_size, i_sectors_delta,
--					 true);
-+					 true, 0);
+@@ -589,7 +589,6 @@ s64 bch2_remap_range(struct bch_fs *c,
+ 	struct bpos dst_start = POS(dst_inum.inum, dst_offset);
+ 	struct bpos src_start = POS(src_inum.inum, src_offset);
+ 	struct bpos dst_end = dst_start, src_end = src_start;
+-	struct bch_inode_opts opts;
+ 	struct bpos src_want;
+ 	u64 dst_done = 0;
+ 	u32 dst_snapshot, src_snapshot;
+@@ -609,10 +608,6 @@ s64 bch2_remap_range(struct bch_fs *c,
+ 	bch2_bkey_buf_init(&new_src);
+ 	CLASS(btree_trans, trans)(c);
+ 
+-	ret = bch2_inum_opts_get(trans, src_inum, &opts);
+-	if (ret)
+-		goto err;
+-
+ 	bch2_trans_iter_init(trans, &src_iter, BTREE_ID_extents, src_start,
+ 			     BTREE_ITER_intent);
+ 	bch2_trans_iter_init(trans, &dst_iter, BTREE_ID_extents, dst_start,
+@@ -709,11 +704,10 @@ s64 bch2_remap_range(struct bch_fs *c,
+ 				min(src_k.k->p.offset - src_want.offset,
+ 				    dst_end.offset - dst_iter.pos.offset));
+ 
+-		ret =   bch2_bkey_set_needs_rebalance(c, &opts, new_dst.k) ?:
+-			bch2_extent_update(trans, dst_inum, &dst_iter,
+-					new_dst.k, &disk_res,
+-					new_i_size, i_sectors_delta,
+-					true);
++		ret = bch2_extent_update(trans, dst_inum, &dst_iter,
++					 new_dst.k, &disk_res,
++					 new_i_size, i_sectors_delta,
++					 true);
  		bch2_disk_reservation_put(c, &disk_res);
  	}
  	bch2_trans_iter_exit(&dst_iter);
+@@ -744,7 +738,7 @@ s64 bch2_remap_range(struct bch_fs *c,
+ 
+ 		bch2_trans_iter_exit(&inode_iter);
+ 	} while (bch2_err_matches(ret2, BCH_ERR_transaction_restart));
+-err:
++
+ 	bch2_bkey_buf_exit(&new_src, c);
+ 	bch2_bkey_buf_exit(&new_dst, c);
+ 
 -- 
 2.50.1
 
