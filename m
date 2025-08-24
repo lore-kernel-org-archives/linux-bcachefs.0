@@ -1,38 +1,38 @@
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F432D5A14
-	for <linux-bcachefs@vger.kernel.org>; Sun, 24 Aug 2025 12:38:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB0912B2D7
+	for <linux-bcachefs@vger.kernel.org>; Sun, 24 Aug 2025 12:38:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756039096; cv=none; b=WlSYXQzBC7o+FWuTFK/+tvh8K7O9lvtLqlQpASOk2u62sDF3MODtVNR4Idz+GkcppuLCz5h6lPNaZ7sqR4RpUMYI3Gs26CUT+FJXRR/QIfd40NE2GzwL5ot4jM7gJYk/Tw3mNdHFih5sq8W7OGO2XORu+VHwUf2HTAmk0Qnqcz4=
+	t=1756039098; cv=none; b=D/A49ey5yKHcI7oa9QqV8kAoZu/CGFEashVBBXFdz6hBZfxuaRQ4/JIxi70voUrlOa0IcyJvP0vHgeHS7kH7zHqPWtwh7FVzglxJpcuu/vjf2bDHi1sqNqD6OwR15QlgZDCGpTDdqj0WdQ+vMqnCz1E31hc3KbU2xK0a4A/krtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756039096; c=relaxed/simple;
-	bh=oIMIymEGQ8jVHTjXgSS7CVeOz0Y8ErcLcAQIGrQQlu8=;
+	s=arc-20240116; t=1756039098; c=relaxed/simple;
+	bh=DbTrpA0E0VK3PwswN+DR1c0CRto2W1Mcu7iHn2m3QKQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Avh5rwGnDxATMxGrAJHoLtybkFI4/2TIklPlnbH6hefPwhm2lSPcGt8QefvF9zxyxNo8OGvE9EcXQ3oPigkiJOHN00NRyBQyfOU31SW2xH/g7wX5aanHFAeMZm7aFibWyFPDOwU26Df30x3G0elZkGYTHFuVCT4aKyprBAQgB3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rvlnEudt; arc=none smtp.client-ip=91.218.175.178
+	 MIME-Version; b=rz3mbdjs/+dp0/ebGxOdIf8TDFcDGF4UNT5nv0hq0xSTqf76C9g9d3fdRzGfmrYwW/h0/QEG/js/Lb1LrcwdbGqAK13RCMh2yKYP5lB6dXWn3ViSZTw6FBn8rhSnJ0CnTz/v/l+6y85WldUHxjG5HCC6uOB2aAoN78UqmqzZ7J4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZzLIg16z; arc=none smtp.client-ip=91.218.175.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rvlnEudt"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZzLIg16z"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756039092;
+	t=1756039094;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Y/EMdZKo4w+WW63xyOtRU3WNPX7MOMjXWGSDjSkuQCU=;
-	b=rvlnEudtowdRqFsDzvm4OHtl6tMXGTKmK4HmErZqHvIy0MqpkIOzsQU/BsAJxnZMGjJCyA
-	COyHcCuWjVvEsmkwXUI9Nnd139A/snI3pNlGzysvsBA5UUrhmTTnFIz7LeotFIn9eL5wwA
-	AMjFuGFo2fCebPXmLZAWSfDpKXa6nm4=
+	bh=MYlRT1LJQpQ5Dy/68Pl9UeLcqFtBUHPFVLMNSHN7TVY=;
+	b=ZzLIg16zD7ednMJnx40GxaaSToWm0P81YFe3yyBjQOrYfxDe8nK30sYVMB6zT6gUpvCDqb
+	weLz5oKdTjlxgFMSkfCSGsc/uueCCdUXXfAwbq1PeB3RoVD6IyrhO4Ez0OBDzMmhlSf9FW
+	CA8XNXWLmS0oHsuSqe3mIEj5xKLC3bk=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-bcachefs@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 09/21] bcachefs: do_rebalance_extent() uses bch2_extent_get_apply_io_opts()
-Date: Sun, 24 Aug 2025 08:37:46 -0400
-Message-ID: <20250824123800.1617669-10-kent.overstreet@linux.dev>
+Subject: [PATCH 12/21] bcachefs: bch2_bkey_needs_rebalance()
+Date: Sun, 24 Aug 2025 08:37:49 -0400
+Message-ID: <20250824123800.1617669-13-kent.overstreet@linux.dev>
 In-Reply-To: <20250824123800.1617669-1-kent.overstreet@linux.dev>
 References: <20250824123800.1617669-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -44,190 +44,237 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-No reason for it to be using bch2_extent_get_io_opts_one(), iterating
-over the rebalance_work btree iterates in natural key order.
+Collapse bch2_bkey_sectors_need_rebalance() and
+bch2_bkey_ptrs_need_rebalance() down to a single function, which outputs
+both the bitmap of pointers that need to be rebalanced and the number of
+sectors that need to be processed.
+
+This will enable adding other reasons an extent might need to be
+processed by rebalance: changing the checksum type,
+increasing/decreasing replication level, enabling/disabling erasure
+coding, etc.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- fs/bcachefs/rebalance.c | 51 ++++++++++++++++++++++++-----------------
- 1 file changed, 30 insertions(+), 21 deletions(-)
+ fs/bcachefs/rebalance.c | 171 +++++++++++++++++++---------------------
+ 1 file changed, 81 insertions(+), 90 deletions(-)
 
 diff --git a/fs/bcachefs/rebalance.c b/fs/bcachefs/rebalance.c
-index d34a287cace4..f292c93ddd4d 100644
+index 9e22ff0e2d28..0d1abb0eeb88 100644
 --- a/fs/bcachefs/rebalance.c
 +++ b/fs/bcachefs/rebalance.c
-@@ -457,9 +457,10 @@ static int bch2_bkey_clear_needs_rebalance(struct btree_trans *trans,
+@@ -43,106 +43,95 @@ static const struct bch_extent_rebalance *bch2_bkey_rebalance_opts(struct bkey_s
+ 	return bch2_bkey_ptrs_rebalance_opts(bch2_bkey_ptrs_c(k));
  }
  
- static struct bkey_s_c next_rebalance_extent(struct btree_trans *trans,
-+			struct per_snapshot_io_opts *snapshot_io_opts,
- 			struct bpos work_pos,
- 			struct btree_iter *extent_iter,
--			struct bch_inode_opts *io_opts,
-+			struct bch_inode_opts **opts_ret,
- 			struct data_update_opts *data_opts)
+-static inline unsigned bch2_bkey_ptrs_need_compress(struct bch_fs *c,
+-					   struct bch_inode_opts *opts,
+-					   struct bkey_s_c k,
+-					   struct bkey_ptrs_c ptrs)
++static void bch2_bkey_needs_rebalance(struct bch_fs *c, struct bkey_s_c k,
++				      struct bch_inode_opts *io_opts,
++				      unsigned *move_ptrs,
++				      unsigned *compress_ptrs,
++				      u64 *sectors)
  {
- 	struct bch_fs *c = trans->c;
-@@ -473,14 +474,19 @@ static struct bkey_s_c next_rebalance_extent(struct btree_trans *trans,
- 	if (bkey_err(k))
- 		return k;
- 
--	int ret = bch2_extent_get_io_opts_one(trans, io_opts, extent_iter, k,
-+	struct bch_inode_opts *opts =
-+		bch2_extent_get_apply_io_opts(trans, snapshot_io_opts,
-+					      extent_iter->pos, extent_iter, k,
- 					      SET_NEEDS_REBALANCE_other);
-+	int ret = PTR_ERR_OR_ZERO(opts);
- 	if (ret)
- 		return bkey_s_c_err(ret);
- 
-+	*opts_ret = opts;
+-	if (!opts->background_compression)
+-		return 0;
++	*move_ptrs	= 0;
++	*compress_ptrs	= 0;
++	*sectors	= 0;
 +
- 	memset(data_opts, 0, sizeof(*data_opts));
--	data_opts->rewrite_ptrs		= bch2_bkey_ptrs_need_rebalance(c, io_opts, k);
--	data_opts->target		= io_opts->background_target;
-+	data_opts->rewrite_ptrs		= bch2_bkey_ptrs_need_rebalance(c, opts, k);
-+	data_opts->target		= opts->background_target;
- 	data_opts->write_flags		|= BCH_WRITE_only_specified_devs;
++	struct bkey_ptrs_c ptrs = bch2_bkey_ptrs_c(k);
++
++	const struct bch_extent_rebalance *rb_opts = bch2_bkey_ptrs_rebalance_opts(ptrs);
++	if (!io_opts && !rb_opts)
++		return;
++
++	if (bch2_bkey_extent_ptrs_flags(ptrs) & BIT_ULL(BCH_EXTENT_FLAG_poisoned))
++		return;
++
++	unsigned compression_type =
++		bch2_compression_opt_to_type(io_opts
++					     ? io_opts->background_compression
++					     : rb_opts->background_compression);
++	unsigned target = io_opts
++		? io_opts->background_target
++		: rb_opts->background_target;
++	if (target && !bch2_target_accepts_data(c, BCH_DATA_user, target))
++		target = 0;
  
- 	if (!data_opts->rewrite_ptrs) {
-@@ -505,19 +511,19 @@ static struct bkey_s_c next_rebalance_extent(struct btree_trans *trans,
+-	unsigned compression_type = bch2_compression_opt_to_type(opts->background_compression);
+ 	const union bch_extent_entry *entry;
+ 	struct extent_ptr_decoded p;
+-	unsigned ptr_bit = 1;
+-	unsigned rewrite_ptrs = 0;
+-
+-	bkey_for_each_ptr_decode(k.k, ptrs, p, entry) {
+-		if (p.crc.compression_type == BCH_COMPRESSION_TYPE_incompressible ||
+-		    p.ptr.unwritten)
+-			return 0;
++	bool incompressible = false, unwritten = false;
  
- 		struct bkey_ptrs_c ptrs = bch2_bkey_ptrs_c(k);
+-		if (!p.ptr.cached && p.crc.compression_type != compression_type)
+-			rewrite_ptrs |= ptr_bit;
+-		ptr_bit <<= 1;
+-	}
++	unsigned ptr_idx = 1;
  
--		unsigned p = bch2_bkey_ptrs_need_compress(c, io_opts, k, ptrs);
-+		unsigned p = bch2_bkey_ptrs_need_compress(c, opts, k, ptrs);
- 		if (p) {
- 			prt_str(&buf, "compression=");
--			bch2_compression_opt_to_text(&buf, io_opts->background_compression);
-+			bch2_compression_opt_to_text(&buf, opts->background_compression);
+-	return rewrite_ptrs;
+-}
++	guard(rcu)();
++	bkey_for_each_ptr_decode(k.k, ptrs, p, entry) {
++		incompressible	|= p.crc.compression_type == BCH_COMPRESSION_TYPE_incompressible;
++		unwritten	|= p.ptr.unwritten;
+ 
+-static inline unsigned bch2_bkey_ptrs_need_move(struct bch_fs *c,
+-				       struct bch_inode_opts *opts,
+-				       struct bkey_ptrs_c ptrs)
+-{
+-	if (!opts->background_target ||
+-	    !bch2_target_accepts_data(c, BCH_DATA_user, opts->background_target))
+-		return 0;
++		if (!p.ptr.cached) {
++			if (p.crc.compression_type != compression_type)
++				*compress_ptrs |= ptr_idx;
+ 
+-	unsigned ptr_bit = 1;
+-	unsigned rewrite_ptrs = 0;
++			if (target && !bch2_dev_in_target(c, p.ptr.dev, target))
++				*move_ptrs |= ptr_idx;
++		}
+ 
+-	guard(rcu)();
+-	bkey_for_each_ptr(ptrs, ptr) {
+-		if (!ptr->cached && !bch2_dev_in_target(c, ptr->dev, opts->background_target))
+-			rewrite_ptrs |= ptr_bit;
+-		ptr_bit <<= 1;
++		ptr_idx <<= 1;
+ 	}
+ 
+-	return rewrite_ptrs;
+-}
++	if (unwritten)
++		*compress_ptrs = 0;
++	if (incompressible)
++		*compress_ptrs = 0;
+ 
+-static unsigned bch2_bkey_ptrs_need_rebalance(struct bch_fs *c,
+-					      struct bch_inode_opts *opts,
+-					      struct bkey_s_c k)
+-{
+-	struct bkey_ptrs_c ptrs = bch2_bkey_ptrs_c(k);
++	unsigned rb_ptrs = *move_ptrs | *compress_ptrs;
+ 
+-	if (bch2_bkey_extent_ptrs_flags(ptrs) & BIT_ULL(BCH_EXTENT_FLAG_poisoned))
+-		return 0;
++	if (!rb_ptrs)
++		return;
+ 
+-	return bch2_bkey_ptrs_need_compress(c, opts, k, ptrs) |
+-		bch2_bkey_ptrs_need_move(c, opts, ptrs);
++	ptr_idx = 1;
++	bkey_for_each_ptr_decode(k.k, ptrs, p, entry) {
++		if (rb_ptrs & ptr_idx)
++			*sectors += p.crc.compressed_size;
++		ptr_idx <<= 1;
++	}
+ }
+ 
+ u64 bch2_bkey_sectors_need_rebalance(struct bch_fs *c, struct bkey_s_c k)
+ {
+-	struct bkey_ptrs_c ptrs = bch2_bkey_ptrs_c(k);
++	unsigned move_ptrs	= 0;
++	unsigned compress_ptrs	= 0;
++	u64 sectors		= 0;
+ 
+-	const struct bch_extent_rebalance *opts = bch2_bkey_ptrs_rebalance_opts(ptrs);
+-	if (!opts)
+-		return 0;
+-
+-	if (bch2_bkey_extent_ptrs_flags(ptrs) & BIT_ULL(BCH_EXTENT_FLAG_poisoned))
+-		return 0;
+-
+-	const union bch_extent_entry *entry;
+-	struct extent_ptr_decoded p;
+-	u64 sectors = 0;
+-
+-	if (opts->background_compression) {
+-		unsigned compression_type = bch2_compression_opt_to_type(opts->background_compression);
+-
+-		bkey_for_each_ptr_decode(k.k, ptrs, p, entry) {
+-			if (p.crc.compression_type == BCH_COMPRESSION_TYPE_incompressible ||
+-			    p.ptr.unwritten) {
+-				sectors = 0;
+-				goto incompressible;
+-			}
++	bch2_bkey_needs_rebalance(c, k, NULL, &move_ptrs, &compress_ptrs, &sectors);
++	return sectors;
++}
+ 
+-			if (!p.ptr.cached && p.crc.compression_type != compression_type)
+-				sectors += p.crc.compressed_size;
+-		}
+-	}
+-incompressible:
+-	if (opts->background_target) {
+-		guard(rcu)();
+-		bkey_for_each_ptr_decode(k.k, ptrs, p, entry)
+-			if (!p.ptr.cached &&
+-			    !bch2_dev_in_target(c, p.ptr.dev, opts->background_target))
+-				sectors += p.crc.compressed_size;
+-	}
++static unsigned bch2_bkey_ptrs_need_rebalance(struct bch_fs *c,
++					      struct bch_inode_opts *opts,
++					      struct bkey_s_c k)
++{
++	unsigned move_ptrs	= 0;
++	unsigned compress_ptrs	= 0;
++	u64 sectors		= 0;
+ 
+-	return sectors;
++	bch2_bkey_needs_rebalance(c, k, opts, &move_ptrs, &compress_ptrs, &sectors);
++	return move_ptrs|compress_ptrs;
+ }
+ 
+ static inline bool bkey_should_have_rb_opts(struct bch_fs *c,
+@@ -518,23 +507,25 @@ static struct bkey_s_c next_rebalance_extent(struct btree_trans *trans,
+ 		bch2_bkey_val_to_text(&buf, c, k);
+ 		prt_newline(&buf);
+ 
+-		struct bkey_ptrs_c ptrs = bch2_bkey_ptrs_c(k);
++		unsigned move_ptrs	= 0;
++		unsigned compress_ptrs	= 0;
++		u64 sectors		= 0;
+ 
+-		unsigned p = bch2_bkey_ptrs_need_compress(c, opts, k, ptrs);
+-		if (p) {
+-			prt_str(&buf, "compression=");
+-			bch2_compression_opt_to_text(&buf, opts->background_compression);
++		bch2_bkey_needs_rebalance(c, k, opts, &move_ptrs, &compress_ptrs, &sectors);
++
++		if (move_ptrs) {
++			prt_str(&buf, "move=");
++			bch2_target_to_text(&buf, c, opts->background_target);
  			prt_str(&buf, " ");
- 			bch2_prt_u64_base2(&buf, p);
+-			bch2_prt_u64_base2(&buf, p);
++			bch2_prt_u64_base2(&buf, move_ptrs);
  			prt_newline(&buf);
  		}
  
--		p = bch2_bkey_ptrs_need_move(c, io_opts, ptrs);
-+		p = bch2_bkey_ptrs_need_move(c, opts, ptrs);
- 		if (p) {
- 			prt_str(&buf, "move=");
--			bch2_target_to_text(&buf, c, io_opts->background_target);
-+			bch2_target_to_text(&buf, c, opts->background_target);
+-		p = bch2_bkey_ptrs_need_move(c, opts, ptrs);
+-		if (p) {
+-			prt_str(&buf, "move=");
+-			bch2_target_to_text(&buf, c, opts->background_target);
++		if (compress_ptrs) {
++			prt_str(&buf, "compression=");
++			bch2_compression_opt_to_text(&buf, opts->background_compression);
  			prt_str(&buf, " ");
- 			bch2_prt_u64_base2(&buf, p);
+-			bch2_prt_u64_base2(&buf, p);
++			bch2_prt_u64_base2(&buf, compress_ptrs);
  			prt_newline(&buf);
-@@ -532,6 +538,7 @@ static struct bkey_s_c next_rebalance_extent(struct btree_trans *trans,
+ 		}
  
- noinline_for_stack
- static int do_rebalance_extent(struct moving_context *ctxt,
-+			       struct per_snapshot_io_opts *snapshot_io_opts,
- 			       struct bpos work_pos,
- 			       struct btree_iter *extent_iter)
- {
-@@ -539,7 +546,7 @@ static int do_rebalance_extent(struct moving_context *ctxt,
- 	struct bch_fs *c = trans->c;
- 	struct bch_fs_rebalance *r = &trans->c->rebalance;
- 	struct data_update_opts data_opts;
--	struct bch_inode_opts io_opts;
-+	struct bch_inode_opts *io_opts;
- 	struct bkey_s_c k;
- 	struct bkey_buf sk;
- 	int ret;
-@@ -550,8 +557,8 @@ static int do_rebalance_extent(struct moving_context *ctxt,
- 	bch2_bkey_buf_init(&sk);
- 
- 	ret = lockrestart_do(trans,
--		bkey_err(k = next_rebalance_extent(trans, work_pos,
--				extent_iter, &io_opts, &data_opts)));
-+		bkey_err(k = next_rebalance_extent(trans, snapshot_io_opts,
-+				work_pos, extent_iter, &io_opts, &data_opts)));
- 	if (ret || !k.k)
- 		goto out;
- 
-@@ -564,7 +571,7 @@ static int do_rebalance_extent(struct moving_context *ctxt,
- 	bch2_bkey_buf_reassemble(&sk, c, k);
- 	k = bkey_i_to_s_c(sk.k);
- 
--	ret = bch2_move_extent(ctxt, NULL, extent_iter, k, io_opts, data_opts);
-+	ret = bch2_move_extent(ctxt, NULL, extent_iter, k, *io_opts, data_opts);
- 	if (ret) {
- 		if (bch2_err_matches(ret, ENOMEM)) {
- 			/* memory allocation failure, wait for some IO to finish */
-@@ -607,6 +614,7 @@ static int do_rebalance_scan_indirect(struct btree_trans *trans,
- }
- 
- static int do_rebalance_scan(struct moving_context *ctxt,
-+			     struct per_snapshot_io_opts *snapshot_io_opts,
- 			     u64 inum, u64 cookie, u64 *sectors_scanned)
- {
- 	struct btree_trans *trans = ctxt->trans;
-@@ -626,9 +634,6 @@ static int do_rebalance_scan(struct moving_context *ctxt,
- 
- 	r->state = BCH_REBALANCE_scanning;
- 
--	struct per_snapshot_io_opts snapshot_io_opts;
--	per_snapshot_io_opts_init(&snapshot_io_opts, c);
--
- 	int ret = for_each_btree_key_max(trans, iter, BTREE_ID_extents,
- 					 r->scan_start.pos, r->scan_end.pos,
- 					 BTREE_ITER_all_snapshots|
-@@ -636,7 +641,7 @@ static int do_rebalance_scan(struct moving_context *ctxt,
- 		ctxt->stats->pos = BBPOS(iter.btree_id, iter.pos);
- 
- 		struct bch_inode_opts *opts = bch2_extent_get_apply_io_opts(trans,
--					&snapshot_io_opts, iter.pos, &iter, k,
-+					snapshot_io_opts, iter.pos, &iter, k,
- 					SET_NEEDS_REBALANCE_opt_change);
- 		PTR_ERR_OR_ZERO(opts) ?:
- 		(inum &&
-@@ -648,16 +653,14 @@ static int do_rebalance_scan(struct moving_context *ctxt,
- 	commit_do(trans, NULL, NULL, BCH_TRANS_COMMIT_no_enospc,
- 		  bch2_clear_rebalance_needs_scan(trans, inum, cookie));
- 
--	per_snapshot_io_opts_exit(&snapshot_io_opts);
- 	*sectors_scanned += atomic64_read(&r->scan_stats.sectors_seen);
--	bch2_move_stats_exit(&r->scan_stats, c);
--
- 	/*
- 	 * Ensure that the rebalance_work entries we created are seen by the
- 	 * next iteration of do_rebalance(), so we don't end up stuck in
- 	 * rebalance_wait():
- 	 */
- 	*sectors_scanned += 1;
-+	bch2_move_stats_exit(&r->scan_stats, c);
- 
- 	bch2_btree_write_buffer_flush_sync(trans);
- 
-@@ -709,6 +712,9 @@ static int do_rebalance(struct moving_context *ctxt)
- 
- 	bch2_move_stats_init(&r->work_stats, "rebalance_work");
- 
-+	struct per_snapshot_io_opts snapshot_io_opts;
-+	per_snapshot_io_opts_init(&snapshot_io_opts, c);
-+
- 	while (!bch2_move_ratelimit(ctxt)) {
- 		if (!bch2_rebalance_enabled(c)) {
- 			bch2_moving_ctxt_flush_all(ctxt);
-@@ -723,15 +729,18 @@ static int do_rebalance(struct moving_context *ctxt)
- 			break;
- 
- 		ret = k->k.type == KEY_TYPE_cookie
--			? do_rebalance_scan(ctxt, k->k.p.inode,
-+			? do_rebalance_scan(ctxt, &snapshot_io_opts,
-+					    k->k.p.inode,
- 					    le64_to_cpu(bkey_i_to_cookie(k)->v.cookie),
- 					    &sectors_scanned)
--			: do_rebalance_extent(ctxt, k->k.p, &extent_iter);
-+			: do_rebalance_extent(ctxt, &snapshot_io_opts,
-+					      k->k.p, &extent_iter);
- 		if (ret)
- 			break;
- 	}
- 
- 	bch2_trans_iter_exit(&extent_iter);
-+	per_snapshot_io_opts_exit(&snapshot_io_opts);
- 	bch2_move_stats_exit(&r->work_stats, c);
- 
- 	if (!ret &&
 -- 
 2.50.1
 
