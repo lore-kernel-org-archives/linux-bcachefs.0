@@ -1,38 +1,37 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA64E2BE641
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2EF52BE7A7
 	for <linux-bcachefs@vger.kernel.org>; Tue, 26 Aug 2025 22:50:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756248607; cv=none; b=CwcD87G6ZSQjBCZC67EXbxqlpXRN6DaUap+Kh2foKFumpmw/x+64eabaqRk9iNNRZzgRbpDtg0FyDO5F+4/FzUfqPqjBOOp0Cvel1tLCVJmgAEhvtjNc6n1oUD9xpWzHVCP7LaV0MWWGWbbKgf56hIBK7QFCQLQO03U/uOeX8Dk=
+	t=1756248607; cv=none; b=pv9Mxqu9IeDz+H6qnx5J/pulrXCtPWPdVVNKTw0OkqSNz69Vqeu4tJYPPI+XwJGR1vsNSGLIAZCF/Gc9QgrHKL2qmtVXH6uo960qW8tGw/lHNOZdkuqth2P5fUamMx7hg3KAJCC0K64XaqdV5FRuhku6RYzCxtxZBjQLrzHzX9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1756248607; c=relaxed/simple;
-	bh=tWWHaLLRc2APwfQvajhC3gk8uj2Z91BIEFmLI+Rp9b4=;
+	bh=aBs+yP9YbCt/4MZN8wE8KxxrIEfYM8zRS1Atk+Peqp8=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=FCybxTh3OwGmmS9jryo6V3SXrER/Vbu4hA/XvuC+dSS181Vr2IVMvZnyV1HC6wRM8xZHg/98BHBe1TIc700IFJGslDNt3oPCR41NoWx7+gL7aaBTMvoHJMKKDFPFJ8yZR/H+15wGTpVw19jTGSBCJ0okdC6aDyQ0npUz2IZl0M4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X0H06nLH; arc=none smtp.client-ip=10.30.226.201
+	 In-Reply-To:To:Cc; b=TxvORouYUoplUIqnAEf+527Oac3/aQcTynYIlCRuc3jtV8vSgZYy9T1i9autsNNAKGG/f1BIMQoCXyPbx72USfq5gx+CrQVQ1l1AykRM/SMej+2NKWPOBH6YKZsIZcOYx0+EPErgVP3KSR4jSFGD428ADuG8Zq9lKI9W5w/gwEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rn1924q1; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X0H06nLH"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 83F97C2BC86;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rn1924q1"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 43E4DC16AAE;
 	Tue, 26 Aug 2025 22:50:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1756248607;
-	bh=tWWHaLLRc2APwfQvajhC3gk8uj2Z91BIEFmLI+Rp9b4=;
+	bh=aBs+yP9YbCt/4MZN8wE8KxxrIEfYM8zRS1Atk+Peqp8=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=X0H06nLHce7SJSmkUkZmUpwpS8/x+UvI00T1Pg1Bxv9xh29rp7cscpkl5FEEcpUad
-	 1/Vc6nDlox5BggG5fWqk9PWwmdSbx/NU1DuyWAhavKYx8du/qyw0nUEor7pfGk0sKT
-	 LQI0lG9LFClR5r1utp29a6oVqU9A3ZOaYh8ogPKpvabZSrz2c0jCzF49t9/OclPQR8
-	 Z4cX07N3awtfwiLC1PisMcR0UE4uAFek52dy4gfJiFMHHTCdcYBAlZvxX0DWNfZzHC
-	 3cC1DlQTsl/20VZT7X6uoX8QiOtvZ5J45dboRGivFd/wE+PaZRqMHHBOxz562POvVi
-	 wc3lS17hfHKBw==
+	b=rn1924q18Npk0FG+uFSAcLJryuVj/brxiktQihJhIKvGxpiT3sg6r/xf1nW8I7kV7
+	 dCHRyIc57gF/k1kvjK2XJQQSSIBp6dU5Sgst4n5qU1vDQaHv3HvhLKAJe6uJTws3Qf
+	 Aj1JXdZ8bctDdzReCgI0f6DEexYtNY0iRIcGBcoJTeB6SAF4P8lOlDF8o25C8pYFcR
+	 VJajP0MpB82C0MDR4Q4qkOPs7DgWNN3L6a1wDrSMg2uTY0ZovaR26zUpOV2njBq2Ki
+	 vk0Xe533PAnn8gBedJPY5VILMfJwghgtzTi5QY0yON6Fa7qy3p5tx7tmhwMrYQSMu5
+	 f5tO0KUtWp2qg==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D58DCA0FF0;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CB10CA0FF9;
 	Tue, 26 Aug 2025 22:50:07 +0000 (UTC)
 From: Nikita Ofitserov via B4 Relay <devnull+himikof.gmail.com@kernel.org>
-Date: Wed, 27 Aug 2025 01:49:16 +0300
-Subject: [PATCH 10/12] bcachefs: Improve check_allocations pass speed not
- in fsck
+Date: Wed, 27 Aug 2025 01:49:10 +0300
+Subject: [PATCH 04/12] bcachefs: Introduce btree_leaf_has_triggers_mask
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -41,19 +40,19 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250827-better-progress-v1-10-74c24de7988a@gmail.com>
+Message-Id: <20250827-better-progress-v1-4-74c24de7988a@gmail.com>
 References: <20250827-better-progress-v1-0-74c24de7988a@gmail.com>
 In-Reply-To: <20250827-better-progress-v1-0-74c24de7988a@gmail.com>
 To: Kent Overstreet <kent.overstreet@linux.dev>
 Cc: linux-bcachefs@vger.kernel.org, Nikita Ofitserov <himikof@gmail.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1395; i=himikof@gmail.com;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1519; i=himikof@gmail.com;
  h=from:subject:message-id;
- bh=WSNOd5gV6NmNyQNbSGutydt83aC8FZuQ9bqlIo3aZ8o=;
- b=owGbwMvMwCW2edHtzWZP9DIYT6slMWSss5Jdv4/5fMBGrp9TPzHrftzxw6zcu0KK1+hw2DOLu
- tLGzUdXd5SyMIhxMciKKbJ8WPL1z5pM6z+WQnsNYeawMoEMYeDiFICJfGFmZJjOcui6nX/j3eCb
- ziKHeJVMqrr8GGUNtqu+tP79dP+tNeKMDK+uy/LxXRGTWB3/OlPaeleq26MobWMewUsdh4r1zR6
- /YwUA
+ bh=TYWLHU8w0/8UTBK1GkJbIUDQjni0TKSNwZ+FHNlfT2A=;
+ b=owGbwMvMwCW2edHtzWZP9DIYT6slMWSss5KZd/Cy8E+T+TG/L916uzzlTD7LYZlEb7MIHt0tX
+ 96wJkyL7yhlYRDjYpAVU2T5sOTrnzWZ1n8shfYawsxhZQIZwsDFKQATYfnJyNAXrvTomcj+GNYn
+ SgqX1onNU5t/9N00yZkRZ87YbuoIfZvIyHCn2eCyk8Dzcx4HLZ0bH/P57/nSwPrQbK/UkYerdB5
+ /EeIDAA==
 X-Developer-Key: i=himikof@gmail.com; a=openpgp;
  fpr=F0A4F5FCAC693BFC3912BD31B3A2DBB336E42E68
 X-Endpoint-Received: by B4 Relay for himikof@gmail.com/default with
@@ -63,43 +62,39 @@ Reply-To: himikof@gmail.com
 
 From: Nikita Ofitserov <himikof@gmail.com>
 
-Skip reading unnecessary leaf btree nodes unless running fsck.
-For example, this should speed up version upgrade/downgrade when
-rebuilding accounting information.
-
 Signed-off-by: Nikita Ofitserov <himikof@gmail.com>
 ---
- fs/bcachefs/btree_gc.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ fs/bcachefs/btree_gc.c    | 2 +-
+ fs/bcachefs/btree_types.h | 3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/fs/bcachefs/btree_gc.c b/fs/bcachefs/btree_gc.c
-index b89e12a3112868f175d028ce9745c8b4944ca747..c04e88ec5c0ac73c21f01db597b19d1b0c798299 100644
+index 43f294284d57473fd8868c974c4bdd847fcf2636..2b1b6b7ffdf0af7ec0bf4cbaf68cc9a53a20cfce 100644
 --- a/fs/bcachefs/btree_gc.c
 +++ b/fs/bcachefs/btree_gc.c
-@@ -793,8 +793,21 @@ static int bch2_gc_btrees(struct bch_fs *c)
- 		if (IS_ERR_OR_NULL(bch2_btree_id_root(c, btree)->b))
- 			continue;
+@@ -720,7 +720,7 @@ static int bch2_gc_btree(struct btree_trans *trans,
+ 			 enum btree_id btree, bool initial)
+ {
+ 	struct bch_fs *c = trans->c;
+-	unsigned target_depth = btree_node_type_has_triggers(__btree_node_type(0, btree)) ? 0 : 1;
++	unsigned target_depth = BIT_ULL(btree) & btree_leaf_has_triggers_mask ? 0 : 1;
+ 	int ret = 0;
  
--		/* We need to make sure every leaf node is readable before going RW */
--		ret = bch2_gc_btree(trans, &progress, btree, 0, true);
-+
-+		unsigned target_depth = BIT_ULL(btree) & btree_leaf_has_triggers_mask ? 0 : 1;
-+
-+		/*
-+		 * In fsck, we need to make sure every leaf node is readable
-+		 * before going RW, otherwise we can no longer rewind inside
-+		 * btree_lost_data to repair during the current fsck run.
-+		 *
-+		 * Otherwise, we can delay the repair to the next
-+		 * mount or offline fsck.
-+		 */
-+		if (test_bit(BCH_FS_in_fsck, &c->flags))
-+			target_depth = 0;
-+
-+		ret = bch2_gc_btree(trans, &progress, btree, target_depth, true);
- 	}
+ 	/* We need to make sure every leaf node is readable before going RW */
+diff --git a/fs/bcachefs/btree_types.h b/fs/bcachefs/btree_types.h
+index e893eb938bb3da441f0ab0096ced3cc3c2a701e2..ad9bd18fe9b6e51987da74d373830dca98df56ec 100644
+--- a/fs/bcachefs/btree_types.h
++++ b/fs/bcachefs/btree_types.h
+@@ -840,6 +840,9 @@ static inline bool btree_node_type_has_triggers(enum btree_node_type type)
+ 	return BIT_ULL(type) & BTREE_NODE_TYPE_HAS_TRIGGERS;
+ }
  
- 	bch_err_fn(c, ret);
++/* A mask of btree id bits that have triggers for their leaves */
++static const u64 btree_leaf_has_triggers_mask = BTREE_NODE_TYPE_HAS_TRIGGERS >> 1;
++
+ static const u64 btree_is_extents_mask = 0
+ #define x(name, nr, flags, ...)	|((!!((flags) & BTREE_IS_extents)) << nr)
+ BCH_BTREE_IDS()
 
 -- 
 2.50.1
