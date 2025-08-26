@@ -1,141 +1,97 @@
-Received: from mail-pg1-f196.google.com (mail-pg1-f196.google.com [209.85.215.196])
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B3302877F0;
-	Tue, 26 Aug 2025 05:05:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1864D26A1D9
+	for <linux-bcachefs@vger.kernel.org>; Tue, 26 Aug 2025 07:13:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756184707; cv=none; b=OnboJrloqq5GDk3IbYa3vjqRxsMdtExbAKjpKpqb+xy3OgGg/UZVzEjYaiyC7sH1BJC5HMcNqN87v7BHiIO3OzxgzVNTqv0yR6/rjnqPxzxnzctg/jk+9xOBOr84lZynGYwrTkWrvRcrjNVw2nL6LYgZWD9wtQwfVif9Js6yBX8=
+	t=1756192415; cv=none; b=epNDikJ3wObPAahF3OUJEvAoCJSTuBTZDnFMEcpYxyPAVAdiUZ9oQIwz8XnJui+LwEjkdTIEARkjVVljOYlvn+WeIuzCTYq1gBAIBcPPbaLJVCOQCLePN8fVXSDzil9aWzD8uz1tHtl+tRzfoXHCV0N9xWGQY5V05mJ6pgSVxDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756184707; c=relaxed/simple;
-	bh=sjPa3h9TrkiaHGQzOZxLFO+BsFASSkV8qIzabkQ/DC0=;
-	h=From:Message-ID:Date:MIME-Version:Subject:References:To:Cc:
-	 In-Reply-To:Content-Type; b=eEltmm/16RjBJv0CoOjl4MH6txLudeYuuCUZjscHAmJ6JqQ5ClFVk3LjiEhkAcsoeR+xSd5M2QG8WPZmjy2HpqHrvjJwSwazOuMne7+lfM5T8VwMCpJu5Rbxhu0R8n+mDOSMThBoROU+2xkSjzkOS/EpnTKGfk+3iY7Da2iWZKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N37OJSoC; arc=none smtp.client-ip=209.85.215.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N37OJSoC"
-Received: by mail-pg1-f196.google.com with SMTP id 41be03b00d2f7-b4c1aefa8deso1135333a12.0;
-        Mon, 25 Aug 2025 22:05:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756184705; x=1756789505; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:cc:to:references
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PSlMvktid+Ddpqcdw6wG+tzjVJM72KntDG+UV0J9J3U=;
-        b=N37OJSoCtH4ekhGMyDwdd++JzjA1fLNSVlRp7TyvGDlU9QM1QoaIN90uNVK7Y0ItLY
-         CIxxBhUccm6oQ9Hv7NzFyT2UIBIUQNrL8S7evirEXCaeBNxW7HckQE+JVJvFRCU0XTT2
-         o2QNEcm00wYmJxzTrdxtK2UBjdVLBvx2NctdmtDzsVSwmHpN0HYDspW1wJIp640BhAXg
-         EUhSHofNNXyxK81LSLFJlz03Xc93VT7+2p8Hpn/tH/WLP9Sor6rmIRB2SeKoFHsxEsvO
-         Xy7Jbpli4rlhWb/WC2e4O5J/SlYj+A7Plz/A70o+m5c9q3yfmajS35uEtyZCh9VUyZtU
-         VHEQ==
+	s=arc-20240116; t=1756192415; c=relaxed/simple;
+	bh=e4+LN9VJ/FvXPbGXSjCrXOaZtrPB81yZlLjDGr42tfg=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=u1RJD6BoU7nNOO3HbeoMU8FL+uYodi9fzS/+Rve9xO+VaaiHolB/8qqCnMZsGjPhFeluU43IGcCepsx3S+HDp/ucMcT9Y4xdTegc4q2zLGwskUpfx8WCuNcDoyiu0/2ncvcui8dJcvz44vqIUgEgSdlVFTnl6EZLQx6B1LotAK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-88432ccc4f9so1203490139f.0
+        for <linux-bcachefs@vger.kernel.org>; Tue, 26 Aug 2025 00:13:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756184705; x=1756789505;
-        h=content-transfer-encoding:in-reply-to:cc:to:references
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PSlMvktid+Ddpqcdw6wG+tzjVJM72KntDG+UV0J9J3U=;
-        b=j9U/HvysRK0Z17ialvnpc8Cq7bScsSjBieUSttCUj/4K43A3n+aiiopmiSrJRgvHa+
-         54gZm0f+GARXTeSbwiSeQoSOL1qtMsYCD4BKxE5V26zh7/024M1pr25mOVQEMtGr4n2b
-         0TuKSzWgoLTl3G8M8kxpHtyrKPQ0ShdqNNnypIcxdYTgQaerVQMX5VlryDxSUYZZFulN
-         d2nZ1WuDX5mfL49wP413dLicKVxG3FmjJ5uXRjxx+LG/NGbBETI9e8Yr0MwSmP1rxnyT
-         TbBQNH4Q1sEGOQwEjB52QP/6iAdbWWVSXaU5o/DlXyxDpbKNmEvSshL1EJ7OySNgRFzB
-         WaKg==
-X-Forwarded-Encrypted: i=1; AJvYcCUImjRZzX8MzL5kBiXvTcWVaT49tJ8waaKqJFnkb14cW9l34Pu5kjgJS/ZGjesOLzMH6dc2ZWkPmyHk@vger.kernel.org, AJvYcCUQ2i4K+Ir+Iznt38HBZbCB5yJo3CnZtPua982eROJ4KwPK2DMYqpDkq1zreQsIGlmH/o0htThCTmMA/Wow@vger.kernel.org, AJvYcCXmIsZARxlGZBggMzV3+mscU3Fh5IXp5rp0Hw/nA2X4yFQgFEXPkprZHAw/HHToxjQ0ZbFuGw7sm+1qSept9w==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxufGT+8SEiy9MeO/50Vn2tqPPk4uBX+B7FAv4SoTb1pKABcQ7W
-	Ngq+SZg5KlAX4LzPKnSH+e282K9yLfTtaS4LJZMTfRT6J1OIAIP1KJvxRF8SWy+K
-X-Gm-Gg: ASbGncu4aWXVcNwZmREkVVh1lwoJ4d8c327qHuhDBl/01gKaKQudBWI2m8mInWq5eFS
-	GJu3sLcnfT4OuDxJw169SqRak5ytetvX62IxTREWudFO/PwTpNsgC1ECmA4FLwqb6zx0um7leRM
-	wRbDFirwo3eKkjl8CQ4RQEhRqfs5gUTZWHnw+FvF1TuGX46am7tHH7LsuhP0WjcZ74lbF2h3lyB
-	4VQVS2MsjvCqjbbIwJ18a9TcIvtDWWeVDDJVRM42BJlAjXiM51USSHgFpGrAP2jf6SqzgCDSdGn
-	Pxr00uYzoGM4FuZTl968NTDwQsPFWCnVx59WuqnvZXFDj9LBoKwy47sowjmC1Rqn0SU5lPXcU+C
-	S2SCzB7DCxSqfWeHd166LpCDIVcwqvyTjFU5QBiaoKMfJgJzSd3Bm2B5y4VpqX+HKfOR+moSOhi
-	05LNGgESMgPylLPELlzI2VAQtrbclqKc93DGc=
-X-Google-Smtp-Source: AGHT+IE+CI33EYvWPmjh76db7GEbOlzCZ3TNPUv7S7MZ0gyiLs803+z7prqzDp+S/abVNxbhyIEiUw==
-X-Received: by 2002:a17:902:cf4c:b0:246:7d4c:9f90 with SMTP id d9443c01a7336-2467d4ca180mr151892825ad.6.1756184704691;
-        Mon, 25 Aug 2025 22:05:04 -0700 (PDT)
-Received: from ?IPV6:2401:4900:1cb5:c77c:a6b5:e4a3:1826:1f25? ([2401:4900:1cb5:c77c:a6b5:e4a3:1826:1f25])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2466885ed72sm83555175ad.92.2025.08.25.22.05.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Aug 2025 22:05:03 -0700 (PDT)
-From: Sahil <chandna.linuxkernel@gmail.com>
-X-Google-Original-From: Sahil <chandna.sahil@gmail.com>
-Message-ID: <87801a1c-c11b-4615-a225-871be2ad2ae5@gmail.com>
-Date: Tue, 26 Aug 2025 10:35:00 +0530
+        d=1e100.net; s=20230601; t=1756192413; x=1756797213;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OwtFk3OBEqmOdFmpz6iENBLxP923nbiGy1Q2vgm/Aso=;
+        b=N1Q9Nmt1Ke2HOOz7FJeqMe2HshAPNMzmiMv98cUsRgQ/P+xXJdU5gO1s1cSMqNUC/W
+         wxxZ98RQgzxs7Fa8+PoGoqhhq7g0djz/6smHnH+0x76F8vRTsSa+hGET3EDvuJXuu6nt
+         s6BOzmfVq1yxAhXvQy/caW52v4ahTMbuc7EBxCwCeWmyxgtTZfqSOReiNjXeJjJwTqzK
+         NYFYSPgU1QFPUnFfnB+UNXX70m0E30hEMlUgWDo2x88zCbszVMU2KXunQOB1IgjjDhE1
+         GH4i4FqBsEhgYQLv9CAZy8dZEDhK6BlOgk0PcWXYmFlI4vxESrIDzJ1LOsj1Ak3APsHw
+         HNNA==
+X-Forwarded-Encrypted: i=1; AJvYcCXn6EG6chTbCEVoHSwS5aYIbWTOJWxfpFu+6tAub+DohvpeFUpM3NYP3HsSmQ8b7WKtVAbPEyxI4zhvJpCvbg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywd13TZjo7xMM9x+Sh5UIGzk0EUE0UH/ZMiSsmxjAOdtgiycTZh
+	YIuNRswtHCLpMcuEMDIFdixeCeqgcBee8JTcdoju5V2X0e2O1zrA/SxRA5/RtGEWCKK0REYZQ36
+	sOnD3N6tBU29+pV6WmnUumocTLtwxGa0dBdDtmDlfTB2+hB1zzffvKiHjhGs=
+X-Google-Smtp-Source: AGHT+IGX1ebrSxEjq825kfMpN9f16FdGDQBuyHxdo9Y3GMv4umkBvCfO6w7U6yk3DRcV3gAfkU0UKioHoLfwxwwaKTfZ6WD+fae2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: [PATCH v2] docs: bcachefs: fix typo in idle_work documentation
-Content-Language: en-US
-References: <1055aa42-248a-4d14-8ae6-dc97878e33e7@gmail.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: corbet@lwn.net, rdunlap@infradead.org, linux-bcachefs@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <1055aa42-248a-4d14-8ae6-dc97878e33e7@gmail.com>
-X-Forwarded-Message-Id: <1055aa42-248a-4d14-8ae6-dc97878e33e7@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1a03:b0:3ee:66f4:a8c with SMTP id
+ e9e14a558f8ab-3ee66f40bcdmr35154665ab.6.1756192413301; Tue, 26 Aug 2025
+ 00:13:33 -0700 (PDT)
+Date: Tue, 26 Aug 2025 00:13:33 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68ad5e9d.050a0220.37038e.00ad.GAE@google.com>
+Subject: [syzbot] Monthly bcachefs report (Aug 2025)
+From: syzbot <syzbot+list55f13d56985d7df20cbc@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 23/08/25 21:38, Kent Overstreet wrote:
-> On Sat, Aug 23, 2025 at 05:05:33PM +0530, Sahil wrote:
->> Fix minor spelling mistake in idle_work:
->>
->> - heirarchy -> hierarchy
->>
->> Changes in v2:
->> - Dropped cgroup, idle changes (already being fixed)
->> - Dropped xfs changes (already fixed)
->> - Only keep bcachefs doc fix
->>
->> Link: https://lore.kernel.org/linux-doc/23de3jgp44vih5g6hjgc2ji6momi5t3w7rfkm5mgtajicbbg7a@7r5hgt5e7eir/
->> Based on v6.17-rc2.
-> 
-> please rebase here:
-> https://evilpiepirate.org/git/bcachefs.git
-Thanks Kent, I checked the tree and I will drop this patch since this 
-typo is already fixed with - 
-https://lore.kernel.org/all/a2dvoh6sbqvxbueljd6xbbwytkydu6zgdvzkootojdgddvj4ke@trypmesssyiw/ 
+Hello bcachefs maintainers/developers,
 
-> 
->>
->> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
->> Signed-off-by: Sahil Chandna <chandna.linuxkernel@gmail.com>
->> ---
->> Documentation/filesystems/bcachefs/future/idle_work.rst | 6 +++---
->> 1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/Documentation/filesystems/bcachefs/future/idle_work.rst
->> b/Documentation/filesystems/bcachefs/future/idle_work.rst
->> index 59a332509dcd..f1202113dde0 100644
->> --- a/Documentation/filesystems/bcachefs/future/idle_work.rst
->> +++ b/Documentation/filesystems/bcachefs/future/idle_work.rst
->> @@ -11,10 +11,10 @@ idle" so the system can go to sleep. We don't want to be
->> dribbling out
->> background work while the system should be idle.
->> The complicating factor is that there are a number of background tasks,
->> which
->> -form a heirarchy (or a digraph, depending on how you divide it up) - one
->> +form a hierarchy (or a digraph, depending on how you divide it up) - one
->> background task may generate work for another.
->> -Thus proper idle detection needs to model this heirarchy.
->> +Thus proper idle detection needs to model this hierarchy.
->> - Foreground writes
->> - Page cache writeback
->> @@ -51,7 +51,7 @@ IDLE REGIME
->> When the system becomes idle, we should start flushing our pending work
->> quicker so the system can go to sleep.
->> -Note that the definition of "idle" depends on where in the heirarchy a task
->> +Note that the definition of "idle" depends on where in the hierarchy a task
->> is - a task should start flushing work more quickly when the task above it
->> has
->> stopped generating new work.
->>
->> -- 
->> 2.34.1
->>
+This is a 31-day syzbot report for the bcachefs subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/bcachefs
 
+During the period, 7 new issues were detected and 1 were fixed.
+In total, 40 issues are still open and 224 have already been fixed.
+
+Some of the still happening issues:
+
+Ref  Crashes Repro Title
+<1>  4006    Yes   WARNING in bch2_trans_srcu_unlock
+                   https://syzkaller.appspot.com/bug?extid=1e515cab343dbe5aa38a
+<2>  1442    Yes   INFO: task hung in bch2_journal_reclaim_thread (2)
+                   https://syzkaller.appspot.com/bug?extid=820dc3b465c69f766a57
+<3>  758     Yes   kernel BUG in bch2_quota_check_limit
+                   https://syzkaller.appspot.com/bug?extid=8364d1e040a88ed5657d
+<4>  483     Yes   WARNING in bch2_trans_put
+                   https://syzkaller.appspot.com/bug?extid=291aef749c5cbb9ca2fd
+<5>  369     Yes   WARNING in __bch2_truncate_folio
+                   https://syzkaller.appspot.com/bug?extid=3d11e35eeafe176a6c5b
+<6>  292     Yes   INFO: task hung in bch2_fs_read_only
+                   https://syzkaller.appspot.com/bug?extid=c7aacacf99dcfd3475a7
+<7>  241     Yes   WARNING in bch2_alloc_sectors_start_trans
+                   https://syzkaller.appspot.com/bug?extid=23573dac1278bb26916d
+<8>  125     Yes   general protection fault in put_pwq_unlocked (2)
+                   https://syzkaller.appspot.com/bug?extid=aa930d41d2f32904c5da
+<9>  120     Yes   kernel BUG in __bch2_trans_commit (3)
+                   https://syzkaller.appspot.com/bug?extid=b6ef9edaba01d5b4e43f
+<10> 69      Yes   KMSAN: uninit-value in LZ4_decompress_safe_partial
+                   https://syzkaller.appspot.com/bug?extid=3c88ea590c13f5f92152
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
