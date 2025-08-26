@@ -1,97 +1,118 @@
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1864D26A1D9
-	for <linux-bcachefs@vger.kernel.org>; Tue, 26 Aug 2025 07:13:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 792FA30CDB4
+	for <linux-bcachefs@vger.kernel.org>; Tue, 26 Aug 2025 22:50:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756192415; cv=none; b=epNDikJ3wObPAahF3OUJEvAoCJSTuBTZDnFMEcpYxyPAVAdiUZ9oQIwz8XnJui+LwEjkdTIEARkjVVljOYlvn+WeIuzCTYq1gBAIBcPPbaLJVCOQCLePN8fVXSDzil9aWzD8uz1tHtl+tRzfoXHCV0N9xWGQY5V05mJ6pgSVxDw=
+	t=1756248607; cv=none; b=qk19YwOdgkhN6wV8JBT1ur/optY2PMqgU+npWlGrS5QSorP9wpF5FnWn5ltCUWbDRnRylFonLAthqH4q4WDjqFnzABh0ThRXoRZzApx+pjAUQVgdpnQp7Yvl0kVfUw49Anrfnwu4HotbT+jy1IG1RWH1s2DEmFhA55YVEQWi0rk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756192415; c=relaxed/simple;
-	bh=e4+LN9VJ/FvXPbGXSjCrXOaZtrPB81yZlLjDGr42tfg=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=u1RJD6BoU7nNOO3HbeoMU8FL+uYodi9fzS/+Rve9xO+VaaiHolB/8qqCnMZsGjPhFeluU43IGcCepsx3S+HDp/ucMcT9Y4xdTegc4q2zLGwskUpfx8WCuNcDoyiu0/2ncvcui8dJcvz44vqIUgEgSdlVFTnl6EZLQx6B1LotAK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-88432ccc4f9so1203490139f.0
-        for <linux-bcachefs@vger.kernel.org>; Tue, 26 Aug 2025 00:13:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756192413; x=1756797213;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OwtFk3OBEqmOdFmpz6iENBLxP923nbiGy1Q2vgm/Aso=;
-        b=N1Q9Nmt1Ke2HOOz7FJeqMe2HshAPNMzmiMv98cUsRgQ/P+xXJdU5gO1s1cSMqNUC/W
-         wxxZ98RQgzxs7Fa8+PoGoqhhq7g0djz/6smHnH+0x76F8vRTsSa+hGET3EDvuJXuu6nt
-         s6BOzmfVq1yxAhXvQy/caW52v4ahTMbuc7EBxCwCeWmyxgtTZfqSOReiNjXeJjJwTqzK
-         NYFYSPgU1QFPUnFfnB+UNXX70m0E30hEMlUgWDo2x88zCbszVMU2KXunQOB1IgjjDhE1
-         GH4i4FqBsEhgYQLv9CAZy8dZEDhK6BlOgk0PcWXYmFlI4vxESrIDzJ1LOsj1Ak3APsHw
-         HNNA==
-X-Forwarded-Encrypted: i=1; AJvYcCXn6EG6chTbCEVoHSwS5aYIbWTOJWxfpFu+6tAub+DohvpeFUpM3NYP3HsSmQ8b7WKtVAbPEyxI4zhvJpCvbg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywd13TZjo7xMM9x+Sh5UIGzk0EUE0UH/ZMiSsmxjAOdtgiycTZh
-	YIuNRswtHCLpMcuEMDIFdixeCeqgcBee8JTcdoju5V2X0e2O1zrA/SxRA5/RtGEWCKK0REYZQ36
-	sOnD3N6tBU29+pV6WmnUumocTLtwxGa0dBdDtmDlfTB2+hB1zzffvKiHjhGs=
-X-Google-Smtp-Source: AGHT+IGX1ebrSxEjq825kfMpN9f16FdGDQBuyHxdo9Y3GMv4umkBvCfO6w7U6yk3DRcV3gAfkU0UKioHoLfwxwwaKTfZ6WD+fae2
+	s=arc-20240116; t=1756248607; c=relaxed/simple;
+	bh=8KztQX5RYFze7BGFBWYrQJ/vOs5MCiuY59PzEzAk1cU=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ivPsZGwx9JXp8kVlLdV/fIY+qDULMEpSyzdPwH+uvCPhN9SGWN5t6Sqi0KkWslEId0qjLX5A7wL/bUNqbtI+6GijxbxmVFiQX1UfFc6KzC1MIaKtzPP9W7GEamvZFgeiE+79u6YlFGVmRXcz5OoGCh7EiAIwyQMCdIisxmPa2EQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JfRPzznB; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JfRPzznB"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1FE24C4CEF1;
+	Tue, 26 Aug 2025 22:50:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756248607;
+	bh=8KztQX5RYFze7BGFBWYrQJ/vOs5MCiuY59PzEzAk1cU=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=JfRPzznBNU8p348WZYwLnVs5ZSzPn18x/gEA9fbOdff3CCM5B3kH1nMvSvvGxgWOm
+	 uNzjsMP3YFamFSLEQMT/JUsJRiLCER/pKMzABRroyQjkPuFYi4QyEp09Hx23CiVWcf
+	 yEaD1h6/veCKGasiisvOtNRXu75h/GXnRTmJbHCTWlbga+tzZ22fYznE9/3MPvui0g
+	 Du1IdNGPjeCtrwRcVCPDUupGfAiI5b6Cp4C3MLcnr9fyUF1R/Ky5C3NCpx7i7iKfqG
+	 iROkAxpTYnRUGOEXgyQnVX7leV98EoNPPd7QQ9f1UNf6Lc8e5hA7NeuxIWZN8+kozq
+	 xKp2awJUo9TCQ==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05DC4CA0FF7;
+	Tue, 26 Aug 2025 22:50:07 +0000 (UTC)
+From: Nikita Ofitserov via B4 Relay <devnull+himikof.gmail.com@kernel.org>
+Subject: [PATCH 00/12] Accounting for accurate progress reporting
+Date: Wed, 27 Aug 2025 01:49:06 +0300
+Message-Id: <20250827-better-progress-v1-0-74c24de7988a@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a03:b0:3ee:66f4:a8c with SMTP id
- e9e14a558f8ab-3ee66f40bcdmr35154665ab.6.1756192413301; Tue, 26 Aug 2025
- 00:13:33 -0700 (PDT)
-Date: Tue, 26 Aug 2025 00:13:33 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68ad5e9d.050a0220.37038e.00ad.GAE@google.com>
-Subject: [syzbot] Monthly bcachefs report (Aug 2025)
-From: syzbot <syzbot+list55f13d56985d7df20cbc@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOI5rmgC/x3MQQqAIBBA0avErBNKU6yrRIvKyWaTMhMRRHdPW
+ r7F/w8IMqHAUD3AeJFQOgrauoJ1n4+IikIx6EbbxmunFjxPZJU5RUYR5Y0NfedmsxoPpcqMG93
+ /cZze9wNX2lPZYQAAAA==
+X-Change-ID: 20250826-better-progress-835d946a3c38
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, Nikita Ofitserov <himikof@gmail.com>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2620; i=himikof@gmail.com;
+ h=from:subject:message-id;
+ bh=8KztQX5RYFze7BGFBWYrQJ/vOs5MCiuY59PzEzAk1cU=;
+ b=owGbwMvMwCW2edHtzWZP9DIYT6slMWSss5LOsNkz61H8E+ZLTQUalboWDLqPzGr3ZbFrX1zh3
+ xWuIbOlo5SFQYyLQVZMkeXDkq9/1mRa/7EU2msIM4eVCWQIAxenAExEPZrhf12URKB/sQGn3SYO
+ 48O69f927/7XrRE/f3n1X/mJhddiHjL8lbgZVZf7zelI0k7GigiBvVWNzOfiSq6ffmRvI/D/3cJ
+ KXgA=
+X-Developer-Key: i=himikof@gmail.com; a=openpgp;
+ fpr=F0A4F5FCAC693BFC3912BD31B3A2DBB336E42E68
+X-Endpoint-Received: by B4 Relay for himikof@gmail.com/default with
+ auth_id=452
+X-Original-From: Nikita Ofitserov <himikof@gmail.com>
+Reply-To: himikof@gmail.com
 
-Hello bcachefs maintainers/developers,
+This patch series introduces new per-btree accounting counters and uses
+them for (hopefully) accurate progress reporting in recovery passes.
+Also includes various assorted bugfixes.
 
-This is a 31-day syzbot report for the bcachefs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/bcachefs
+The first commit ("Relax restrictions on the number of accounting 
+counters") is optional, but will likely greatly improve the 
+upgrade/tools version mismatch experience. Without it, all bree usage 
+accounting will be thrown out and rebuilt on any version mismatch.
 
-During the period, 7 new issues were detected and 1 were fixed.
-In total, 40 issues are still open and 224 have already been fixed.
+The second commit has the format change but does not contain the
+upgrade/downgrade table entries. It is intended to be integrated
+together with other accounting changes in a single version upgrade.
 
-Some of the still happening issues:
+The last four commits are drive-by fixes/improvements, especially 
+"Improve check_allocations pass speed not in fsck", which should make
+the future accounting upgrades much faster.
 
-Ref  Crashes Repro Title
-<1>  4006    Yes   WARNING in bch2_trans_srcu_unlock
-                   https://syzkaller.appspot.com/bug?extid=1e515cab343dbe5aa38a
-<2>  1442    Yes   INFO: task hung in bch2_journal_reclaim_thread (2)
-                   https://syzkaller.appspot.com/bug?extid=820dc3b465c69f766a57
-<3>  758     Yes   kernel BUG in bch2_quota_check_limit
-                   https://syzkaller.appspot.com/bug?extid=8364d1e040a88ed5657d
-<4>  483     Yes   WARNING in bch2_trans_put
-                   https://syzkaller.appspot.com/bug?extid=291aef749c5cbb9ca2fd
-<5>  369     Yes   WARNING in __bch2_truncate_folio
-                   https://syzkaller.appspot.com/bug?extid=3d11e35eeafe176a6c5b
-<6>  292     Yes   INFO: task hung in bch2_fs_read_only
-                   https://syzkaller.appspot.com/bug?extid=c7aacacf99dcfd3475a7
-<7>  241     Yes   WARNING in bch2_alloc_sectors_start_trans
-                   https://syzkaller.appspot.com/bug?extid=23573dac1278bb26916d
-<8>  125     Yes   general protection fault in put_pwq_unlocked (2)
-                   https://syzkaller.appspot.com/bug?extid=aa930d41d2f32904c5da
-<9>  120     Yes   kernel BUG in __bch2_trans_commit (3)
-                   https://syzkaller.appspot.com/bug?extid=b6ef9edaba01d5b4e43f
-<10> 69      Yes   KMSAN: uninit-value in LZ4_decompress_safe_partial
-                   https://syzkaller.appspot.com/bug?extid=3c88ea590c13f5f92152
-
+Signed-off-by: Nikita Ofitserov <himikof@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Nikita Ofitserov (12):
+      bcachefs: Relax restrictions on the number of accounting counters
+      bcachefs: Introduce btree node number accounting
+      bcachefs: Use explicit node counts in progress reporting
+      bcachefs: Introduce btree_leaf_has_triggers_mask
+      bcachefs: Better progress reporting for btree iteration without leaves
+      bcachefs: Refactor/rename btree_type_has_ptrs
+      bcachefs: More accurate progress reporting for inner node iteration
+      bcachefs: Fix progress reporting for unknown btrees
+      bcachefs: Partially fix old device removal with unknown btrees
+      bcachefs: Improve check_allocations pass speed not in fsck
+      bcachefs: Fix missing c->usage updates from early recovery
+      bcachefs: Fix online hidden (sb+journal) data accounting
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+ fs/bcachefs/backpointers.c           |  6 ++++--
+ fs/bcachefs/btree_gc.c               | 28 ++++++++++++++++--------
+ fs/bcachefs/btree_trans_commit.c     |  3 +++
+ fs/bcachefs/btree_types.h            | 11 ++++++----
+ fs/bcachefs/buckets.c                | 16 +++++++++-----
+ fs/bcachefs/disk_accounting.c        | 23 ++++++++++++++------
+ fs/bcachefs/disk_accounting.h        | 14 +++++++-----
+ fs/bcachefs/disk_accounting_format.h | 10 ++++++++-
+ fs/bcachefs/migrate.c                | 18 ++++++++++------
+ fs/bcachefs/move.c                   |  2 +-
+ fs/bcachefs/progress.c               | 41 ++++++++++++++++++++++++++++++------
+ fs/bcachefs/progress.h               | 12 ++++++++++-
+ 12 files changed, 136 insertions(+), 48 deletions(-)
+---
+base-commit: 8bf9cabd6109efc82bdccf6c450102d0be3ed3da
+change-id: 20250826-better-progress-835d946a3c38
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+Best regards,
+-- 
+Nikita Ofitserov
 
-You may send multiple commands in a single email message.
+
