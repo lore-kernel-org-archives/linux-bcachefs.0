@@ -1,73 +1,73 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FAB53081C4
-	for <linux-bcachefs@vger.kernel.org>; Thu, 28 Aug 2025 10:06:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B754F28A1F3
+	for <linux-bcachefs@vger.kernel.org>; Thu, 28 Aug 2025 12:45:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756375583; cv=none; b=CpMkEPBd84XRjwf8x7YQ+s6b3dCBgVy/LfbDVn+3am5Yd5pMn3WoKKfjDrcKAGnbxLe9MlVI9MNEsHVn61BvhgcZiA71P/oAb8VoO+l+2XmHPpqub7HVlvvJJ0zn4koUxJBRK7bcXkPHM9Vm1WnBLTFHvi7vHkNVpsEa0Q976WI=
+	t=1756385106; cv=none; b=GtmB5z/p9yGykv1IsEl9ETyOVQPj23Riridy+Ie5RwzWhsWuwfpO9szhubYyuGHZ++7APd21yM3Oy09jHR94oZTuxjYCdPr7nh1huRN2hXiWvcvtA8RWGPCalAxVh9Hojzybt92mM2VX0R015CySvAuCnMXBz0J5xVZaDKByLGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756375583; c=relaxed/simple;
-	bh=ibgMcx0t2DMAR/JWdWYa3j0j+waNK81T6Ne/9aFD2pI=;
+	s=arc-20240116; t=1756385106; c=relaxed/simple;
+	bh=ckrs0jgnLQABby4N4xTwzDJiE/afrb24IExIaLQ0rd0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BxmIsCMnSe8BtzHhZeepWfEVx1L6n4mroUXgPvl2qNarPxLeHzXBU6ue1a9RJwbXdfetUjnZT5rRy7TU2S4iWsNId5QOeVjuhrCAJ74afFwistZ8FBu77ujR+JCIb+EgMekUOE5K3/JwAX9/HZVixww7ouOoY8z4B+1pe8imdtI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bdu/+Evn; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=gjh1fTEfBe4oB5K6EFAkgFE9N6fhfnc8+fvk5PEebsP/RRkv508ILsNCqIbFJEx7JOLTiOC0yIc6GYLmMY1XWjLe1t9KEhuDjNV3HKZg18f00vJg5uPWN6Mfjsd3R80QzAxORX4P+vo4Xv++UFbmA0CCKlXJ7TrrH9EUK2Tmjhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eyub1pIA; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bdu/+Evn"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eyub1pIA"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1756375580;
+	s=mimecast20190719; t=1756385102;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=AIuF++MW+9cppH2LcogxBtVCMHjKY7lH5B9a+qhZ5nk=;
-	b=bdu/+EvndH9UhyH0ZtPZs5gvfrDagRlK7thkh+a8MgwcZppz6adUqXtsr+qFWlkLn4jvMU
-	EgIidaV4acS53iwtM/B3xPFcDBkU5MLOwg+h7+ghla/2hiMNZlD36tgYRMbIbryjMvFOUQ
-	6e8LfP+6H+j7rqCWUMxQ7bYxZc8Fvp4=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=3paW1b5Mw7wLy4xkwmsY2oZkGJtTcOn/fJJ5o0Bou7g=;
+	b=eyub1pIAUTRedgRJDTO/2R2addM1hHNB/O0/GYkxP8uyBwtuiorN+TwoOjJsou1bOAX+oJ
+	KJ7iX6VG2LzQudcq0nKT+fBbQgj7Al6I2KZ5BkjOwCkzZsLOFIUO2MCcKOpnFOrYOBqrJz
+	X7O/TDjyDJMsjy0njeTts6ovZgmI0Lc=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-375-RK96h3jCMmal2kBn2LQ9sw-1; Thu, 28 Aug 2025 06:06:18 -0400
-X-MC-Unique: RK96h3jCMmal2kBn2LQ9sw-1
-X-Mimecast-MFC-AGG-ID: RK96h3jCMmal2kBn2LQ9sw_1756375578
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3cd08f3dfb3so321960f8f.2
-        for <linux-bcachefs@vger.kernel.org>; Thu, 28 Aug 2025 03:06:18 -0700 (PDT)
+ us-mta-554-5b26tAABPmKoqesizuDOWw-1; Thu, 28 Aug 2025 08:45:01 -0400
+X-MC-Unique: 5b26tAABPmKoqesizuDOWw-1
+X-Mimecast-MFC-AGG-ID: 5b26tAABPmKoqesizuDOWw_1756385100
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-45b7265febdso7981225e9.1
+        for <linux-bcachefs@vger.kernel.org>; Thu, 28 Aug 2025 05:45:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756375577; x=1756980377;
+        d=1e100.net; s=20230601; t=1756385100; x=1756989900;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=AIuF++MW+9cppH2LcogxBtVCMHjKY7lH5B9a+qhZ5nk=;
-        b=v3yEAWgiS2p8U8jXNFH3vU1ZMJDWIfiIf0AyjtyX5LD+M9FX6xOjH7zH+17wZnQp88
-         1fgjvw0d0wFLkCrPmYc4isN62zjT0Szegh6CNUHSauoZRo3Ay+DAKT9qQascSyJn1rC5
-         EsFbCR4W7weufO4gySvwhug1nuP+57rM+MOhk4JgKtW7jO/f6r9vybdgw0+u0s+/Uqm9
-         ohDYQY5Htuc4DiJZ83MMuPLMD+SDW/xN/oUblg+h0L6mMJ1f8D/yxjFZo08B4vhksV1V
-         ygHgFYfLI1UC0Icvn1nJvJ1o53VwmoMQK8fQ2g/cFRjmNcmQ8dElaSnOndxWJBDFtkhj
-         0N3A==
-X-Forwarded-Encrypted: i=1; AJvYcCXcbkg1SwFv4R7C7pxcpj4hWYjFPHRvuPH0URtJxhxOd5IWDEKLvb/oKBr+3ytxcQPifnoZ1rst0gvUnoNcsg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxt4EJlfX/Mz4BjYl3qzgXh6m6eQuAKvDwSlUo9n6fLAp+HdHHf
-	D50yJaJHqiCLp7wCwyoo05k/2fss99S2tynetzCkR1lIkgaJ8IGD2fq2TarF08Dq2y4QM+zrz3T
-	eaXbOqubV+Ot41LSUxG0Kf+wXW6Q0+EOlcVr5KQVO4FyCImLd9L0nGxWU6fBkGzi6xb90
-X-Gm-Gg: ASbGnctx+4EEG/s2VLVJqwudyX2n7OW1qch3GKUXSl+Vu4uBIrHMr37+uppiI4HkYXS
-	WOD6PIbrv0S/XeIY2NtomJuY1FveNPCcUN78SJRkfjr9TOO9DhNAyRxpA++jebLASKPCygWjG7J
-	P4DUXrdwhaBq7CmFsQyh4akdoTN8kUNE40Ov1CZ43xdjMMREGDX6kxA+geFU/xDY2kQ7qYt/1Kg
-	8MipLMgQaWOBsczKjSE75UXpb/mVyNlCkNNEZuJPrdUw4RGAsqPZwvZeF3aXuEyGwIrrzh9AxMx
-	aHqWnjVObu9rOK3ZGTC+YHaAX6UOcelBzgvQo9abQ3k84eYGmbdWJf32huUTJrxceY/3+r9D8G2
-	3d2sXlxGjCp5SAXD90uo+uoBvpEc1fSQB/3gllzgFHdIkYrwsehhe6bRm013onOSrGAg=
-X-Received: by 2002:a5d:64e1:0:b0:3b6:436:b8ea with SMTP id ffacd0b85a97d-3c5da83c601mr15705111f8f.6.1756375577402;
-        Thu, 28 Aug 2025 03:06:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHv6FDhe/e4+uPIRUaF8D2ckX5J+70BvRLKIj3J1sQm8lva6qxwVAKdzmfSmO9HiwptWSyrXw==
-X-Received: by 2002:a5d:64e1:0:b0:3b6:436:b8ea with SMTP id ffacd0b85a97d-3c5da83c601mr15705026f8f.6.1756375576743;
-        Thu, 28 Aug 2025 03:06:16 -0700 (PDT)
+        bh=3paW1b5Mw7wLy4xkwmsY2oZkGJtTcOn/fJJ5o0Bou7g=;
+        b=sHT4igTOZk6zWxipgYw1DNp8Ys7aG0zqyGsy4qoUHlzw74l6UJ+CsS8I/rcqTwNcqN
+         GoPXLH2LqeSPMRzAE8qtHF6DEduJOdg6SAVcfWlKx1QQ2m7IQDONHNnOGlfOTk8d/m2G
+         SbVKmnGaf+SFA/PkH3Qk8HIo5uRLj3ne9zknZJ5FTAgbK1EVYc3oOMhSA/90eFAOBPj6
+         +qQ7OxP9ogoW7YWp5oT3J2gNary4w363on6fskFMFjsnU3DJBrxAI5B3Rvtbe2WOZEx7
+         QbqMGp+dpi0fTMslZYhbDX+MkMjdtW5KchMdndi9M7zb3evNa4DQlo1fAelrJdfko4FO
+         Y/eQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWQDfpaDfwgn0H7k5mI/a7vOzUXvon5hjVV5ZGG1z+/90lM4HB1dc+38971mYxWhSh8q0LJ5WdVP5xIUQMhWg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzX23EsKVx/5PmtwMdbbceavRyzoz0T0WarIIMWxda5svp7eucJ
+	SsWYSMBJVTnP8ekAl4RZM8pXNdFS5sn/uOLfr1f0pnyGJCZUxDNUK6I9p3iZROu5Ugn9/ACNbOJ
+	MGUUYdJXMyUIb8H/eYh4itkuyWU7jqGE6FgBnMVc+7ga4xwe3+rfkqfBGreXmLMCOjaLI
+X-Gm-Gg: ASbGncsmVWdwNiLluWuuLWZ4gxr1CCp8QQ+5nsq8zsJ8W29+HNSM/r2k4m/4ZY2fV+h
+	gH6OwodE+XGnzUCLUH7DCfJtLMjbcw0xcy/12+X+7GqxAg9FQzZGkm/hXWU/jp7S3iX+FRBnqYb
+	YyBtLsrc1KlLr8HRjUQR75imqhmUaiOPnm3G9HSHzd32/6IFmT2jpLbZfoEbB5t7DEOXoNKbdBy
+	4KkpwrYvzmwyhPBZH78aeY4v709pWGZPzFNMW24MApHCc6jPIC8UKbtupcyU35fJ9Gu1KPpgwN6
+	JiX1deyEovW9Q9+z/IeX6uk2e8hUYaNZxIkdh3ijtNcb5Wug479GCvTP4XQMONJshMP7xX3FQbG
+	Tu/a37OtEl+hfnB+Pp8wgD6z+7mamXlPmirg7rhEa3dBG95X8JxQIKCGB+kn0KpBVdgU=
+X-Received: by 2002:a05:6000:4022:b0:3c6:c737:d39f with SMTP id ffacd0b85a97d-3cbb15c9d73mr7590154f8f.3.1756385099925;
+        Thu, 28 Aug 2025 05:44:59 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF49i8ItUOOotGgNzJSQJ9D9n1u9eFn4Pn8tTpvivzbTh3PK0f+Gzxqf30EOO4tj4ygGNqhOg==
+X-Received: by 2002:a05:6000:4022:b0:3c6:c737:d39f with SMTP id ffacd0b85a97d-3cbb15c9d73mr7590040f8f.3.1756385099209;
+        Thu, 28 Aug 2025 05:44:59 -0700 (PDT)
 Received: from ?IPV6:2003:d8:2f28:c100:2225:10aa:f247:7b85? (p200300d82f28c100222510aaf2477b85.dip0.t-ipconnect.de. [2003:d8:2f28:c100:2225:10aa:f247:7b85])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3c70e4b9f8dsm26199961f8f.9.2025.08.28.03.06.13
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3cc98998781sm7195784f8f.49.2025.08.28.05.44.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Aug 2025 03:06:15 -0700 (PDT)
-Message-ID: <4db9239a-efe3-43b2-b7b4-af497eb9ee28@redhat.com>
-Date: Thu, 28 Aug 2025 12:06:12 +0200
+        Thu, 28 Aug 2025 05:44:58 -0700 (PDT)
+Message-ID: <a6a2a7ef-0019-4975-b9ec-ef19e3fe44f2@redhat.com>
+Date: Thu, 28 Aug 2025 14:44:55 +0200
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -75,11 +75,11 @@ List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH kvm-next V11 4/7] KVM: guest_memfd: Use guest mem inodes
- instead of anonymous inodes
-To: Ackerley Tng <ackerleytng@google.com>, Shivank Garg <shivankg@amd.com>,
- willy@infradead.org, akpm@linux-foundation.org, pbonzini@redhat.com,
- shuah@kernel.org, seanjc@google.com, vbabka@suse.cz
+Subject: Re: [PATCH kvm-next V11 0/7] Add NUMA mempolicy support for KVM
+ guest-memfd
+To: Shivank Garg <shivankg@amd.com>, willy@infradead.org,
+ akpm@linux-foundation.org, pbonzini@redhat.com, shuah@kernel.org,
+ seanjc@google.com, vbabka@suse.cz
 Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, dsterba@suse.com,
  xiang@kernel.org, chao@kernel.org, jaegeuk@kernel.org, clm@fb.com,
  josef@toxicpanda.com, kent.overstreet@linux.dev, zbestahu@gmail.com,
@@ -88,25 +88,25 @@ Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, dsterba@suse.com,
  surenb@google.com, mhocko@suse.com, ziy@nvidia.com, matthew.brost@intel.com,
  joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com,
  gourry@gourry.net, ying.huang@linux.alibaba.com, apopple@nvidia.com,
- tabba@google.com, paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
- pvorel@suse.cz, bfoster@redhat.com, vannapurve@google.com,
- chao.gao@intel.com, bharata@amd.com, nikunj@amd.com, michael.day@amd.com,
- shdhiman@amd.com, yan.y.zhao@intel.com, Neeraj.Upadhyay@amd.com,
- thomas.lendacky@amd.com, michael.roth@amd.com, aik@amd.com, jgg@nvidia.com,
- kalyazin@amazon.com, peterx@redhat.com, jack@suse.cz, hch@infradead.org,
- cgzones@googlemail.com, ira.weiny@intel.com, rientjes@google.com,
- roypat@amazon.co.uk, chao.p.peng@intel.com, amit@infradead.org,
- ddutile@redhat.com, dan.j.williams@intel.com, ashish.kalra@amd.com,
- gshan@redhat.com, jgowans@amazon.com, pankaj.gupta@amd.com,
- papaluri@amd.com, yuzhao@google.com, suzuki.poulose@arm.com,
- quic_eberman@quicinc.com, linux-bcachefs@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- linux-security-module@vger.kernel.org, kvm@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-coco@lists.linux.dev
+ tabba@google.com, ackerleytng@google.com, paul@paul-moore.com,
+ jmorris@namei.org, serge@hallyn.com, pvorel@suse.cz, bfoster@redhat.com,
+ vannapurve@google.com, chao.gao@intel.com, bharata@amd.com, nikunj@amd.com,
+ michael.day@amd.com, shdhiman@amd.com, yan.y.zhao@intel.com,
+ Neeraj.Upadhyay@amd.com, thomas.lendacky@amd.com, michael.roth@amd.com,
+ aik@amd.com, jgg@nvidia.com, kalyazin@amazon.com, peterx@redhat.com,
+ jack@suse.cz, hch@infradead.org, cgzones@googlemail.com,
+ ira.weiny@intel.com, rientjes@google.com, roypat@amazon.co.uk,
+ chao.p.peng@intel.com, amit@infradead.org, ddutile@redhat.com,
+ dan.j.williams@intel.com, ashish.kalra@amd.com, gshan@redhat.com,
+ jgowans@amazon.com, pankaj.gupta@amd.com, papaluri@amd.com,
+ yuzhao@google.com, suzuki.poulose@arm.com, quic_eberman@quicinc.com,
+ linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
+ kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-coco@lists.linux.dev
 References: <20250827175247.83322-2-shivankg@amd.com>
- <20250827175247.83322-7-shivankg@amd.com> <diqztt1sbd2v.fsf@google.com>
 From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
 Autocrypt: addr=david@redhat.com; keydata=
@@ -153,64 +153,23 @@ Autocrypt: addr=david@redhat.com; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <diqztt1sbd2v.fsf@google.com>
+In-Reply-To: <20250827175247.83322-2-shivankg@amd.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 28.08.25 00:43, Ackerley Tng wrote:
-> Shivank Garg <shivankg@amd.com> writes:
-> 
->>
->> [...snip...]
->>
-> 
-> I meant to send this to you before this version went out but you were
-> too quick!
-> 
-> Here's a new version, Fuad and I reviewed this again internally. The
-> changes are:
-> 
-> + Sort linux/pseudo_fs.h after linux/pagemap.h (alphabetical)
-> + Don't set MNT_NOEXEC on the mount, since SB_I_NOEXEC was already set
->    on the superblock
-> + Rename kvm_gmem_inode_make_secure_inode() to kvm_gmem_inode_create()
->      + Emphasizes that there is a creation in this function
->      + Remove "secure" from the function name to remove confusion that
->        there may be a "non-secure" version
-> + In kvm_gmem_inode_create_getfile()'s error path, return ERR_PTR(err)
->    directly instead of having a goto
-> 
-> 
->  From ada9814b216eac129ed44dffd3acf76fce2cc08a Mon Sep 17 00:00:00 2001
-> From: Ackerley Tng <ackerleytng@google.com>
-> Date: Sun, 13 Jul 2025 17:43:35 +0000
-> Subject: [PATCH] KVM: guest_memfd: Use guest mem inodes instead of anonymous
->   inodes
-> 
-> guest_memfd's inode represents memory the guest_memfd is
-> providing. guest_memfd's file represents a struct kvm's view of that
-> memory.
-> 
-> Using a custom inode allows customization of the inode teardown
-> process via callbacks. For example, ->evict_inode() allows
-> customization of the truncation process on file close, and
-> ->destroy_inode() and ->free_inode() allow customization of the inode
-> freeing process.
-> 
-> Customizing the truncation process allows flexibility in management of
-> guest_memfd memory and customization of the inode freeing process
-> allows proper cleanup of memory metadata stored on the inode.
-> 
-> Memory metadata is more appropriately stored on the inode (as opposed
-> to the file), since the metadata is for the memory and is not unique
-> to a specific binding and struct kvm.
-> 
-> Co-developed-by: Fuad Tabba <tabba@google.com>
-> Signed-off-by: Fuad Tabba <tabba@google.com>
-> Signed-off-by: Shivank Garg <shivankg@amd.com>
-> Signed-off-by: Ackerley Tng <ackerleytng@google.com>
+On 27.08.25 19:52, Shivank Garg wrote:
+> This series introduces NUMA-aware memory placement support for KVM guests
+> with guest_memfd memory backends. It builds upon Fuad Tabba's work (V17)
+> that enabled host-mapping for guest_memfd memory [1] and can be applied
+> directly applied on KVM tree [2] (branch kvm-next, base commit: a6ad5413,
+> Merge branch 'guest-memfd-mmap' into HEAD)
 
-Acked-by: David Hildenbrand <david@redhat.com>
+As discussed, I'll be maintaining a guestmemfd-preview branch where I 
+just pile patch sets to see how it will all look together. It's 
+currently based on kvm/next where "stage 1" resides:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/david/linux.git/log/?h=guestmemfd-preview
+
 
 -- 
 Cheers
