@@ -1,38 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4F0330FC2F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D66A4314A78
 	for <linux-bcachefs@vger.kernel.org>; Thu, 28 Aug 2025 14:16:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756390597; cv=none; b=Q9MLvmmtL9RBt2gZ/YaUvjvLFeN9z8NOE2iu4MwcT9TZ6PBhFOwaNvuiYTz3c4CJA7PVsEuEW6wgT69kElZk1vjRlp8OkpCvpxMOqUrmqBRfo49O9F/+PphBdSuC796hFFmzzjUGEjmDW8dDITeGCnCsbikhptd3KcWnEPq4skM=
+	t=1756390597; cv=none; b=MlINvzClah4f9q4ij9Ia9FDhP0UAXhIsn2kTdtHvYEKrjv7GXyL93E2pf1JxMJQXX6jxlyUID8z4ZAjnlyB4KCnd7bT6zjrK3aHC+Uk5AM4fSg8MtUyHtXJ6zKa7ddnX802m7ZO2J2JdmW9JWMurLRTP8h6srk/wa4XBJNCJ210=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1756390597; c=relaxed/simple;
-	bh=XJ5yKyFeDQIPskKvq1yX1kTEzdlns6bwvqnBqBc/nFo=;
+	bh=ifdpNcMey2Q85pcafRa0vyZmTq9MWSUVg2wkhpoG4Uk=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=es6aENGvdbDMqueU+32gG/kqa9oLkL8DPzNQWXDDMNAVu7v4+lddLVUy2Q2MAUb0NqUVHrZDY7GonXJsSoRUZ7jsVpVkc4NAubQImyMByGvg1Si6Ii8tiLY4oo4Nv7WuYXYxn6Xp1nJ3Td1AY9h/EWbpm9MF5XGMZqrkVu1x+aY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DSaHnITn; arc=none smtp.client-ip=10.30.226.201
+	 In-Reply-To:To:Cc; b=aFPZCENzL+5RwGbkx2fRmiwqqwendYE6Cg8mfb+9tDsxi+bcVdzygmIlcaIMReMjLmp86C//1M5fHEAQwIjr/9NZEFE7W+Nd6zbKxW4wjcuqobChJXvCxgU8ppXjCxanJeKZ9Hd6YfuZTeEPi+UKWDuilrTRd3PddTYCGtBcKKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aRlxpCVk; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DSaHnITn"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A8857C4CEF6;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aRlxpCVk"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id BA329C4CEF8;
 	Thu, 28 Aug 2025 14:16:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1756390597;
-	bh=XJ5yKyFeDQIPskKvq1yX1kTEzdlns6bwvqnBqBc/nFo=;
+	bh=ifdpNcMey2Q85pcafRa0vyZmTq9MWSUVg2wkhpoG4Uk=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=DSaHnITnXUorcepZEfUlD4Nt6wplP8inzQflH6YJ5I+P5CsGxDDPDlQ7glVdpuLye
-	 gmdB+xhj5jdMHPAbRBZgLCgblYMg3qpYglnvYUVAeqochB+B7XbJPg0bLPnHQe1F+L
-	 JmLx6ZSFAF3W/Qt6qPCsd4NDptbvSCXA48FUSq1U8PWre3DZT3sigUeBLSmJbVY8Cw
-	 +PKErizTuo4/pqMSEgj77i9PTa4AgFOSCOHNfeezBveKDijk7StvIMFgyqGuC39l6T
-	 gxNFApPYcGgCp48anCdjCrpPuNhpFyeosKMHGl/azSYtUZkAMCkEX1MoYMGDWxxf4t
-	 98bbzgT+orW3Q==
+	b=aRlxpCVkeIkZw+Gk1R8cL2PqlwpHpP8BH1lISYY8XaTc8TKQKZQrn3U6BB9OEchJt
+	 n99ALYQzBgy6rIqSBdkoCRXjoHxDT9rFc5EmMbocsigoIidoNiRQB6k/LCDMwCmKL+
+	 OHuSEZr0Z2K5FqAZsexccucg4EMmA4UCTHizCYeXHGK4+OxniIa4YKNHbIggbyxa1s
+	 tkBZfqfor2lAJcknpPMDvh8YVCYjLwmx7GAswxEOVUpTZPfcEsYNxjdOG2g7t2sgf7
+	 tLEasJAUXDf5nr5cwuoUUzXVwgtmiqFVlyXxagiBF36xYa5se2iqpNhFVY3j3RqVBq
+	 IbSX0wf7MtWPA==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A07BECA0FFD;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B14DBCA0FFE;
 	Thu, 28 Aug 2025 14:16:37 +0000 (UTC)
 From: Nikita Ofitserov via B4 Relay <devnull+himikof.gmail.com@kernel.org>
-Date: Thu, 28 Aug 2025 17:16:14 +0300
-Subject: [PATCH v2 12/15] bcachefs:
- bcachefs_metadata_version_btree_node_accounting
+Date: Thu, 28 Aug 2025 17:16:15 +0300
+Subject: [PATCH v2 13/15] bcachefs: Use explicit node counts in progress
+ reporting
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -41,19 +41,19 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250828-better-progress-v2-12-c088a2003940@gmail.com>
+Message-Id: <20250828-better-progress-v2-13-c088a2003940@gmail.com>
 References: <20250828-better-progress-v2-0-c088a2003940@gmail.com>
 In-Reply-To: <20250828-better-progress-v2-0-c088a2003940@gmail.com>
 To: Kent Overstreet <kent.overstreet@linux.dev>
 Cc: linux-bcachefs@vger.kernel.org, Nikita Ofitserov <himikof@gmail.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5300; i=himikof@gmail.com;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1742; i=himikof@gmail.com;
  h=from:subject:message-id;
- bh=PxB+FYC1S8dbPQm2xSJgEIf63fK880kNJs2yuTB+uG0=;
- b=owGbwMvMwCW2edHtzWZP9DIYT6slMWRsSDm0s1++T1d8zi3xeWs2dshu37RmWuqMaga/ybtUY
- vxXXNvyqKOUhUGMi0FWTJHlw5Kvf9ZkWv+xFNprCDOHlQlkCAMXpwBMZI8SI8P7PX16UlMuuOau
- yfLSLJ/3bkXdb4nahScnVVxbFdVxwSaJkeHaThnfko0ysWaBi4+d/ZDFwRNx+7rdWbvew1P2H5+
- xTowDAA==
+ bh=W0+LRH5XYqdB0aj9wQSy1UVKyJFpf8VMp390jsXj01M=;
+ b=owGbwMvMwCW2edHtzWZP9DIYT6slMWRsSDkUoHNwgqzBvhvHkzzCeDnMHqeZBW2S8vz6/rEdP
+ z/HhcyrHaUsDGJcDLJiiiwflnz9sybT+o+l0F5DmDmsTCBDGLg4BWAi670YGTb1TlKwizf9pe0i
+ 16s+81DELq8Hc+wavFLu1R5r7pV9u4uR4WLlfZ82zWM5LyX/nRIzWrpWbo/pYpG9Xp+LGv4vXfa
+ 0nR8A
 X-Developer-Key: i=himikof@gmail.com; a=openpgp;
  fpr=F0A4F5FCAC693BFC3912BD31B3A2DBB336E42E68
 X-Endpoint-Received: by B4 Relay for himikof@gmail.com/default with
@@ -63,144 +63,56 @@ Reply-To: himikof@gmail.com
 
 From: Nikita Ofitserov <himikof@gmail.com>
 
-Introduce btree node number accounting for better progress reporting.
-This change includes a mandatory upgrade/downgrade.
-
-Add 2 new counters for BCH_DISK_ACCOUNTING_btree: total number of btree
-nodes (ignoring replication) and the number of non-leaf btree nodes
-(likewise). Those are to be used by recovery progress reporting instead
-of estimating them.
+Also, consider the metadata_replicas option when better
+accounting is not available.
 
 Signed-off-by: Nikita Ofitserov <himikof@gmail.com>
 ---
- fs/bcachefs/bcachefs_format.h        |  3 ++-
- fs/bcachefs/buckets.c                | 16 +++++++++++-----
- fs/bcachefs/disk_accounting_format.h | 10 +++++++++-
- fs/bcachefs/sb-downgrade.c           | 11 +++++++++--
- 4 files changed, 31 insertions(+), 9 deletions(-)
+ fs/bcachefs/progress.c | 24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
 
-diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
-index 0839397105a9d20bcdb99090b508dcff2e0f1886..76a2ae7f8d2dca44dfdd31c0d1078c45778d8447 100644
---- a/fs/bcachefs/bcachefs_format.h
-+++ b/fs/bcachefs/bcachefs_format.h
-@@ -706,7 +706,8 @@ struct bch_sb_field_ext {
- 	x(fast_device_removal,		BCH_VERSION(1, 27))		\
- 	x(inode_has_case_insensitive,	BCH_VERSION(1, 28))		\
- 	x(extent_snapshot_whiteouts,	BCH_VERSION(1, 29))		\
--	x(31bit_dirent_offset,		BCH_VERSION(1, 30))
-+	x(31bit_dirent_offset,		BCH_VERSION(1, 30))		\
-+	x(btree_node_accounting,	BCH_VERSION(1, 31))
+diff --git a/fs/bcachefs/progress.c b/fs/bcachefs/progress.c
+index 541ee951d1c9fc3f11b5a5ac40f1d366829a5c97..8181f6d2ca3808f57bef179383bd969d9a375d5f 100644
+--- a/fs/bcachefs/progress.c
++++ b/fs/bcachefs/progress.c
+@@ -12,6 +12,10 @@ void bch2_progress_init(struct progress_indicator_state *s,
  
- enum bcachefs_metadata_version {
- 	bcachefs_metadata_version_min = 9,
-diff --git a/fs/bcachefs/buckets.c b/fs/bcachefs/buckets.c
-index 021f5cb7998de704be9d135064af2817cb2c52fe..99e928f7799971d052f24ba6043eb54765cf42b9 100644
---- a/fs/bcachefs/buckets.c
-+++ b/fs/bcachefs/buckets.c
-@@ -749,6 +749,7 @@ static int __trigger_extent(struct btree_trans *trans,
- 			    enum btree_iter_update_trigger_flags flags)
- {
- 	bool gc = flags & BTREE_TRIGGER_gc;
-+	bool insert = !(flags & BTREE_TRIGGER_overwrite);
- 	struct bkey_ptrs_c ptrs = bch2_bkey_ptrs_c(k);
- 	const union bch_extent_entry *entry;
- 	struct extent_ptr_decoded p;
-@@ -802,7 +803,7 @@ static int __trigger_extent(struct btree_trans *trans,
+ 	s->next_print = jiffies + HZ * 10;
  
- 		if (cur_compression_type &&
- 		    cur_compression_type != p.crc.compression_type) {
--			if (flags & BTREE_TRIGGER_overwrite)
-+			if (!insert)
- 				bch2_u64s_neg(compression_acct, ARRAY_SIZE(compression_acct));
- 
- 			ret = bch2_disk_accounting_mod2(trans, gc, compression_acct,
-@@ -835,7 +836,7 @@ static int __trigger_extent(struct btree_trans *trans,
- 	}
- 
- 	if (cur_compression_type) {
--		if (flags & BTREE_TRIGGER_overwrite)
-+		if (!insert)
- 			bch2_u64s_neg(compression_acct, ARRAY_SIZE(compression_acct));
- 
- 		ret = bch2_disk_accounting_mod2(trans, gc, compression_acct,
-@@ -845,12 +846,17 @@ static int __trigger_extent(struct btree_trans *trans,
- 	}
- 
- 	if (level) {
--		ret = bch2_disk_accounting_mod2_nr(trans, gc, &replicas_sectors, 1, btree, btree_id);
-+		const bool leaf_node = level == 1;
-+		s64 v[3] = {
-+			replicas_sectors,
-+			insert ? 1 : -1,
-+			!leaf_node ? (insert ? 1 : -1) : 0,
-+		};
++	/* This is only an estimation: nodes can have different replica counts */
++	const u32 expected_node_disk_sectors =
++		READ_ONCE(c->opts.metadata_replicas) * btree_sectors(c);
 +
-+		ret = bch2_disk_accounting_mod2(trans, gc, v, btree, btree_id);
- 		if (ret)
- 			return ret;
- 	} else {
--		bool insert = !(flags & BTREE_TRIGGER_overwrite);
--
- 		s64 v[3] = {
- 			insert ? 1 : -1,
- 			insert ? k.k->size : -((s64) k.k->size),
-diff --git a/fs/bcachefs/disk_accounting_format.h b/fs/bcachefs/disk_accounting_format.h
-index 8269af1dbe2a094454f780194f4ece33c4a4e461..730a17ea42431012282cec9d7803b0ac0b1d339d 100644
---- a/fs/bcachefs/disk_accounting_format.h
-+++ b/fs/bcachefs/disk_accounting_format.h
-@@ -108,7 +108,7 @@ static inline bool data_type_is_hidden(enum bch_data_type type)
- 	x(dev_data_type,	3,	3)	\
- 	x(compression,		4,	3)	\
- 	x(snapshot,		5,	1)	\
--	x(btree,		6,	1)	\
-+	x(btree,		6,	3)	\
- 	x(rebalance_work,	7,	1)	\
- 	x(inum,			8,	3)
+ 	for (unsigned i = 0; i < btree_id_nr_alive(c); i++) {
+ 		if (!(btree_id_mask & BIT_ULL(i)))
+ 			continue;
+@@ -19,9 +23,23 @@ void bch2_progress_init(struct progress_indicator_state *s,
+ 		struct disk_accounting_pos acc;
+ 		disk_accounting_key_init(acc, btree, .id = i);
  
-@@ -174,6 +174,14 @@ struct bch_acct_snapshot {
- 	__u32			id;
- } __packed;
+-		u64 v;
+-		bch2_accounting_mem_read(c, disk_accounting_pos_to_bpos(&acc), &v, 1);
+-		s->nodes_total += div64_ul(v, btree_sectors(c));
++		struct {
++			u64 disk_sectors;
++			u64 total_nodes;
++			u64 inner_nodes;
++		} v = {0};
++		bch2_accounting_mem_read(c, disk_accounting_pos_to_bpos(&acc),
++			(u64 *)&v, sizeof(v) / sizeof(u64));
++
++		/*
++		 * We check for zeros to degrade gracefully when run
++		 * with un-upgraded accounting info (missing some counters).
++		 */
++
++		if (v.total_nodes != 0)
++			s->nodes_total += v.total_nodes - v.inner_nodes;
++		else
++			s->nodes_total += div_u64(v.disk_sectors, expected_node_disk_sectors);
+ 	}
+ }
  
-+/*
-+ * Metadata accounting per btree id:
-+ * [
-+ *   total btree disk usage in sectors
-+ *   total number of btree nodes
-+ *   number of non-leaf btree nodes
-+ * ]
-+ */
- struct bch_acct_btree {
- 	__u32			id;
- } __packed;
-diff --git a/fs/bcachefs/sb-downgrade.c b/fs/bcachefs/sb-downgrade.c
-index de56a1ee79db202da7ca021fb1f67f4b4820a2a8..bfd06fd5d506169031a2f7cadb5b1697ac40c811 100644
---- a/fs/bcachefs/sb-downgrade.c
-+++ b/fs/bcachefs/sb-downgrade.c
-@@ -104,7 +104,10 @@
- 	x(inode_has_case_insensitive,				\
- 	  BIT_ULL(BCH_RECOVERY_PASS_check_inodes),		\
- 	  BCH_FSCK_ERR_inode_has_case_insensitive_not_set,	\
--	  BCH_FSCK_ERR_inode_parent_has_case_insensitive_not_set)
-+	  BCH_FSCK_ERR_inode_parent_has_case_insensitive_not_set)\
-+	x(btree_node_accounting,				\
-+	  BIT_ULL(BCH_RECOVERY_PASS_check_allocations),		\
-+	  BCH_FSCK_ERR_accounting_mismatch)
- 
- #define DOWNGRADE_TABLE()					\
- 	x(bucket_stripe_sectors,				\
-@@ -152,7 +155,11 @@
- 	  BIT_ULL(BCH_RECOVERY_PASS_check_allocations),		\
- 	  BCH_FSCK_ERR_accounting_mismatch,			\
- 	  BCH_FSCK_ERR_accounting_key_replicas_nr_devs_0,	\
--	  BCH_FSCK_ERR_accounting_key_junk_at_end)
-+	  BCH_FSCK_ERR_accounting_key_junk_at_end)		\
-+	x(btree_node_accounting,				\
-+	  BIT_ULL(BCH_RECOVERY_PASS_check_allocations),		\
-+	  BCH_FSCK_ERR_accounting_mismatch,			\
-+	  BCH_FSCK_ERR_accounting_key_nr_counters_wrong)
- 
- struct upgrade_downgrade_entry {
- 	u64		recovery_passes;
 
 -- 
 2.50.1
