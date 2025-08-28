@@ -1,37 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6324530F534
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FB3A3148C6
 	for <linux-bcachefs@vger.kernel.org>; Thu, 28 Aug 2025 14:16:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756390597; cv=none; b=Ux+rgSD81QKoIxdVPfW3AZgcVvydQXIfPO7QS6KJtOG+iRpWQOyL4yRcL4MmXkYIaVo0Xmyu0+KEdC1/fXMf4Ql5Xr6dJOnbhBWB+CF/siGdW/5ov7PQlTiih3w2vwadbCC4E+H/nAh5wBjlI8L64gXLYoqCue/O7MbpOgU7vzc=
+	t=1756390597; cv=none; b=EdZJ38Zrp3jrp2zcgsOYltHSJXKRZrFsHPpKulcmDuIqKdQuT4ukBLux/OIYxaERsY7kN3HNd5tly8Mfcse5L3tKi5X+0EkUfofwRnoPYFB+yxUxHJino4kd8fRKtcxaMWWNytu096uXuyU/yojs9pHRIG85UcmM9SewOTpZmKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1756390597; c=relaxed/simple;
-	bh=e1qfGJjAFdxoWmmjkWvUhmn0R2pU5ulk1tii8FRuh44=;
+	bh=Biz+J4UJf3105vDqv48t0npPEOyN5B9Y/P9Ez2gOm0s=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=bytL+WWaTWgj4LE/uJzbJyIOk2z7hnrWUWN5WNIIBI/rcm37jyQ7e6Zz6g3hQfMtc5C3BhTRIN/9HE5Aqw9nJFBC5jNtFki0IybnXUNkwYPEFR8ioRdDzfo0GNpyDXnEg+tz0wM97Hk4AZV6mVKeDpDG/tpw5PV/9h5NxXkRbEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SNZbSI9V; arc=none smtp.client-ip=10.30.226.201
+	 In-Reply-To:To:Cc; b=D/osnaORsbLH7CTPt+6gM4cUDk3Yi3bnbjkevwPvfjNObgk71afniFMTnzAvNTmUkojHpMs1qhuffYxi44CiUys2o32T3hR7OlEqcGOW+JNUQoGujWQwx0RqxbKr3Rj5gBAnLWak+rGDiRn+O0eyWIrGO2anZTzPiDpVIX66M5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=paCS3sCe; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SNZbSI9V"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 29ECFC4CEF8;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="paCS3sCe"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 55718C4CEFC;
 	Thu, 28 Aug 2025 14:16:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1756390597;
-	bh=e1qfGJjAFdxoWmmjkWvUhmn0R2pU5ulk1tii8FRuh44=;
+	bh=Biz+J4UJf3105vDqv48t0npPEOyN5B9Y/P9Ez2gOm0s=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=SNZbSI9VE824W9MOfIld/+Z3CFtguNGNEVkkgW7Gje4djyFrjZDMYQEX4bOuu1966
-	 IfX1LInGgvPLEv04JK8cvnRH+ZcQ5xG/bTz3jTAZ+iMGosoJYtlmt+vzefojMmQMnJ
-	 MAjJo68wo7ERysLKvqn/QL3HtvRsvy0E2981+wtGCHbn7+zgjwvxXwsfJSsJIzfmqD
-	 LEgbTRvL/c93ckTIZ3MOHmXuC/OQFyVO6D/XprAZvI7CkLRVvu1hi1NF5fJXO+mem3
-	 n6vCBr+uAYn1ZDcJViOpq+gtiQI8g57V0AS4cY1SYOd9H3JxSye51Fcdz+C+BDUBlt
-	 FbTSa6chXnn5Q==
+	b=paCS3sCebooxZBy6s+Bp6aDZl4Wp05lbr34JcPEQZBD5wVqCJZFTCfCnpsPSwiWl6
+	 JtGfiwg8C+T8hzjUAmVSRjnbV6koPPrfCtj5DBJkn/kb38SOF75menadKBx3Gzld+X
+	 FRfFNMSa+87tfmNRUonXuHoD0/p31OP92A8Gj8V6BzA2RNBMZMmaFld6YJUoUAZ2r7
+	 nJcjxPOwrpr+jHjnrFV58pKthJNkFUPJdCHHiMzXqhOJMKMWWk1/itN5crwHmfQbvh
+	 gQb/wtwkPAofkg9O4ilN+TA3WL8oX0mEmWrqrTZ11KiVtpkVrvX3x3Z8DWzNi3uUW9
+	 L82/SBPhA/kLQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 158D1C8303F;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D8ECCA0FFF;
 	Thu, 28 Aug 2025 14:16:37 +0000 (UTC)
 From: Nikita Ofitserov via B4 Relay <devnull+himikof.gmail.com@kernel.org>
-Date: Thu, 28 Aug 2025 17:16:04 +0300
-Subject: [PATCH v2 02/15] bcachefs: Refactor bch2_gc_btree/bch2_gc_btrees
+Date: Thu, 28 Aug 2025 17:16:08 +0300
+Subject: [PATCH v2 06/15] bcachefs: Partially fix old device removal with
+ unknown btrees
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -40,19 +41,19 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250828-better-progress-v2-2-c088a2003940@gmail.com>
+Message-Id: <20250828-better-progress-v2-6-c088a2003940@gmail.com>
 References: <20250828-better-progress-v2-0-c088a2003940@gmail.com>
 In-Reply-To: <20250828-better-progress-v2-0-c088a2003940@gmail.com>
 To: Kent Overstreet <kent.overstreet@linux.dev>
 Cc: linux-bcachefs@vger.kernel.org, Nikita Ofitserov <himikof@gmail.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1558; i=himikof@gmail.com;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1096; i=himikof@gmail.com;
  h=from:subject:message-id;
- bh=oDcgd9+Tw5O6XEbdGPb3cpQkJo1A036cADXhKke/lEI=;
- b=owGbwMvMwCW2edHtzWZP9DIYT6slMWRsSDm4VmzdHM77gr8iLXhaFmpHTPYpkHcrEPxkGdwTz
- cktpP+no5SFQYyLQVZMkeXDkq9/1mRa/7EU2msIM4eVCWQIAxenAEwkOoSR4c9iy6wXLKfi0z55
- +h64Wnr+dsbZ7Sy9p8TvPNxsEK6/N4SRoW3tC88YvqSrKqt5Gqe9mHmdZ+v/Q7+6U01jnKWiBKJ
- rmQA=
+ bh=bg0JYtLQrNAfIJ37svWrnw+bIZLtdUmPleY43qcm2QE=;
+ b=owGbwMvMwCW2edHtzWZP9DIYT6slMWRsSDloYazxwsX7hNPLm3mnt3n+mPbe5/Gt+f8Tb/Lye
+ n+wdfzzrqOUhUGMi0FWTJHlw5Kvf9ZkWv+xFNprCDOHlQlkCAMXpwBMZJY8wz/rX+cWid2xy96/
+ wvX5lSxnC54kjqL0CCOPFztKHovNmiTP8D+F7c1r99LlUSZ7yhOW3bPYNeua2Cyj0GP5sR8k9wV
+ c+cANAA==
 X-Developer-Key: i=himikof@gmail.com; a=openpgp;
  fpr=F0A4F5FCAC693BFC3912BD31B3A2DBB336E42E68
 X-Endpoint-Received: by B4 Relay for himikof@gmail.com/default with
@@ -62,47 +63,35 @@ Reply-To: himikof@gmail.com
 
 From: Nikita Ofitserov <himikof@gmail.com>
 
-Concentrate iteration policy inside the caller so that accurate
-progress reporting would be possible.
+Handle removal of unknown metadata only, data pointed to by unknown
+btrees cannot be supported currently.
 
 Signed-off-by: Nikita Ofitserov <himikof@gmail.com>
 ---
- fs/bcachefs/btree_gc.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ fs/bcachefs/migrate.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/bcachefs/btree_gc.c b/fs/bcachefs/btree_gc.c
-index 2b1b6b7ffdf0af7ec0bf4cbaf68cc9a53a20cfce..2a369aebdbe216ed665115e27388ab4821696bf8 100644
---- a/fs/bcachefs/btree_gc.c
-+++ b/fs/bcachefs/btree_gc.c
-@@ -717,16 +717,12 @@ static int bch2_gc_mark_key(struct btree_trans *trans, enum btree_id btree_id,
- 
- static int bch2_gc_btree(struct btree_trans *trans,
- 			 struct progress_indicator_state *progress,
--			 enum btree_id btree, bool initial)
-+			 enum btree_id btree, unsigned target_depth,
-+			 bool initial)
+diff --git a/fs/bcachefs/migrate.c b/fs/bcachefs/migrate.c
+index 41657deb0e3807f4968272491faea09d05ec2299..4aa7dd483cab5a400974b5824bfaf0c0af2e9331 100644
+--- a/fs/bcachefs/migrate.c
++++ b/fs/bcachefs/migrate.c
+@@ -121,6 +121,7 @@ static int bch2_dev_usrdata_drop(struct bch_fs *c,
  {
- 	struct bch_fs *c = trans->c;
--	unsigned target_depth = BIT_ULL(btree) & btree_leaf_has_triggers_mask ? 0 : 1;
- 	int ret = 0;
+ 	CLASS(btree_trans, trans)(c);
  
--	/* We need to make sure every leaf node is readable before going RW */
--	if (initial)
--		target_depth = 0;
--
- 	for (unsigned level = target_depth; level < BTREE_MAX_DEPTH; level++) {
- 		struct btree *prev = NULL;
- 		struct btree_iter iter;
-@@ -797,7 +793,8 @@ static int bch2_gc_btrees(struct bch_fs *c)
- 		if (IS_ERR_OR_NULL(bch2_btree_id_root(c, btree)->b))
++	/* FIXME: this does not handle unknown btrees with data pointers */
+ 	for (unsigned id = 0; id < BTREE_ID_NR; id++) {
+ 		if (!btree_type_has_data_ptrs(id))
  			continue;
+@@ -161,7 +162,7 @@ static int bch2_dev_metadata_drop(struct bch_fs *c,
+ 	bch2_bkey_buf_init(&k);
+ 	closure_init_stack(&cl);
  
--		ret = bch2_gc_btree(trans, &progress, btree, true);
-+		/* We need to make sure every leaf node is readable before going RW */
-+		ret = bch2_gc_btree(trans, &progress, btree, 0, true);
- 	}
- 
- 	bch_err_fn(c, ret);
+-	for (id = 0; id < BTREE_ID_NR; id++) {
++	for (id = 0; id < btree_id_nr_alive(c); id++) {
+ 		bch2_trans_node_iter_init(trans, &iter, id, POS_MIN, 0, 0,
+ 					  BTREE_ITER_prefetch);
+ retry:
 
 -- 
 2.50.1
