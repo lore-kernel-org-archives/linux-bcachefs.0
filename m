@@ -1,406 +1,167 @@
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+Received: from SEYPR02CU001.outbound.protection.outlook.com (mail-koreacentralazon11013021.outbound.protection.outlook.com [40.107.44.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B988226CF7
-	for <linux-bcachefs@vger.kernel.org>; Fri, 29 Aug 2025 06:54:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756450464; cv=none; b=JadOoejcaTFDLOwGBdHAvPwqeGycu56TGdnTZ3dD7NKR1bAvalrnrLwpJhj4aXW3GIddGwoNR1/9eS7wr4zWyVtZfLfYJ0bIu8BKtbde9JeIs/BeuetN+YoAq2w20jhcX8Nl5tdihNusl9KUWJBscS33iboHQEYglfXE/QHneNM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756450464; c=relaxed/simple;
-	bh=uBMkocGWru6TA/hbxNcdcGTsOAyURexj7pFil/yeKo0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BWqzpxtWfD3Y0gVlmZRhY3cGkLWdho6huO587uj9dzoYOxr9roE527HngZt6t28P0i/rpscOr3wVKczVKGtr8bB6dS+TlS83a1U3FgShUK5xrApKWlKOatd2YqBJSRFuJOHpFNZafOBEWAKbdOQHHQ4N33fx6lC7/Uq5X7FfrPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pm3uVXr3; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7981A1E49F;
+	Sat, 30 Aug 2025 13:58:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.44.21
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1756562330; cv=fail; b=F7cvawYFh9jKLziD9+yf0ArSUTcwRKmNimIGXPus08nIm5dHOMZ9iz7HKaU5ULS0maeMRzfMAFZxmnaqTTVpmEJs2JJasR/2LF6UHiRphkMr74ebRDgSkGRpf8CpEev39CpgW4mYh5pN/bRytuI4iMHK0S4GzTyUCoaf5n0ntiI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1756562330; c=relaxed/simple;
+	bh=v01pOLJ58DNmG12PwMpXbjkHJjmDyW7l65u7j3J8BAQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=KW1mTyxhnT2zU4wapn+6AMEYcXlg4ZyLhE+kLk33q3wRBcrvIErlUeqkNTFA3btw11SwMNlH2N35sosFBbV7Vka65DEnxQ2xEwxjTpdn9frJ7H9oUjLTVPpQE+y2dniPXU5e870PgIBstu2U2RMZlxWACdwNCAZNpk9Zo30rY64=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=fhJBks5D; arc=fail smtp.client-ip=40.107.44.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pm3uVXr3"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756450455;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PQS7krkVlGvlaeKWd1xx3dohxK5KjW8WLoSsToI50vw=;
-	b=pm3uVXr3Wrr+K25pMTrPzC4BamrnRDmS6z5qc8YDHGgQQmugr2KK8sdqZLdEDlrK1ljUt2
-	VKmUAW+VCVKmE/95HzdKY63k+2NjQav280STtUjDYJj/3qCsBQq0l4t3hcqmOqDIrE1yJs
-	0KwlnS0lCcYCgmhjecrKvVZbftGpZ7o=
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 1/3] bcachefs: Add v2 ioctls that return error strings
-Date: Fri, 29 Aug 2025 02:54:05 -0400
-Message-ID: <20250829065409.3248746-2-kent.overstreet@linux.dev>
-In-Reply-To: <20250829065409.3248746-1-kent.overstreet@linux.dev>
-References: <20250829065409.3248746-1-kent.overstreet@linux.dev>
+	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="fhJBks5D"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=S/7TS8vZJkWn3VDLhSFBGL2gl7vf+Jt5sYl/LFRKSccIQCPh/1PJMpOL2i+XAdwNTDjYVnS81COso4WZw50qm47H9su3+wZI7Fji2w6PM/vBOCtVqQg0sih8LIvTfIyqH/SH1ABhlhpBfg2+52U2Yke5XuFdwfsdzjxWa/2dX5cJ8BIL9hF0EMYjAD1p2qCHJXPJSNF+3RRgszU+8K5yW7kFTba7cZcvmA8Bi21lBgQDaI2C49I7twDHaO+t3dwHF4Hm82zaYJ0SfteGt+3ODXJyw/MJjfyMTYuiFRAHG7X0+xZdmoc8qpFAekjr1BBvn4G2VQ3YPSCwgRBwKK7PcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=E7NmUV6jHCCAeqfJmSjq/13rY18JdhwZbGr76vCKBhY=;
+ b=j4rAbZwx2hYVkj9cM9ZlnsW+7o5NdjLhJA853VQm/iXP+4SItpy722swqbA0lBvL8+YVqrcqOZkGUOeXrY8RlEG7H2Uy/Lv/Z2DnU3zudni18LgyT3k/Xfo+xcHm9x4X8P/DfOcGU2I/3F3rYaI+5Jp729EBgX60Eg7l84BDD9fou0GTz0KN3FLXHmmtIsELHIeeoPl2t458TTOaW+rOpM9ThP05SiTmx7SC65w12+syLWuXGL5IrJWcLbMp/+qMvjehdmw+fnd+4d0zRhwn9QDsYPVEUVg7aCXCZaLbLKIiAFXVSURuZxgnvRKlvuqmoFs08pLyuN9HjrQkgz7u0Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E7NmUV6jHCCAeqfJmSjq/13rY18JdhwZbGr76vCKBhY=;
+ b=fhJBks5D1/m9f/LiIIJ7rj9CzsH4I9vCTEuoLjGO1JQ6naO6iV9KkrJI7pB/HeBpgCBspUk1QVDxBvecXDLrAAnePmf9di+kUW8IddZegdRSOcHsh3+FgVilQ4alzvQX4zBgnual22l9Qkg91u6FVwT7UMr9uUW0IC+NGpwroqTwMk+HXTu3Y7KvCQZ5v17JpcI61I2wdFH7FBBkJ23qkKPbstlPyec8elAPUJzatYSUp9dqg9khsL4oi0j08v17/4JslF/Gp7Do39iqw7x0mbtf9+x+DL5opFqbG86JbARpgT3CEiaY4z3evAkXYMHJbog4W3rKk0CmbYRglBinMw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SI2PR06MB5140.apcprd06.prod.outlook.com (2603:1096:4:1af::9) by
+ SEYPR06MB5694.apcprd06.prod.outlook.com (2603:1096:101:bd::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9052.20; Sat, 30 Aug 2025 13:58:43 +0000
+Received: from SI2PR06MB5140.apcprd06.prod.outlook.com
+ ([fe80::468a:88be:bec:666]) by SI2PR06MB5140.apcprd06.prod.outlook.com
+ ([fe80::468a:88be:bec:666%5]) with mapi id 15.20.9073.021; Sat, 30 Aug 2025
+ 13:58:43 +0000
+From: Qianfeng Rong <rongqianfeng@vivo.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+	linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Qianfeng Rong <rongqianfeng@vivo.com>
+Subject: [PATCH] bcachefs: Use int type to store negative error codes
+Date: Sat, 30 Aug 2025 21:58:33 +0800
+Message-Id: <20250830135833.112327-1-rongqianfeng@vivo.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SGXP274CA0004.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::16)
+ To SI2PR06MB5140.apcprd06.prod.outlook.com (2603:1096:4:1af::9)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SI2PR06MB5140:EE_|SEYPR06MB5694:EE_
+X-MS-Office365-Filtering-Correlation-Id: 23299b37-47dc-47d0-8292-08dde7cd548a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|52116014|366016|1800799024|38350700014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?n7mJ+rIyfJuyCxiQxqXtvBntH1AYdx92111h+wueX5hMI72p9MQvC8naiNg+?=
+ =?us-ascii?Q?yV2t95UBaiDiJ8Sk+japBH+IFz51pLIQMhefVKzUEXk0EcqBce1LZk1lH1y2?=
+ =?us-ascii?Q?snLrQk1CGDspMc75qFCjWUdtDyQJ20tK0e4eV4OhNPbnZT4Rm/otEYneM0F1?=
+ =?us-ascii?Q?F5LM0T2FEJdXYXPdN43IS2M/cX1q/ZSMx00JfRXZ9N9TlJN/xSZFroVxzfE3?=
+ =?us-ascii?Q?rOyIz5BKalQKvNqvUpH3dcrWQb4rtPn9ILUnbbrG0KO6ZCU3VqjYuDeFod4X?=
+ =?us-ascii?Q?SsrQcBLpam4oCLymWAA/p4ofy2vRip5148Xi3p5mDH2qrTRBcubbgMzFCSqm?=
+ =?us-ascii?Q?ZaTErgJ6pkpTuw+bC62G1ePG5AlzYjFUqVBFlvxzvFisyS1CK9V6+ahVfRhZ?=
+ =?us-ascii?Q?XYDAlmyPVeYIO7OVTvFtfe6OrrrC8znOdh+lpVkiyTqwQCiYUIjDCpDPP0wB?=
+ =?us-ascii?Q?A2fGRVao20sjxJxQhZxI5wupu795funIz91LmwO31J4otRbcu33gP4HZlP2i?=
+ =?us-ascii?Q?ltVEWaIJXLV+jHnojH1mGG46s5OBXtB8GonT55pm9zBlVx4SPHn9JxOMJQcX?=
+ =?us-ascii?Q?RCMGJdjstUO94eq50BvpbRbp6W5tjwbEdSuTyoZe6JRjKjX/A5H12owlJ6Xd?=
+ =?us-ascii?Q?XMW8J1dnR5OGz4V2NUOYEl5eu+o3CY6YQGEm0aCrHCXc5zCjb/WeAh8TWFYX?=
+ =?us-ascii?Q?BJw14zcmNB/imJKVSFYJBUMv7ZBAGN0DaAxtwwSd0wGlHi8P0ewO90TEh2us?=
+ =?us-ascii?Q?I9CyQ1Cu72n8FN9/Ccg1Nz4YXTd6Q+HEuZIC3T9dH01pe/XbeD5AQL4CueQn?=
+ =?us-ascii?Q?OTmZNByl0Zmh22TtuBXaPO2/XzDn28rXO4dxBMqZK5qIvf6LkUPPDBwP9gy6?=
+ =?us-ascii?Q?e2paw8WRmmRNC7QDz9Xe0BmrGYnpji6YdcxzUoI4rrmc9BaGD45ZL/RRFbYj?=
+ =?us-ascii?Q?ntaJiJkwsjbphLVgcKjcQX6xCcka/idhWkncKQTqskmz+othh5DD/BLUpUFp?=
+ =?us-ascii?Q?H1KqqYy876ZEVr+er7Hh2jT3wcCRluxwDBGJsUKPJRSv986POLLVb5McvnQH?=
+ =?us-ascii?Q?WAwobgTm7c1ylDRJMhO+1AVbdmJiX+3B5pBbqSw9VsrfwYBzu5tr7uJw9LcQ?=
+ =?us-ascii?Q?wtpqlpYInSHwAstU2MJmS0gXcNjMrdR8NqsfB/OhaHaKESOS3WUDe5m83+1a?=
+ =?us-ascii?Q?1QwJPEArqLbXUcCuVNGlnVLgEQe4Zd5RZvT0sduAHYC9+0q3Mi9qO1OeheAv?=
+ =?us-ascii?Q?Dy+CWaZWxfkb61Lc07PJon+wzY36akepJDLel306ld8tT7pxabapeNpxeafA?=
+ =?us-ascii?Q?uaxvVc908DY63znyU+WP1lqJiafkgET5vhWU3FnYs09jCVDePoq2xFafVjjA?=
+ =?us-ascii?Q?WoB/pfdYv5UTokZkYaU4JXZna6+IYrbmSz4wh70qLOOrbZMfY72U265SModq?=
+ =?us-ascii?Q?NxAeabUkbzYBVOqsOJqECgebwzLiMKu7FrI4tfQxsiHumxx7GcLKyg=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SI2PR06MB5140.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(52116014)(366016)(1800799024)(38350700014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?VkK0gCYOuq2M8Oh3OoMkxumz33nRWT0CksoukPsBoX8THd7hVQO4FsMy+mHd?=
+ =?us-ascii?Q?xy0AliLM7QlncyEohiTfts2cQVsDoC14TPlxh6U+p3dKDfcNYe/k7RiMUZyr?=
+ =?us-ascii?Q?WNYgmL4McSwRJTWsiYfLEOJRgYLxjZakJ/7XtakMventX180A43nBnb6HlZ7?=
+ =?us-ascii?Q?fbNHMp5HGjAY33qR6UfMBqi1Ad9Wd1u0wMCo+9CWQZYCOvT8aoK3hF/Ww0Qb?=
+ =?us-ascii?Q?n+dJSLzwp/9CS8DteCm1ISbENYXDbseMS2cC97pcooruNzpFE6TuD+jMB7o/?=
+ =?us-ascii?Q?vfpmJvdyBukkMqbg5gIoxe1gUNfLuIHnWRAG4WOcuYs67xvWRLWpbYwV++NN?=
+ =?us-ascii?Q?3Ls/4jcr6+XA+waUvNFZZ4n0Rzi0+RXMP321yETyijf4z3mYEgZfHimFEe9u?=
+ =?us-ascii?Q?SGV8BRFyKDixpFgKD/zBor3R5+mf+JAeQrIPme8upLQyNJwIl7FcOIHyNcM9?=
+ =?us-ascii?Q?GPKwFgF9q4utCCc62kw9ggkAJuCWLsWWKeRidoGOr4tO24oa2RpwlKIhyYtV?=
+ =?us-ascii?Q?0MjHYteOu/kMp69tsCLroBsYUK7NCQSSbmejzID4nvA2KdPOuVPvSautaYuN?=
+ =?us-ascii?Q?mG40TKG9eldntHq7pMx+evV4rTpD+vVirn7hCC+iGmuvWXRIMpHNpy+7ovL2?=
+ =?us-ascii?Q?DX7jqx522hTrf/mPsJonaInwlue8rnb8Uc22SOdQbMPoTsAN5v/D5hFGfM7j?=
+ =?us-ascii?Q?sOobYLS5vbQblgJs5qd6Rp8ndpElgGyiZCAANmgPvzTaNxE7mA/m01H5QCCv?=
+ =?us-ascii?Q?sRieduG4kwzlv0N/ifb8InTLs8yGeN40It8geXGU7IbVXymPOuT8JS/X1xvd?=
+ =?us-ascii?Q?3ufkDAklGExAPTaKOiz6XqxaJy+m9pDmZyKDreWLIfBrI3zIG4xk2sACMqfX?=
+ =?us-ascii?Q?1/rzyqngyRIckInCohaFXLzIPabmMdFVXBgGIXuilO/MOorMWd3Vw8EbJoeE?=
+ =?us-ascii?Q?00DDUx4fPFfJmx6F6pE9SBEQWxWhrjX9+kkPsRZQYgyErUiXZocVPQXkBBNQ?=
+ =?us-ascii?Q?/yd/n4fOoSDujXCKKQqHkfFD0vjFaaT8c3NZCU+7etrRB0qyrW1nk/yS0+X4?=
+ =?us-ascii?Q?kJmb1w4HNDITjIZivkSB9coJ+Xe5XS6hb5p56aQeAVymgei3r1hUrbBI9ZTd?=
+ =?us-ascii?Q?NmACfISDHn5PhbFmrg8RKx6lFV6ejcIVXYR/9ys/E9Rrj1JUaFSdcOfDEozP?=
+ =?us-ascii?Q?XM/2YdpFDHFLVYAcbfL6ahskC46QE93/ZrzofpAKnXPXn08KNoiUFkpG5PQJ?=
+ =?us-ascii?Q?7wtr63RvvX/EBTY+T6WGcbV7rnxSgegYxKEXp9Zlr1zBG9go0aKzaAI68449?=
+ =?us-ascii?Q?+PKnRXjNmevwJGGX3z7HIqqhoIbU6MpAzwItMzLuboOSm8TNgAxjY0V9zIjX?=
+ =?us-ascii?Q?QRek8sN4VzHs/VPeLIKowV8Ebnh0CdwzdYpTYTdDHGOtIONJrV3S7qGG1+JH?=
+ =?us-ascii?Q?iEpfUejfQqrAChbTGiDUE62vHg5XxvFHzc9J9oT9XGwvB7CT0lANFUSKZ5rv?=
+ =?us-ascii?Q?DXMBAjRY7lxMGExfWMhnLXZFTRZrzOCidJx7y3+dWmKPh8hN2/zJH/lBE8Bj?=
+ =?us-ascii?Q?ao/6/fjJL6/5JyCZJ6pnEe8Qma4Qwh1yQiD8tXXk?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 23299b37-47dc-47d0-8292-08dde7cd548a
+X-MS-Exchange-CrossTenant-AuthSource: SI2PR06MB5140.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2025 13:58:43.3665
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oxgzMKfckLAv5kdYRQNdJGvQ9A6hpYhoEqYAypnmlSgt/PMokoC9AzZjA61UgzCw/UMc2W2WfEMlAf6qCnTGqg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR06MB5694
 
-Like BCH_IOCTL_DISK_SET_STATE_v2, implement v2 of other device ioctls
-that return error messages via 'struct bch_ioctl_err_msg'.
+Change the 'ret' variable in __bch2_dev_attach_bdev() from unsigned to
+int, as it needs to store either negative error codes or zero.
 
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Storing the negative error codes in unsigned type, doesn't cause an issue
+at runtime but can be confusing. Additionally, assigning negative error
+codes to unsigned type may trigger a GCC warning when the -Wsign-conversion
+flag is enabled.
+
+No effect on runtime.
+
+Signed-off-by: Qianfeng Rong <rongqianfeng@vivo.com>
 ---
- fs/bcachefs/bcachefs_ioctl.h |  75 ++++++++++++-----
- fs/bcachefs/chardev.c        | 159 +++++++++++++++++++++++++++++++++--
- 2 files changed, 204 insertions(+), 30 deletions(-)
+ fs/bcachefs/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/bcachefs/bcachefs_ioctl.h b/fs/bcachefs/bcachefs_ioctl.h
-index 08fa1636dde2..5dc562f2a881 100644
---- a/fs/bcachefs/bcachefs_ioctl.h
-+++ b/fs/bcachefs/bcachefs_ioctl.h
-@@ -66,29 +66,35 @@ struct bch_ioctl_incremental {
- #define BCH_IOCTL_STOP		_IO(0xbc,	3)
- #endif
- 
--#define BCH_IOCTL_DISK_ADD	_IOW(0xbc,	4,  struct bch_ioctl_disk)
--#define BCH_IOCTL_DISK_REMOVE	_IOW(0xbc,	5,  struct bch_ioctl_disk)
--#define BCH_IOCTL_DISK_ONLINE	_IOW(0xbc,	6,  struct bch_ioctl_disk)
--#define BCH_IOCTL_DISK_OFFLINE	_IOW(0xbc,	7,  struct bch_ioctl_disk)
--#define BCH_IOCTL_DISK_SET_STATE _IOW(0xbc,	8,  struct bch_ioctl_disk_set_state)
--#define BCH_IOCTL_DISK_SET_STATE_v2 _IOW(0xbc,	22,  struct bch_ioctl_disk_set_state_v2)
--#define BCH_IOCTL_DATA		_IOW(0xbc,	10, struct bch_ioctl_data)
--#define BCH_IOCTL_FS_USAGE	_IOWR(0xbc,	11, struct bch_ioctl_fs_usage)
--#define BCH_IOCTL_DEV_USAGE	_IOWR(0xbc,	11, struct bch_ioctl_dev_usage)
--#define BCH_IOCTL_READ_SUPER	_IOW(0xbc,	12, struct bch_ioctl_read_super)
--#define BCH_IOCTL_DISK_GET_IDX	_IOW(0xbc,	13,  struct bch_ioctl_disk_get_idx)
--#define BCH_IOCTL_DISK_RESIZE	_IOW(0xbc,	14,  struct bch_ioctl_disk_resize)
--#define BCH_IOCTL_DISK_RESIZE_JOURNAL _IOW(0xbc,15,  struct bch_ioctl_disk_resize_journal)
--
--#define BCH_IOCTL_SUBVOLUME_CREATE _IOW(0xbc,	16,  struct bch_ioctl_subvolume)
--#define BCH_IOCTL_SUBVOLUME_DESTROY _IOW(0xbc,	17,  struct bch_ioctl_subvolume)
--
--#define BCH_IOCTL_DEV_USAGE_V2	_IOWR(0xbc,	18, struct bch_ioctl_dev_usage_v2)
--
--#define BCH_IOCTL_FSCK_OFFLINE	_IOW(0xbc,	19,  struct bch_ioctl_fsck_offline)
--#define BCH_IOCTL_FSCK_ONLINE	_IOW(0xbc,	20,  struct bch_ioctl_fsck_online)
--#define BCH_IOCTL_QUERY_ACCOUNTING _IOW(0xbc,	21,  struct bch_ioctl_query_accounting)
--#define BCH_IOCTL_QUERY_COUNTERS _IOW(0xbc,	21,  struct bch_ioctl_query_counters)
-+#define BCH_IOCTL_DISK_ADD		_IOW(0xbc,	4,  struct bch_ioctl_disk)
-+#define BCH_IOCTL_DISK_ADD_v2		_IOW(0xbc,	23, struct bch_ioctl_disk_v2)
-+#define BCH_IOCTL_DISK_REMOVE		_IOW(0xbc,	5,  struct bch_ioctl_disk)
-+#define BCH_IOCTL_DISK_REMOVE_v2	_IOW(0xbc,	24, struct bch_ioctl_disk_v2)
-+#define BCH_IOCTL_DISK_ONLINE		_IOW(0xbc,	6,  struct bch_ioctl_disk)
-+#define BCH_IOCTL_DISK_ONLINE_v2	_IOW(0xbc,	25, struct bch_ioctl_disk_v2)
-+#define BCH_IOCTL_DISK_OFFLINE		_IOW(0xbc,	7,  struct bch_ioctl_disk)
-+#define BCH_IOCTL_DISK_OFFLINE_v2	_IOW(0xbc,	26, struct bch_ioctl_disk_v2)
-+#define BCH_IOCTL_DISK_SET_STATE	_IOW(0xbc,	8,  struct bch_ioctl_disk_set_state)
-+#define BCH_IOCTL_DISK_SET_STATE_v2	_IOW(0xbc,	22, struct bch_ioctl_disk_set_state_v2)
-+#define BCH_IOCTL_DATA			_IOW(0xbc,	10, struct bch_ioctl_data)
-+#define BCH_IOCTL_FS_USAGE		_IOWR(0xbc,	11, struct bch_ioctl_fs_usage)
-+#define BCH_IOCTL_DEV_USAGE		_IOWR(0xbc,	11, struct bch_ioctl_dev_usage)
-+#define BCH_IOCTL_READ_SUPER		_IOW(0xbc,	12, struct bch_ioctl_read_super)
-+#define BCH_IOCTL_DISK_GET_IDX		_IOW(0xbc,	13, struct bch_ioctl_disk_get_idx)
-+#define BCH_IOCTL_DISK_RESIZE		_IOW(0xbc,	14, struct bch_ioctl_disk_resize)
-+#define BCH_IOCTL_DISK_RESIZE_v2	_IOW(0xbc,	27, struct bch_ioctl_disk_resize_v2)
-+#define BCH_IOCTL_DISK_RESIZE_JOURNAL	_IOW(0xbc,	15, struct bch_ioctl_disk_resize_journal)
-+#define BCH_IOCTL_DISK_RESIZE_JOURNAL_v2 _IOW(0xbc,	28, struct bch_ioctl_disk_resize_journal_v2)
-+
-+#define BCH_IOCTL_SUBVOLUME_CREATE	_IOW(0xbc,	16, struct bch_ioctl_subvolume)
-+#define BCH_IOCTL_SUBVOLUME_DESTROY	_IOW(0xbc,	17, struct bch_ioctl_subvolume)
-+
-+#define BCH_IOCTL_DEV_USAGE_V2		_IOWR(0xbc,	18, struct bch_ioctl_dev_usage_v2)
-+
-+#define BCH_IOCTL_FSCK_OFFLINE		_IOW(0xbc,	19, struct bch_ioctl_fsck_offline)
-+#define BCH_IOCTL_FSCK_ONLINE		_IOW(0xbc,	20, struct bch_ioctl_fsck_online)
-+#define BCH_IOCTL_QUERY_ACCOUNTING	_IOW(0xbc,	21, struct bch_ioctl_query_accounting)
-+#define BCH_IOCTL_QUERY_COUNTERS	_IOW(0xbc,	21, struct bch_ioctl_query_counters)
- 
- /* ioctl below act on a particular file, not the filesystem as a whole: */
- 
-@@ -164,6 +170,13 @@ struct bch_ioctl_disk {
- 	__u64			dev;
- };
- 
-+struct bch_ioctl_disk_v2 {
-+	__u32				flags;
-+	__u32				pad;
-+	__u64				dev;
-+	struct bch_ioctl_err_msg	err;
-+};
-+
- /*
-  * BCH_IOCTL_DISK_SET_STATE: modify state of a member device of a filesystem
-  *
-@@ -400,6 +413,14 @@ struct bch_ioctl_disk_resize {
- 	__u64			nbuckets;
- };
- 
-+struct bch_ioctl_disk_resize_v2 {
-+	__u32				flags;
-+	__u32				pad;
-+	__u64				dev;
-+	__u64				nbuckets;
-+	struct bch_ioctl_err_msg	err;
-+};
-+
- /*
-  * BCH_IOCTL_DISK_RESIZE_JOURNAL: resize journal on a device
-  *
-@@ -413,6 +434,14 @@ struct bch_ioctl_disk_resize_journal {
- 	__u64			nbuckets;
- };
- 
-+struct bch_ioctl_disk_resize_journal_v2 {
-+	__u32				flags;
-+	__u32				pad;
-+	__u64				dev;
-+	__u64				nbuckets;
-+	struct bch_ioctl_err_msg	err;
-+};
-+
- struct bch_ioctl_subvolume {
- 	__u32			flags;
- 	__u32			dirfd;
-diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
-index 2370c15e28b6..f6f90d421f27 100644
---- a/fs/bcachefs/chardev.c
-+++ b/fs/bcachefs/chardev.c
-@@ -187,6 +187,18 @@ static long bch2_ioctl_stop(struct bch_fs *c)
- }
- #endif
- 
-+static int copy_ioctl_err_msg(struct bch_ioctl_err_msg *dst, struct printbuf *src, int ret)
-+{
-+	if (ret) {
-+		prt_printf(src, "error=%s", bch2_err_str(ret));
-+		ret = copy_to_user_errcode((void __user *)(ulong)dst->msg_ptr,
-+					   src->buf,
-+					   min(src->pos, dst->msg_len)) ?: ret;
-+	}
-+
-+	return ret;
-+}
-+
- static long bch2_ioctl_disk_add(struct bch_fs *c, struct bch_ioctl_disk arg)
+diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
+index 793c16fa8b09..ec20ab0ad84e 100644
+--- a/fs/bcachefs/super.c
++++ b/fs/bcachefs/super.c
+@@ -1769,7 +1769,7 @@ static int bch2_dev_alloc(struct bch_fs *c, unsigned dev_idx)
+ static int __bch2_dev_attach_bdev(struct bch_dev *ca, struct bch_sb_handle *sb,
+ 				  struct printbuf *err)
  {
- 	char *path;
-@@ -212,6 +224,28 @@ static long bch2_ioctl_disk_add(struct bch_fs *c, struct bch_ioctl_disk arg)
- 	return ret;
- }
- 
-+static long bch2_ioctl_disk_add_v2(struct bch_fs *c, struct bch_ioctl_disk_v2 arg)
-+{
-+	char *path = NULL;
+-	unsigned ret;
 +	int ret;
-+
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+
-+	if (arg.flags || arg.pad)
-+		return -EINVAL;
-+
-+	path = strndup_user((const char __user *)(unsigned long) arg.dev, PATH_MAX);
-+	ret = PTR_ERR_OR_ZERO(path);
-+	if (ret)
-+		return ret;
-+
-+	CLASS(printbuf, err)();
-+	ret = bch2_dev_add(c, path, &err);
-+	kfree(path);
-+	return copy_ioctl_err_msg(&arg.err, &err, ret);
-+}
-+
- static long bch2_ioctl_disk_remove(struct bch_fs *c, struct bch_ioctl_disk arg)
- {
- 	if (!capable(CAP_SYS_ADMIN))
-@@ -235,6 +269,27 @@ static long bch2_ioctl_disk_remove(struct bch_fs *c, struct bch_ioctl_disk arg)
- 	return ret;
- }
  
-+static long bch2_ioctl_disk_remove_v2(struct bch_fs *c, struct bch_ioctl_disk_v2 arg)
-+{
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+
-+	if ((arg.flags & ~(BCH_FORCE_IF_DATA_LOST|
-+			   BCH_FORCE_IF_METADATA_LOST|
-+			   BCH_FORCE_IF_DEGRADED|
-+			   BCH_BY_INDEX)) ||
-+	    arg.pad)
-+		return -EINVAL;
-+
-+	struct bch_dev *ca = bch2_device_lookup(c, arg.dev, arg.flags);
-+	if (IS_ERR(ca))
-+		return PTR_ERR(ca);
-+
-+	CLASS(printbuf, err)();
-+	int ret = bch2_dev_remove(c, ca, arg.flags, &err);
-+	return copy_ioctl_err_msg(&arg.err, &err, ret);
-+}
-+
- static long bch2_ioctl_disk_online(struct bch_fs *c, struct bch_ioctl_disk arg)
- {
- 	char *path;
-@@ -259,6 +314,28 @@ static long bch2_ioctl_disk_online(struct bch_fs *c, struct bch_ioctl_disk arg)
- 	return ret;
- }
- 
-+static long bch2_ioctl_disk_online_v2(struct bch_fs *c, struct bch_ioctl_disk_v2 arg)
-+{
-+	char *path;
-+	int ret;
-+
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+
-+	if (arg.flags || arg.pad)
-+		return -EINVAL;
-+
-+	path = strndup_user((const char __user *)(unsigned long) arg.dev, PATH_MAX);
-+	ret = PTR_ERR_OR_ZERO(path);
-+	if (ret)
-+		return ret;
-+
-+	CLASS(printbuf, err)();
-+	ret = bch2_dev_online(c, path, &err);
-+	kfree(path);
-+	return copy_ioctl_err_msg(&arg.err, &err, ret);
-+}
-+
- static long bch2_ioctl_disk_offline(struct bch_fs *c, struct bch_ioctl_disk arg)
- {
- 	if (!capable(CAP_SYS_ADMIN))
-@@ -282,6 +359,27 @@ static long bch2_ioctl_disk_offline(struct bch_fs *c, struct bch_ioctl_disk arg)
- 	return ret;
- }
- 
-+static long bch2_ioctl_disk_offline_v2(struct bch_fs *c, struct bch_ioctl_disk_v2 arg)
-+{
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+
-+	if ((arg.flags & ~(BCH_FORCE_IF_DATA_LOST|
-+			   BCH_FORCE_IF_METADATA_LOST|
-+			   BCH_FORCE_IF_DEGRADED|
-+			   BCH_BY_INDEX)) ||
-+	    arg.pad)
-+		return -EINVAL;
-+
-+	CLASS(bch2_device_lookup, ca)(c, arg.dev, arg.flags);
-+	if (IS_ERR(ca))
-+		return PTR_ERR(ca);
-+
-+	CLASS(printbuf, err)();
-+	int ret = bch2_dev_offline(c, ca, arg.flags, &err);
-+	return copy_ioctl_err_msg(&arg.err, &err, ret);
-+}
-+
- static long bch2_ioctl_disk_set_state(struct bch_fs *c,
- 			struct bch_ioctl_disk_set_state arg)
- {
-@@ -331,13 +429,7 @@ static long bch2_ioctl_disk_set_state_v2(struct bch_fs *c,
- 
- 	ret = bch2_dev_set_state(c, ca, arg.new_state, arg.flags, &err);
- err:
--	if (ret) {
--		prt_printf(&err, "error=%s", bch2_err_str(ret));
--		ret = copy_to_user_errcode((void __user *)(ulong)arg.err.msg_ptr,
--					   err.buf,
--					   min(err.pos, arg.err.msg_len)) ?: ret;
--	}
--	return ret;
-+	return copy_ioctl_err_msg(&arg.err, &err, ret);
- }
- 
- struct bch_data_ctx {
-@@ -675,6 +767,25 @@ static long bch2_ioctl_disk_resize(struct bch_fs *c,
- 	return ret;
- }
- 
-+static long bch2_ioctl_disk_resize_v2(struct bch_fs *c,
-+				      struct bch_ioctl_disk_resize_v2 arg)
-+{
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+
-+	if ((arg.flags & ~BCH_BY_INDEX) ||
-+	    arg.pad)
-+		return -EINVAL;
-+
-+	CLASS(bch2_device_lookup, ca)(c, arg.dev, arg.flags);
-+	if (IS_ERR(ca))
-+		return PTR_ERR(ca);
-+
-+	CLASS(printbuf, err)();
-+	int ret = bch2_dev_resize(c, ca, arg.nbuckets, &err);
-+	return copy_ioctl_err_msg(&arg.err, &err, ret);
-+}
-+
- static long bch2_ioctl_disk_resize_journal(struct bch_fs *c,
- 				   struct bch_ioctl_disk_resize_journal arg)
- {
-@@ -695,6 +806,28 @@ static long bch2_ioctl_disk_resize_journal(struct bch_fs *c,
- 	return bch2_set_nr_journal_buckets(c, ca, arg.nbuckets);
- }
- 
-+static long bch2_ioctl_disk_resize_journal_v2(struct bch_fs *c,
-+				   struct bch_ioctl_disk_resize_journal_v2 arg)
-+{
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+
-+	if ((arg.flags & ~BCH_BY_INDEX) ||
-+	    arg.pad)
-+		return -EINVAL;
-+
-+	if (arg.nbuckets > U32_MAX)
-+		return -EINVAL;
-+
-+	CLASS(bch2_device_lookup, ca)(c, arg.dev, arg.flags);
-+	if (IS_ERR(ca))
-+		return PTR_ERR(ca);
-+
-+	CLASS(printbuf, err)();
-+	int ret = bch2_set_nr_journal_buckets(c, ca, arg.nbuckets);
-+	return copy_ioctl_err_msg(&arg.err, &err, ret);
-+}
-+
- #define BCH_IOCTL(_name, _argtype)					\
- do {									\
- 	_argtype i;							\
-@@ -736,12 +869,20 @@ long bch2_fs_ioctl(struct bch_fs *c, unsigned cmd, void __user *arg)
- 	switch (cmd) {
- 	case BCH_IOCTL_DISK_ADD:
- 		BCH_IOCTL(disk_add, struct bch_ioctl_disk);
-+	case BCH_IOCTL_DISK_ADD_v2:
-+		BCH_IOCTL(disk_add_v2, struct bch_ioctl_disk_v2);
- 	case BCH_IOCTL_DISK_REMOVE:
- 		BCH_IOCTL(disk_remove, struct bch_ioctl_disk);
-+	case BCH_IOCTL_DISK_REMOVE_v2:
-+		BCH_IOCTL(disk_remove_v2, struct bch_ioctl_disk_v2);
- 	case BCH_IOCTL_DISK_ONLINE:
- 		BCH_IOCTL(disk_online, struct bch_ioctl_disk);
-+	case BCH_IOCTL_DISK_ONLINE_v2:
-+		BCH_IOCTL(disk_online_v2, struct bch_ioctl_disk_v2);
- 	case BCH_IOCTL_DISK_OFFLINE:
- 		BCH_IOCTL(disk_offline, struct bch_ioctl_disk);
-+	case BCH_IOCTL_DISK_OFFLINE_v2:
-+		BCH_IOCTL(disk_offline_v2, struct bch_ioctl_disk_v2);
- 	case BCH_IOCTL_DISK_SET_STATE:
- 		BCH_IOCTL(disk_set_state, struct bch_ioctl_disk_set_state);
- 	case BCH_IOCTL_DISK_SET_STATE_v2:
-@@ -750,8 +891,12 @@ long bch2_fs_ioctl(struct bch_fs *c, unsigned cmd, void __user *arg)
- 		BCH_IOCTL(data, struct bch_ioctl_data);
- 	case BCH_IOCTL_DISK_RESIZE:
- 		BCH_IOCTL(disk_resize, struct bch_ioctl_disk_resize);
-+	case BCH_IOCTL_DISK_RESIZE_v2:
-+		BCH_IOCTL(disk_resize_v2, struct bch_ioctl_disk_resize_v2);
- 	case BCH_IOCTL_DISK_RESIZE_JOURNAL:
- 		BCH_IOCTL(disk_resize_journal, struct bch_ioctl_disk_resize_journal);
-+	case BCH_IOCTL_DISK_RESIZE_JOURNAL_v2:
-+		BCH_IOCTL(disk_resize_journal_v2, struct bch_ioctl_disk_resize_journal_v2);
- 	case BCH_IOCTL_FSCK_ONLINE:
- 		BCH_IOCTL(fsck_online, struct bch_ioctl_fsck_online);
- 	case BCH_IOCTL_QUERY_ACCOUNTING:
+ 	if (bch2_dev_is_online(ca)) {
+ 		prt_printf(err, "already have device online in slot %u\n",
 -- 
-2.50.1
+2.34.1
 
