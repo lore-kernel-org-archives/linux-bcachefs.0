@@ -1,38 +1,37 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CFD822C355
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D09B23814D
 	for <linux-bcachefs@vger.kernel.org>; Thu,  4 Sep 2025 05:22:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756963323; cv=none; b=UaLXWHOdRj97u7SqlK0+hFronuJUgmTOQkGGqjPcq+k1CO80Blr8OgHjK49ZC4alb3iGZVaOhTucgdeU3LY3upi6tJHEckgdxtdtIzW7NVGiEUX1eCGnpqKJOfn8HKrwdewMeTSl4cTy+HhVrBBNx4vqA2kDSaVt1FeFJV3bQnU=
+	t=1756963323; cv=none; b=L2ptSDrbf7YlViYyIZFhkaSuwvhZd61MavX6F5XQU5FbRpDM+STPM4Oc9VMVNrBnNtkwveW7jUnY52ldCI+MwnfOb2HOXoggoMDHXvmEziqUFUHeyvWQMGt775c/H09WQ3OBu4+Cwtg8xUoa+NlJ1yHAStpuWdTmMhuayPCiSzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1756963323; c=relaxed/simple;
-	bh=BMh3y+iPXkEGYaaW4w3R2OtP5I/+C26Uh+A/Zsch8W0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=hQpRZhTw+ALui/786iw6s1578pf31kKJmjCRQJq9stDCMe++991zOCGt/A3euN7a8bwnDIsJc9Vuu4JF6k8xDIhms9mgR3lyqGx1Ahr6f8o4d+ymJ6vcn9NXmCJN7HfId1/PQV6fsZD2eQflRbIBmGgt+eumW9YW1ergMg8FK1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g+3giWw9; arc=none smtp.client-ip=10.30.226.201
+	bh=tEilySZIzzg/utCPi/DUhTpiv2r8lWfAh2Lf9phQYvE=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=nTtuXb4pkOQuKPFe4G/hK7Ay5+iHLDRaSJJkfMpqXNk+B97VV5cM/TbmSNFp9AX0/v5aDQ3ic31LKeVu33fqJswH1gaOKF4UYTXRN8UfiB++hzLOOGgMZ5LqF4Zont8XDAuxHuMkv1+LFt6aGFJSHgwhY8/EW3iGcMEIX8lXKO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o+Jp7KWp; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g+3giWw9"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4659EC4CEF7;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o+Jp7KWp"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2A77BC4CEF0;
 	Thu,  4 Sep 2025 05:22:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1756963323;
-	bh=BMh3y+iPXkEGYaaW4w3R2OtP5I/+C26Uh+A/Zsch8W0=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=g+3giWw9hRvVrFJmun6tnDQyb5bFV2pXXX8eAjE7iHcpXRmDYucYaJCinqwsH6NUc
-	 va2u3A54cLzBNZTBV+7VtKyf/M7KdyKt/0HV0Qw7gjks7ZMYCuvMD/1aS1takKjcVr
-	 b76PQDgne8r+xo7ppSClnxYNvJdj5W0UrTzR3OuAe4UBBqVEioWXMX8lJbEmDff71b
-	 d+7wCVxEKT2hFvSgByLF858sBOod5XEamzAItreu5FsTjLWQH2Zibr4fMrNdt1psZI
-	 j5oeve8tyygJZfjB74M2CAFa6Q+EjNAkkb27BZqarnV1RkGpF6flPkLrdP8gtKxdZi
-	 m6IRK6nhn7gfQ==
+	bh=tEilySZIzzg/utCPi/DUhTpiv2r8lWfAh2Lf9phQYvE=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=o+Jp7KWpGXzdYZzh+VH6R/R5a6gTwl5pq8Cx5BuDRC+tHjdURvfvX4agpJt/6Ljcl
+	 H+eM00JvghAa1OjC7ns766UucMnuT3MuXFgJM1nX7csVFnpbxRHK20dDhX5BGZjusD
+	 TtOn3rotnpIyCTehhrcb9Tbf+dRH0JN8srWhDiaqM9svRiMrjdI93Z2VZjoK0xWomI
+	 WBltGtum57qRDj04TXOVp7O0MzjJ2zy5FQAQO9PEHeAX/yTBDEDgrYtdf/sQMgaY5q
+	 4sP/l3HvPv9/Evt22Xpn5Hpcr1RDGZcRszE+oMETWSha1riM3fpSuefxL15yIznLYE
+	 isJZSSZzCfXqw==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A774CA1015;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14D5DCA1012;
 	Thu,  4 Sep 2025 05:22:03 +0000 (UTC)
 From: Nikita Ofitserov via B4 Relay <devnull+himikof.gmail.com@kernel.org>
-Date: Thu, 04 Sep 2025 08:20:32 +0300
-Subject: [PATCH v3 1/7] bcachefs: Fix missing c->usage updates from early
- recovery
+Subject: [PATCH v3 0/7] Accounting for accurate progress reporting
+Date: Thu, 04 Sep 2025 08:20:31 +0300
+Message-Id: <20250904-better-progress-v3-0-6cc4edf543f4@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -41,19 +40,21 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250904-better-progress-v3-1-6cc4edf543f4@gmail.com>
-References: <20250904-better-progress-v3-0-6cc4edf543f4@gmail.com>
-In-Reply-To: <20250904-better-progress-v3-0-6cc4edf543f4@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAJ8huWgC/2XNQQqDMBCF4avIrJsSJ1Gjq96jdJHGqQaqkURCi
+ 3j3RqEguHwD3z8LBPKWAjTZAp6iDdaNaYhLBqbXY0fMtmkDciy4wpI9aZ7Js8m7zlMITImirWW
+ phREKkpo8vexnL94fafc2zM5/9wcx367/VnVqxZxxVkmDsqWqVkrfukHb99W4AbZWxKNXZ4/JG
+ 54gci5qyY9+Xdcf+2bFLO4AAAA=
+X-Change-ID: 20250826-better-progress-835d946a3c38
 To: Kent Overstreet <kent.overstreet@linux.dev>
 Cc: linux-bcachefs@vger.kernel.org, Nikita Ofitserov <himikof@gmail.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1278; i=himikof@gmail.com;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2624; i=himikof@gmail.com;
  h=from:subject:message-id;
- bh=362Enryjr7PcDprx4tSSxevQeeNm3RQLlhblMoU/MBg=;
- b=owGbwMvMwCW2edHtzWZP9DIYT6slMWTsVPzxzoXv15EX2omTtz4T52pgSZ7iGlFjlWoz66CuR
- NMvroxdHaUsDGJcDLJiiiwflnz9sybT+o+l0F5DmDmsTCBDGLg4BWAiWhIMfwU+BKzTsdRKjF+/
- RvNy4dwfh7PuGWx+JbP4oZloodl+0y6Gf3oJ2bdPvzp4bIalvssDnvzLYo2ydwUs9IW7nh77aPl
- 2JTcA
+ bh=tEilySZIzzg/utCPi/DUhTpiv2r8lWfAh2Lf9phQYvE=;
+ b=owGbwMvMwCW2edHtzWZP9DIYT6slMWTsVPxx5ddLiR/ipR2x86vXffepjwgOknrt8OnZT+P79
+ 45MPOI8taOUhUGMi0FWTJHlw5Kvf9ZkWv+xFNprCDOHlQlkCAMXpwBM5KUqw1+xmY3zdPIrFhrF
+ 2y+fZXHWLPxe1tRUll/3a1vTntzkVBZiZFjDOKlGstP/SrL38aPW9U/KJLayPLFL8Fp8f2tizGG
+ NRwwA
 X-Developer-Key: i=himikof@gmail.com; a=openpgp;
  fpr=F0A4F5FCAC693BFC3912BD31B3A2DBB336E42E68
 X-Endpoint-Received: by B4 Relay for himikof@gmail.com/default with
@@ -61,40 +62,62 @@ X-Endpoint-Received: by B4 Relay for himikof@gmail.com/default with
 X-Original-From: Nikita Ofitserov <himikof@gmail.com>
 Reply-To: himikof@gmail.com
 
-From: Nikita Ofitserov <himikof@gmail.com>
+This patch series introduces new per-btree accounting counters and uses
+them for (hopefully) accurate progress reporting in recovery passes.
+Also includes various assorted bugfixes.
 
-Make do_bch2_trans_commit_to_journal_replay apply global FS usage
-updates stored in trans->fs_usage_delta, too.
+The commit "Relax restrictions on the number of accounting 
+counters" is optional, but will likely greatly improve the 
+upgrade/tools version mismatch experience. Without it, all bree usage 
+accounting will be thrown out and rebuilt on any version mismatch.
+
+The commit "bcachefs_metadata_version_btree_node_accounting"
+introduces the format change along with upgrade/downgrade table entries.
+
+The first two commits are drive-by fixes/improvements.
 
 Signed-off-by: Nikita Ofitserov <himikof@gmail.com>
 ---
- fs/bcachefs/btree_trans_commit.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Changes in v3:
+- Removed already merged patches
+- Fixed a locking issue in do_bch2_trans_commit_to_journal_replay
+- Link to v2: https://lore.kernel.org/r/20250828-better-progress-v2-0-c088a2003940@gmail.com
 
-diff --git a/fs/bcachefs/btree_trans_commit.c b/fs/bcachefs/btree_trans_commit.c
-index 5fa7f2f9f1e9d0ddd1d4675774321b519313f477..2966971ee43eee913676e5e4203733c5c52a2678 100644
---- a/fs/bcachefs/btree_trans_commit.c
-+++ b/fs/bcachefs/btree_trans_commit.c
-@@ -970,6 +970,7 @@ do_bch2_trans_commit_to_journal_replay(struct btree_trans *trans,
- 
- 	struct bkey_i *accounting;
- retry:
-+	memset(&trans->fs_usage_delta, 0, sizeof(trans->fs_usage_delta));
- 	percpu_down_read(&c->mark_lock);
- 	for (accounting = btree_trans_subbuf_base(trans, &trans->accounting);
- 	     accounting != btree_trans_subbuf_top(trans, &trans->accounting);
-@@ -983,6 +984,9 @@ do_bch2_trans_commit_to_journal_replay(struct btree_trans *trans,
- 	}
- 	percpu_up_read(&c->mark_lock);
- 
-+	/* Only fatal errors are possible later, so no need to revert this */
-+	bch2_trans_account_disk_usage_change(trans);
-+
- 	trans_for_each_update(trans, i) {
- 		ret = bch2_journal_key_insert(c, i->btree_id, i->level, i->k);
- 		if (ret)
+Changes in v2:
+- Reordered the format-change-dependent commits to the end
+- Added the new metadata version, upgrade and downgrade entries
+- Fixed an issue with hidden usage calculation after device removal
+- Link to v1: https://lore.kernel.org/r/20250827-better-progress-v1-0-74c24de7988a@gmail.com
 
+---
+Nikita Ofitserov (7):
+      bcachefs: Fix missing c->usage updates from early recovery
+      bcachefs: Fix online hidden (sb+journal) data accounting
+      bcachefs: Relax restrictions on the number of accounting counters
+      bcachefs: bcachefs_metadata_version_btree_node_accounting
+      bcachefs: Use explicit node counts in progress reporting
+      bcachefs: Better progress reporting for btree iteration without leaves
+      bcachefs: More accurate progress reporting for inner node iteration
+
+ fs/bcachefs/backpointers.c           |  4 +++-
+ fs/bcachefs/bcachefs_format.h        |  3 ++-
+ fs/bcachefs/btree_gc.c               |  2 +-
+ fs/bcachefs/btree_trans_commit.c     |  4 ++++
+ fs/bcachefs/buckets.c                | 16 ++++++++++-----
+ fs/bcachefs/disk_accounting.c        | 23 ++++++++++++++-------
+ fs/bcachefs/disk_accounting.h        | 14 ++++++++-----
+ fs/bcachefs/disk_accounting_format.h | 10 ++++++++-
+ fs/bcachefs/migrate.c                | 13 ++++++++----
+ fs/bcachefs/progress.c               | 39 ++++++++++++++++++++++++++++++------
+ fs/bcachefs/progress.h               | 12 ++++++++++-
+ fs/bcachefs/sb-downgrade.c           | 11 ++++++++--
+ 12 files changed, 117 insertions(+), 34 deletions(-)
+---
+base-commit: 5b7f3db1969892f536be48e082a32095aa86042a
+change-id: 20250826-better-progress-835d946a3c38
+
+Best regards,
 -- 
-2.50.1
+Nikita Ofitserov
 
 
