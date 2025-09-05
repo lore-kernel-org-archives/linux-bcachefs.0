@@ -1,51 +1,51 @@
-Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
+Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 022252F6589
-	for <linux-bcachefs@vger.kernel.org>; Fri,  5 Sep 2025 11:35:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 319BC1E519
+	for <linux-bcachefs@vger.kernel.org>; Fri,  5 Sep 2025 12:19:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757072130; cv=none; b=pWME3FtefZ6y4jpRIg6yjHfynRSzR3uBzvN0X1IPgp0qXacU2JjhIre5gU88V43AeVlC9p33Iez9hMCRCZZX8UrToMWTPvDa5P0S5hd7WffFNWLlxclhRMkaDUasAZgQY+IB43l+4VVATdUAoBpwmzWT4fT0dm07w7tEzcxOJ4Q=
+	t=1757074777; cv=none; b=GmPjkXw8/ONFN5pYcPToIEcfgxc3oITjhrkzrSTqtaHAr48Z3MFCgerCiLx0aK/MFrGHG56zmVjvui/Zr2ROgR7EWagcy1PNEoewbO52zifBHlxF5dWiCRDXY02UimJDUW04Io3wDtV/IOhhaSOkadBAkeLsiVQYvJd2Z7ARX8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757072130; c=relaxed/simple;
-	bh=tSanGJy76dLxmJqpUyrsecNK7rEn5AmFi6bLT8VZbso=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=tqxqhCqOZM58h+gQ/kA4EBKSI7xoru2RsTyy+SQpvyZvyxx7GqdYZLf9h/M5nN6hbBNJYO2H+Mgp5vgXwsnGhrN+9UjuPYNySpQknAupsUkVcd9/7jrw3QcylDMu6HZN+OGIr/dXmiPEzCX7Lhqwq6feLKpAJCTzvunegRETmSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
+	s=arc-20240116; t=1757074777; c=relaxed/simple;
+	bh=mfVdZUgryiuF8G6nHXpSoJjASx/7ng2hocWdYyY7dek=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=giwEKtOMxyvik2CqC/MIH5oxuy5dHnJgVJSTgFwYA3LBsGz4HIRM4H0tLpKFr5MNhpktzlin/ljgxbnpLLtcsj61e/uMMDpIDiCzocSUK5Z4jtR/lNP0dME4f+OdyqJetdcXUE7ZBSU8Smu8D7DGUmj+Nz4FwVDIYwu+xn4m3oc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3f20528fe92so52449015ab.2
-        for <linux-bcachefs@vger.kernel.org>; Fri, 05 Sep 2025 04:35:28 -0700 (PDT)
+Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3f0c32654afso18918315ab.1
+        for <linux-bcachefs@vger.kernel.org>; Fri, 05 Sep 2025 05:19:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757072128; x=1757676928;
+        d=1e100.net; s=20230601; t=1757074774; x=1757679574;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=tetDGk2ue+hHtiH3fjv21uePCmj61sLt5izm6/kTV2g=;
-        b=cMJcV93SffOv1GTSrcFPshv0iovDb1EF3F3N55kTkpNPuaL7NtyVNITgSJvic+Xyib
-         EOHmC7e+EoDLu4e7h6LmQItajBS+Hcl07IceMj7HnstZwBcek4MKU4T43MxoE9iXpy0M
-         hj4ZipLDM8yhktAEkeFb5H+Xpl/YTyqpG9/lvaK3ENv7F7HJM0Fo/RB/8/TIvRTGtQl4
-         RGUo9A6zJ5BzzziNOZvN1+tpCSGPvDrpQR3FP3RIVKJPnFMicxUGy7O9E8dc2z4OkhUd
-         Mx2atlCVn/D2KmIm2AIp+no5zhG+WxoqN9zOxhZyXdIy50abG35A1SFpp/sVYb+Agec9
-         gI4A==
-X-Forwarded-Encrypted: i=1; AJvYcCXLoVB7XHc53WtrmIi1WOsCFG8e2MGOiUDdzlRjxCwIcBQr62E3ZRUjw2B6Ofjyo0jqAo2sbpxgOp3Fns32xA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzSGX8ZoN0aHvYs3HJhHn36VhJqcvuCz0LxP6Jxd3+NimZc0Ts7
-	hZ+2GBYbtAeHP7wTwom8m1RHr9opZIcuYD2LrVYSnw65lyQ3j+F0RnQCIzdDMe94jZgTyw4gpv4
-	ekyyiCofe3OlkTXWk1r2yPX4uoNmlDBHh8vrWSPhHFhEV09o4jzfoaFn+lGk=
-X-Google-Smtp-Source: AGHT+IH5hYnA/vwgm3oYtbUmErzdhjx9s/HmRY/FpxKQgmr3TdXmrkvZJ+gRN3BJBFsYusVwO2B+ZrH+GcaOSwA+j/0lsnfv+XXA
+        bh=MFhzVDNIRbuLfi1aRdhXyDPHoRUtJmfU3ZGNWHhGKVs=;
+        b=AAw6RF/B6Nctoqq31ovF1smpDhkIaGgzXlKES/0ACTxAtcrsQllqybrO++dsPXLLnH
+         U6GKNi4QRVG9JB2NRnehS1v5VgiPPbvKcIx3HKkB7UADKh1zXtTfAhX5oBdieggfYJ2C
+         dhPQhoHZUw+g+qSWoOQi4nmzlWYuNdfPFzSPc8v6hGM5c814kDcdkLQHrSPlA0Oj2HP/
+         iGzEadGvTPJykGAPfv+oLDuhwQBQboIX7p54j7Bho2kLi6wDMj3Di36EQ+DdseQEJwqo
+         dcX/JEEEGqd38+I8Yw9M1gi3ohNk+/4cwNTp3/7sCp2quOKI2MBwCeR0pksGGUQjUY6x
+         3tdA==
+X-Forwarded-Encrypted: i=1; AJvYcCUhDG33AtI8+zO3ORvlS8kR5E7Wez4XUkLW/xAAgwKjFH4ycXuA2LSoUCOsC5zSlVIFbhkv9n1IsmSnRT1asA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwXt2kZ28q838OkxmSBqi48pEeWx6KI89tWqv90QpC4k+d+/N0r
+	zraXtJuKJAyTirCRG5Uj0bFm/6VGeDYsV+zgXugapad2dlzbE7lNtnMPdTRIpw31ZRxChG6q+Vl
+	U9yzKWiPYKe22DFNIk6QKkrKAqTEj7pD18+RrZiRi9eGgLcHI8bWuwlq7KpI=
+X-Google-Smtp-Source: AGHT+IGhGVfHT5K9WMNVLAHkrs+qvf5F2dNi5UfCbanL0oeiX8Vw3NbDIbLyrdUH0gfe/OBerFNNuBOZsS5WTisdqOMQDbs58p9M
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:219d:b0:3f3:5e4:24b1 with SMTP id
- e9e14a558f8ab-3f4024cbd7cmr365484945ab.28.1757072128078; Fri, 05 Sep 2025
- 04:35:28 -0700 (PDT)
-Date: Fri, 05 Sep 2025 04:35:28 -0700
+X-Received: by 2002:a05:6e02:1521:b0:3f1:b54f:5cf7 with SMTP id
+ e9e14a558f8ab-3f7c5c5db95mr37748645ab.9.1757074774226; Fri, 05 Sep 2025
+ 05:19:34 -0700 (PDT)
+Date: Fri, 05 Sep 2025 05:19:34 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68bacb00.050a0220.192772.018c.GAE@google.com>
-Subject: [syzbot] [bcachefs?] KASAN: use-after-free Read in bch2_prt_printf
-From: syzbot <syzbot+7f176adb30b21606c5fc@syzkaller.appspotmail.com>
+Message-ID: <68bad556.a00a0220.eb3d.0013.GAE@google.com>
+Subject: [syzbot] [bcachefs?] kernel BUG in bch2_btree_path_level_init (4)
+From: syzbot <syzbot+55c84106264e92ea9ada@syzkaller.appspotmail.com>
 To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
@@ -56,53 +56,61 @@ syzbot found the following issue on:
 
 HEAD commit:    d69eb204c255 Merge tag 'net-6.17-rc5' of git://git.kernel...
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10d67162580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=385d836f07b5a70d
-dashboard link: https://syzkaller.appspot.com/bug?extid=7f176adb30b21606c5fc
+console output: https://syzkaller.appspot.com/x/log.txt?x=16d01962580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bd9738e00c1bbfb4
+dashboard link: https://syzkaller.appspot.com/bug?extid=55c84106264e92ea9ada
 compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d67162580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1412c962580000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1788c962580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12b0887c580000
 
 Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-d69eb204.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e24d9eda2154/vmlinux-d69eb204.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/213a30ed1023/bzImage-d69eb204.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/aa6322da89ec/mount_0.gz
+disk image: https://storage.googleapis.com/syzbot-assets/efa41ea44c52/disk-d69eb204.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/d9ae66f326a4/vmlinux-d69eb204.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/967c2253578b/bzImage-d69eb204.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/9e7c59fc7ab3/mount_0.gz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7f176adb30b21606c5fc@syzkaller.appspotmail.com
+Reported-by: syzbot+55c84106264e92ea9ada@syzkaller.appspotmail.com
 
-bcachefs (loop0): Doing compatible version upgrade from 1.13: inode_has_child_snapshots to 1.28: inode_has_case_insensitive
   running recovery passes: check_allocations,check_extents_to_backpointers,check_inodes
-==================================================================
-BUG: KASAN: use-after-free in string_nocheck lib/vsprintf.c:653 [inline]
-BUG: KASAN: use-after-free in string+0x231/0x2b0 lib/vsprintf.c:735
-Read of size 1 at addr ffff888050fe74f7 by task syz.0.17/5533
-
-CPU: 0 UID: 0 PID: 5533 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+bcachefs (loop0): invalid bkey in btree_node btree=inodes level=0: u64s 18 type inode_v3 0:4102:U32_MAX len 0 ver 0: (unpack error)
+  invalid variable length fields, deleting
+bcachefs (loop0): accounting_read... done
+bcachefs (loop0): alloc_read... done
+bcachefs (loop0): alloc_read... done
+bcachefs (loop0): snapshots_read... done
+bcachefs (loop0): check_allocations...
+------------[ cut here ]------------
+kernel BUG at fs/bcachefs/btree_iter.c:633!
+Oops: invalid opcode: 0000 [#1] SMP KASAN PTI
+CPU: 0 UID: 0 PID: 6000 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT_{RT,(full)} 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2025
+RIP: 0010:bch2_btree_path_level_init+0xa01/0xa20 fs/bcachefs/btree_iter.c:633
+Code: fd 90 0f 0b e8 90 05 a2 fd 90 0f 0b e8 88 05 a2 fd 90 0f 0b e8 80 05 a2 fd 90 0f 0b e8 78 05 a2 fd 90 0f 0b e8 70 05 a2 fd 90 <0f> 0b e8 68 05 a2 fd 90 0f 0b e8 60 05 a2 fd 90 0f 0b 66 66 66 66
+RSP: 0018:ffffc90003f8e4a0 EFLAGS: 00010293
+RAX: ffffffff841c59a0 RBX: ffff88803d33c2d8 RCX: ffff888030d73b80
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: dffffc0000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: dffffc0000000000 R11: ffffed1007c6c817 R12: 0000000000000052
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+FS:  000055557a974500(0000) GS:ffff8881268c1000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fff395c5f24 CR3: 0000000027dc0000 CR4: 00000000003526f0
 Call Trace:
  <TASK>
- dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
- print_address_description mm/kasan/report.c:378 [inline]
- print_report+0xca/0x240 mm/kasan/report.c:482
- kasan_report+0x118/0x150 mm/kasan/report.c:595
- string_nocheck lib/vsprintf.c:653 [inline]
- string+0x231/0x2b0 lib/vsprintf.c:735
- vsnprintf+0x739/0xf00 lib/vsprintf.c:2926
- bch2_prt_printf+0x1c6/0x740 fs/bcachefs/printbuf.c:183
- bch2_dirent_to_text+0x2bd/0xd20 fs/bcachefs/dirent.c:220
- __bch2_bkey_fsck_err+0x3f7/0x540 fs/bcachefs/error.c:691
- bch2_dirent_validate+0x7b3/0xfb0 fs/bcachefs/dirent.c:164
- bch2_bkey_val_validate+0x202/0x3e0 fs/bcachefs/bkey_methods.c:143
- btree_node_bkey_val_validate fs/bcachefs/btree_io.c:880 [inline]
- bch2_btree_node_read_done+0x4051/0x5550 fs/bcachefs/btree_io.c:1303
- btree_node_read_work+0x40e/0xe60 fs/bcachefs/btree_io.c:1440
- bch2_btree_node_read+0x887/0x2a00 fs/bcachefs/btree_io.c:-1
- __bch2_btree_root_read fs/bcachefs/btree_io.c:1906 [inline]
- bch2_btree_root_read+0x5f0/0x760 fs/bcachefs/btree_io.c:1928
- read_btree_roots+0x2c6/0x840 fs/bcachefs/recovery.c:615
- bch2_fs_recovery+0x261f/0x3a50 fs/bcachefs/recovery.c:1006
+ btree_path_down fs/bcachefs/btree_iter.c:994 [inline]
+ bch2_btree_path_traverse_one+0x1367/0x21d0 fs/bcachefs/btree_iter.c:1202
+ bch2_btree_path_traverse fs/bcachefs/btree_iter.h:250 [inline]
+ __bch2_btree_iter_peek fs/bcachefs/btree_iter.c:2267 [inline]
+ bch2_btree_iter_peek_max+0x9e8/0x58f0 fs/bcachefs/btree_iter.c:2384
+ bch2_btree_iter_peek_max_type fs/bcachefs/btree_iter.h:743 [inline]
+ bch2_gc_btree fs/bcachefs/btree_gc.c:729 [inline]
+ bch2_gc_btrees fs/bcachefs/btree_gc.c:792 [inline]
+ bch2_check_allocations+0x120d/0x57b0 fs/bcachefs/btree_gc.c:1094
+ bch2_run_recovery_pass fs/bcachefs/recovery_passes.c:484 [inline]
+ __bch2_run_recovery_passes+0x3bd/0x1060 fs/bcachefs/recovery_passes.c:539
+ bch2_run_recovery_passes+0x184/0x210 fs/bcachefs/recovery_passes.c:610
+ bch2_fs_recovery+0x2690/0x3a50 fs/bcachefs/recovery.c:1016
  bch2_fs_start+0xaaf/0xda0 fs/bcachefs/super.c:1213
  bch2_fs_get_tree+0xb39/0x1520 fs/bcachefs/fs.c:2488
  vfs_get_tree+0x8f/0x2b0 fs/super.c:1815
@@ -113,79 +121,28 @@ Call Trace:
  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
  do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fd00ed9038a
+RIP: 0033:0x7fcb57f3038a
 Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff65054f18 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007fff65054fa0 RCX: 00007fd00ed9038a
-RDX: 0000200000000040 RSI: 0000200000004940 RDI: 00007fff65054f60
-RBP: 0000200000000040 R08: 00007fff65054fa0 R09: 0000000000004000
+RSP: 002b:00007ffc365dc0a8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffc365dc130 RCX: 00007fcb57f3038a
+RDX: 0000200000000040 RSI: 0000200000004940 RDI: 00007ffc365dc0f0
+RBP: 0000200000000040 R08: 00007ffc365dc130 R09: 0000000000004000
 R10: 0000000000004000 R11: 0000000000000246 R12: 0000200000004940
-R13: 00007fff65054f60 R14: 000000000000496e R15: 0000200000000000
+R13: 00007ffc365dc0f0 R14: 00000000000049ae R15: 0000200000000180
  </TASK>
-
-The buggy address belongs to the physical page:
-page: refcount:0 mapcount:0 mapping:0000000000000000 index:0xffff888050fe7dc0 pfn:0x50fe7
-flags: 0x4fff00000000000(node=1|zone=1|lastcpupid=0x7ff)
-page_type: f0(buddy)
-raw: 04fff00000000000 ffffea00013e8dc8 ffffea000139e008 0000000000000000
-raw: ffff888050fe7dc0 0000000000000000 00000000f0000000 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as freed
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x440dc0(GFP_KERNEL_ACCOUNT|__GFP_ZERO|__GFP_COMP), pid 5454, tgid 5454 (dhcpcd-run-hook), ts 104016831092, free_ts 104102545739
- set_page_owner include/linux/page_owner.h:32 [inline]
- post_alloc_hook+0x240/0x2a0 mm/page_alloc.c:1851
- prep_new_page mm/page_alloc.c:1859 [inline]
- get_page_from_freelist+0x21e4/0x22c0 mm/page_alloc.c:3858
- __alloc_frozen_pages_noprof+0x181/0x370 mm/page_alloc.c:5148
- alloc_pages_mpol+0x232/0x4a0 mm/mempolicy.c:2416
- alloc_frozen_pages_noprof mm/mempolicy.c:2487 [inline]
- alloc_pages_noprof+0xa9/0x190 mm/mempolicy.c:2507
- pagetable_alloc_noprof include/linux/mm.h:2881 [inline]
- __pte_alloc_one_noprof include/asm-generic/pgalloc.h:75 [inline]
- pte_alloc_one+0x21/0x170 arch/x86/mm/pgtable.c:18
- __pte_alloc+0x25/0x1a0 mm/memory.c:452
- copy_pte_range mm/memory.c:1107 [inline]
- copy_pmd_range+0x6a91/0x71d0 mm/memory.c:1261
- copy_pud_range mm/memory.c:1298 [inline]
- copy_p4d_range mm/memory.c:1322 [inline]
- copy_page_range+0xc14/0x1270 mm/memory.c:1410
- dup_mmap+0xf57/0x1ac0 mm/mmap.c:1834
- dup_mm kernel/fork.c:1485 [inline]
- copy_mm+0x13c/0x4b0 kernel/fork.c:1537
- copy_process+0x1706/0x3c00 kernel/fork.c:2175
- kernel_clone+0x21e/0x840 kernel/fork.c:2605
- __do_sys_clone kernel/fork.c:2748 [inline]
- __se_sys_clone kernel/fork.c:2732 [inline]
- __x64_sys_clone+0x18b/0x1e0 kernel/fork.c:2732
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-page last free pid 15 tgid 15 stack trace:
- reset_page_owner include/linux/page_owner.h:25 [inline]
- free_pages_prepare mm/page_alloc.c:1395 [inline]
- __free_frozen_pages+0xbc4/0xd30 mm/page_alloc.c:2895
- pagetable_free include/linux/mm.h:2898 [inline]
- pagetable_dtor_free include/linux/mm.h:2996 [inline]
- __tlb_remove_table+0x2d2/0x3b0 include/asm-generic/tlb.h:220
- __tlb_remove_table_free mm/mmu_gather.c:227 [inline]
- tlb_remove_table_rcu+0x85/0x100 mm/mmu_gather.c:290
- rcu_do_batch kernel/rcu/tree.c:2605 [inline]
- rcu_core+0xcab/0x1770 kernel/rcu/tree.c:2861
- handle_softirqs+0x283/0x870 kernel/softirq.c:579
- run_ksoftirqd+0x9b/0x100 kernel/softirq.c:968
- smpboot_thread_fn+0x53f/0xa60 kernel/smpboot.c:160
- kthread+0x70e/0x8a0 kernel/kthread.c:463
- ret_from_fork+0x3fc/0x770 arch/x86/kernel/process.c:148
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
-
-Memory state around the buggy address:
- ffff888050fe7380: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff888050fe7400: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff888050fe7480: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                                                             ^
- ffff888050fe7500: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff888050fe7580: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:bch2_btree_path_level_init+0xa01/0xa20 fs/bcachefs/btree_iter.c:633
+Code: fd 90 0f 0b e8 90 05 a2 fd 90 0f 0b e8 88 05 a2 fd 90 0f 0b e8 80 05 a2 fd 90 0f 0b e8 78 05 a2 fd 90 0f 0b e8 70 05 a2 fd 90 <0f> 0b e8 68 05 a2 fd 90 0f 0b e8 60 05 a2 fd 90 0f 0b 66 66 66 66
+RSP: 0018:ffffc90003f8e4a0 EFLAGS: 00010293
+RAX: ffffffff841c59a0 RBX: ffff88803d33c2d8 RCX: ffff888030d73b80
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: dffffc0000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: dffffc0000000000 R11: ffffed1007c6c817 R12: 0000000000000052
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+FS:  000055557a974500(0000) GS:ffff8881268c1000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fff395c5f24 CR3: 0000000027dc0000 CR4: 00000000003526f0
 
 
 ---
