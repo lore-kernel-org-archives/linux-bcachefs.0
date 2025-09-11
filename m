@@ -1,120 +1,137 @@
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9932D3570CB
-	for <linux-bcachefs@vger.kernel.org>; Thu, 11 Sep 2025 16:44:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44F95156F45
+	for <linux-bcachefs@vger.kernel.org>; Thu, 11 Sep 2025 23:19:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757609082; cv=none; b=K6gzRoFVWwekBZ88vElufniflc0ZtSNmdnKDVVrmnrxKUL4qsRvmZWUHkOpHaOgKhuvOy1S+NzdaOOWXsMhsek0ENZZWs+rFpBgUfjYdNEqyoUqPcctLYERZgQaEN7Fp/r2sM2JSleI6oPq2z+IUfG7NSiWou474XmJ39Kk0DsQ=
+	t=1757632790; cv=none; b=K6lY4idftwNl49/xLkKca6duex/eoS6wzxxRlea93bvPXBUrqAkz2RTcC0/JU1KS1oozebUyjQQ7gq5oQokIWvJ+0MczkOcOyMCq3SkfCD2SSejGKoSZ6P47ynCJ6RYwZ+wpJPGs3ynJdJFK7qgCFi20rPbpySjIcwKJzASouVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757609082; c=relaxed/simple;
-	bh=r7zIrmTcH7V0C2QWyQEZI8cLSyj2S0FQeUO8H0HYb/8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uNmwLNh8qA4PWRfSXfV/z1KdQGEqYEo0tauGxKxW2+KrAv0ltgqVEAWYT7Yn1vQcMSrfTXOttnvhgzRxE/wgoyLeJLz+YyDL2dDch3Twxu9TNO6OkaZV6m/0+lJ7AG2d8ePKe7mDcSJNuxk/k2+rJ3upZLIjtoQNTVUcXD3ghns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VC5dQWDa; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1757632790; c=relaxed/simple;
+	bh=Av6/z8hs6bLVbIzUXGJ67XwwTFsbQRRqZUzxwb5Beww=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=N7l/OK56YliOVr18zdVAxAOCAvRetYxNJohSScz1G5QMMcj4WlO+U+S8+J0rI99qPiSgX6g/KxDVvDZZvwShK5+ThI+tzrXbxVmEZ0oq5MmWjIgEXH5o12vLpXu8hyluk3KNLtB1lHIpn96BuIySiz7hmrTsOrj7WC/qqeubhHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XaPgLm/k; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VC5dQWDa"
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-b042eb09948so204902966b.3
-        for <linux-bcachefs@vger.kernel.org>; Thu, 11 Sep 2025 09:44:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757609079; x=1758213879; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r7zIrmTcH7V0C2QWyQEZI8cLSyj2S0FQeUO8H0HYb/8=;
-        b=VC5dQWDaIQhecohdCyIF91m6W76hZjyQUcLikkxKSMsyPZYxqpWt/sWoRXtpjM6XZg
-         HHMXzIz4iGRdrS/AkoKsr0vG36/jvJvo78pbs/nRsoSqq/wXizd1zfyW8DC8XBjx1dnp
-         +YFvTgz/TCUOmPdMnKnxH0+geOZ9iz9taR3xbM9DJdYJljfuz5UjEnD4IFRpdVqBH9Ar
-         H9dG4jdaRd8WrTRp4Giyu9cztxlLnfO2jYNWlWNjmu/ginLKGoA++Ifp/EMmqCbcqPRR
-         153E83vLAlu2aJnwt32wzsX5awCh8THa6vJvs4O8Bu6m2V8vX57YVHM3UPkeFneUxKpv
-         iOeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757609079; x=1758213879;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=r7zIrmTcH7V0C2QWyQEZI8cLSyj2S0FQeUO8H0HYb/8=;
-        b=oinT6H00MsLkzQ8dQqbIWTRSi0Yng+6IfBFJt9ig+sZ8q7gYjp0RK5p/XxaVTXwmHy
-         p26jI1Mw1St1n+MWIIAwSgRqtEPjdolzuLZ6DpMMMtJQhe1W9h6j2I8gnDDOuW5KyF39
-         QmBotYnbyCF0FyrtY4eNWka6EDO/JLptGbbt5BkaQtwXff7qcZqUmFxF/dUR3TbnxaMV
-         uWmbVmD8xxkbD3Y+XM6rqhnVjNkMMvB5GwbB77xpbOlDun+nmWl/hgSio9ry2fTMY+un
-         7wIuaS3GZrVcms/zFnKMbcALpqu7C/vwfG2N67vagNatzYQTK79aG7V1hWL/zHKsfREn
-         XXYw==
-X-Forwarded-Encrypted: i=1; AJvYcCUg15s7xz5/Mh0gfuNWQb9GtCfNAL6sdjM982+mqqPChM2OmyX1iNADY47k/QcgEAOBYO8o3HptfKDxF5YCPQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwnIis6pkaQG+p+Nus8TzrGKy9D07iebg8eD5ZKmctP8nLPfDaO
-	VxbGvr1UjDWRrv11wmAU4/5dDQHgccaOX8eQn5ItDbd+eHgP67HPfERHbSKBQkTesiDYQg7jvW+
-	rGw4YgfHv//W82TXNfqtg42Z1GhawBhY=
-X-Gm-Gg: ASbGncuemtNmjZK3iWwtGodv7/qo6Yd06ditWQhoacK3YW06q9Y8UI79u4riswcvAsd
-	oLuyS5Lxqzknu5L+dibdK5oOGjojU6RCKPGcoamB2DnfPvBif1MtdcLn5bQCJYq/ABbYh7CcJbE
-	NYvm4Hph37RxAKv/O5qvgihwVX/Nsx7j/qEPhkMKMdnQwlPZiQdqOvPJBCXkRjfD5GV48X72TRs
-	quITUWgSNfIioRYWek=
-X-Google-Smtp-Source: AGHT+IFs1CV3yVVZXZDMGsTeTso3AEuFjceZvzC2pTMX9WT/SD8BBKjIvKtouj4GtucfAqE4OoYOii8QIyUDf/twVIk=
-X-Received: by 2002:a17:906:4fc7:b0:b04:9acf:46c4 with SMTP id
- a640c23a62f3a-b04b17376c1mr1933063266b.51.1757609078466; Thu, 11 Sep 2025
- 09:44:38 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XaPgLm/k"
+Date: Thu, 11 Sep 2025 19:19:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1757632785;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type;
+	bh=YcAt/7Go/PBZ+F/f8oRYRxWymp9ZTqIhmm5xfo1Lu7M=;
+	b=XaPgLm/klzu1IFpMi6Ugwepy4OYIQsZyX9F7FgRnGuK/eRLRT32FKjbXs1z5GOz5H3ATxI
+	IZfRLmCmlG+Q62xVVLfBg82wR9yHqyy6zS/zpLoWgB6USkAB/LmqS/igdGW5gwVVZVy7gF
+	7B2oA1xoyYzzvCJtJQJxo0+pS0fX/A0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: linux-bcachefs@vger.kernel.org
+Subject: Upcoming changes for bcachefs; notes for users distributions
+Message-ID: <yokpt2d2g2lluyomtqrdvmkl3amv3kgnipmenobkpgx537kay7@xgcgjviv3n7x>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CANypQFYUeKswEh54fM5bFEvOfFLfc_GunKwEgr2uND=j-pxixQ@mail.gmail.com>
- <CANypQFYGt3c1eoeytCzw3RKLw+cbtDDPJy8UM=aj8HQMC8MWmA@mail.gmail.com> <CANn89iKkQ_zmdYwFLomcg4H2=4s8f1_2E8UbHhfd9KEPv=tu_Q@mail.gmail.com>
-In-Reply-To: <CANn89iKkQ_zmdYwFLomcg4H2=4s8f1_2E8UbHhfd9KEPv=tu_Q@mail.gmail.com>
-From: Jiaming Zhang <r772577952@gmail.com>
-Date: Fri, 12 Sep 2025 00:44:01 +0800
-X-Gm-Features: AS18NWBS4uG5Gox8DFZ7HZzpk_Vt9bHfh2HzF20kEvBgTQrA8elDiKoDobubpYc
-Message-ID: <CANypQFZVc-+E-xDWyza33A=BTmYRQjsK24z3Tny-X3xzoVO0jQ@mail.gmail.com>
-Subject: Re: [Linux Kernel Bug] WARNING in remove_vm_area
-To: Eric Dumazet <edumazet@google.com>
-Cc: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	security@kernel.org, linux-kernel@vger.kernel.org, syzkaller@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Migadu-Flow: FLOW_OUT
 
-Thanks for the reminder! I'll keep it in mind.
+As many of you are no doubt aware, bcachefs is switching to shipping as
+a DKMS module. Once the DKMS packages are in place very little should
+change for end users, but we've got some work to do on the distribution
+side of things to make sure things go smoothly.
 
-Eric Dumazet <edumazet@google.com> =E4=BA=8E2025=E5=B9=B49=E6=9C=8812=E6=97=
-=A5=E5=91=A8=E4=BA=94 00:33=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Thu, Sep 11, 2025 at 9:29=E2=80=AFAM Jiaming Zhang <r772577952@gmail.c=
-om> wrote:
-> >
-> > Hello,
-> >
-> > Apologies for the oversight in my previous email. I neglected to
-> > include the formatted report.
-> >
-> > Please find the formatted report (formatted by syz-symbolize) attached
-> > to this email. This should be easier to read and analyze.
-> >
-> > Sorry for any inconvenience.
-> >
-> > Jiaming Zhang <r772577952@gmail.com> =E4=BA=8E2025=E5=B9=B49=E6=9C=8811=
-=E6=97=A5=E5=91=A8=E5=9B=9B 21:59=E5=86=99=E9=81=93=EF=BC=9A
-> > >
-> > > Dear Linux kernel developers and maintainers:
-> > >
-> > > We are writing to report a kernel WARNING in remove_vm_area,
-> > > discovered with our modified version of syzkaller.
-> > >
-> > > This issue was initially found in kernel v6.17-rc5 (commit
-> > > 76eeb9b8de9880ca38696b2fb56ac45ac0a25c6c). Unfortunately, we do not
-> > > have a stable C or Syz program to reproduce this warning. We are
-> > > actively analyzing the root cause and working to create a reliable
-> > > reproducer, which we will share as soon as it is available.
-> > >
-> > > Attached are the kernel console output and the .config file for your
-> > > analysis. Please let us know if any further information would be
-> > > helpful.
-> > >
-> > > Best regards,
-> > > Jiaming Zhang
->
-> Please note that syzbot reports bcachefs bugs quite often, you do not
-> have to involve security@kernel.org,
-> especially if you send public reports to linux-kernel@kernel.org.
->
-> Thank you.
+Good news:
+
+- The community has been stepping up to help out, and distributions so
+  far have been helpful in making sure this goes smoothly. This is
+  important because there are a lot of people using bcachefs on major
+  distributions who've been getting it from their normal stock kernel;
+  we'll need their help to make sure this all goes well, but I think we
+  can do it.
+
+- Yes, you'll still be able to use your root filesystem :) DKMS modules
+  can be included in an initramfs just like any other module.
+
+- My git trees are still there, and I'm going to switch to basing them
+  on .0 releases. For people who are comfortable with compiling kernels
+  or want to avoid DKMS hassle, this is something to keep in mind.
+
+- Expect no change in QA, stability of releases, etc. We've got our QA
+  processes ironed out, and we'll still be staging changes before they
+  go into releases that users see - we have plenty of people that test
+  the nightlies and we have an amazing community of people doing the
+  hard work of testing and QA that works well together.
+
+- 6.16 has turned out to be a very solid release, and bcachefs (so far)
+  isn't being deleted from the kernel. This is important because it's
+  going to take a bit to get all the packaging issues sorted out, and
+  DKMS needs distribution specific testing, so it looks like most users
+  will be still be running the 6.16 release when 6.17 comes out.
+
+  All that bug grinding has paid off - and a thank you to all the people
+  who've been reporting bugs and working with me to debug issues, people
+  have been very responsive and helpful. We're getting very close to
+  lifting the experimental label.
+
+  For some specifics, since the 6.16 release there have been zero new
+  critical bug reports. The bug fixing activity has mainly been
+  performance bugs, test dashboard bugs (low severity stuff that's
+  unlikely to ever affect users), and the highest severity bug was a
+  repair bug, where we still repair and mount successfully with zero
+  user intervention - just via a more expensive codepath than normal. So
+  a minor annoyance, not severe.
+
+  I've been communicating with both Debian and OpenSUSE kernel
+  maintainers who were initially under the impression that bcachefs
+  would no longer be supported and were flipping it off in their kernel
+  config, and they're holding off so we can have the DKMS stuff ready.
+
+What still needs to happen - distribution support:
+
+- The big issue we're going to run into has been that previously, having
+  an up-to-date bcachefs-tools was not critical. We've got good
+  compatibility between kernel/userspace and we don't depend on
+  userspace fsck (userspace and kernelspace are equally well supported,
+  with an automatic fallback to the kernel fsck implementation on
+  version mismatch).
+
+  This has meant that distribution bcachefs-tools packages were low
+  priority, and people on e.g. Debian have generally been compiling from
+  git and updating infrequently.
+
+  bcachefs-tools in Debian was orphaned and then removed, so we
+  (preferably) need to get it back into experimental, or alternatively
+  get a PPA going. We reopened an ITP today:
+
+  https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1080344
+
+  The situation should be good on Arch and NixOS, we frequently work
+  with those distributions (and the DKMS support that just landed in
+  bcachefs-tools came from an Arch user). Fedora has a maintained
+  bcachefs-tools package; there are other distributions that have
+  bcachefs usage I'm aware of but we haven't ascertained the packaging
+  situation. (e.g. OpenSUSE; I was informed in the discussion for the
+  kernel package that DKMS there will likely need special attention).
+
+- If you're aware of a distribution with bcachefs users that needs
+  attention, please contact me or the community.
+
+- We'll need people testing the DKMS packages on various distributions,
+  please get in contact if you can help with that
+
+- Or even better, if you're experienced in packaging, we can use you!
+
+With debugging and stabilization slowing down, I've also got more time
+available to devote to distribution and packaging issues, and we have
+more people helping out than we did in the past. If you're a packager
+who I was short with in the past, apologies; filesystem development is
+hectic and tense at times, but the really crazy part is slowing down
+(and another crazy part commencing! woohoo!).
+
+Cheers,
+Kent
