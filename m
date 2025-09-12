@@ -1,137 +1,215 @@
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44F95156F45
-	for <linux-bcachefs@vger.kernel.org>; Thu, 11 Sep 2025 23:19:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCF34136347
+	for <linux-bcachefs@vger.kernel.org>; Fri, 12 Sep 2025 07:06:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757632790; cv=none; b=K6lY4idftwNl49/xLkKca6duex/eoS6wzxxRlea93bvPXBUrqAkz2RTcC0/JU1KS1oozebUyjQQ7gq5oQokIWvJ+0MczkOcOyMCq3SkfCD2SSejGKoSZ6P47ynCJ6RYwZ+wpJPGs3ynJdJFK7qgCFi20rPbpySjIcwKJzASouVU=
+	t=1757660792; cv=none; b=Sab9djJv3gKF1Ce5lkXZAIe+/tWAxW048JvpYtcM6Fej29uhsWFAIjI77zvxEqOS+eEY4LxMPbvS8e36Vjcb2XzaO2AoYgXBUGO34GHTYR6FVwzTbqC9/15iH1n5/GX522dXVBIh0AhuUYvPk8Aeno0UF3fV10FGsiyMktkY+wU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757632790; c=relaxed/simple;
-	bh=Av6/z8hs6bLVbIzUXGJ67XwwTFsbQRRqZUzxwb5Beww=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=N7l/OK56YliOVr18zdVAxAOCAvRetYxNJohSScz1G5QMMcj4WlO+U+S8+J0rI99qPiSgX6g/KxDVvDZZvwShK5+ThI+tzrXbxVmEZ0oq5MmWjIgEXH5o12vLpXu8hyluk3KNLtB1lHIpn96BuIySiz7hmrTsOrj7WC/qqeubhHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XaPgLm/k; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XaPgLm/k"
-Date: Thu, 11 Sep 2025 19:19:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757632785;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type;
-	bh=YcAt/7Go/PBZ+F/f8oRYRxWymp9ZTqIhmm5xfo1Lu7M=;
-	b=XaPgLm/klzu1IFpMi6Ugwepy4OYIQsZyX9F7FgRnGuK/eRLRT32FKjbXs1z5GOz5H3ATxI
-	IZfRLmCmlG+Q62xVVLfBg82wR9yHqyy6zS/zpLoWgB6USkAB/LmqS/igdGW5gwVVZVy7gF
-	7B2oA1xoyYzzvCJtJQJxo0+pS0fX/A0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org
-Subject: Upcoming changes for bcachefs; notes for users distributions
-Message-ID: <yokpt2d2g2lluyomtqrdvmkl3amv3kgnipmenobkpgx537kay7@xgcgjviv3n7x>
+	s=arc-20240116; t=1757660792; c=relaxed/simple;
+	bh=Y4aiKmvWkx6G6By0TM3doDi8LDZzC+XcCJeBWIo4Jo0=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=uawEoZm41Vw3ErTu/N/AJBuceCEXwMB8PVNoW0y8xIa112MafMkjR4Tpm8KTjVa1OJS/WSbM52nRFKqluYqb30v2bTExawH2Fd6jiVhvCGgUYywdPop0N4qFzx9zVLXuIagoLwEai6CGAtf4pkYzx6RPWjoVy64mgNbSh9dLGrA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-88a7b9c831aso273049239f.0
+        for <linux-bcachefs@vger.kernel.org>; Fri, 12 Sep 2025 00:06:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757660790; x=1758265590;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pZ7NEZlOFij2ci+qf76F0pjCJoN+xDm7sESWeyA4yO4=;
+        b=l/yKNgJU67mBZudLEyFQGv+nUo1m+ZEQnuvgtJeUaHqIJdRPZbUgl8+CBkR1lD5/G7
+         duco7m5Dtq1Su615+CMvoDUjtFI3rp8T+Q199+XTA0oKiPO2JJKH6S5+V/eib7S0tUNe
+         712evHKbkcyrBy5KrTbL2U17+lgL1Cfdr66+jcE5DVMTORmwhLQZ5kfA6rJTgxAqjnm7
+         3T+LMBw2Rdm/FeNaSnkQc2SOwKC0MAk4/zeEX4ZAQgb/NQnlFXVCIUxQsZXRO7Qx95Fu
+         0nrUk17SKrU8cUbHVTFn9f4nn+7LUm7Kgibf+5jZ47DOFNwnb35gK+K0PO9lA9zQGFWm
+         ameQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXzsJBMYEb3JAwciZSNZ4paMA2N/x0xCl9HGWzQ+Cm7agg5mAq1BGx/dOC7q8KaS6e88sUxpRtP1T1NpzUwlQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyKgIhtHfrCxX9XiGIvY/+meK26j2D4Jrw2AJkFrZ5jq99/soCl
+	rSsZNS3wEXBMKm/5Ka8x3zpqutDchYoII4iUrSnN6YFxTOyqQ1f46nKBdakVAwteVflApcqeecK
+	EIxb0SUAAWQ3LCPfe6o893uW03brtz4ql+ofNv+BlkuUKrslUiFjoRwmu81s=
+X-Google-Smtp-Source: AGHT+IEIeJcB9JZNOK9zlUZv8PEScGn1I+fmElu+psW/Oq/4czoskpL+2NFF0w+o3Dm6EhRrsyv3rYU4tggTZcXvyhWcUHS01SCX
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6e02:18c8:b0:416:d8ba:8aff with SMTP id
+ e9e14a558f8ab-4209e64b5f4mr33903055ab.11.1757660789887; Fri, 12 Sep 2025
+ 00:06:29 -0700 (PDT)
+Date: Fri, 12 Sep 2025 00:06:29 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68c3c675.050a0220.2ff435.0354.GAE@google.com>
+Subject: [syzbot] [bcachefs?] kernel BUG in bch2_trans_update_by_path (2)
+From: syzbot <syzbot+e7b9dfa79acffd3aabdd@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-As many of you are no doubt aware, bcachefs is switching to shipping as
-a DKMS module. Once the DKMS packages are in place very little should
-change for end users, but we've got some work to do on the distribution
-side of things to make sure things go smoothly.
+Hello,
 
-Good news:
+syzbot found the following issue on:
 
-- The community has been stepping up to help out, and distributions so
-  far have been helpful in making sure this goes smoothly. This is
-  important because there are a lot of people using bcachefs on major
-  distributions who've been getting it from their normal stock kernel;
-  we'll need their help to make sure this all goes well, but I think we
-  can do it.
+HEAD commit:    02ffd6f89c50 Merge tag 'bpf-fixes' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14789642580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bf99f2510ef92ba5
+dashboard link: https://syzkaller.appspot.com/bug?extid=e7b9dfa79acffd3aabdd
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
 
-- Yes, you'll still be able to use your root filesystem :) DKMS modules
-  can be included in an initramfs just like any other module.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-- My git trees are still there, and I'm going to switch to basing them
-  on .0 releases. For people who are comfortable with compiling kernels
-  or want to avoid DKMS hassle, this is something to keep in mind.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-02ffd6f8.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f0aa130ecc52/vmlinux-02ffd6f8.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/3649569ef2fb/bzImage-02ffd6f8.xz
 
-- Expect no change in QA, stability of releases, etc. We've got our QA
-  processes ironed out, and we'll still be staging changes before they
-  go into releases that users see - we have plenty of people that test
-  the nightlies and we have an amazing community of people doing the
-  hard work of testing and QA that works well together.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e7b9dfa79acffd3aabdd@syzkaller.appspotmail.com
 
-- 6.16 has turned out to be a very solid release, and bcachefs (so far)
-  isn't being deleted from the kernel. This is important because it's
-  going to take a bit to get all the packaging issues sorted out, and
-  DKMS needs distribution specific testing, so it looks like most users
-  will be still be running the 6.16 release when 6.17 comes out.
+ done
+bcachefs (loop0): check_alloc_info...
+bcachefs (loop0): hole in alloc btree missing in freespace btree
+  device 0 buckets 25-26, fixing
+bcachefs (loop0): bucket incorrectly unset in need_discard btree
+  u64s 13 type alloc_v4 0:29:0 len 0 ver 0: 
+    gen 0 oldest_gen 0 data_type need_discard
+    journal_seq_nonempty 1
+    journal_seq_empty    0
+    need_discard         1
+    need_inc_gen         1
+    dirty_sectors        0
+    stripe_sectors       0
+    cached_sectors       0
+    stripe               0
+    stripe_redundancy    0
+    io_time[READ]        1
+    io_time[WRITE]       1
+    fragmentation     0
+    bp_start          8
+  , fixing
+bcachefs (loop0): hole in alloc btree missing in freespace btree
+  device 0 buckets 30-31, fixing
+bcachefs (loop0): hole in alloc btree missing in freespace btree
+  device 0 buckets 33-34, fixing
+bcachefs (loop0): hole in alloc btree missing in freespace btree
+  device 0 buckets 37-38, fixing
+bcachefs (loop0): hole in alloc btree missing in freespace btree
+  device 0 buckets 42-47, fixing
+bcachefs (loop0): hole in alloc btree missing in freespace btree
+  device 0 buckets 48-50, fixing
+bcachefs (loop0): hole in alloc btree missing in freespace btree
+  device 0 buckets 51-120, fixing
+ done
+bcachefs (loop0): check_lrus... done
+bcachefs (loop0): check_backpointers_to_extents... done
+bcachefs (loop0): check_extents_to_backpointers...
+bcachefs (loop0): scanning for missing backpointers in 5/128 buckets
+ done
+bcachefs (loop0): check_inodes... done
+bcachefs (loop0): resume_logged_ops... done
+bcachefs (loop0): delete_dead_inodes... done
+bcachefs (loop0): done starting filesystem
+bcachefs (loop0): requested incompat feature 1.16: reflink_p_may_update_opts currently not enabled, allowed up to 1.16: reflink_p_may_update_opts
+  set version_upgrade=incompat to enable
+bcachefs (loop0): (disconnected) offset 0: write error: __bch2_write(): insufficient_devices
+bcachefs (loop0): pointer to missing indirect extent in (disconnected) offset 0: -4096
+  u64s 7 type reflink_p 4104:8:U32_MAX len 8 ver 0: idx 0 front_pad 0 back_pad 0
+  missing reflink btree range 0-8, fixing
+------------[ cut here ]------------
+kernel BUG at fs/bcachefs/btree_update.c:410!
+Oops: invalid opcode: 0000 [#1] SMP KASAN NOPTI
+CPU: 0 UID: 0 PID: 5358 Comm: syz.0.0 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+RIP: 0010:bch2_trans_update_by_path+0x1f2b/0x1f30 fs/bcachefs/btree_update.c:410
+Code: fd 90 0f 0b e8 46 86 8f fd 90 0f 0b e8 3e 86 8f fd 90 0f 0b e8 36 86 8f fd 90 0f 0b e8 2e 86 8f fd 90 0f 0b e8 26 86 8f fd 90 <0f> 0b 0f 1f 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3
+RSP: 0018:ffffc9000d3c66c8 EFLAGS: 00010283
+RAX: ffffffff8430488a RBX: 0000000000004000 RCX: 0000000000100000
+RDX: ffffc9000e162000 RSI: 00000000000554a7 RDI: 00000000000554a8
+RBP: ffff888055bfa4d8 R08: ffff88800032c880 R09: 0000000000000002
+R10: 0000000000000006 R11: 0000000000000002 R12: 0000000000000000
+R13: 1ffff1100ab7f49b R14: dffffc0000000000 R15: ffff888055bfa4d8
+FS:  00007f461eb3d6c0(0000) GS:ffff88808d00a000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f461a1f4fc8 CR3: 0000000043e03000 CR4: 0000000000352ef0
+Call Trace:
+ <TASK>
+ bch2_trans_update_ip+0x9a6/0x1db0 fs/bcachefs/btree_update.c:531
+ bch2_trans_update fs/bcachefs/btree_update.h:123 [inline]
+ bch2_btree_insert_nonextent fs/bcachefs/btree_update.c:625 [inline]
+ bch2_trans_update_extent fs/bcachefs/btree_update.c:321 [inline]
+ bch2_trans_update_ip+0x17ef/0x1db0 fs/bcachefs/btree_update.c:503
+ bch2_trans_update fs/bcachefs/btree_update.h:123 [inline]
+ bch2_btree_insert_trans+0x1cd/0x330 fs/bcachefs/btree_update.c:637
+ bch2_indirect_extent_missing_error+0xd2d/0x11b0 fs/bcachefs/reflink.c:239
+ bch2_lookup_indirect_extent+0x38d/0x5c0 fs/bcachefs/reflink.c:279
+ trans_trigger_reflink_p_segment fs/bcachefs/reflink.c:308 [inline]
+ __trigger_reflink_p+0x395/0x19c0 fs/bcachefs/reflink.c:419
+ bch2_trigger_reflink_p+0x1ea/0x3a0 fs/bcachefs/reflink.c:454
+ run_one_trans_trigger fs/bcachefs/btree_trans_commit.c:-1 [inline]
+ bch2_trans_commit_run_triggers fs/bcachefs/btree_trans_commit.c:554 [inline]
+ __bch2_trans_commit+0xa81/0x8870 fs/bcachefs/btree_trans_commit.c:1023
+ bch2_trans_commit fs/bcachefs/btree_update.h:241 [inline]
+ bch2_inode_delete_keys+0x525/0x700 fs/bcachefs/inode.c:1115
+ bch2_inode_rm+0x282/0x820 fs/bcachefs/inode.c:1146
+ bch2_evict_inode+0x220/0x520 fs/bcachefs/fs.c:2182
+ evict+0x504/0x9c0 fs/inode.c:810
+ __dentry_kill+0x209/0x660 fs/dcache.c:669
+ dput+0x19f/0x2b0 fs/dcache.c:911
+ __fput+0x68e/0xa70 fs/file_table.c:476
+ task_work_run+0x1d1/0x260 kernel/task_work.c:227
+ resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
+ exit_to_user_mode_loop+0xec/0x110 kernel/entry/common.c:43
+ exit_to_user_mode_prepare include/linux/irq-entry-common.h:225 [inline]
+ syscall_exit_to_user_mode_work include/linux/entry-common.h:175 [inline]
+ syscall_exit_to_user_mode include/linux/entry-common.h:210 [inline]
+ do_syscall_64+0x2bd/0x3b0 arch/x86/entry/syscall_64.c:100
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f461dd8eba9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f461eb3d038 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: fffffffffffffffb RBX: 00007f461dfd5fa0 RCX: 00007f461dd8eba9
+RDX: 0000000000141042 RSI: 0000200000000040 RDI: ffffffffffffff9c
+RBP: 00007f461de11e19 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f461dfd6038 R14: 00007f461dfd5fa0 R15: 00007fff274d40e8
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:bch2_trans_update_by_path+0x1f2b/0x1f30 fs/bcachefs/btree_update.c:410
+Code: fd 90 0f 0b e8 46 86 8f fd 90 0f 0b e8 3e 86 8f fd 90 0f 0b e8 36 86 8f fd 90 0f 0b e8 2e 86 8f fd 90 0f 0b e8 26 86 8f fd 90 <0f> 0b 0f 1f 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3
+RSP: 0018:ffffc9000d3c66c8 EFLAGS: 00010283
+RAX: ffffffff8430488a RBX: 0000000000004000 RCX: 0000000000100000
+RDX: ffffc9000e162000 RSI: 00000000000554a7 RDI: 00000000000554a8
+RBP: ffff888055bfa4d8 R08: ffff88800032c880 R09: 0000000000000002
+R10: 0000000000000006 R11: 0000000000000002 R12: 0000000000000000
+R13: 1ffff1100ab7f49b R14: dffffc0000000000 R15: ffff888055bfa4d8
+FS:  00007f461eb3d6c0(0000) GS:ffff88808d00a000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005576da418660 CR3: 0000000043e03000 CR4: 0000000000352ef0
 
-  All that bug grinding has paid off - and a thank you to all the people
-  who've been reporting bugs and working with me to debug issues, people
-  have been very responsive and helpful. We're getting very close to
-  lifting the experimental label.
 
-  For some specifics, since the 6.16 release there have been zero new
-  critical bug reports. The bug fixing activity has mainly been
-  performance bugs, test dashboard bugs (low severity stuff that's
-  unlikely to ever affect users), and the highest severity bug was a
-  repair bug, where we still repair and mount successfully with zero
-  user intervention - just via a more expensive codepath than normal. So
-  a minor annoyance, not severe.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-  I've been communicating with both Debian and OpenSUSE kernel
-  maintainers who were initially under the impression that bcachefs
-  would no longer be supported and were flipping it off in their kernel
-  config, and they're holding off so we can have the DKMS stuff ready.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-What still needs to happen - distribution support:
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-- The big issue we're going to run into has been that previously, having
-  an up-to-date bcachefs-tools was not critical. We've got good
-  compatibility between kernel/userspace and we don't depend on
-  userspace fsck (userspace and kernelspace are equally well supported,
-  with an automatic fallback to the kernel fsck implementation on
-  version mismatch).
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-  This has meant that distribution bcachefs-tools packages were low
-  priority, and people on e.g. Debian have generally been compiling from
-  git and updating infrequently.
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-  bcachefs-tools in Debian was orphaned and then removed, so we
-  (preferably) need to get it back into experimental, or alternatively
-  get a PPA going. We reopened an ITP today:
-
-  https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1080344
-
-  The situation should be good on Arch and NixOS, we frequently work
-  with those distributions (and the DKMS support that just landed in
-  bcachefs-tools came from an Arch user). Fedora has a maintained
-  bcachefs-tools package; there are other distributions that have
-  bcachefs usage I'm aware of but we haven't ascertained the packaging
-  situation. (e.g. OpenSUSE; I was informed in the discussion for the
-  kernel package that DKMS there will likely need special attention).
-
-- If you're aware of a distribution with bcachefs users that needs
-  attention, please contact me or the community.
-
-- We'll need people testing the DKMS packages on various distributions,
-  please get in contact if you can help with that
-
-- Or even better, if you're experienced in packaging, we can use you!
-
-With debugging and stabilization slowing down, I've also got more time
-available to devote to distribution and packaging issues, and we have
-more people helping out than we did in the past. If you're a packager
-who I was short with in the past, apologies; filesystem development is
-hectic and tense at times, but the really crazy part is slowing down
-(and another crazy part commencing! woohoo!).
-
-Cheers,
-Kent
+If you want to undo deduplication, reply with:
+#syz undup
