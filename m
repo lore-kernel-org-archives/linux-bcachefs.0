@@ -1,52 +1,51 @@
 Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 027D51EA7C6
-	for <linux-bcachefs@vger.kernel.org>; Sun, 14 Sep 2025 07:53:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58E9115B0FE
+	for <linux-bcachefs@vger.kernel.org>; Mon, 15 Sep 2025 01:48:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757836409; cv=none; b=fgAM3PJo+0ib1i2KX8C+RuCsv66wm85eFVlX45fJqB/r0SWbAzHBJq6/EsTBDFehsfZl7qP1Nt5SaCL8f4yIViw0Juba6ZVhdgS2ZtHggKwhI+06fnkqD48LwDfBT5sTiJ2QyBz8ZYAyYDOtulWS4pCFkSXGGfENAkW7k7acWUc=
+	t=1757900919; cv=none; b=sCfrHQGstxp+taOmtRW2/7IyggIa3aSIbeeNaG7WZ8qgC0MUKMXCmgFqdr26+zCRKOmB2a6FNivX4ZMDkaE+H/9bguguNFoxKUzGTT7cPv3Lh5uyGk7Zf4JPDfPrwnlFBttL9WQjO9JWd1F3ZnlhHnFSeEjaYsQWCjd/FByioRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757836409; c=relaxed/simple;
-	bh=qkxA4K0qPEUSbPWKE/1gmkI85LY4Qnz1euenyPFCBfY=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=u8r01ohbz4wCMc6VksjYXO+TXRunVjjN7wcAyr0JSFjZTwKNsahzTnxgeUt9dfbdQ0GYNFRGuUNIj2rkARZ04bczNkubAZxzlmHB75df9o+LndU9a3hulkXh1OktzKnJMUU3dfmkar+l1QKGogKWwA15egFfYvemK2qF18j/NNw=
+	s=arc-20240116; t=1757900919; c=relaxed/simple;
+	bh=CkvpkExQAfH2OjXjHI8UI6S/tY7kRSr8lhntTVg3IGA=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=gA+7/skDFFCf6FDK5curuTGPztreOYtsIz/W7u+Yy7jsthUQp084vX78hsN4HMDWxnO8UzbbveAGIDQIiYHWFi0bC83TvCQuTCLvW0sdDw4r6ygWkHN5q71KVfOn2BGFc21brU+vPdG0LPcKJo+5QqvAwe22+X8u/sRSHsxpSfs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-42306862fc5so19808915ab.1
-        for <linux-bcachefs@vger.kernel.org>; Sun, 14 Sep 2025 00:53:27 -0700 (PDT)
+Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-4133da01bdcso71423815ab.0
+        for <linux-bcachefs@vger.kernel.org>; Sun, 14 Sep 2025 18:48:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757836407; x=1758441207;
+        d=1e100.net; s=20230601; t=1757900916; x=1758505716;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=aiqRIxpz9AdL8psvEfiBudfnoYD+n/6tWabnQVapIEY=;
-        b=oYApsRuRATzhTtEN07WByXVv7q3AFPsOoVL2WjHb5xqEc7EHRVvTpSjA+6+V7Tr/yh
-         VU17y6bDsl//YP/rIpPi/wzUy12R+7hfWv7bx38338y0Rmlj6BoQCTwah198Tni81Dc6
-         7dNOIXonHSBU4glOtqsmfCwfI5wCrGjKxbHW+e9ZIvg/NrX1oHwCnfwAYxpTdgszjWhW
-         5ueLQdBdb+i0PDnjRopq1EHhfZy71hA8GKFbsnZowcrC/qeqASWD+qdqLhJl+AESCyg/
-         iBUR5YaX8cGHEvDQeuV7EC7lQAnMAdhe26NtE/MOx1Nj9PrWkZuXDItc8Nkkup/Wv8O6
-         wQJg==
-X-Forwarded-Encrypted: i=1; AJvYcCUUeV8oXIlEso84WUPkyWP1U/IhtbqLdui53Y0C3MuNUpHxfpXHULNCfGdu5HeXgMyOnNtKX+hWuSOcNKvNtA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwiQdTqOIyDmAYSPQXehAMz0OGVIvkouXnB4LG3crwYMl3zlImg
-	SKawr5mgABR9a5auuaLpObZ3CY+57Ck4cklNehOXFgzYKiijdQnLD1CMX6+eR88G+KAKsshSa7U
-	W5Au1MOODCulc+G2JCJm5ICifbyn+nOBDqVzh25JLNqFoQthIw/hbT+72RYQ=
-X-Google-Smtp-Source: AGHT+IFRyjJOy5CX3Z/PQJ+hrBL0jzi1pt2APVtVz0PTj6gbB4xr+O9pYuS5iAFAkvyFm+jfQHarge2cxcHxPynkqCVDpnkf7Njk
+        bh=uZA9FXENjEJqXH4Rmvuhvla4h9SuV8+cY4bNMe6nevw=;
+        b=OPtZNB98/LsSVxC5dQYI3RlAY4HgTu3+4pnCQ5Raj/MvHIf2jTqUXg48Xwb5Iz97m2
+         R82Z7f9XFzDTW3PnxqcSoihD/dmzkXu9d5IUmGz+mEzj68CiiNgcNGa8f+uzUQ0gwozv
+         4eK2hLgMk2s6FZHadZ3oUjb+/lf6Y0paMC/MpWiMHBDo3MC7/XZxpKuzSabVh1CTwc2Y
+         oY7Bm/UyOuT1r17e2+GGRg3KhC95zW+3bbuIRbq6DkrLP7ua47O2/OWmYKEhSTxPcfCb
+         cOXwe3rKGSFIIKzNbQ9cRC+YzXv8uKkx5dotZEy3ZaOM6se+rnruEu8iMafJMGy6P6Jn
+         mPdw==
+X-Forwarded-Encrypted: i=1; AJvYcCXW1ynp2o+RrpGfA/UHNYLNfUTA8YJi+zKbtA8dThnspMOACI1SEHMymCnH+h7HojEiFzx26GEfl8PkQPRXag==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwG0INZ4VpzauncrjZ7rx8+UlDhFvqvGv5IEd/YWrmB/uDyn4F4
+	Uj2O7Zj01Gcojvj+08XJSQEN7zPmsAiFrBMLo/26wx0i44FL9+wkUZvBU1C/NuS8OFiUatvcHFG
+	h7YoWHIFY8hycdUNV3MAt0Zvx1wnS5Umd4YLOZhJlex87NJwcGHX8XnzlQt0=
+X-Google-Smtp-Source: AGHT+IEk33NYKkGPfx3Ik0d6VrztbTutmIBK7teLaowH+HZDDSK2svO+/bFkWQGTd7s7td/Ae3UMnNjcZA+JMvd0yoN7N3XIq/tS
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3801:b0:424:57d:1a5e with SMTP id
- e9e14a558f8ab-424057d1bc0mr499245ab.5.1757836407126; Sun, 14 Sep 2025
- 00:53:27 -0700 (PDT)
-Date: Sun, 14 Sep 2025 00:53:27 -0700
+X-Received: by 2002:a92:c24e:0:b0:423:fc5c:c7b9 with SMTP id
+ e9e14a558f8ab-423fc5cc9eemr33492245ab.1.1757900916438; Sun, 14 Sep 2025
+ 18:48:36 -0700 (PDT)
+Date: Sun, 14 Sep 2025 18:48:36 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68c67477.050a0220.2ff435.037f.GAE@google.com>
-Subject: [syzbot] [bcachefs?] BUG: unable to handle kernel NULL pointer
- dereference in mempool_alloc_noprof (3)
-From: syzbot <syzbot+4ebc8d586b68728bcad6@syzkaller.appspotmail.com>
+Message-ID: <68c77074.050a0220.50883.000f.GAE@google.com>
+Subject: [syzbot] [bcachefs?] KMSAN: uninit-value in __bch2_read_endio
+From: syzbot <syzbot+7fb23a5461e8c9d38a3e@syzkaller.appspotmail.com>
 To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
@@ -55,72 +54,114 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    f777d1112ee5 Merge tag 'vfs-6.17-rc6.fixes' of git://git.k..
+HEAD commit:    7aac71907bde Merge tag 'nfs-for-6.17-3' of git://git.linux..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1547ad62580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c7f605fd273c8220
-dashboard link: https://syzkaller.appspot.com/bug?extid=4ebc8d586b68728bcad6
+console output: https://syzkaller.appspot.com/x/log.txt?x=1336c362580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1ee07385471829e7
+dashboard link: https://syzkaller.appspot.com/bug?extid=7fb23a5461e8c9d38a3e
 compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-f777d111.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ff082b9d029e/vmlinux-f777d111.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/e2c8489f25c3/bzImage-f777d111.xz
+disk image: https://storage.googleapis.com/syzbot-assets/097016e74836/disk-7aac7190.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/bbf1c7ba046b/vmlinux-7aac7190.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b0ef6a7b95ca/bzImage-7aac7190.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4ebc8d586b68728bcad6@syzkaller.appspotmail.com
+Reported-by: syzbot+7fb23a5461e8c9d38a3e@syzkaller.appspotmail.com
 
-bcachefs (loop0): compression opt none set but not marked in superblock, fixing
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-#PF: supervisor instruction fetch in kernel mode
-#PF: error_code(0x0010) - not-present page
-PGD 0 P4D 0 
-Oops: Oops: 0010 [#1] SMP KASAN NOPTI
-CPU: 0 UID: 0 PID: 5383 Comm: bch-rebalance/l Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:0x0
-Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-RSP: 0018:ffffc9000d49ec18 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffff8880532c75a0
-RDX: 1ffff1100a658eb4 RSI: 0000000000000000 RDI: 0000000000092800
-RBP: ffffc9000d49ed70 R08: ffffc9000d49ece7 R09: 0000000000000000
-R10: ffffc9000d49ecc0 R11: 0000000000000000 R12: 1ffff92001a93d94
-R13: ffff8880532c75a0 R14: 0000000000092c40 R15: 0000000000092800
-FS:  0000000000000000(0000) GS:ffff88808d20c000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 00000000400eb000 CR4: 0000000000352ef0
-Call Trace:
- <TASK>
- mempool_alloc_noprof+0x1a4/0x510 mm/mempool.c:406
- __bio_compress fs/bcachefs/compress.c:461 [inline]
- bch2_bio_compress+0x42f/0x14c0 fs/bcachefs/compress.c:555
- bch2_write_extent fs/bcachefs/io_write.c:1060 [inline]
- __bch2_write+0xfb5/0x3900 fs/bcachefs/io_write.c:1554
- move_write fs/bcachefs/move.c:217 [inline]
- bch2_moving_ctxt_do_pending_writes+0x5a7/0xe60 fs/bcachefs/move.c:248
- bch2_move_ratelimit+0x8e8/0x1330 fs/bcachefs/move.c:585
- do_rebalance fs/bcachefs/rebalance.c:557 [inline]
- bch2_rebalance_thread+0x17b0/0x1f80 fs/bcachefs/rebalance.c:626
- kthread+0x70e/0x8a0 kernel/kthread.c:463
- ret_from_fork+0x3fc/0x770 arch/x86/kernel/process.c:148
+=====================================================
+BUG: KMSAN: uninit-value in __bch2_read_endio+0xb2a/0x2240 fs/bcachefs/io_read.c:832
+ __bch2_read_endio+0xb2a/0x2240 fs/bcachefs/io_read.c:832
+ process_one_work kernel/workqueue.c:3236 [inline]
+ process_scheduled_works+0xb8e/0x1d80 kernel/workqueue.c:3319
+ worker_thread+0xedf/0x1590 kernel/workqueue.c:3400
+ kthread+0xd59/0xf00 kernel/kthread.c:463
+ ret_from_fork+0x1e3/0x310 arch/x86/kernel/process.c:148
  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
-Modules linked in:
-CR2: 0000000000000000
----[ end trace 0000000000000000 ]---
-RIP: 0010:0x0
-Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-RSP: 0018:ffffc9000d49ec18 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffff8880532c75a0
-RDX: 1ffff1100a658eb4 RSI: 0000000000000000 RDI: 0000000000092800
-RBP: ffffc9000d49ed70 R08: ffffc9000d49ece7 R09: 0000000000000000
-R10: ffffc9000d49ecc0 R11: 0000000000000000 R12: 1ffff92001a93d94
-R13: ffff8880532c75a0 R14: 0000000000092c40 R15: 0000000000092800
-FS:  0000000000000000(0000) GS:ffff88808d20c000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 00000000400eb000 CR4: 0000000000352ef0
+
+Uninit was stored to memory at:
+ __bch2_checksum_bio+0x1097/0x1130 fs/bcachefs/checksum.c:239
+ bch2_checksum_bio+0xc5/0x110 fs/bcachefs/checksum.c:252
+ __bch2_read_endio+0x8e3/0x2240 fs/bcachefs/io_read.c:831
+ process_one_work kernel/workqueue.c:3236 [inline]
+ process_scheduled_works+0xb8e/0x1d80 kernel/workqueue.c:3319
+ worker_thread+0xedf/0x1590 kernel/workqueue.c:3400
+ kthread+0xd59/0xf00 kernel/kthread.c:463
+ ret_from_fork+0x1e3/0x310 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+
+Uninit was stored to memory at:
+ put_unaligned_le64 include/linux/unaligned.h:43 [inline]
+ poly1305_core_emit+0x46a/0x480 lib/crypto/poly1305-donna64.c:183
+ poly1305_emit_generic include/crypto/internal/poly1305.h:55 [inline]
+ poly1305_final+0x88/0x150 lib/crypto/poly1305.c:68
+ __bch2_checksum_bio+0x1048/0x1130 fs/bcachefs/checksum.c:237
+ bch2_checksum_bio+0xc5/0x110 fs/bcachefs/checksum.c:252
+ __bch2_read_endio+0x8e3/0x2240 fs/bcachefs/io_read.c:831
+ process_one_work kernel/workqueue.c:3236 [inline]
+ process_scheduled_works+0xb8e/0x1d80 kernel/workqueue.c:3319
+ worker_thread+0xedf/0x1590 kernel/workqueue.c:3400
+ kthread+0xd59/0xf00 kernel/kthread.c:463
+ ret_from_fork+0x1e3/0x310 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+
+Uninit was stored to memory at:
+ poly1305_core_blocks+0x65c/0x670 lib/crypto/poly1305-donna64.c:108
+ poly1305_blocks_generic include/crypto/internal/poly1305.h:44 [inline]
+ poly1305_blocks lib/crypto/poly1305.c:39 [inline]
+ poly1305_update+0x158/0x380 lib/crypto/poly1305.c:45
+ __bch2_checksum_bio+0x429/0x1130 fs/bcachefs/checksum.c:233
+ bch2_checksum_bio+0xc5/0x110 fs/bcachefs/checksum.c:252
+ __bch2_read_endio+0x8e3/0x2240 fs/bcachefs/io_read.c:831
+ process_one_work kernel/workqueue.c:3236 [inline]
+ process_scheduled_works+0xb8e/0x1d80 kernel/workqueue.c:3319
+ worker_thread+0xedf/0x1590 kernel/workqueue.c:3400
+ kthread+0xd59/0xf00 kernel/kthread.c:463
+ ret_from_fork+0x1e3/0x310 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+
+Uninit was created at:
+ __alloc_frozen_pages_noprof+0x689/0xf00 mm/page_alloc.c:5171
+ alloc_pages_mpol+0x328/0x860 mm/mempolicy.c:2416
+ alloc_frozen_pages_noprof mm/mempolicy.c:2487 [inline]
+ alloc_pages_noprof mm/mempolicy.c:2507 [inline]
+ folio_alloc_noprof+0x109/0x360 mm/mempolicy.c:2517
+ filemap_alloc_folio_noprof+0x9d/0x420 mm/filemap.c:1007
+ ractl_alloc_folio mm/readahead.c:186 [inline]
+ ra_alloc_folio mm/readahead.c:441 [inline]
+ page_cache_ra_order+0x83c/0x13f0 mm/readahead.c:506
+ page_cache_sync_ra+0x10ac/0x1410 mm/readahead.c:619
+ filemap_get_pages+0xfb3/0x3a60 mm/filemap.c:2603
+ filemap_read+0x5d2/0x2300 mm/filemap.c:2712
+ bch2_read_iter+0x559/0x21b0 fs/bcachefs/fs-io-direct.c:222
+ __kernel_read+0x7de/0xe20 fs/read_write.c:530
+ integrity_kernel_read+0x77/0x90 security/integrity/iint.c:28
+ ima_calc_file_hash_tfm security/integrity/ima/ima_crypto.c:480 [inline]
+ ima_calc_file_shash security/integrity/ima/ima_crypto.c:511 [inline]
+ ima_calc_file_hash+0x17cb/0x4050 security/integrity/ima/ima_crypto.c:568
+ ima_collect_measurement+0x45d/0xe50 security/integrity/ima/ima_api.c:293
+ process_measurement+0x2d1a/0x40e0 security/integrity/ima/ima_main.c:405
+ ima_file_check+0x8e/0xd0 security/integrity/ima/ima_main.c:633
+ security_file_post_open+0xbf/0x530 security/security.c:3160
+ do_open fs/namei.c:3889 [inline]
+ path_openat+0x5ac3/0x6760 fs/namei.c:4046
+ do_filp_open+0x280/0x660 fs/namei.c:4073
+ do_sys_openat2+0x1bb/0x2f0 fs/open.c:1435
+ do_sys_open fs/open.c:1450 [inline]
+ __do_sys_openat fs/open.c:1466 [inline]
+ __se_sys_openat fs/open.c:1461 [inline]
+ __x64_sys_openat+0x240/0x300 fs/open.c:1461
+ x64_sys_call+0x3bcc/0x3e20 arch/x86/include/generated/asm/syscalls_64.h:258
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xd9/0x210 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+CPU: 0 UID: 0 PID: 3593 Comm: kworker/u8:10 Not tainted syzkaller #0 PREEMPT(none) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/18/2025
+Workqueue: events_unbound __bch2_read_endio
+=====================================================
 
 
 ---
