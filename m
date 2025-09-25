@@ -1,44 +1,44 @@
 Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FB2A137923
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3761D14885D
 	for <linux-bcachefs@vger.kernel.org>; Thu, 25 Sep 2025 00:17:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758759454; cv=none; b=Q3yni4OnpDN7z4DQm/sOWjw618Gj2HZ1BVWQ4a5R3T2RY1HjzeAYd7lQ5XuYnznTx2CFFhK+q6Ashxwsb32p5VPJAQNULsC57kbHnQrxZ6yBqk1I4Jx2haIIPKoC1D+Nnr0Y8SZ6T+3eSvXd4rP2deZvmWzJD7ba16V264tJIFg=
+	t=1758759455; cv=none; b=amKai0lsmz17iOTLuBPOdwpiIx6WJQzihUpow2BuD3afcF/dqJJe4CvFqmFjpQ3fng5FKoCKf4UlE8CvjrlXU9i2weC/uKZjkmO+zY/pVPxRlYknEhOUZ3JmlGrOPxRJaYFWVkTZfKhfq0iYrl0Som06Wrf18O9SJvQaol/pNgM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758759454; c=relaxed/simple;
-	bh=M8tpSruHhX26htI5hIGPrzmgyYMvOGETLYQfMGWWg6Q=;
+	s=arc-20240116; t=1758759455; c=relaxed/simple;
+	bh=XfvTbkdeW0R0Qzh/NfQFdqvKhEEdEqDqg7QsoiTHATA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ewBqEphJVIJC547h/XbHCFY6g5XdTJIvncqBUMyrr36nq1bOaHNcupNCuGSRUDW0nNSSHI4F4Lz4Pl8IfbxoEeZaUPFUdL6gvuKda9LcEI+9k5ILpvG+LkhAAzBqMA6If1z6OXa9Qf3eUBUmsZIImGkQrLj5uuv1EKxGs2YnPww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=caOCv7ag; arc=none smtp.client-ip=185.67.36.65
+	 MIME-Version; b=EMjWD8F2bOJPVe8TxwefibnuXkLJovcCOdXrjU6MyrOK0NDy+5m7YHwXE/XhJCh6DMJpPotl/W5u4qO5BDGhNVhETknbajG95Cl3vZb/dQyPOyEkv/SY6t+9T8MHp3BH27RTIwEwRc+JMGMotw41Fkct1aHUSBeuwO1n1yu4UAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=VIK8cBUM; arc=none smtp.client-ip=185.67.36.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="caOCv7ag"
+	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="VIK8cBUM"
 Received: from submission (posteo.de [185.67.36.169]) 
-	by mout01.posteo.de (Postfix) with ESMTPS id D8994240027
-	for <linux-bcachefs@vger.kernel.org>; Thu, 25 Sep 2025 02:17:30 +0200 (CEST)
+	by mout01.posteo.de (Postfix) with ESMTPS id 7E3F4240028
+	for <linux-bcachefs@vger.kernel.org>; Thu, 25 Sep 2025 02:17:31 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=posteo.net; s=2017;
-	t=1758759450; bh=Fz6ox2mz+l7Psbbc1yK0cvd8Uu81BLVwgkWf058KQVs=;
+	t=1758759451; bh=osW3+/q8zCGnRWOT6suV8yw7sIiev+DeJZ6EbNFxahU=;
 	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:
 	 Content-Transfer-Encoding:From;
-	b=caOCv7agwoa5n2ckQXotR3sOkumRlSyhvET0yrX00/geX2BZqts3kJRWKPYVPiRI5
-	 nmJXmCIoso1xON+1KI5ye9ed2mc+eHqx5Iq8driSWsqwHu2I0b5T5lmWCyQ3aD70Zo
-	 4rwHHAqzkjJ0RPG6V1cmUk+TCUhZn+fk0oNAz7b+vLSK6E7d0wk/rk9PjAIh+EdTs+
-	 kEYQ4Pfpxyr0RhZ9ZdNeQ1WrCO5vXIJf31zfWuBtOMXJ98BS8IzTGw37ZHsn1Vne1w
-	 wYfzxsHP848337Rt0u0e0KeC51Nnw8WNny3m4wM56xWz7ldd6x9sRxgd7LzRf2X8+Y
-	 N1+5Rr8Sdp9JQ==
+	b=VIK8cBUMPI1eO6hectd91UWaaqXQZyRoa5UJ2IcBD38gktH6i4sephKxciLoCWswQ
+	 HhWSafDFtmXMD/zayEHi7QZ94kd97RtRYl8P/hf5fqX4GDRqbwmdgA5bzP/eztzH/P
+	 Jr8hj6XKyRIBIKz5512P4ESiiq5Bf36sAq8aiNGIrVaKNT3yFrlkFbyh05RxqMGY/p
+	 gT92EBt+oy0VH6septrL0hBsIJxhI744mT/lT5koDV0G7XA3LQK5BhoWjIydpdu/4Z
+	 YrJkaNRuyHLIkaN40cBhbK/I7MjjSwkRgRwGnz/0gqIuE8IDNbtr8Mni8XSIXsUwAy
+	 Eiwq2W4f5BMaw==
 Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4cXDn61sypz6tvh;
+	by submission (posteo.de) with ESMTPSA id 4cXDn674Nqz6twH;
 	Thu, 25 Sep 2025 02:17:30 +0200 (CEST)
 From: =?UTF-8?q?Thomas=20M=C3=BChlbacher?= <tmuehlbacher@posteo.net>
 To: kent.overstreet@linux.dev
 Cc: linux-bcachefs@vger.kernel.org,
 	=?UTF-8?q?Thomas=20M=C3=BChlbacher?= <tmuehlbacher@posteo.net>
-Subject: [PATCH 4/7] refactor(nix): rm no longer needed build decls
-Date: Thu, 25 Sep 2025 00:17:30 +0000
-Message-ID: <20250925001718.174749-5-tmuehlbacher@posteo.net>
+Subject: [PATCH 5/7] refactor(nix): move out build into separate file
+Date: Thu, 25 Sep 2025 00:17:31 +0000
+Message-ID: <20250925001718.174749-6-tmuehlbacher@posteo.net>
 In-Reply-To: <20250925001718.174749-1-tmuehlbacher@posteo.net>
 References: <20250925001718.174749-1-tmuehlbacher@posteo.net>
 Precedence: bulk
@@ -49,55 +49,392 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This is now handled by crane for cross builds on its own.
+flake.nix is getting too big and this makes it easier to understand what
+is going on with e.g. callPackage.
 ---
- flake.nix | 12 ------------
- 1 file changed, 12 deletions(-)
+ crane-build.nix | 139 +++++++++++++++++++++++++++++++++++
+ flake.nix       | 189 ++++++------------------------------------------
+ 2 files changed, 163 insertions(+), 165 deletions(-)
+ create mode 100644 crane-build.nix
 
+diff --git a/crane-build.nix b/crane-build.nix
+new file mode 100644
+index 00000000..9b764ec9
+--- /dev/null
++++ b/crane-build.nix
+@@ -0,0 +1,139 @@
++{
++  lib,
++  pkgs,
++
++  # build time
++  pkg-config,
++  rustPlatform,
++
++  # run time
++  fuse3,
++  keyutils,
++  libaio,
++  libsodium,
++  liburcu,
++  libuuid,
++  lz4,
++  udev,
++  zlib,
++  zstd,
++
++  crane,
++  rustVersion ? "latest",
++  version,
++}:
++let
++  craneLib = (crane.mkLib pkgs).overrideToolchain (
++    p: p.rust-bin.stable."${rustVersion}".minimal.override { extensions = [ "clippy" ]; }
++  );
++
++  args = {
++    inherit version;
++    src = ./.;
++    strictDeps = true;
++
++    env = {
++      PKG_CONFIG_SYSTEMD_SYSTEMDSYSTEMUNITDIR = "${placeholder "out"}/lib/systemd/system";
++      PKG_CONFIG_UDEV_UDEVDIR = "${placeholder "out"}/lib/udev";
++    };
++
++    makeFlags = [
++      "INITRAMFS_DIR=${placeholder "out"}/etc/initramfs-tools"
++      "PREFIX=${placeholder "out"}"
++      "VERSION=${version}"
++    ];
++
++    dontStrip = true;
++
++    nativeBuildInputs = [
++      pkg-config
++      rustPlatform.bindgenHook
++    ];
++
++    buildInputs = [
++      keyutils
++      libaio
++      libsodium
++      liburcu
++      libuuid
++      lz4
++      udev
++      zlib
++      zstd
++    ];
++  };
++
++  cargoArtifacts = craneLib.buildDepsOnly args;
++
++  package = craneLib.buildPackage (
++    args
++    // {
++      inherit cargoArtifacts;
++
++      enableParallelBuilding = true;
++      buildPhaseCargoCommand = ''
++        make ''${enableParallelBuilding:+-j''${NIX_BUILD_CORES}} $makeFlags
++      '';
++      doNotPostBuildInstallCargoBinaries = true;
++      installPhaseCommand = ''
++        make ''${enableParallelBuilding:+-j''${NIX_BUILD_CORES}} $makeFlags install
++      '';
++
++      doInstallCheck = true;
++      installCheckPhase = ''
++        runHook preInstallCheck
++
++        test "$($out/bin/bcachefs version)" = "${version}"
++
++        runHook postInstallCheck
++      '';
++
++      meta = {
++        description = "Userspace tools for bcachefs";
++        license = lib.licenses.gpl2Only;
++        mainProgram = "bcachefs";
++      };
++    }
++  );
++
++  packageFuse = package.overrideAttrs (
++    final: prev: {
++      makeFlags = prev.makeFlags ++ [ "BCACHEFS_FUSE=1" ];
++      buildInputs = prev.buildInputs ++ [ fuse3 ];
++    }
++  );
++
++  cargo-clippy = craneLib.cargoClippy (
++    args
++    // {
++      inherit cargoArtifacts;
++      cargoClippyExtraArgs = "--all-targets --all-features -- --deny warnings";
++    }
++  );
++
++  # we have to build our own `craneLib.cargoTest`
++  cargo-test = craneLib.mkCargoDerivation (
++    args
++    // {
++      inherit cargoArtifacts;
++      doCheck = true;
++
++      enableParallelChecking = true;
++
++      pnameSuffix = "-test";
++      buildPhaseCargoCommand = "";
++      checkPhaseCargoCommand = ''
++        make ''${enableParallelChecking:+-j''${NIX_BUILD_CORES}} $makeFlags libbcachefs.a
++        cargo test --profile release -- --nocapture
++      '';
++    }
++  );
++in
++{
++  inherit
++    cargo-clippy
++    cargo-test
++    package
++    packageFuse
++    ;
++}
 diff --git a/flake.nix b/flake.nix
-index 0d7ae0be..c2ee9fd6 100644
+index c2ee9fd6..8b38ba19 100644
 --- a/flake.nix
 +++ b/flake.nix
-@@ -85,7 +85,6 @@
-               buildPackages,
-               pkg-config,
-               rustPlatform,
--              stdenv,
+@@ -74,113 +74,9 @@
  
-               # run time
-               keyutils,
-@@ -99,8 +98,6 @@
-               zstd,
-             }:
-             let
--              inherit (stdenv) cc hostPlatform;
+           rev = self.shortRev or self.dirtyShortRev or (lib.substring 0 8 self.lastModifiedDate);
+           version = "${cargoToml.package.version}+${rev}";
 -
-               craneLib = (crane.mkLib pkgs).overrideToolchain (
-                 p: p.rust-bin.stable."${rustVersion}".minimal.override { extensions = [ "clippy" ]; }
-               );
-@@ -113,11 +110,6 @@
-                 env = {
-                   PKG_CONFIG_SYSTEMD_SYSTEMDSYSTEMUNITDIR = "${placeholder "out"}/lib/systemd/system";
-                   PKG_CONFIG_UDEV_UDEVDIR = "${placeholder "out"}/lib/udev";
+-          mkCommon =
+-            {
+-              crane,
+-              pkgs,
+-              rustVersion ? "latest",
 -
--                  CARGO_BUILD_TARGET = hostPlatform.rust.rustcTargetSpec;
--                  "CARGO_TARGET_${hostPlatform.rust.cargoEnvVarTarget}_LINKER" = "${cc.targetPrefix}cc";
--                  HOST_CC = "${cc.nativePrefix}cc";
--                  TARGET_CC = "${cc.targetPrefix}cc";
-                 };
- 
-                 makeFlags = [
-@@ -128,10 +120,6 @@
- 
-                 dontStrip = true;
- 
--                depsBuildBuild = [
--                  buildPackages.stdenv.cc
+-              # build time
+-              buildPackages,
+-              pkg-config,
+-              rustPlatform,
+-
+-              # run time
+-              keyutils,
+-              libaio,
+-              libsodium,
+-              liburcu,
+-              libuuid,
+-              lz4,
+-              udev,
+-              zlib,
+-              zstd,
+-            }:
+-            let
+-              craneLib = (crane.mkLib pkgs).overrideToolchain (
+-                p: p.rust-bin.stable."${rustVersion}".minimal.override { extensions = [ "clippy" ]; }
+-              );
+-
+-              args = {
+-                inherit version;
+-                src = self;
+-                strictDeps = true;
+-
+-                env = {
+-                  PKG_CONFIG_SYSTEMD_SYSTEMDSYSTEMUNITDIR = "${placeholder "out"}/lib/systemd/system";
+-                  PKG_CONFIG_UDEV_UDEVDIR = "${placeholder "out"}/lib/udev";
+-                };
+-
+-                makeFlags = [
+-                  "INITRAMFS_DIR=${placeholder "out"}/etc/initramfs-tools"
+-                  "PREFIX=${placeholder "out"}"
+-                  "VERSION=${version}"
 -                ];
 -
-                 nativeBuildInputs = [
-                   pkg-config
-                   rustPlatform.bindgenHook
+-                dontStrip = true;
+-
+-                nativeBuildInputs = [
+-                  pkg-config
+-                  rustPlatform.bindgenHook
+-                ];
+-
+-                buildInputs = [
+-                  keyutils
+-                  libaio
+-                  libsodium
+-                  liburcu
+-                  libuuid
+-                  lz4
+-                  udev
+-                  zlib
+-                  zstd
+-                ];
+-
+-                meta = {
+-                  description = "Userspace tools for bcachefs";
+-                  license = lib.licenses.gpl2Only;
+-                  mainProgram = "bcachefs";
+-                };
+-              };
+-
+-              cargoArtifacts = craneLib.buildDepsOnly args;
+-            in
+-            {
+-              inherit args cargoArtifacts craneLib;
+-            };
+-          common = pkgs.callPackage mkCommon { inherit crane; };
+-
+-          mkPackage =
+-            { common, name }:
+-            common.craneLib.buildPackage (
+-              common.args
+-              // {
+-                inherit (common) cargoArtifacts;
+-                pname = name;
+-
+-                enableParallelBuilding = true;
+-                buildPhaseCargoCommand = ''
+-                  make ''${enableParallelBuilding:+-j''${NIX_BUILD_CORES}} $makeFlags
+-                '';
+-                doNotPostBuildInstallCargoBinaries = true;
+-                installPhaseCommand = ''
+-                  make ''${enableParallelBuilding:+-j''${NIX_BUILD_CORES}} $makeFlags install
+-                '';
+-
+-                doInstallCheck = true;
+-                installCheckPhase = ''
+-                  runHook preInstallCheck
+-
+-                  test "$($out/bin/bcachefs version)" = "${version}"
+-
+-                  runHook postInstallCheck
+-                '';
+-              }
+-            );
+-
+-          mkPackages =
+-            name: systems:
++        in
++        {
++          packages =
+             let
+               packagesForSystem =
+                 crossSystem:
+@@ -190,90 +86,53 @@
+                     inherit crossSystem localSystem;
+                     overlays = [ (import rust-overlay) ];
+                   };
++                  withCrossName =
++                    set: lib.mapAttrs' (name: value: lib.nameValuePair "${name}-${crossSystem}" value) set;
+ 
+-                  common = pkgs'.callPackage mkCommon { inherit crane; };
+-                  package = pkgs'.callPackage mkPackage { inherit common name; };
+-                  packageFuse = package.overrideAttrs (
+-                    final: prev: {
+-                      makeFlags = prev.makeFlags ++ [ "BCACHEFS_FUSE=1" ];
+-                      buildInputs = prev.buildInputs ++ [ pkgs'.fuse3 ];
+-                    }
+-                  );
++                  craneBuild = pkgs'.callPackage ./crane-build.nix { inherit crane version; };
++                  crossPackages = {
++                    "bcachefs-tools" = craneBuild.package;
++                    "bcachefs-tools-fuse" = craneBuild.packageFuse;
++                  };
+                 in
+-                [
+-                  (lib.nameValuePair "${name}-${crossSystem}" package)
+-                  (lib.nameValuePair "${name}-fuse-${crossSystem}" packageFuse)
+-                ];
++                (withCrossName crossPackages) // lib.optionalAttrs (crossSystem == localSystem) crossPackages;
++              packages = lib.mergeAttrsList (map packagesForSystem systems);
+             in
+-            lib.listToAttrs (lib.flatten (map packagesForSystem systems));
+-        in
+-        {
+-          packages =
+-            let
+-              inherit (cargoToml.package) name;
+-            in
+-            (mkPackages name systems)
++            packages
+             // {
+-              ${name} = config.packages."${name}-${system}";
+-              "${name}-fuse" = config.packages."${name}-fuse-${system}";
+-              default = config.packages.${name};
++              default = self'.packages.${cargoToml.package.name};
+             };
+ 
+           checks = {
+-            inherit (config.packages)
++            inherit (self'.packages)
+               bcachefs-tools
+               bcachefs-tools-aarch64-linux
+               bcachefs-tools-fuse
+               bcachefs-tools-fuse-i686-linux
+               ;
+-
+-            #cargo-clippy = common.craneLib.cargoClippy (
+-            #  common.args
+-            #  // {
+-            #    inherit (common) cargoArtifacts;
+-            #    cargoClippyExtraArgs = "--all-targets --all-features -- --deny warnings";
+-            #  }
+-            #);
+-
+-            # we have to build our own `craneLib.cargoTest`
+-            cargo-test = common.craneLib.mkCargoDerivation (
+-              common.args
+-              // {
+-                inherit (common) cargoArtifacts;
+-                doCheck = true;
+-
+-                enableParallelChecking = true;
+-
+-                pnameSuffix = "-test";
+-                buildPhaseCargoCommand = "";
+-                checkPhaseCargoCommand = ''
+-                  make ''${enableParallelChecking:+-j''${NIX_BUILD_CORES}} $makeFlags libbcachefs.a
+-                  cargo test --profile release -- --nocapture
+-                '';
+-              }
+-            );
++            inherit (pkgs.callPackage ./crane-build.nix { inherit crane version; })
++              # cargo-clippy
++              cargo-test
++              ;
+ 
+             # cargo clippy with the current minimum supported rust version
+             # according to Cargo.toml
+             msrv =
+               let
+                 rustVersion = cargoToml.package.rust-version;
+-                common = pkgs.callPackage mkCommon { inherit crane rustVersion; };
++                craneBuild = pkgs.callPackage ./crane-build.nix { inherit crane rustVersion version; };
+               in
+-              common.craneLib.cargoClippy (
+-                common.args
+-                // {
+-                  pname = "msrv";
+-                  inherit (common) cargoArtifacts;
+-                  cargoClippyExtraArgs = "--all-targets --all-features";
++              craneBuild.cargo-test.overrideAttrs (
++                final: prev: {
++                  pname = "${prev.pname}-msrv";
+                 }
+               );
+           };
+ 
+           devShells.default = pkgs.mkShell {
+             inputsFrom = [
+-              config.packages.default
+               config.treefmt.build.devShell
++              self'.packages.default
+             ];
+ 
+             # here go packages that aren't required for builds but are used for
 -- 
 2.51.0
 
