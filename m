@@ -1,76 +1,72 @@
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54B5942A96
-	for <linux-bcachefs@vger.kernel.org>; Thu, 25 Sep 2025 00:17:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17519136E3F
+	for <linux-bcachefs@vger.kernel.org>; Thu, 25 Sep 2025 00:17:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758759454; cv=none; b=covD52YUYPytwwFZRzvrqj5hvWUA/8pkGlyhfsiPEY1Quxc9gd0q2Pz20BmPCgLt4WWkRZarFN8ylNqgeMSDynQuZDyRoS3DCNmXrzXmGDwn1YALJLeNkceRiTQUs0nF+GxTq7Nj6+InFG0Yr8NmmToL5zl+/nny6WX6fnb5o9U=
+	t=1758759454; cv=none; b=dEGcnfDW0NOB/YYwzIh1chpHDJ6xY1k222VOTl0izah52Vqn7PHb8jbhilZmQntu2c68odVbSutA5ou2ROkkLYf0aLuuO44BqRoaDo+mGv4q92l2wiIjNCNXpOVPbTcqw3hseu+60DlAST/rRVN3r6HieIM1jQaLZZk0Qy/IGPc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758759454; c=relaxed/simple;
-	bh=R8lsVhZ5snAQ89+dpHenr07JDC0CX+Ukf/jkwIJmRlo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=q06PUumHSrT1siTayaVXIbeTC3NQT36v9hRyh2hoNLaQHjjj1GDeS9GRLL+wYUCkc0m4WVIFqT5Pp4m5fvtYdvdHqQjOP4sO5boQYbBzLO03Cvw0RHLCXazyBDDRt/wP9e532ttHY7/TmY20jdOmKgO1/x72gSRfip7rTBXF8qE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=R+WuDyWv; arc=none smtp.client-ip=185.67.36.66
+	bh=aqEqOfRiFsd3hrI4DkEPb3+9J5UqqZ/+dd32GSHeNFI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Ag9fGPYbv+E+AGb6HkfU0laJj9xXvr0tkyKy9BXT50bBN+tI2CdUnB5uhx5WZWngf4S8U+AYbsrWjxiEmJWT3kd7/yBUsVGpTdyoWcKEZHo+q0OpCbQJKeOLuqeKQ90P/0f1esilHj3Vr5wtLf020d2tfxJu11OAA/7Q7XS2AFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=pjm7xFj0; arc=none smtp.client-ip=185.67.36.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="R+WuDyWv"
+	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="pjm7xFj0"
 Received: from submission (posteo.de [185.67.36.169]) 
-	by mout02.posteo.de (Postfix) with ESMTPS id E9F3D240101
-	for <linux-bcachefs@vger.kernel.org>; Thu, 25 Sep 2025 02:17:27 +0200 (CEST)
+	by mout01.posteo.de (Postfix) with ESMTPS id 31F2D240027
+	for <linux-bcachefs@vger.kernel.org>; Thu, 25 Sep 2025 02:17:30 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=posteo.net; s=2017;
-	t=1758759447; bh=Yaw4S2Mbt2TsPhsmIQFD/CGgQJ0vb4N7Mf1AccR7xyg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type:
+	t=1758759450; bh=pu/JyLmunyJvpY0Ah9vTuDY9XDQT79sCPAIf/CvrBt0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:
 	 Content-Transfer-Encoding:From;
-	b=R+WuDyWvPeHBcZO0xygQp/DNlqmI3hQ3NNo/IbnNHraW/A+VyBjf3DkWNTmfzvGZx
-	 Yf5CdREVaXs/PPvxnVTT0C761JibmRokYAorZ93e5kHSWwweJ+uU1wTWTuQJiwd3ei
-	 xB9TIBGxKML7lQblQsY1GdYIn9G2v57IaGv2MqL24yVB/G3sp57DEv2a8W4Th5tJT5
-	 BpZhXm/Z+h6IrvKDHvRtq90PW+aPEGxuQxuES6M7BkG7we2Rct82rySrVuslMscQoU
-	 yXQvPFc51bz8I8q8ZfmbIXtSmWIfh7NN0N59wW9qU/BlvlnZkY0SW3HHQVKqgTxhU8
-	 5JfYtLc05lkbQ==
+	b=pjm7xFj0V/qNZdjXh0yXVZjLSPJnUBKZfhtIsttGsy0BrBVSP3Oa7y9GPheGi5flv
+	 IdhE5RV6+VOhFTM6JYfg7sXkCBEwUH6RMFums3rrLQUsKUJY6MAt7l8h3x+AIfQ7jt
+	 C7r3TcmDp36v2B7eO5Dim1RhiiNiMCZpxIKJEIuqV9dn5vjuyMoBDZayvqVHWZTBsE
+	 N/DBejS+zxfQpIgUgo138f4wMI1M7ensehowEtMyICPqQidXsqqb5UAHLB02W06ExG
+	 glLFF9+sIzmbLl/vrS/WEf4S2Kzk2z0QzX6B2EG9vwNFI+hMVQHRj15wl89wXyRQeC
+	 xn+TYiq0AcPyw==
 Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4cXDn319Jqz6twg;
-	Thu, 25 Sep 2025 02:17:27 +0200 (CEST)
+	by submission (posteo.de) with ESMTPSA id 4cXDn53lg2z6tvh;
+	Thu, 25 Sep 2025 02:17:29 +0200 (CEST)
 From: =?UTF-8?q?Thomas=20M=C3=BChlbacher?= <tmuehlbacher@posteo.net>
 To: kent.overstreet@linux.dev
 Cc: linux-bcachefs@vger.kernel.org,
 	=?UTF-8?q?Thomas=20M=C3=BChlbacher?= <tmuehlbacher@posteo.net>
-Subject: [PATCH 0/7] bcachefs-tools: some nix changes
-Date: Thu, 25 Sep 2025 00:17:27 +0000
-Message-ID: <20250925001718.174749-1-tmuehlbacher@posteo.net>
+Subject: [PATCH 3/7] test(nix): add aarch64 cross build to checks
+Date: Thu, 25 Sep 2025 00:17:29 +0000
+Message-ID: <20250925001718.174749-4-tmuehlbacher@posteo.net>
+In-Reply-To: <20250925001718.174749-1-tmuehlbacher@posteo.net>
+References: <20250925001718.174749-1-tmuehlbacher@posteo.net>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Some refactoring again, moving stuff from flake.nix into crane-build.nix
-for better structure and cleaner separation of `callPackage` module.
+Just to have a real cross build in checks by default (unless you are
+natively on aarch64).
+---
+ flake.nix | 1 +
+ 1 file changed, 1 insertion(+)
 
-Finally, as a preparation for potentially using mkosi for clean package
-build environments for different distros, Debian packages hopefully as a
-first step. I am hoping to add some mkosi definitions later for running
-debuild or dpkg-buildpackage in a clean environment. Maybe we can also
-test the package a little bit using mkosi.
-
-Thomas Mühlbacher (7):
-  refactor(nix): rm now unused imports
-  flake.lock: Update
-  test(nix): add aarch64 cross build to checks
-  refactor(nix): rm no longer needed build decls
-  refactor(nix): move out build into separate file
-  refactor(nix): use versionCheckHook
-  feat(nix): add mkosi to devshell
-
- crane-build.nix | 135 ++++++++++++++++++++++++++++
- flake.lock      |  24 ++---
- flake.nix       | 232 ++++++++++++------------------------------------
- 3 files changed, 202 insertions(+), 189 deletions(-)
- create mode 100644 crane-build.nix
-
+diff --git a/flake.nix b/flake.nix
+index d0811bf5..0d7ae0be 100644
+--- a/flake.nix
++++ b/flake.nix
+@@ -234,6 +234,7 @@
+           checks = {
+             inherit (config.packages)
+               bcachefs-tools
++              bcachefs-tools-aarch64-linux
+               bcachefs-tools-fuse
+               bcachefs-tools-fuse-i686-linux
+               ;
 -- 
 2.51.0
 
