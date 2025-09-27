@@ -1,238 +1,159 @@
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C402427FB03
-	for <linux-bcachefs@vger.kernel.org>; Fri, 26 Sep 2025 19:36:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77C22239594
+	for <linux-bcachefs@vger.kernel.org>; Sat, 27 Sep 2025 08:25:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758915393; cv=none; b=MFnf6gblIbofXOxAvgNqn61s47s7h6rHPtnaSC4MuzckimKgnXShM9ZmGbaEmVlmQNRI0WpQkrJog9YHd2Td9uILxxsn9lLKXmF6HH4B/scHKKFI7/CLHSlv4vDqExW5/Z9FEQGe+J1RfxsixEEo/xcIQoMwQqZOT46TXVYFoCQ=
+	t=1758961515; cv=none; b=T2k46WzoSQIyjvPbRjO5lncvO0T93CakTBhb1taZRTOqS/JWnbyEn8chZYiRiv2NftPmIGEuSa/8EBLq85F1REiXQxl4A1Jc1ucx4d1+bjHiI0773lL2VhtJzcLxGn4U6D6sbSAy61EQ/RuOOdOkVd75W7hn0H0GMw9AmHMiU5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758915393; c=relaxed/simple;
-	bh=mSQKwT+RgGBH3fgRBwHxAMNFrCKxSsVizA+2Gjhn/pY=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=g26NGrSzH+bpkrRBXWr8SPdTeV7ZdD+kmc8uwRIoxpeAjf7/E9ZMZLXHAT10OFm6w4OhJMt/5whGCyXVGM1vD5nhA+iqFV2TJifvIWn7ec1+M48NJtEDqG/7efUsDTg8mDL9kMB+qp7ROtIdHqi2HeM0If8bKZsQFsCcp2agtSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=j8q28ATJ; arc=none smtp.client-ip=209.85.216.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+	s=arc-20240116; t=1758961515; c=relaxed/simple;
+	bh=p5vz5xhbT7dt6WixoUghQiRDJb+PLQ3a3K+iSodMKOc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YPLCMaPm4C/m3Xm42Gsz2BEz8guqO3D8CLiP6H6bQEqtlcI1+9+V5+kRTmIqyhlwKzEm6FRzsO90znUAdqvwm2ETKcSKtOl+pNREZIxDsV1dwiGU04lv91Hty7Gw0Ew7eL12paUm7Xhz+z8A7e1kHcxV55unyCGYKb2zqsMd1XQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RQbsl/LN; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="j8q28ATJ"
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-3307af9b595so2356084a91.0
-        for <linux-bcachefs@vger.kernel.org>; Fri, 26 Sep 2025 12:36:29 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RQbsl/LN"
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-b5516ee0b0bso2184295a12.1
+        for <linux-bcachefs@vger.kernel.org>; Sat, 27 Sep 2025 01:25:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1758915389; x=1759520189; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ob/iOTJHVtIxulD10+qfYKaLq05XmILMIQZZtCe3LNU=;
-        b=j8q28ATJXP6njsfMncRoTLIPRIZOM6TE6yvS0FWfgG9oEGpEjpU5QpwTkfS2MhxmOT
-         1WnZ3dk97n6mJLnqIYRvGKm1tUWygYHs95kuxhokBn9aO9RA1XUNY7DN17Q5T1gbSffp
-         P8WsrJuo9tYImTPRk5pu5Fp/kL5Rz2UKC420dK3FSmNh+Xr7sdZzm5kam8Oi0gzgwoX6
-         36VJZSVNuL0mnfDe6/FOqXW7SbQ2YLXEL7NNTot3y7a4uykb9cHCv9EH2EzWB3jZ17Uz
-         ry7y+KqDaMrsA3AHIPC0dEf4lqAwkkAR4r5FfFfvF1ng9ggW9GDE4eP7vjtSrwB8SDYw
-         aCgw==
+        d=gmail.com; s=20230601; t=1758961514; x=1759566314; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DcS53qL3vygg89yIrHdWsxucuF37fzAauEVoENx9lyI=;
+        b=RQbsl/LNxsReAM+SpVeiN28krhPr8B5qRyd4bRKJAUuXkzb4E2mWUeL5yLk1VqtBGe
+         nxuO82bFjkLHlR1pZUIKx2qGg3wqC7Pgi+UM9WAfzmtqTdr4aOfXEy0neELO0WQhyE3X
+         RrVK/ft8wsYZDzSGoXqaiZOimHM9JWa3P3iRobOJ2yyLNa24i+y9Lhk8VYyTDYsUupIG
+         Sh3jsEMTBcMzQAkxfWKi6yWcyMHbsLsBS8anK+b66H/LPQgrzJlSMRHaOFMSoEazMyyV
+         xqDVik7V3wB2/wq4xXyg1FpZHYq4aGPL5Xxbs7RLBaPb7jXsrkwU7gv0/KY72EM8vBFs
+         epCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758915389; x=1759520189;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ob/iOTJHVtIxulD10+qfYKaLq05XmILMIQZZtCe3LNU=;
-        b=JXQ5BLwGP+eM/TrgqVdFj1WwN7ILUqjWB4eHRO8q0wW9xM2ftUhjSN517MxxKErprV
-         en/Z24dA9X7aSMx61e2knzGlWs7wMmar+RURrZw3gJUrABs630ziWoXVdq6pHTGESxCt
-         FAs04CqSDZhnCWDVqk+EDUEx9gzzhpG8CPa8ygMdwopXzfTNWcXOjDubAX1NSbQTYeb6
-         eNaEjJx0MdL5XA/UrJSCXBcRzGcDRnrx6DW+1xpl9WHybg4b1FsyNse6mB48YTKrJy6r
-         4Eo17N1pvKyF4BeaJsAVeiSVlb1lZ8jiFcmGFCDPfWLBIZR8ERHSJHPTH3gUVBYPWZuQ
-         xdSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU+ujt209AOxQSTsI9oKZjyKPpznBOf8I2oS0av9FIrGNvgHfYss2uqZcdjjkn4fAWnBwqetb9VNI3kSv3Z4A==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwpyKJRUEeDaXI/cPG9M3Z9l8UJkcns2b5X/Ida76dkz0iUHUkE
-	Xc/Ec1Q9OxqaL0JCWIfwGdvRZdQ8HRQQ0DkgvW1hgW0XdXoWvG400qUOs87SZuymfWMN0LP9ZIk
-	nrQ4QfQ==
-X-Google-Smtp-Source: AGHT+IFDksLZfiXKr/BILK4eWMYTpySqi06A6DOxX2zeNKzHO6pmJyAGRZ48y/vvPgWC6WRjoIw3qUZ+1+0=
-X-Received: from pjbaz14.prod.google.com ([2002:a17:90b:28e:b0:32d:e264:a78e])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:1808:b0:32b:d8bf:c785
- with SMTP id 98e67ed59e1d1-3342a2c3979mr8949944a91.20.1758915388771; Fri, 26
- Sep 2025 12:36:28 -0700 (PDT)
-Date: Fri, 26 Sep 2025 12:36:27 -0700
-In-Reply-To: <aNVQJqYLX17v-fsf@google.com>
+        d=1e100.net; s=20230601; t=1758961514; x=1759566314;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DcS53qL3vygg89yIrHdWsxucuF37fzAauEVoENx9lyI=;
+        b=aDWoWSFVOunY2yKpr0xAyOWCK36jagot/FaQYnv2fcza/vJglaZRvEQxOhcp9GCoq9
+         l+wB0U2ON4ee1KfNBY7UH1OJTqlpI/LIMjli5wOQfFfU0p+8eSagPQmq8wr94FCm98IN
+         RTmit6+gJIKP8E8AW5iE89T2xxT9P3NaUm9QneKRAUpIY58+VFhaOuYm5bxfrnducPBt
+         ywXmnBEJdjZGKfi46+AOPS8l+n9DX4YkPXhrs042O67Wh4B/+BY1tT8k7+3lbi3rJc7w
+         VWkdjTr66jcKrxdz1zUB/w1m2aIVr7DAF0PO6ZZek4f7HnLv2owaYAiUVr1FzGR0Jn09
+         9Yow==
+X-Gm-Message-State: AOJu0YxhJfhJ5r/iflBCH1pydbt67GmZUDhBFbNoztBKUuuBsZw41eeK
+	kPROybteIwu4gMxvwp3smWU2Iql1xhAnZX8Nf8tl4N78fZ7dpPmfy9Ls
+X-Gm-Gg: ASbGncvVDTfAKYfMsodOOAZibq+FF1BW5TS0BZdk8JBdz/xKIVrFKSOg2F+dCBGT+Hi
+	Jd7w3FWPN3kneHg3b2Laxbo0rFmGkZvzY6Ec1AZIZJiXzXAcLHMy+9hADtqtfigsCwzvmccyw1e
+	fZqOx10fG7OmTZ3helwldua+F/3K7a+7jRDn8xBbEczTYAa5D5f3fEgk08JeLUwihObTr6gPrVG
+	dpcshN7pWMcgYcXujsAhpqG/AfuAQTFVKGj9m7wgDus1oCv6KE56bBSzswJiA/2unMQxRYCkDMN
+	MeHkKlwHOYlkDOXwZsU1FRVoq9Af5qhD0QxPiLjKtO4cDt4jEnmmpFK9V08qVFk3t+1gBsebKnJ
+	98Dul3MZXsLXkkdzkB4nJWXU9DToxVgm3c1Jc4a2EgbneZY/bItJBAriVt42aSdo1lcxaQk1Lq5
+	YolHcKDozUYeQbWSq5oDcVg0MQ
+X-Google-Smtp-Source: AGHT+IECY6O9JpWVGyRWOnkVuWa9I4Cr7WOizR6qimQpbLIm+0WrHLfoZYMvAzc26KJNd3aVTvVaOg==
+X-Received: by 2002:a17:903:19cb:b0:267:cdb8:c683 with SMTP id d9443c01a7336-27ed4a0e96bmr114981805ad.27.1758961513691;
+        Sat, 27 Sep 2025 01:25:13 -0700 (PDT)
+Received: from deepanshu-kernel-hacker.. ([2405:201:682f:3094:6bb3:b65d:f7d0:cab4])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-27ed6700cb6sm73743805ad.34.2025.09.27.01.25.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Sep 2025 01:25:13 -0700 (PDT)
+From: Deepanshu Kartikey <kartikey406@gmail.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Deepanshu Kartikey <kartikey406@gmail.com>,
+	syzbot+cb91f22d8a581fc19edf@syzkaller.appspotmail.com,
+	Deepanshu Kartikey <Kartikey406@gmail.com>
+Subject: [PATCH] bcachefs: Fix deadlocks between fallocate and readahead
+Date: Sat, 27 Sep 2025 13:55:03 +0530
+Message-ID: <20250927082503.40951-1-kartikey406@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250827175247.83322-2-shivankg@amd.com> <20250827175247.83322-9-shivankg@amd.com>
- <aNVQJqYLX17v-fsf@google.com>
-Message-ID: <aNbrO7A7fSjb4W84@google.com>
-Subject: Re: [PATCH kvm-next V11 6/7] KVM: guest_memfd: Enforce NUMA mempolicy
- using shared policy
-From: Sean Christopherson <seanjc@google.com>
-To: Shivank Garg <shivankg@amd.com>
-Cc: willy@infradead.org, akpm@linux-foundation.org, david@redhat.com, 
-	pbonzini@redhat.com, shuah@kernel.org, vbabka@suse.cz, brauner@kernel.org, 
-	viro@zeniv.linux.org.uk, dsterba@suse.com, xiang@kernel.org, chao@kernel.org, 
-	jaegeuk@kernel.org, clm@fb.com, josef@toxicpanda.com, 
-	kent.overstreet@linux.dev, zbestahu@gmail.com, jefflexu@linux.alibaba.com, 
-	dhavale@google.com, lihongbo22@huawei.com, lorenzo.stoakes@oracle.com, 
-	Liam.Howlett@oracle.com, rppt@kernel.org, surenb@google.com, mhocko@suse.com, 
-	ziy@nvidia.com, matthew.brost@intel.com, joshua.hahnjy@gmail.com, 
-	rakie.kim@sk.com, byungchul@sk.com, gourry@gourry.net, 
-	ying.huang@linux.alibaba.com, apopple@nvidia.com, tabba@google.com, 
-	ackerleytng@google.com, paul@paul-moore.com, jmorris@namei.org, 
-	serge@hallyn.com, pvorel@suse.cz, bfoster@redhat.com, vannapurve@google.com, 
-	chao.gao@intel.com, bharata@amd.com, nikunj@amd.com, michael.day@amd.com, 
-	shdhiman@amd.com, yan.y.zhao@intel.com, Neeraj.Upadhyay@amd.com, 
-	thomas.lendacky@amd.com, michael.roth@amd.com, aik@amd.com, jgg@nvidia.com, 
-	kalyazin@amazon.com, peterx@redhat.com, jack@suse.cz, hch@infradead.org, 
-	cgzones@googlemail.com, ira.weiny@intel.com, rientjes@google.com, 
-	roypat@amazon.co.uk, chao.p.peng@intel.com, amit@infradead.org, 
-	ddutile@redhat.com, dan.j.williams@intel.com, ashish.kalra@amd.com, 
-	gshan@redhat.com, jgowans@amazon.com, pankaj.gupta@amd.com, papaluri@amd.com, 
-	yuzhao@google.com, suzuki.poulose@arm.com, quic_eberman@quicinc.com, 
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-coco@lists.linux.dev
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Thu, Sep 25, 2025, Sean Christopherson wrote:
-> On Wed, Aug 27, 2025, Shivank Garg wrote:
-> > @@ -26,6 +28,9 @@ static inline struct kvm_gmem_inode_info *KVM_GMEM_I(struct inode *inode)
-> >  	return container_of(inode, struct kvm_gmem_inode_info, vfs_inode);
-> >  }
-> >  
-> > +static struct mempolicy *kvm_gmem_get_pgoff_policy(struct kvm_gmem_inode_info *info,
-> > +						   pgoff_t index);
-> > +
-> >  /**
-> >   * folio_file_pfn - like folio_file_page, but return a pfn.
-> >   * @folio: The folio which contains this index.
-> > @@ -112,7 +117,25 @@ static int kvm_gmem_prepare_folio(struct kvm *kvm, struct kvm_memory_slot *slot,
-> >  static struct folio *kvm_gmem_get_folio(struct inode *inode, pgoff_t index)
-> >  {
-> >  	/* TODO: Support huge pages. */
-> > -	return filemap_grab_folio(inode->i_mapping, index);
-> > +	struct mempolicy *policy;
-> > +	struct folio *folio;
-> > +
-> > +	/*
-> > +	 * Fast-path: See if folio is already present in mapping to avoid
-> > +	 * policy_lookup.
-> > +	 */
-> > +	folio = __filemap_get_folio(inode->i_mapping, index,
-> > +				    FGP_LOCK | FGP_ACCESSED, 0);
-> > +	if (!IS_ERR(folio))
-> > +		return folio;
-> > +
-> > +	policy = kvm_gmem_get_pgoff_policy(KVM_GMEM_I(inode), index);
-> > +	folio = __filemap_get_folio_mpol(inode->i_mapping, index,
-> > +					 FGP_LOCK | FGP_ACCESSED | FGP_CREAT,
-> > +					 mapping_gfp_mask(inode->i_mapping), policy);
-> > +	mpol_cond_put(policy);
-> > +
-> > +	return folio;
-> >  }
-> >  
-> >  static void kvm_gmem_invalidate_begin(struct kvm_gmem *gmem, pgoff_t start,
-> > @@ -372,8 +395,45 @@ static vm_fault_t kvm_gmem_fault_user_mapping(struct vm_fault *vmf)
-> >  	return ret;
-> >  }
-> >  
-> > +#ifdef CONFIG_NUMA
-> > +static int kvm_gmem_set_policy(struct vm_area_struct *vma, struct mempolicy *mpol)
-> > +{
-> > +	struct inode *inode = file_inode(vma->vm_file);
-> > +
-> > +	return mpol_set_shared_policy(&KVM_GMEM_I(inode)->policy, vma, mpol);
-> > +}
-> > +
-> > +static struct mempolicy *kvm_gmem_get_policy(struct vm_area_struct *vma,
-> > +					     unsigned long addr, pgoff_t *pgoff)
-> > +{
-> > +	struct inode *inode = file_inode(vma->vm_file);
-> > +
-> > +	*pgoff = vma->vm_pgoff + ((addr - vma->vm_start) >> PAGE_SHIFT);
-> > +	return mpol_shared_policy_lookup(&KVM_GMEM_I(inode)->policy, *pgoff);
-> > +}
-> > +
-> > +static struct mempolicy *kvm_gmem_get_pgoff_policy(struct kvm_gmem_inode_info *info,
-> > +						   pgoff_t index)
-> 
-> I keep reading this is "page offset policy", as opposed to "policy given a page
-> offset".  Another oddity that is confusing is that this helper explicitly does
-> get_task_policy(current), while kvm_gmem_get_policy() lets the caller do that.
-> The end result is the same, but I think it would be helpful for gmem to be
-> internally consistent.
-> 
-> If we have kvm_gmem_get_policy() use this helper, then we can kill two birds with
-> one stone:
-> 
-> static struct mempolicy *__kvm_gmem_get_policy(struct gmem_inode *gi,
-> 					       pgoff_t index)
-> {
-> 	struct mempolicy *mpol;
-> 
-> 	mpol = mpol_shared_policy_lookup(&gi->policy, index);
-> 	return mpol ? mpol : get_task_policy(current);
-> }
-> 
-> static struct mempolicy *kvm_gmem_get_policy(struct vm_area_struct *vma,
-> 					     unsigned long addr, pgoff_t *pgoff)
-> {
-> 	*pgoff = vma->vm_pgoff + ((addr - vma->vm_start) >> PAGE_SHIFT);
-> 
-> 	return __kvm_gmem_get_policy(GMEM_I(file_inode(vma->vm_file)), *pgoff);
 
-Argh!!!!!  This breaks the selftest because do_get_mempolicy() very specifically
-falls back to the default_policy, NOT to the current task's policy.  That is
-*exactly* the type of subtle detail that needs to be commented, because there's
-no way some random KVM developer is going to know that returning NULL here is
-important with respect to get_mempolicy() ABI.
+There are ABBA deadlocks between fallocate and readahead operations
+at two locations in __bchfs_fallocate():
 
-On a happier note, I'm very glad you wrote a testcase :-)
+Thread 1 (fallocate):
+  bch2_fallocate_dispatch
+    inode_lock(&inode->v)
+    bch2_pagecache_block_get(inode)  // Acquires two_state_lock
+      __bchfs_fallocate
+        bch2_clamp_data_hole (or bch2_mark_pagecache_reserved)
+          bch2_seek_pagecache_hole
+            __filemap_get_folio
+              folio_lock()  // BLOCKS - Thread 2 holds it
 
-I've got this as fixup-to-the-fixup:
+Thread 2 (readahead via copy_file_range):
+  bch2_readahead
+    folio_lock()  // Holds page lock
+    __bch2_two_state_lock(&pagecache_lock)  // BLOCKS - Thread 1 holds it
 
-diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
-index e796cc552a96..61130a52553f 100644
---- a/virt/kvm/guest_memfd.c
-+++ b/virt/kvm/guest_memfd.c
-@@ -114,8 +114,8 @@ static int kvm_gmem_prepare_folio(struct kvm *kvm, struct kvm_memory_slot *slot,
-        return r;
- }
+The issue is that drop_locks_do() only releases btree transaction locks,
+but Thread 2 is blocked waiting for the two_state_lock (pagecache_block)
+held by bch2_pagecache_block_get().
+
+Fix by explicitly releasing and re-acquiring the pagecache_block lock
+around both blocking operations (bch2_clamp_data_hole and
+bch2_mark_pagecache_reserved), following the same pattern used in
+bch2_page_fault(). Force a transaction restart after lock release to
+ensure consistency.
+
+Reported-by: syzbot+cb91f22d8a581fc19edf@syzkaller.appspotmail.com
+Tested-by: syzbot+cb91f22d8a581fc19edf@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?extid=cb91f22d8a581fc19edf
+Signed-off-by: Deepanshu Kartikey <Kartikey406@gmail.com>
+---
+ fs/bcachefs/fs-io.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/fs/bcachefs/fs-io.c b/fs/bcachefs/fs-io.c
+index a233f45875e9..66a60e5f03fc 100644
+--- a/fs/bcachefs/fs-io.c
++++ b/fs/bcachefs/fs-io.c
+@@ -694,13 +694,19 @@ static noinline int __bchfs_fallocate(struct bch_inode_info *inode, int mode,
+ 						 &hole_start,
+ 						 &hole_end,
+ 						 opts.data_replicas, true)) {
++				/* Release pagecache_block to prevent deadlock with readahead */
++				bch2_pagecache_block_put(inode);
+ 				ret = drop_locks_do(trans,
+ 					(bch2_clamp_data_hole(&inode->v,
+ 							      &hole_start,
+ 							      &hole_end,
+ 							      opts.data_replicas, false), 0));
++				bch2_pagecache_block_get(inode);
+ 				if (ret)
+ 					goto bkey_err;
++				/* Force transaction restart to revalidate state */
++				ret = -BCH_ERR_transaction_restart;
++				goto bkey_err;
+ 			}
+ 			bch2_btree_iter_set_pos(trans, &iter, POS(iter.pos.inode, hole_start));
  
--static struct mempolicy *__kvm_gmem_get_policy(struct gmem_inode *gi,
--                                              pgoff_t index)
-+static struct mempolicy *kvm_gmem_get_folio_policy(struct gmem_inode *gi,
-+                                                  pgoff_t index)
- {
- #ifdef CONFIG_NUMA
-        struct mempolicy *mpol;
-@@ -151,7 +151,7 @@ static struct folio *kvm_gmem_get_folio(struct inode *inode, pgoff_t index)
-        if (!IS_ERR(folio))
-                return folio;
+@@ -730,11 +736,17 @@ static noinline int __bchfs_fallocate(struct bch_inode_info *inode, int mode,
  
--       policy = __kvm_gmem_get_policy(GMEM_I(inode), index);
-+       policy = kvm_gmem_get_folio_policy(GMEM_I(inode), index);
-        folio = __filemap_get_folio_mpol(inode->i_mapping, index,
-                                         FGP_LOCK | FGP_ACCESSED | FGP_CREAT,
-                                         mapping_gfp_mask(inode->i_mapping), policy);
-@@ -431,9 +431,18 @@ static int kvm_gmem_set_policy(struct vm_area_struct *vma, struct mempolicy *mpo
- static struct mempolicy *kvm_gmem_get_policy(struct vm_area_struct *vma,
-                                              unsigned long addr, pgoff_t *pgoff)
- {
-+       struct inode *inode = file_inode(vma->vm_file);
+ 		if (bch2_mark_pagecache_reserved(inode, &hole_start,
+ 						 iter.pos.offset, true)) {
++			/* Release pagecache_block to prevent deadlock */
++			bch2_pagecache_block_put(inode);
 +
-         *pgoff = vma->vm_pgoff + ((addr - vma->vm_start) >> PAGE_SHIFT);
- 
--        return __kvm_gmem_get_policy(GMEM_I(file_inode(vma->vm_file)), *pgoff);
-+       /*
-+        * Note!  Directly return whatever the lookup returns, do NOT return
-+        * the current task's policy as is done when looking up the policy for
-+        * a specific folio.  Kernel ABI for get_mempolicy() is to return
-+        * MPOL_DEFAULT when there is no defined policy, not whatever the
-+        * default policy resolves to.
-+        */
-+        return mpol_shared_policy_lookup(&GMEM_I(inode)->policy, *pgoff);
- }
- #endif /* CONFIG_NUMA */
- 
+ 			ret = drop_locks_do(trans,
+ 				bch2_mark_pagecache_reserved(inode, &hole_start,
+ 							     iter.pos.offset, false));
++			bch2_pagecache_block_get(inode);
+ 			if (ret)
+ 				goto bkey_err;
++			ret = -BCH_ERR_transaction_restart;
++			goto bkey_err;
+ 		}
+ bkey_err:
+ 		bch2_quota_reservation_put(c, inode, &quota_res);
+-- 
+2.43.0
 
