@@ -1,76 +1,163 @@
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B7ED1CDFAC
-	for <linux-bcachefs@vger.kernel.org>; Wed,  1 Oct 2025 10:29:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A6021E5B72;
+	Wed,  1 Oct 2025 12:02:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759314546; cv=none; b=s9vJb89s2uaNL/Hc0P0PiOpVRbi0XTjz0gqLNIm1SUrQCC3X+hXxU98S+qAswaL1k76s8ZDyaQSWZ/riFb1sKjByhcot/yWtPu74c0MrdnASIQrAV+QZrfBvwzbK0DSFD8aIlEVWFPdYNqPYTLGLlRZaRVqhSVY7H6MjeDhIV0g=
+	t=1759320140; cv=none; b=TKAwhiFE6Zo8CtOtWvdfHlR/dRQyw2CItmuNs/kZPM0i1HgMx4ludvHfL06vtWxmFGFwz2jK+U7MKUOKeqznmQNoIA5Pkz2UXBJUzQBIozEZCPBXuCRIS9oq2Q3SSClg2RaoTR10l84O6e5WgnUoan/sODjwrWkN3DjpdqsQvAc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759314546; c=relaxed/simple;
-	bh=0w5Ejz96Ybf8/rKVL7gHnTjvZQUXMEJzLSIqRSsnZuI=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=dvnYi1kWp/9HX19vMpSN+mbv3F86k+GBFgOUgUNqLSEM5LVnGIPxGONZBK2a5V2zh70OXi2kDDb6ESCUvyjdMfUTk/IQm1af1p6MefAHDXXkrTICTPZY7rtITaPZQbg4OP/YRmULsqxtzT2bspEkCFAbUOZbcCs95hp5hg1eNPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-42571c700d2so163935615ab.1
-        for <linux-bcachefs@vger.kernel.org>; Wed, 01 Oct 2025 03:29:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759314543; x=1759919343;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5WjQ2mLjMG7t3g8nMDgxxMGGjQ62WQJO9DMnoIMetg4=;
-        b=xQIHoyD8k2YgAzfAucZgDHfXnMNjCveSApmtgseoR4S8TZuKXtxpJmZKyQwSFg4hOf
-         2hq5aBHxb1KCLEHjDw08oWRMki2EMv8UWJLj6Q5wPHQzsjKIELxBvgzKFI1m4JwdAN0i
-         tadlGHZX6UYSGdpvApZ+eTOdU3sAA5Qd4cSi/QolRHg7g4MGA78LNs+OBqLoT+m1Jlnp
-         RB5HUaYkzNQ3iFHSXfxFIcA2UOKZSPlZqJtK7B1dUU640wXL1rfhCfuHawYyiFdJJLJ3
-         7CWPWvVTOwY/8Xg11EaB70mz6s33a6UscY7O3SCM0Qu6iC0pZ67GVelZFyOAPNY537gB
-         m55A==
-X-Forwarded-Encrypted: i=1; AJvYcCUXgHwtFpoUzRSg2FhFHeGEFdygLHowxR6nrGFOyWk2bIV2VfQBywhtCh9ZL3bD02JP8v0ZG5XJ9BrWiaCKAQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxI3N0CmNPq0mKKgi5quly9lSqZ72DVhJMaXAuVMAicPczSeWHK
-	RZhW1PD2KyBKi8xRzBHzuQPqcwSeniiEEJnL0ja7aJScH3ObJBSkeqFV0hD35Ck6wtvDAszS9TA
-	I7hFXp0hrdu4EKEz7VSc//v3sPiACSdwscSDdHoILWyKN/IHzDyAC1gzr7Z0=
-X-Google-Smtp-Source: AGHT+IFI0FmOdK6CA8b6ROYKwPm3x42fTwrV/th9wSzTiqaQAQGYZG4D9ms3yhD6PIPQ2LOcbnWoOIJzLVikWU2n5MWKRVW++H1O
+	s=arc-20240116; t=1759320140; c=relaxed/simple;
+	bh=x2gcfm9rEn7fzGNxSfAb9nh5wBLIXStZrfyOxfPSfxs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P7TWDHus7ZfyJ83qcUbIFZEXJq/ZUkY5gVa5rdFTMKIMbyRO7BY0aU2tbB8bd9p/5fVjozqXWDS+zT+GLslKE1Cz+U6HjUdbf5gq1YElPNxxEi6s4FiCExrG7oEmgojBpifH2giDthkxgfj5cZX4gqfUn+O+/wdFmW6QvuHOwlg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jg9/bQtn; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jg9/bQtn"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D361C4CEF4;
+	Wed,  1 Oct 2025 12:02:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1759320139;
+	bh=x2gcfm9rEn7fzGNxSfAb9nh5wBLIXStZrfyOxfPSfxs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jg9/bQtncx6p+qhnz086sRK8fzpNmsrux64RijUq3Fu+A39c+epcLH4O3L7sSujMO
+	 PfuF2A3e1mDdjTs7VfGgeTEIroSIrD1wwwmoNnzfOMVpyiQhBQVLj5+U/8/CUeA0O3
+	 XOwsJaqg5SDy7nCajwuj4EyO0UoPGB1oIbK8x7pgc5UZ5zXybnrriWedGuE2EGTPvf
+	 XMnIJjPibvFXSLaVkdPRaw7zlZsQ6V+8es/rURzF43dLniaNZRgrPMjooiRfm7qlw1
+	 UKi5at6QAitr596c0ZmNPJynGNKEjl0y0J7j5y0N80vEwkLxhDti5T8p56DIxul5jl
+	 Ps7twjgueHMFA==
+Date: Wed, 1 Oct 2025 14:02:09 +0200
+From: Carlos Maiolino <cem@kernel.org>
+To: Bhanu Seshu Kumar Valluri <bhanuseshukumar@gmail.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, 
+	Jonathan Corbet <corbet@lwn.net>, David Howells <dhowells@redhat.com>, 
+	Paulo Alcantara <pc@manguebit.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, linux-bcachefs@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	netfs@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
+	linux-kernel-mentees@lists.linuxfoundation.org, skhan@linuxfoundation.org, david.hunter.linux@gmail.com
+Subject: Re: [PATCH] fs: doc: Fix typos
+Message-ID: <kp4tzf7hvtorldoktxelrvway6w4v4idmu5q3egeaacs7eg2tz@dovkk323ir3b>
+References: <DrG_H24-pk-ha8vkOEHoZYVXyMFA60c_g4l7cZX4Z7lnKQIM4FjdI_qS-UIpFxa-t7T_JDAOSqKjew7M0wmYYw==@protonmail.internalid>
+ <20251001083931.44528-1-bhanuseshukumar@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1947:b0:426:3ab1:74bb with SMTP id
- e9e14a558f8ab-42d8160ebcfmr42420275ab.18.1759314543500; Wed, 01 Oct 2025
- 03:29:03 -0700 (PDT)
-Date: Wed, 01 Oct 2025 03:29:03 -0700
-In-Reply-To: <689ff5f6.050a0220.e29e5.0031.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68dd026f.a00a0220.102ee.0058.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] INFO: task hung in bch2_direct_write (2)
-From: syzbot <syzbot+d5daa7d9e8e8d49ec379@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	torvalds@linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251001083931.44528-1-bhanuseshukumar@gmail.com>
 
-syzbot suspects this issue was fixed by commit:
+On Wed, Oct 01, 2025 at 02:09:31PM +0530, Bhanu Seshu Kumar Valluri wrote:
+> Fix typos in doc comments
+> 
+> Signed-off-by: Bhanu Seshu Kumar Valluri <bhanuseshukumar@gmail.com>
 
-commit f2c61db29f277b9c80de92102fc532cc247495cd
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon Sep 29 20:43:52 2025 +0000
+Perhaps would be better to split this into subsystem-specific patches?
 
-    Remove bcachefs core code
+This probably needs to be re-sent anyway as bcachefs was removed from
+mainline.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=129e85cd980000
-start commit:   ee94b00c1a64 Merge tag 'block-6.17-20250815' of git://git...
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=98e114f4eb77e551
-dashboard link: https://syzkaller.appspot.com/bug?extid=d5daa7d9e8e8d49ec379
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12bc53a2580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16bc53a2580000
 
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: Remove bcachefs core code
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> ---
+>  Note: No change in functionality intended.
+> 
+>  Documentation/filesystems/bcachefs/future/idle_work.rst  | 6 +++---
+>  Documentation/filesystems/xfs/xfs-online-fsck-design.rst | 2 +-
+>  fs/netfs/buffered_read.c                                 | 2 +-
+>  fs/xfs/xfs_linux.h                                       | 2 +-
+>  include/linux/fs.h                                       | 4 ++--
+>  5 files changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/filesystems/bcachefs/future/idle_work.rst b/Documentation/filesystems/bcachefs/future/idle_work.rst
+> index 59a332509dcd..f1202113dde0 100644
+> --- a/Documentation/filesystems/bcachefs/future/idle_work.rst
+> +++ b/Documentation/filesystems/bcachefs/future/idle_work.rst
+> @@ -11,10 +11,10 @@ idle" so the system can go to sleep. We don't want to be dribbling out
+>  background work while the system should be idle.
+> 
+>  The complicating factor is that there are a number of background tasks, which
+> -form a heirarchy (or a digraph, depending on how you divide it up) - one
+> +form a hierarchy (or a digraph, depending on how you divide it up) - one
+>  background task may generate work for another.
+> 
+> -Thus proper idle detection needs to model this heirarchy.
+> +Thus proper idle detection needs to model this hierarchy.
+> 
+>  - Foreground writes
+>  - Page cache writeback
+> @@ -51,7 +51,7 @@ IDLE REGIME
+>  When the system becomes idle, we should start flushing our pending work
+>  quicker so the system can go to sleep.
+> 
+> -Note that the definition of "idle" depends on where in the heirarchy a task
+> +Note that the definition of "idle" depends on where in the hierarchy a task
+>  is - a task should start flushing work more quickly when the task above it has
+>  stopped generating new work.
+> 
+> diff --git a/Documentation/filesystems/xfs/xfs-online-fsck-design.rst b/Documentation/filesystems/xfs/xfs-online-fsck-design.rst
+> index e231d127cd40..e872d480691b 100644
+> --- a/Documentation/filesystems/xfs/xfs-online-fsck-design.rst
+> +++ b/Documentation/filesystems/xfs/xfs-online-fsck-design.rst
+> @@ -4179,7 +4179,7 @@ When the exchange is initiated, the sequence of operations is as follows:
+>     This will be discussed in more detail in subsequent sections.
+> 
+>  If the filesystem goes down in the middle of an operation, log recovery will
+> -find the most recent unfinished maping exchange log intent item and restart
+> +find the most recent unfinished mapping exchange log intent item and restart
+>  from there.
+>  This is how atomic file mapping exchanges guarantees that an outside observer
+>  will either see the old broken structure or the new one, and never a mismash of
+> diff --git a/fs/netfs/buffered_read.c b/fs/netfs/buffered_read.c
+> index 37ab6f28b5ad..c81be6390309 100644
+> --- a/fs/netfs/buffered_read.c
+> +++ b/fs/netfs/buffered_read.c
+> @@ -329,7 +329,7 @@ static void netfs_read_to_pagecache(struct netfs_io_request *rreq,
+>   * the netfs if not.  Space beyond the EOF is zero-filled.  Multiple I/O
+>   * requests from different sources will get munged together.  If necessary, the
+>   * readahead window can be expanded in either direction to a more convenient
+> - * alighment for RPC efficiency or to make storage in the cache feasible.
+> + * alignment for RPC efficiency or to make storage in the cache feasible.
+>   *
+>   * The calling netfs must initialise a netfs context contiguous to the vfs
+>   * inode before calling this.
+> diff --git a/fs/xfs/xfs_linux.h b/fs/xfs/xfs_linux.h
+> index 9a2221b4aa21..fdf3cd8c4d19 100644
+> --- a/fs/xfs/xfs_linux.h
+> +++ b/fs/xfs/xfs_linux.h
+> @@ -145,7 +145,7 @@ static inline void delay(long ticks)
+>  /*
+>   * XFS wrapper structure for sysfs support. It depends on external data
+>   * structures and is embedded in various internal data structures to implement
+> - * the XFS sysfs object heirarchy. Define it here for broad access throughout
+> + * the XFS sysfs object hierarchy. Define it here for broad access throughout
+>   * the codebase.
+>   */
+>  struct xfs_kobj {
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 601d036a6c78..72e82a4a0bbc 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -1040,7 +1040,7 @@ struct fown_struct {
+>   * struct file_ra_state - Track a file's readahead state.
+>   * @start: Where the most recent readahead started.
+>   * @size: Number of pages read in the most recent readahead.
+> - * @async_size: Numer of pages that were/are not needed immediately
+> + * @async_size: Number of pages that were/are not needed immediately
+>   *      and so were/are genuinely "ahead".  Start next readahead when
+>   *      the first of these pages is accessed.
+>   * @ra_pages: Maximum size of a readahead request, copied from the bdi.
+> @@ -3149,7 +3149,7 @@ static inline void kiocb_start_write(struct kiocb *iocb)
+> 
+>  /**
+>   * kiocb_end_write - drop write access to a superblock after async file io
+> - * @iocb: the io context we sumbitted the write with
+> + * @iocb: the io context we submitted the write with
+>   *
+>   * Should be matched with a call to kiocb_start_write().
+>   */
+> --
+> 2.34.1
+> 
