@@ -1,72 +1,67 @@
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8196034BA4E
-	for <linux-bcachefs@vger.kernel.org>; Thu,  2 Oct 2025 23:11:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0831EAF9
+	for <linux-bcachefs@vger.kernel.org>; Fri,  3 Oct 2025 10:42:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759446664; cv=none; b=RBqZgrlY0hJ+O0RZ9u8TNR7+X/1ATboWVl3NOU5do/6QEUEtncheViHe/kd9XlFMLQ+w/4KvWI3PH244akkyNOTd0MavhehIV6AB42WMeY1Krc+zi/4UxxwbiYj8f5AhokDZKPJOe6oYBV7otcMk65tr3oq5IE21k8clPwXEcjY=
+	t=1759488164; cv=none; b=POqlJgYmjGl6XVAYuto/cmZVTIjGuUocYN+SIfn2277FhbfzeMEL2Ftoyt5tiaoWeUQmD0kwHJDdZVVTe12MWTZ5oDtaSUl0TZvnzXUzgPCZbamOk0VvmeRsLYJpSy3V2SZrOfIkhxGbZDcxlRWXE910dq/nuUimhkIuHv59RJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759446664; c=relaxed/simple;
-	bh=05QBzRd86DhaBHC/HzFaLKts1U4K0ZRH0JC89nOeuak=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WPKmd+zfeHZb8jzKAXCyKJRqXfRXoA83oMHr35hG0cloSMfVGk5okQJrdxFd+/vFCum4HVk7AjiQXZId+E+ToE2brF7kWJPEgDtDJIlbq6QNOnrZ7Ybd+gomplgdU1zenwwqdBE8TWPHCZEmWNy7K/+a/TI6RhrFIrlHQEcR7cc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j8Hffaai; arc=none smtp.client-ip=209.85.215.178
+	s=arc-20240116; t=1759488164; c=relaxed/simple;
+	bh=9vU+gFI0ZcyKqcO+YMRT/VscZFLSUsL3371XMYETUk0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZXnwIK87n0aY6WkP+VpXEaWogKTj3kIiJAMYoFlZ7LVWkvkw99gSu2jzUmWQHArLi2kDVMCVMg7YfFYfb5kErgvIXX2UTQArslFRpvluxMKfeSTcBn7XPAko5AJp/Lz001KlkwBDwgr5TX/lK70J+IrKarIXcLGZLaal2kCi/ow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O6c6VKvz; arc=none smtp.client-ip=209.85.210.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j8Hffaai"
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-b60971c17acso1422652a12.3
-        for <linux-bcachefs@vger.kernel.org>; Thu, 02 Oct 2025 16:11:02 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O6c6VKvz"
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-780fc3b181aso1256497b3a.2
+        for <linux-bcachefs@vger.kernel.org>; Fri, 03 Oct 2025 03:42:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759446662; x=1760051462; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1759488162; x=1760092962; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yFC69a6NBsLOPw5S/NgD9GIK97Ncfay1Ur+maFKsDH0=;
-        b=j8Hffaai8x/QwsCo4UmjJtkbzT63gkStG3uzsDmggN1+B6GSoKyCISQ2dyJd1p41Rs
-         7O+08/+jI0HBKPs3fy604HSKnTwNL4cFTwNyUnOhv2dl9nbwBu5F4MIoU8iVvjsXN/AG
-         6itafzNpYIV6L6evpxRHBbLGBWs0UlRwhW/YMJg4vspwF9JuC8orGetUL5BcbVqojO2d
-         HLGzzfaHG+8rbnoT+D71QCks3Lq564i258QYmD5rCLxGDPqb27syrc5bHYq51Hzdl5En
-         mZoNw/Nu3zj4kMC3FEomhpC6PsODocQ2MtJp2BCPDFp2MgBiUjrINzTbiO4MlULdyFgv
-         iDCw==
+        bh=RwmUO/u5hGRNT82BOFXNI9lW6Vs7x/u9zNeaSGc04AY=;
+        b=O6c6VKvzfCQh7cfr7CZ6m6P6bUSu1P0RQPKu1nsfLTQMXmjiKmuOVwgWsdkSgeobhk
+         uz1Cqq/obYuhf8M26oP1lhM3L81/u3iMe77qaLE1HKfxfs/DSBUeZjLiKlYH1jPSZrXJ
+         mdBbKNYLbBZSCIX1tAw8rii/VKbrI9CRCneCvWMEChNIvzzdHRkMDf7EjjpDnmSnN95r
+         Q49+T/qOdd9v85DYX1lNgxgkpF5ongUzfxN2F5hVoRhi2UwdBBgvV3HiCZTLELqNrxnq
+         CuuxUEHaHL5O7z8q02XNiButD2p+lTX3/2dBDIQVOEnluJrwy3HnR6AlJfGXLeFELqY9
+         Lk/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759446662; x=1760051462;
+        d=1e100.net; s=20230601; t=1759488162; x=1760092962;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=yFC69a6NBsLOPw5S/NgD9GIK97Ncfay1Ur+maFKsDH0=;
-        b=BCNWei3Op8E/KWUTKIM1nWiUwSBCKuI1dWdOKR06GfQFriuy64PrX/mH5YukGrlSol
-         CwgDoa6xo4PM6Mvh0mAMaBcPBlmhEgbKa2eTAATX7ryZ4NlWWT08+1nXCHJF8TnuWZMH
-         iR0MY47AS+QbPGmD6W7c0Wjbj3geGC7XJkhh3b/40jxakc5G4sAGUl3rlsGvzeLgjWzk
-         EhArSZYoDKEB5tCFaBn34ZnNN9Xsm0Q+d7vMt7dsRkIyb92NpPLVPzUYcLy8cPbAEIx+
-         Cca7StbIBwUd1M1AlSE+NNkvstDhpbz5QN/7AIi9bijjir99bXvkLln+NAQWMiVtTLl0
-         eecQ==
-X-Gm-Message-State: AOJu0Yw13TCZMmv0TRHp/LrtzkERf/IP1u6qdMyCLajTO/EDd/jHDxh5
-	ZvYCB4BA8J08ygwI/TIKAJo9N/PqZpMuYsZMQO+OHUeZJDpZUQzSDehL
-X-Gm-Gg: ASbGncsAxkdocEzS2iWfLMPny26VWWyGCFP/az+qHjkif1dJTIVtWnc3t8sKSYS6ovI
-	lXkr9I2EWBoT4uhm4y3bQJeKxuo+qKB6vYOFbkKWCseRfZQqGKUOVG0NRslK0NHNf41tKWu6sz5
-	kBJ+pQsXSr6Bf/jYykUEg8Wbk/6AnleUZBU3oAv3hunRW9Ms5kUwwJqyciDzmqp3tMyVJlsYSBT
-	ulN5QHC0Hbnk3SseE0OQM7aJyD30AeOICeiYMr7Ve0LhWL00z5aE3gTmf4Z4HrPA1R3WwJrCgel
-	xckFwrVgfdW2mlho023VZqYGDQ8lQghgVbdC7C7ZyVmhPrpjeWPk4fx0oRC8q/LmMMDK262j3XW
-	G0oC+u1pURMp2+tsMltUlF/CA2tL5hYVP8PI9p9gw+WCFnYUrU6Pd
-X-Google-Smtp-Source: AGHT+IGUOdKa1AKW2FKiv+nG8uiNpD1FAXt7j4+A8CLzObKcsOtjM7P0Sez7FihNRKz72nbVUzDMxQ==
-X-Received: by 2002:a17:902:dad0:b0:24c:c8e7:60b5 with SMTP id d9443c01a7336-28e9a58b550mr11718715ad.16.1759446661851;
-        Thu, 02 Oct 2025 16:11:01 -0700 (PDT)
+        bh=RwmUO/u5hGRNT82BOFXNI9lW6Vs7x/u9zNeaSGc04AY=;
+        b=oHGF0u09q6LI25TDYhB/WB/e6rpD5gT04i9TN1LOiX45ZH2sLn8t9Yar8nZM0FVm7Q
+         9t/C4umjHHwHBAQu8ThxT3vfIe9ro5dV/Rm9fPjka/Is+8lAYqAD4z6cS8ThHak/tGQL
+         qD6Sej/VOrG9OasQuHsqXzjWz10/W04xju2fveyiXlhhQhS+PktRAGIcRcdHsCRZiZfX
+         mgPcS65WFLui15R+RqeuJ8YaiGv4mtK3uKu8kVlrIlgs64Rs75Iskntpvth/XTOfBK6S
+         ZetoXsz2CjhH0+bgCoW7moILQ7pZgx9UxBxeCQdf7Z/JcH9popcIIiHhoFF3wJubBcYa
+         GdYg==
+X-Gm-Message-State: AOJu0Yyz/+HyD8D2u5c1pxWa9S1Alu49MXSFtN+H3v555Gazdew0sCde
+	gdErvuwMdWdEMI/8hxDKBbfjIFKBhqfMKqqQKJ3lpEnQsDPw2qSgmxu+NA2pRRRV
+X-Gm-Gg: ASbGncv2hTc/TGi/yNKbFxMT+kyeI3NoFVYFjbQHYlr5bQiD8ccoo/BkNbF6+qNAXEJ
+	5LythdRoOca1VrC7Vw+c+jgDazunZxPLIBEFyHtv2EAkgKqH2Uk/RCfTWcSDsbxTYhjKpi4cA7M
+	CuggDb7GyOc7x/E5b8nGWjpciWqxX1/+rvqsAwrgRFURtGIi7egD0aTlGBkL52TDJY1JnW5mEq+
+	WT0cNwIPkmEjqC0/yrLF92Z1wlbiJ8V4lQdlNDSAnaCAZb91XA2o8fOxd5Iq/dRoT1rgCt/WH+b
+	ARKTRQNPVbglZPTKluoFXrBIsaJ6zd7FiE9Nh01QDEdjelwluYpnZBrRcnPkKd8zTGGusj//BtQ
+	YQgOJsyWH7zd1wFoUh38M95XM5e+yYTsmlx1EoSO+BA==
+X-Google-Smtp-Source: AGHT+IE/f5YO1cc2K4MYEijAihcWQxYnubDOwkMaPypNymrFgD46j3UZ6qxdAFfX7TopaOts0/LFLQ==
+X-Received: by 2002:a05:6a20:9187:b0:2fd:5bf0:706c with SMTP id adf61e73a8af0-32b62118956mr3702026637.58.1759488161945;
+        Fri, 03 Oct 2025 03:42:41 -0700 (PDT)
 Received: from fedora ([119.161.98.68])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-28e8d111905sm31334655ad.24.2025.10.02.16.10.58
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b6099f599a2sm4270088a12.36.2025.10.03.03.42.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Oct 2025 16:11:01 -0700 (PDT)
+        Fri, 03 Oct 2025 03:42:41 -0700 (PDT)
 From: Nirbhay Sharma <nirbhay.lkd@gmail.com>
 To: kent.overstreet@linux.dev
 Cc: linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzbot+7f176adb30b21606c5fc@syzkaller.appspotmail.com,
-	skhan@linuxfoundation.org,
-	david.hunter.linux@gmail.com,
-	linux-kernel-mentees@lists.linuxfoundation.org,
 	Nirbhay Sharma <nirbhay.lkd@gmail.com>
-Subject: [PATCH] bcachefs: fix use-after-free in bch2_dirent_to_text()
-Date: Fri,  3 Oct 2025 04:40:33 +0530
-Message-ID: <20251002231033.23810-1-nirbhay.lkd@gmail.com>
+Subject: bcachefs: question about fixing use-after-free in bch2_extent_ptr_to_text
+Date: Fri,  3 Oct 2025 16:12:14 +0530
+Message-ID: <20251003104213.369614-2-nirbhay.lkd@gmail.com>
 X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
@@ -76,95 +71,36 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add bounds checking before calculating pointer offsets in dirent name
-accessor functions to prevent out-of-bounds memory access when
-processing corrupted filesytem metadata.
+Hi Kent,
 
-When d_name_len contains a corrupted value, the pointer calculation
-&d.v->d_cf_name_block.d_names[name_len] results in an offset far
-outside the dirent structure, triggering KASAN use-after-free erors.
+I'm investigating syzbot report 564efbe31172fe908429 and have 
+successfully reproduced the crash with the C reproducer.
 
-While bch2_dirent_validate() detects such corruption,
-bch2_dirent_to_text() may still be called for debug output, so the
-accessor functions must handle invalid data gracefully.
+Link: https://syzkaller.appspot.com/bug?extid=564efbe31172fe908429
 
-Fixes: c21f41f6905be4fc5059a10a5bba94105ba87269 ("bcachefs: bch2_dirent_to_text() shows casefolded dirents")
-Reported-by: syzbot+7f176adb30b21606c5fc@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=7f176adb30b21606c5fc
-Signed-off-by: Nirbhay Sharma <nirbhay.lkd@gmail.com>
----
- fs/bcachefs/dirent.c | 39 ++++++++++++++++++++++++++++++---------
- 1 file changed, 30 insertions(+), 9 deletions(-)
+The issue: bch2_extent_ptr_to_text() crashes when called on a corrupted
+extent pointer (bucket 27 < first_bucket 1024). The validation already
+detected this:
+  "invalid bkey: pointer before first bucket (27 < 1024), deleting"
 
-diff --git a/fs/bcachefs/dirent.c b/fs/bcachefs/dirent.c
-index d198001838f3..8be31b41c32b 100644
---- a/fs/bcachefs/dirent.c
-+++ b/fs/bcachefs/dirent.c
-@@ -58,8 +58,16 @@ static unsigned bch2_dirent_name_bytes(struct bkey_s_c_dirent d)
- 
- struct qstr bch2_dirent_get_name(struct bkey_s_c_dirent d)
- {
-+	unsigned int name_len, max_len;
-+
- 	if (d.v->d_casefold) {
--		unsigned name_len = le16_to_cpu(d.v->d_cf_name_block.d_name_len);
-+		name_len = le16_to_cpu(d.v->d_cf_name_block.d_name_len);
-+		max_len = bkey_val_bytes(d.k) -
-+			offsetof(struct bch_dirent, d_cf_name_block.d_names);
-+
-+		if (name_len > max_len)
-+			return (struct qstr) QSTR_INIT(NULL, 0);
-+
- 		return (struct qstr) QSTR_INIT(&d.v->d_cf_name_block.d_names[0], name_len);
- 	} else {
- 		return (struct qstr) QSTR_INIT(d.v->d_name, bch2_dirent_name_bytes(d));
-@@ -68,13 +76,19 @@ struct qstr bch2_dirent_get_name(struct bkey_s_c_dirent d)
- 
- static struct qstr bch2_dirent_get_casefold_name(struct bkey_s_c_dirent d)
- {
--	if (d.v->d_casefold) {
--		unsigned name_len = le16_to_cpu(d.v->d_cf_name_block.d_name_len);
--		unsigned cf_name_len = le16_to_cpu(d.v->d_cf_name_block.d_cf_name_len);
--		return (struct qstr) QSTR_INIT(&d.v->d_cf_name_block.d_names[name_len], cf_name_len);
--	} else {
-+	unsigned int name_len, cf_name_len, max_len;
-+
-+	if (!d.v->d_casefold)
- 		return (struct qstr) QSTR_INIT(NULL, 0);
--	}
-+
-+	name_len = le16_to_cpu(d.v->d_cf_name_block.d_name_len);
-+	cf_name_len = le16_to_cpu(d.v->d_cf_name_block.d_cf_name_len);
-+	max_len = bkey_val_bytes(d.k) - offsetof(struct bch_dirent, d_cf_name_block.d_names);
-+
-+	if (name_len > max_len || cf_name_len > max_len || name_len + cf_name_len > max_len)
-+		return (struct qstr) QSTR_INIT(NULL, 0);
-+
-+	return (struct qstr) QSTR_INIT(&d.v->d_cf_name_block.d_names[name_len], cf_name_len);
- }
- 
- static inline struct qstr bch2_dirent_get_lookup_name(struct bkey_s_c_dirent d)
-@@ -212,11 +226,18 @@ void bch2_dirent_to_text(struct printbuf *out, struct bch_fs *c, struct bkey_s_c
- 	struct bkey_s_c_dirent d = bkey_s_c_to_dirent(k);
- 	struct qstr d_name = bch2_dirent_get_name(d);
- 
-+	if (!d_name.name || !d_name.len) {
-+		prt_str(out, "(invalid)");
-+		return;
-+	}
-+
- 	prt_printf(out, "%.*s", d_name.len, d_name.name);
- 
- 	if (d.v->d_casefold) {
--		struct qstr d_name = bch2_dirent_get_lookup_name(d);
--		prt_printf(out, " (casefold %.*s)", d_name.len, d_name.name);
-+		struct qstr d_cf_name = bch2_dirent_get_lookup_name(d);
-+
-+		if (d_cf_name.name && d_cf_name.len)
-+			prt_printf(out, " (casefold %.*s)", d_name.len, d_name.name);
- 	}
- 
- 	prt_str(out, " ->");
--- 
-2.51.0
+But bch2_extent_ptr_to_text() is still called afterward (for debug 
+output) and crashes in dev_ptr_stale_rcu() when it tries to access 
+bucket metadata at an invalid offset.
 
+Looking at the code in fs/bcachefs/extents.c:1247, the function calls
+dev_ptr_stale_rcu() without checking if the bucket number is valid.
+
+Should I add bounds checking like this:
+
+  if (b < ca->mi.first_bucket || b >= ca->mi.nbuckets) {
+      prt_str(out, " invalid");
+  } else {
+      int stale = dev_ptr_stale_rcu(ca, ptr);
+      ...
+  }
+
+Or is there a better approach? I want to make sure I'm fixing this
+correctly since you reviewed my previous dirent patch.
+
+Thanks,
+Nirbhay Sharma
