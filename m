@@ -1,128 +1,73 @@
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8924DA932
-	for <linux-bcachefs@vger.kernel.org>; Sun,  5 Oct 2025 16:05:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D2921F5E6
+	for <linux-bcachefs@vger.kernel.org>; Sun,  5 Oct 2025 16:48:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759680329; cv=none; b=jzvmCWD2ZaMZZsnmovig9+X7FBHMgyIL3a3MrYEIy/inI9aGlny8Jb9EW1yrrumTutL8W9rf/nOQzE+xQCqXxVQ4JUg/I4unZtv9qmXG//eD0QZ6A0rHptrw9BFH9iTPvMdfJs5NUjk/QsOr9pokgX7kIda2EXznU62G/CvFT20=
+	t=1759682885; cv=none; b=p+Cxj3TaUFfZCxJ5vb065AbDhTWxznB0MHkMSgTxM7cgwEnFSbVcZiBLSEjG2+GZFS2mhxl4YnMFRlCxtwOwpSbWSREKDMcHBhzXwq85Kf3jyAtsgO3UDCMvEwAQvrol3iNkRrGQlg5azLlICBiwZEmjw0EC/RlCvznAgnwJOeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759680329; c=relaxed/simple;
-	bh=XH2xXUswwjYui6iwKQscZaPoZe7ppMJZ6Sgoi/ykVGI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=X3/hdju7kEzvXhT7pkQEzsRCyUFeYbcUWDxM5zuYnKQFlHgev6MULaDqLKiepkGw2gH19/AyoGM8815EpmCmOiDvoamjbifiETdWbCfbxpVchAXv8xQqu3axRCfTgqmf+A2gNPxei3TKK+1L2YRh9V1XEeyqJlNHuMS9Wa4xEwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ee.vjti.ac.in; spf=none smtp.mailfrom=ee.vjti.ac.in; dkim=pass (1024-bit key) header.d=vjti.ac.in header.i=@vjti.ac.in header.b=Uh2GnAdM; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ee.vjti.ac.in
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ee.vjti.ac.in
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=vjti.ac.in header.i=@vjti.ac.in header.b="Uh2GnAdM"
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-33255011eafso3864728a91.1
-        for <linux-bcachefs@vger.kernel.org>; Sun, 05 Oct 2025 09:05:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vjti.ac.in; s=google; t=1759680326; x=1760285126; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Apb38vvwB4yx6ZuSTdH5FloXnDPkndq4ehFPRMxQ1PA=;
-        b=Uh2GnAdMcaTbe+soMKte6d95AXFQ7QWCCKO9kIa0vbJ4NeasA9SmfgaH+xPkwefy31
-         m9+CX9w7ms3rlYktz6SvAEbZH4nvME1fd3P++YF+rUssIetHQ1DBk9SjzybLUuZGyQ2Z
-         VlTRNZVBi6/cn6obbIIvG4sN+HAkQ0BA/wr4w=
+	s=arc-20240116; t=1759682885; c=relaxed/simple;
+	bh=Sre91qC2hboHCxnN7N+ijsfJWRIunEMcehjobPut6dc=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=EHnuiJRr7epBmGog0gTttcxOSHc6AYtY5MHO+apGpzyjSa/Aroy4HDsmeBWkfFI6v/Jkkt72zJ0mtSabQ3eaJ2OD6DIVDNgR9Wl04sUXKM4MtZbo2nC+6uX/9E/fxTWMGTKwZbsTkjc3Put8DWzqawndNSWX48K+aaOFXQvbINU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-930db3a16c0so977594839f.2
+        for <linux-bcachefs@vger.kernel.org>; Sun, 05 Oct 2025 09:48:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759680326; x=1760285126;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Apb38vvwB4yx6ZuSTdH5FloXnDPkndq4ehFPRMxQ1PA=;
-        b=eZULhHmzqfGJRrgBislzKHHJ0wrHUjmCxizcmuQeIKGmemqQP0ABkYNkHzhbYCZ70n
-         knsxCL1BMe1nTp2yikoA4AeKz+roP/SW7A1XcE4tY6XBNVdLRW/n+p0qXUYJzZwSU6sp
-         /I4aMCRtqx2eWIcP+mvkTXZrVyUHsw6tbjSpMP9tFWVfBOHvLoMALbo20g8UrkfPmoKG
-         EjYElcBtjMhvuU7zNufD56dLTsdy6GnIeVOV1+4edj19WDwnWl6kOpFebVJt37jtm/nZ
-         ztu1uox+SUP9LHY5saB/D8WZQao2A0zhr1DPP/lKv9zzPci6MP37bgS0KND6awSZOTMY
-         oi4g==
-X-Gm-Message-State: AOJu0Yyxc1ruC0KxThAhvvuFrGmab4VpIoNtZSHWqrUGm6zosdzDHlCv
-	Fv8yHpnHuIbtLDFK7wibrxZHehrPkv7KMZBj9wzd4UNhOVnwcYWF4dF1Ce5XkETB6a0=
-X-Gm-Gg: ASbGnctv4GOmPgOiyuXAuPd8aGE5+LTFVWh1wMYbe56jV5Fg6wdqCDJ78IoUiZGAjlX
-	ml55Br5k1XzOV2dPOvuhXFjnnf/oFXcyCXjVf+MCkK3DfhXwNXiyuxNpwnbr8+SyMU6X+NJRfnH
-	4H3hqo/i/q22H+lGbVCyrjrGWQQherQ+tAty+wgeu0hvxjQ6IG9bP/aMfOkzWJwVIz9A6/IxQzh
-	z1FGbFzMgf4VHIdCvpfzhgpAvXhui/E9wZmlDpnvuFTcBLPbxHtEZNBLb5EDQO3zyuVDIPD+g8h
-	Djhb4LsYV56d2kgwrVZVodAAXvA5f3/eWFBDgnJzb6Zl1dXz03jUvYVmc5AQn1y7lLE1TZ2fj3L
-	GrThIPKNsaw+B4b/Gmvr/m6/wfrHfVafwfDOpwV/cflXsYkDnOly/Cg63i9zSbDxSsqA1zZgQDB
-	1pLCW3gLWZRzNuzr9H6+eV/LYIVs4=
-X-Google-Smtp-Source: AGHT+IFtAPsMcbWTsTzzk6FNbUS5ZUy5nzJQgGNyx0ZUq06fFmSWxW/ID+JTwnNDcwgVq0RlGrbwyA==
-X-Received: by 2002:a17:90b:1d8d:b0:32e:37af:b012 with SMTP id 98e67ed59e1d1-339c264d739mr12476273a91.0.1759680325632;
-        Sun, 05 Oct 2025 09:05:25 -0700 (PDT)
-Received: from ranegod-HP-ENVY-x360-Convertible-13-bd0xxx.. ([2405:201:31:d016:767d:6919:46bb:bc81])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-339a6ebe5f2sm13903271a91.11.2025.10.05.09.05.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Oct 2025 09:05:25 -0700 (PDT)
-From: ssrane_b23@ee.vjti.ac.in
-X-Google-Original-From: ssranevjti@gmail.com
-To: kent.overstreet@linux.dev
-Cc: linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzbot+55c84106264e92ea9ada@syzkaller.appspotmail.com,
-	Shaurya Rane <ssrane_b23@ee.vjti.ac.in>,
-	syzbot+564efbe31172fe908429@syzkaller.appspotmail.com
-Subject: [PATCH] bcachefs:fix use-after-free in __bch2_bkey_fsck_err
-Date: Sun,  5 Oct 2025 21:35:18 +0530
-Message-Id: <20251005160518.10000-1-ssranevjti@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1759682882; x=1760287682;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8oXb7PF+VeA+usHOd3dH0gngexRPKDP4LVXG0n28u+o=;
+        b=mzZ8LDMbajpR7JfrF2c2nEiPfAeFfPa3l2OXkzbZmL+vW0P+W5WrRH6W4MinzQpfI8
+         C7kb2GytdYqXz5F4mKz9ezJarL57IuxZLRPHYxJYhSs4rybvuUNBTnCZ5og7SAWi5Z6A
+         Ch7QsI12XakqQ/UPHU0u6+yIKQMnNCgUOKLQwRZcsM1p+jV4m7U4fwOQ2qtSgfKaaYNa
+         3DkadE7Adisg4gmbhpci8addLl9AhZK8rc24tAHOQ1O3qykaCtJaDhtx66OUMmNDJpGY
+         /xh5kJXAQ8Gs9HwWXSyDgGXm8GwnjEUCfRcvfCT+PkMqJAVuUYcDESDkBZEL/2Ti6h6s
+         iZ+g==
+X-Forwarded-Encrypted: i=1; AJvYcCX2uM4t/SJx9F0NGBgP7OuAq0oD2XTgzcylK6feTApR0dg2oo7JlYQWhri3txWw3hj3S4TgfAWkp1IMBxocdg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyuhI9hOmraApj3r1/gBDHPdDLZ7GmBsFei4tsnW7Ktv097yJ4M
+	urzC6z4L193gG31kSZ72jUg+pPZYP1q3D12/tZCsIovHS75BgYWEZBJC/yekkaji38YJaWsZB4+
+	VRzcTye21ni8QX8fRA2kF8TukhWnyRf0KtAqflrWMf7qsQoD670fgUCYde00=
+X-Google-Smtp-Source: AGHT+IEkCQ7HwtZExjkd+Qb0S8VnzVA/aRBL8f4/dZs9rBJbdo+yNWOfdu0Z6aWhrqDD2nC3xGGDlDmQTEMg1zstTjBzTHL4ivgo
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:156f:b0:42e:70fd:f5a1 with SMTP id
+ e9e14a558f8ab-42e7acfbb59mr158073015ab.3.1759682882528; Sun, 05 Oct 2025
+ 09:48:02 -0700 (PDT)
+Date: Sun, 05 Oct 2025 09:48:02 -0700
+In-Reply-To: <CANNWa05YhQ9Ycr13e3SOYgD=cms5iskSENUwXUgk0T8zkMy97Q@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68e2a142.a00a0220.2ba410.0017.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] kernel BUG in bch2_btree_path_level_init (4)
+From: syzbot <syzbot+55c84106264e92ea9ada@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, ssrane_b23@ee.vjti.ac.in, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-From: Shaurya Rane <ssrane_b23@ee.vjti.ac.in>
+Hello,
 
-When mounting a corrupted bcachefs filesystem, KASAN detects a
-use-after-free in the error reporting path. This occurs due to a race
-between error reporting and key deletion during fsck.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-The sequence of events:
+Reported-by: syzbot+55c84106264e92ea9ada@syzkaller.appspotmail.com
+Tested-by: syzbot+55c84106264e92ea9ada@syzkaller.appspotmail.com
 
-1. extent_ptr_validate() detects an invalid extent pointer with a
-   corrupt disk offset
-2. It calls __bch2_bkey_fsck_err() to report the error
-3. The fsck logic decides to delete the corrupt key
-4. Meanwhile, __bch2_bkey_fsck_err() calls bch2_bkey_val_to_text()
-5. This traverses the extent entries via bch2_extent_ptr_to_text()
-6. sector_to_bucket_and_offset() is called with the corrupt offset
-7. Memory access occurs on data being concurrently freed
+Tested on:
 
-The crash happens in bch2_extent_ptr_to_text() when it attempts to
-validate bucket boundaries using already-freed extent pointer data.
+commit:         6093a688 Merge tag 'char-misc-6.18-rc1' of git://git.k..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=16ea2458580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e2b03b8b7809165e
+dashboard link: https://syzkaller.appspot.com/bug?extid=55c84106264e92ea9ada
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
 
-Replace bch2_bkey_val_to_text() with bch2_bpos_to_text() to print
-only the key position (inode, offset, snapshot) instead of traversing
-potentially corrupt or freed extent metadata. The position is part of
-the key header and remains safe to read even as the extent data is
-being freed. The specific validation error is still printed in the
-subsequent lines, providing sufficient context for debugging.
-
-Tested successfully locally using syzbot provided reproducer
-
-Reported-by: syzbot+564efbe31172fe908429@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?id=564efbe31172fe908429
-Fixes: d97de0d017cd ("bcachefs: Make bkey_fsck_err() a wrapper around fsck_err()")
-Signed-off-by: Shaurya Rane <ssrane_b23@ee.vjti.ac.in>
----
- fs/bcachefs/error.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/bcachefs/error.c b/fs/bcachefs/error.c
-index 267e73d9d7e6..b0bf08915aa2 100644
---- a/fs/bcachefs/error.c
-+++ b/fs/bcachefs/error.c
-@@ -688,7 +688,7 @@ int __bch2_bkey_fsck_err(struct bch_fs *c,
- 	bch2_btree_id_to_text(&buf, from.btree);
- 	prt_printf(&buf, " level=%u: ", from.level);
- 
--	bch2_bkey_val_to_text(&buf, c, k);
-+	bch2_bpos_to_text(&buf, k.k->p);
- 	prt_newline(&buf);
- 
- 	va_list args;
--- 
-2.34.1
-
+Note: no patches were applied.
+Note: testing is done by a robot and is best-effort only.
