@@ -1,132 +1,208 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B60DC2E2845;
-	Tue,  7 Oct 2025 14:58:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53A5523C507
+	for <linux-bcachefs@vger.kernel.org>; Tue,  7 Oct 2025 21:28:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759849124; cv=none; b=ju5jV6tWg5nwvMUi0vyowcXOkWE0m0WDG5f0PJahMLWca3z+DBUNIhrTfTSdNZZyHxh2bpCF72dPYADweI2j2NpM+g31OvRZDcqCtjHJdQanDbjNuOvOaE2xb6oBUfeVt3enecTpMCJKl8fF/u9Mf4t339u+ZDTnrTKU2E0BMRM=
+	t=1759872491; cv=none; b=eOULxLADpbjPZjE+BjsYaTaeJ71lo1wyKXXy3ZdufI7rrvMjizGPvLvnJmKwC91F7jd0uIsHxvizZGnnas+n19l9hqkcx2cRHBwMBdCwPKjJAmvGrX16ipw1REMIP1iqbQfQhe+R9JL1WcVXtS3dcqH/mbB86YxOdbjvuo/US4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759849124; c=relaxed/simple;
-	bh=ER1En4QJKE/S/4PnTjjPEYBl+nf+z07UL9R+K1xALb4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u9QDyPB8mproOgeWJ5L8EpvGjo/fweXvvbDxu8G93IuT2SKJ6X9jK+uCZowkm9eS1DFzaPzdLyXyi0+csuocuxnPzyLpKzRvhRs3safLJAjy+XXA5Fmdux9u1UF0xFMnR10kGHG66xVO+IwXwtuElj/TEikqpk8z7+wW0XM/inU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R+8+armH; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1759872491; c=relaxed/simple;
+	bh=pLO7rkTsoQ2oSd9v/1H7hskqPCX9Z2MtYRiTmkLXaAI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MSEJnyS6sqT2y7350HWUBe1gd+fysjlmTchuA2i5oTZoxQbobyrLN+dr6NHaoXQwX5oWI4KmrfdfVpnVmiV7mSCOJQXzlUu/b6aW0suKLEJvV8dBrkAflgiGQXoAFqefIP8e5Qv9qYdng5u+CKFa5M4dTmDK5L/MBDjoohkOJaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=KCPijHzW; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R+8+armH"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3359EC4CEF1;
-	Tue,  7 Oct 2025 14:58:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759849124;
-	bh=ER1En4QJKE/S/4PnTjjPEYBl+nf+z07UL9R+K1xALb4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=R+8+armHrsAMyuklQMD/0wUyNVOymqghxOII/n+I2k5E2dNs9cO3S1jn+VAXCHxwO
-	 te2KcX2UlIXUa9xYdFQEsIPnudbmqSd8PaKSL2eK0USRDDuDD/PZwWJ8sw4uDV5R53
-	 KrLuwftujWcEf2k9Zg0pIGG2ZdF2gHeFqR3NQfW159+5E6bn0STNJ11vsPlFNmGbgv
-	 pCpwDyK7RAgEjXfu/yX8N+nJuiYsLgeJ9IFtNy71ECgZLt9gqntPpGiiYXWTmM2l/2
-	 J3Cg49k1oZ75G27BthPdP3pXDSSKDMNIPBybtumYb3U2vKZya+1tb/RualrqpxaD/a
-	 IXlKaPFKInf4g==
-Date: Tue, 7 Oct 2025 07:58:43 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Matthew Wilcox <willy@infradead.org>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	linux-btrfs <linux-btrfs@vger.kernel.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Christoph Hellwig <hch@infradead.org>,
-	linux-bcachefs@vger.kernel.org
-Subject: Re: Direct IO reads being split unexpected at page boundary, but in
- the middle of a fs block (bs > ps cases)
-Message-ID: <20251007145843.GP1587915@frogsfrogsfrogs>
-References: <048c3d9c-6cba-438a-a3a9-d24ac14feb62@gmx.com>
- <aOPbMs4_wML4qxUg@casper.infradead.org>
- <c9fae0e3-88ad-4e50-a54e-8a73cdc72e38@gmx.com>
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="KCPijHzW"
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3ece0e4c5faso5304769f8f.1
+        for <linux-bcachefs@vger.kernel.org>; Tue, 07 Oct 2025 14:28:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1759872487; x=1760477287; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Rsucf0vVsobG12gzxy2S7+2oOr6aeTIDSUzvjBpxYqI=;
+        b=KCPijHzW9Acs6Id6BUsHiwyCQjPIZMuVVHHyRhw0fq0b9pWWouKR99+fzcuQWFDy3i
+         3DJ9MwVd6LmwmjVCsYPhCvfc3giNuKIKPW1ReJGUxT8ONdY986NK784UM78sp22QtmZz
+         bZclCq45KJnHgWlRAmngPcx9PiR9gQek4A0BvHam9AmOeNPO3Lk0LrnHos5CY7pgeOVC
+         OGM75pIJt2CRXN1lBL9jEKF7RdywNGjWIRV2M01qvmmdmRBJdkolgELVIIATfpOUwup1
+         sduAOGzkPhgCMS59FKwbCGWFxS+BOqvPs7Imwo0dWRanj6E4sPLwsGUepjscMxzmF4fz
+         m0hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759872487; x=1760477287;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Rsucf0vVsobG12gzxy2S7+2oOr6aeTIDSUzvjBpxYqI=;
+        b=HxVwl7/fNoScP9HAB86ZYYLCiMdECj50zYr5KBvHs5LR1gSWJbdotTVrsv0cVttmkD
+         6tqXO8dqxLV/XrF+U1MNPoTLA6Yy/FmvMWVEzltLDAUxZEyQ+rwkuWDbDbUJzxNsjI8m
+         1aAFeNhjlgkU4XKwVE1rYl7p7+8ov4yxMZ+rmwpILs1bkzQK5AzTmR5LfqezufM5mRak
+         bHXPEmFNX4I+iKEXzdfguY6JKu12bhhGg4bQFS+kDvPK/E4CpCkgHkJIz3J0TV8Xu/Zm
+         3utCXmSFFtPo1g49W+DB+aCw/nUM3ccJTlyPDtRUKr2ZnDxFx227cUQR7rI6Fvrbg5zX
+         HrUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWiFMDRJ7vSOjgs/Loq1NSE0sI0qHGc/aY+gPXYfWadWFncrURxs/epupUJRtop8uWkKfcTS78qBmV1MWl9IA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YztAVbsRm2qKs9LhQVQiuZ0zjlOgM9Xhb67HSXyaKXMX/ynCdJh
+	LBJvxmToUP9z+tIzdZedKzwj9w4Pncx1AGmdRrSqxNJ3+HOdy5r/xAkGGAVELMohd8A=
+X-Gm-Gg: ASbGncvaZwQVENIL6REHL/a17ojtFJR9dKvDOPZ76uuYqrEAkAJ+lEUINAmnlKZynuc
+	Y2NKaLcKmUkGDK0OBwNryMPqYq7wEGmqP2lYCSz+4kfHVf+Vg1sPSq+ZO0nTiv9mF4opEYVQJLT
+	5skibeTSL5m1ZcKdM8+0CMzsTfC6v7HP0/WpM6Zfx4nBDhwF5IAX1BJqLuyirajlq9ZkQfU9pm/
+	hS8xk4xrdF2qDK6F0FnOOuqDesr9/spUBZ07UoBk8zpmChOT2klBzcmLVdRrtMzqnj9hdAll+nP
+	kjdPOa6MHy7PMyfxwJlgN8rgswCKElXCcKJjExH3dMr1dtA58Kc8l2uqrzkTDeDG5LVi1g8ntsN
+	Lbre7+D8LRkfMJZbjr+xthiRp/1x8qydv3fE69NcTBx948DUABVzUd79K28cR6gDrhX4ZtMjotR
+	VjB3SUYXMwzw==
+X-Google-Smtp-Source: AGHT+IHqXS/5UfjAOvdA06A2MvNA06Js3gSo3Wd4dquS+f89kqx+UCNvUIep87qbq7GCT4O3wpDyJw==
+X-Received: by 2002:a05:6000:2401:b0:3e7:46bf:f89d with SMTP id ffacd0b85a97d-4266e8de2c2mr486406f8f.44.1759872487392;
+        Tue, 07 Oct 2025 14:28:07 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33b510ffd77sm716373a91.7.2025.10.07.14.28.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Oct 2025 14:28:06 -0700 (PDT)
+Message-ID: <8e3ee208-e0d1-4799-a70b-fd4e4de34bc5@suse.com>
+Date: Wed, 8 Oct 2025 07:58:01 +1030
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: Direct IO reads being split unexpected at page boundary, but in
+ the middle of a fs block (bs > ps cases)
+To: "Darrick J. Wong" <djwong@kernel.org>, Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Matthew Wilcox <willy@infradead.org>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ linux-btrfs <linux-btrfs@vger.kernel.org>,
+ Christian Brauner <brauner@kernel.org>, Christoph Hellwig
+ <hch@infradead.org>, linux-bcachefs@vger.kernel.org
+References: <048c3d9c-6cba-438a-a3a9-d24ac14feb62@gmx.com>
+ <aOPbMs4_wML4qxUg@casper.infradead.org>
+ <c9fae0e3-88ad-4e50-a54e-8a73cdc72e38@gmx.com>
+ <20251007145843.GP1587915@frogsfrogsfrogs>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <20251007145843.GP1587915@frogsfrogsfrogs>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <c9fae0e3-88ad-4e50-a54e-8a73cdc72e38@gmx.com>
 
-On Tue, Oct 07, 2025 at 01:00:58PM +1030, Qu Wenruo wrote:
-> 
-> 
-> 在 2025/10/7 01:37, Matthew Wilcox 写道:
-> > On Wed, Oct 01, 2025 at 10:59:18AM +0930, Qu Wenruo wrote:
-> > > Recently during the btrfs bs > ps direct IO enablement, I'm hitting a case
-> > > where:
-> > > 
-> > > - The direct IO iov is properly aligned to fs block size (8K, 2 pages)
-> > >    They do not need to be large folio backed, regular incontiguous pages
-> > >    are supported.
-> > > 
-> > > - The btrfs now can handle sub-block pages
-> > >    But still require the bi_size and (bi_sector << 9) to be block size
-> > >    aligned.
-> > > 
-> > > - The bio passed into iomap_dio_ops::submit_io is not block size
-> > >    aligned
-> > >    The bio only contains one page, not 2.
-> > 
-> > That seems like a bug in the VFS/iomap somewhere.  Maybe try cc'ing the
-> > people who know this code?
-> > 
-> 
-> Add xfs and bcachefs subsystem into CC.
-> 
-> The root cause is that, function __bio_iov_iter_get_pages() can split the
-> iov.
-> 
-> In my case, I hit the following dio during iomap_dio_bio_iter();
-> 
->  fsstress-1153      6..... 68530us : iomap_dio_bio_iter: length=81920
-> nr_pages=20 enter
->  fsstress-1153      6..... 68539us : iomap_dio_bio_iter: length=81920
-> realsize=69632(17 pages)
->  fsstress-1153      6..... 68540us : iomap_dio_bio_iter: nr_pages=3 for next
-> 
-> Which bio_iov_iter_get_pages() split the 20 pages into two segments (17 + 3
-> pages).
-> That 17/3 split is not meeting the btrfs' block size requirement (in my case
-> it's 8K block size).
 
-Just out of curiosity, what are the corresponding
-iomap_iter_{src,dst}map tracepoints for these iomap_dio_bio_iters?
 
-I'm assuming there's one mapping for all 80k of data?
-
-> I'm seeing XFS having a comment related to bio_iov_iter_get_pages() inside
-> xfs_file_dio_write(), but there is no special checks other than
-> iov_iter_alignment() check, which btrfs is also doing.
+在 2025/10/8 01:28, Darrick J. Wong 写道:
+> On Tue, Oct 07, 2025 at 01:00:58PM +1030, Qu Wenruo wrote:
+>>
+>>
+>> 在 2025/10/7 01:37, Matthew Wilcox 写道:
+>>> On Wed, Oct 01, 2025 at 10:59:18AM +0930, Qu Wenruo wrote:
+>>>> Recently during the btrfs bs > ps direct IO enablement, I'm hitting a case
+>>>> where:
+>>>>
+>>>> - The direct IO iov is properly aligned to fs block size (8K, 2 pages)
+>>>>     They do not need to be large folio backed, regular incontiguous pages
+>>>>     are supported.
+>>>>
+>>>> - The btrfs now can handle sub-block pages
+>>>>     But still require the bi_size and (bi_sector << 9) to be block size
+>>>>     aligned.
+>>>>
+>>>> - The bio passed into iomap_dio_ops::submit_io is not block size
+>>>>     aligned
+>>>>     The bio only contains one page, not 2.
+>>>
+>>> That seems like a bug in the VFS/iomap somewhere.  Maybe try cc'ing the
+>>> people who know this code?
+>>>
+>>
+>> Add xfs and bcachefs subsystem into CC.
+>>
+>> The root cause is that, function __bio_iov_iter_get_pages() can split the
+>> iov.
+>>
+>> In my case, I hit the following dio during iomap_dio_bio_iter();
+>>
+>>   fsstress-1153      6..... 68530us : iomap_dio_bio_iter: length=81920
+>> nr_pages=20 enter
+>>   fsstress-1153      6..... 68539us : iomap_dio_bio_iter: length=81920
+>> realsize=69632(17 pages)
+>>   fsstress-1153      6..... 68540us : iomap_dio_bio_iter: nr_pages=3 for next
+>>
+>> Which bio_iov_iter_get_pages() split the 20 pages into two segments (17 + 3
+>> pages).
+>> That 17/3 split is not meeting the btrfs' block size requirement (in my case
+>> it's 8K block size).
 > 
-> I guess since XFS do not need to bother data checksum thus such split is not
-> a big deal?
+> Just out of curiosity, what are the corresponding
+> iomap_iter_{src,dst}map tracepoints for these iomap_dio_bio_iters?
 
-I think so too.  The bios all point to the original iomap_dio so the
-ioend only gets called once for the the full write IO, so a completion
-of an out of place write will never see sub-block ranges.
+None, those are adhoc added trace_printk()s.
 
-> On the other hand, bcachefs is doing reverting to the block boundary instead
-> thus solved the problem.
-> However btrfs is using iomap for direct IOs, thus we can not manually revert
-> the iov/bio just inside btrfs.
 > 
-> So I guess in this case we need to add a callback for iomap, to get the fs
-> block size so that at least iomap_dio_bio_iter() can revert to the fs block
-> boundary?
-
-Or add a flags bit to iomap_dio_ops to indicate that the fs requires
-block sized bios?
-
-I'm guessing that you can't do sub-block directio writes to btrfs
-either?
-
---D
-
-> Thanks,
-> Qu
+> I'm assuming there's one mapping for all 80k of data?
 > 
+>> I'm seeing XFS having a comment related to bio_iov_iter_get_pages() inside
+>> xfs_file_dio_write(), but there is no special checks other than
+>> iov_iter_alignment() check, which btrfs is also doing.
+>>
+>> I guess since XFS do not need to bother data checksum thus such split is not
+>> a big deal?
+> 
+> I think so too.  The bios all point to the original iomap_dio so the
+> ioend only gets called once for the the full write IO, so a completion
+> of an out of place write will never see sub-block ranges.
+> 
+>> On the other hand, bcachefs is doing reverting to the block boundary instead
+>> thus solved the problem.
+>> However btrfs is using iomap for direct IOs, thus we can not manually revert
+>> the iov/bio just inside btrfs.
+>>
+>> So I guess in this case we need to add a callback for iomap, to get the fs
+>> block size so that at least iomap_dio_bio_iter() can revert to the fs block
+>> boundary?
+> 
+> Or add a flags bit to iomap_dio_ops to indicate that the fs requires
+> block sized bios?
+
+Yep, that's the next step.
+
+> 
+> I'm guessing that you can't do sub-block directio writes to btrfs
+> either?
+
+Exactly.
+
+Thanks,
+Qu
+
+> 
+> --D
+> 
+>> Thanks,
+>> Qu
+>>
+> 
+
