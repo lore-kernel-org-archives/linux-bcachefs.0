@@ -1,118 +1,134 @@
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D00501946C8
-	for <linux-bcachefs@vger.kernel.org>; Sun, 19 Oct 2025 00:33:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE0384A06
+	for <linux-bcachefs@vger.kernel.org>; Mon, 20 Oct 2025 15:52:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760834023; cv=none; b=DYRpVwXlMIPUWvGOmf3I0VEVHNHjNPt94YclKzWHvZlxOpgXr12d64pMgS4JSMjBUKmj4q4tO5RwataWnGklYQRGyb40ZxyuTx3iIpG5AuHXu1qiUySdNByPNvcaaNdFwVGJ0DJcV5UyPKTX8HgugRBspwSU7WDUCRfYnMmS/Fo=
+	t=1760975529; cv=none; b=hH00BY1SCP25ST7IF+W/B08jOkdNpsHOVF/9B3FcIttQEQAVEIvVYld8ob/NkO4jJqqtoohZfdTQg1xZXQVvDU4mcuJjjzzHOFc65IDGAUsHf4BdI9R/LUb8hsZWnlia1VGXSi6iO7dUC9cXXvW0cIVx2xCWj1hYilMLlvbks/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760834023; c=relaxed/simple;
-	bh=Wfl+rTgwnOjYSQ3lWV53W+c63majBaNms3KBXgOsS+Q=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=IHuAJZGjrqnH8QDXdsNodhxgEn3GHIfxa32R9Lo+Gd7VRiUxMp2gYnvkbyhcQS8yre8UQDMTYuCJIV7qCYQ1ADiXbRKSJhfLHnvo3YL4seryJW/dMZwfKFCHYT2gJM9G9arsa/7rwfZSIOtJPO/n/Ngi3z/6D8Fivsgv+udAqE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-430db5635d6so785395ab.3
-        for <linux-bcachefs@vger.kernel.org>; Sat, 18 Oct 2025 17:33:41 -0700 (PDT)
+	s=arc-20240116; t=1760975529; c=relaxed/simple;
+	bh=nh7KmG91llH0eTJy2kGD6whEVv3qZowTvAaONNXWCzA=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=f96SDguEDMqPo7QnbGR0F7duqB8llOUUCHBJ3jzGkznadz2NBDJ6Pe/PLWex+JoN61jXcfnYmp5x35LVgAWlz48X49EwC87PT+3jTbqK1cFtt20lklFEMEImpcx5mN8O8N4ePBdA5WygX2ehOYybQ3WZXqeM6DTrJZf2kQuu5Sg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VGgHkTUd; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VGgHkTUd"
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-32ec69d22b2so4155194a91.1
+        for <linux-bcachefs@vger.kernel.org>; Mon, 20 Oct 2025 08:52:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1760975527; x=1761580327; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YUxEjev6w4f1umuBxGfAcuaZR32QUUEbuSMBs3oceNE=;
+        b=VGgHkTUdhZTj02Irb7NYvhGZfItj+GtjPAlSpLrvrHnKkNp5OVt+BQ95EwoJZAfzHk
+         WB2D1/bKrttYimuybRv/06WxtsUw7I1J7SDDK+LDf8ME+notiictwNYi9EyFUk+M/cM9
+         KJ1LyTj3K5idElljaGq7GKrWUjQuiZVjTb6Yn/P7w94Vsqxct7svktYODSJSAkbau8I9
+         JuFHMUbNnOtBoyf+jtuDTo5/N7x3xD3znQUow0tEs+HY79iFFlj4Z8KdZIY2qL4EcrPE
+         SltyuRfv/PylxxFOT8lNfNnBT0GwzfTV0ll1VsMV4tZ69ZoEDZizWL9obNkRzJjRXpqw
+         2/0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760834021; x=1761438821;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oCiy/9hhji+8zwsJi2fPYZ/jWkaCbphJgMzzajfP1bM=;
-        b=q/MtR4lTswHXkiZfEP9qNlSNlnIujtjKPVWT3nNAonXRIMGEtUUBLgnV8FqZXGE+gx
-         +RF+5FG9JTHD5zmnxQYCa9z4h6AuP+fUQelHvrcKJq4f1NmRgrmxykI1Ax/MRLVfhvtt
-         Bw/Q/I7ccGUQEMU9/HpH/uWDtejNIp+NBQBpBdts6hcjNjbuqErDLEv8+GHTna5B3HWa
-         YOwbF0EaFqlYAaDPu5MtMYNRNoc0+p3pH9Fs+uGv0ErBjaEjU8ChrBJh255U0jqi2FOb
-         6rwMizIIwPVZzf1s26RXq7yfOc1mj2C2ui0dlRK7tiUj5taLczcxkaeyVj93y35pKdSI
-         EajA==
-X-Forwarded-Encrypted: i=1; AJvYcCXDkVPHgd3OP+2n6QewoB5LShCwIPGSgq4gzNCVDuCx2GKwjP5EYcyGAM1T+LvUrsDVcogeYYHOMMg70nR4fg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyeni15xIsokuchGhOlkLryYT0U0TSyZMeLwBrwtteqQoPaqGe8
-	oVO3R5SpU5emZpvgn8IwYIBgzr10gdDotFAnIpO8lzhnJNucJ656ofLG16zIwykRSwbNltqwqp3
-	8wZCWyJnK3SsdAV6qJyzTvvfi6d86lR/tmPdqbmewQQCJfPkG2PxYT5X3X+Q=
-X-Google-Smtp-Source: AGHT+IERXWmS2tXn4BGh//q6P9LQOl6kGfWPsMvduZ5bCztQN974AL0QORihYfKgFQ3Uxk/2k7VP6YoUcefZDq9oJgKd/Htpw10e
+        d=1e100.net; s=20230601; t=1760975527; x=1761580327;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YUxEjev6w4f1umuBxGfAcuaZR32QUUEbuSMBs3oceNE=;
+        b=et6VFrTIrxKIBm6m054lgNMvRg0JxepEcFOatIokZwlTytCOMizG/LYP/SYqvQSTg9
+         HT8NOnqSBfJ/JtpsGMdpUB/glRGwro8x4fOl0Q4EqVMl0Lg1lyP2ZXXCKU6Hl9ne46DA
+         F+24wVwWsKPv25d3iq/YKq33UuFvOHZL6yL6OF6cOO5LPAEzF6rss5Xw2PKNHC2vQ1n2
+         1W0A0lfTdSapjIsCzSI5XlPuVhEjS3Qao1sAzPCgb0wMPZocQDGH6TJdGfjAn5akDusm
+         n78shEnpA5B1SmI+mL+70JQ757YSa6ss8aAQvg7bK19elRoVkuKXsvEnarhSZ34eW5IT
+         YN6g==
+X-Forwarded-Encrypted: i=1; AJvYcCUJElbXF4g6RQhUyO102J7/UQoZYDdms+VodAc7uyODxGHdsbQjeOzLZzRz10m9cYB3ZMDviPmxRcJL2zZDjA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YybUnFYLz3u2kBYM9Kf+Moof7vzVNKs2vJ2989e7aT7nueX5grP
+	AQsGYX2k5hXj/O4JcW1vYyKcLxLvKHvMcYEzOEBj1rf1oKphtKN6fDJuhpoZk4OKWXFxG1M8hXX
+	1umM0+g==
+X-Google-Smtp-Source: AGHT+IHcZobfkAMYLqgP+952/xufHk4lZqraqyIEs0BsZFGgLzowAsqRVArAQbVQNZgQWXn7bmNPNT9qaaI=
+X-Received: from pjbds19.prod.google.com ([2002:a17:90b:8d3:b0:33b:51fe:1a84])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:4d85:b0:330:4a1d:223c
+ with SMTP id 98e67ed59e1d1-33bcf87f421mr15625676a91.15.1760975526813; Mon, 20
+ Oct 2025 08:52:06 -0700 (PDT)
+Date: Mon, 20 Oct 2025 08:52:05 -0700
+In-Reply-To: <176055105546.1527431.3611256810380818215.b4-ty@google.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2195:b0:430:aea6:833f with SMTP id
- e9e14a558f8ab-430c525c688mr127344745ab.8.1760834020857; Sat, 18 Oct 2025
- 17:33:40 -0700 (PDT)
-Date: Sat, 18 Oct 2025 17:33:40 -0700
-In-Reply-To: <68b976e8.050a0220.192772.0004.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68f431e4.a70a0220.205af.000e.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] WARNING in bch2_recovery_pass_want_ratelimit
-From: syzbot <syzbot+3bf8b0169d7fcc0ebcd5@syzkaller.appspotmail.com>
-To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+References: <20250827175247.83322-2-shivankg@amd.com> <176055105546.1527431.3611256810380818215.b4-ty@google.com>
+Message-ID: <aPZapWWFGyqjA2e3@google.com>
+Subject: Re: [PATCH kvm-next V11 0/7] Add NUMA mempolicy support for KVM guest-memfd
+From: Sean Christopherson <seanjc@google.com>
+To: willy@infradead.org, akpm@linux-foundation.org, david@redhat.com, 
+	pbonzini@redhat.com, shuah@kernel.org, vbabka@suse.cz, 
+	Shivank Garg <shivankg@amd.com>
+Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, dsterba@suse.com, 
+	xiang@kernel.org, chao@kernel.org, jaegeuk@kernel.org, clm@fb.com, 
+	josef@toxicpanda.com, kent.overstreet@linux.dev, zbestahu@gmail.com, 
+	jefflexu@linux.alibaba.com, dhavale@google.com, lihongbo22@huawei.com, 
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, rppt@kernel.org, 
+	surenb@google.com, mhocko@suse.com, ziy@nvidia.com, matthew.brost@intel.com, 
+	joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com, 
+	gourry@gourry.net, ying.huang@linux.alibaba.com, apopple@nvidia.com, 
+	tabba@google.com, ackerleytng@google.com, paul@paul-moore.com, 
+	jmorris@namei.org, serge@hallyn.com, pvorel@suse.cz, bfoster@redhat.com, 
+	vannapurve@google.com, chao.gao@intel.com, bharata@amd.com, nikunj@amd.com, 
+	michael.day@amd.com, shdhiman@amd.com, yan.y.zhao@intel.com, 
+	Neeraj.Upadhyay@amd.com, thomas.lendacky@amd.com, michael.roth@amd.com, 
+	aik@amd.com, kalyazin@amazon.com, peterx@redhat.com, jack@suse.cz, 
+	hch@infradead.org, cgzones@googlemail.com, ira.weiny@intel.com, 
+	rientjes@google.com, roypat@amazon.co.uk, chao.p.peng@intel.com, 
+	amit@infradead.org, ddutile@redhat.com, dan.j.williams@intel.com, 
+	ashish.kalra@amd.com, gshan@redhat.com, jgowans@amazon.com, 
+	pankaj.gupta@amd.com, papaluri@amd.com, yuzhao@google.com, 
+	suzuki.poulose@arm.com, quic_eberman@quicinc.com, 
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-coco@lists.linux.dev, Jason Gunthorpe <jgg@ziepe.ca>
+Content-Type: text/plain; charset="us-ascii"
 
-syzbot has found a reproducer for the following issue on:
+On Wed, Oct 15, 2025, Sean Christopherson wrote:
+> On Wed, 27 Aug 2025 17:52:41 +0000, Shivank Garg wrote:
+> > This series introduces NUMA-aware memory placement support for KVM guests
+> > with guest_memfd memory backends. It builds upon Fuad Tabba's work (V17)
+> > that enabled host-mapping for guest_memfd memory [1] and can be applied
+> > directly applied on KVM tree [2] (branch kvm-next, base commit: a6ad5413,
+> > Merge branch 'guest-memfd-mmap' into HEAD)
+> > 
+> > == Background ==
+> > KVM's guest-memfd memory backend currently lacks support for NUMA policy
+> > enforcement, causing guest memory allocations to be distributed across host
+> > nodes  according to kernel's default behavior, irrespective of any policy
+> > specified by the VMM. This limitation arises because conventional userspace
+> > NUMA control mechanisms like mbind(2) don't work since the memory isn't
+> > directly mapped to userspace when allocations occur.
+> > Fuad's work [1] provides the necessary mmap capability, and this series
+> > leverages it to enable mbind(2).
+> > 
+> > [...]
+> 
+> Applied the non-KVM change to kvm-x86 gmem.  We're still tweaking and iterating
+> on the KVM changes, but I fully expect them to land in 6.19.
+> 
+> Holler if you object to taking these through the kvm tree.
+> 
+> [1/7] mm/filemap: Add NUMA mempolicy support to filemap_alloc_folio()
+>       https://github.com/kvm-x86/linux/commit/601aa29f762f
+> [2/7] mm/filemap: Extend __filemap_get_folio() to support NUMA memory policies
+>       https://github.com/kvm-x86/linux/commit/2bb25703e5bd
+> [3/7] mm/mempolicy: Export memory policy symbols
+>       https://github.com/kvm-x86/linux/commit/e1b4cf7d6be3
 
-HEAD commit:    bf45a62baffc Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=172ae492580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bd2356106f507975
-dashboard link: https://syzkaller.appspot.com/bug?extid=3bf8b0169d7fcc0ebcd5
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=124fda14580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14fb3de2580000
+FYI, I rebased these onto 6.18-rc2 to avoid a silly merge.  New hashes:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/f0d4874557e9/disk-bf45a62b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/0bf44a13b5b2/vmlinux-bf45a62b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/18db8bc9907c/Image-bf45a62b.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/0638961e34c6/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3bf8b0169d7fcc0ebcd5@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 6755 at fs/bcachefs/recovery_passes.c:174 bch2_recovery_pass_want_ratelimit+0x1c0/0x270 fs/bcachefs/recovery_passes.c:174
-Modules linked in:
-CPU: 1 UID: 0 PID: 6755 Comm: bch-copygc/loop Not tainted syzkaller #0 PREEMPT 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/30/2025
-pstate: 83400005 (Nzcv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
-pc : bch2_recovery_pass_want_ratelimit+0x1c0/0x270 fs/bcachefs/recovery_passes.c:174
-lr : bch2_recovery_pass_want_ratelimit+0x1c0/0x270 fs/bcachefs/recovery_passes.c:174
-sp : ffff8000a1a76af0
-x29: ffff8000a1a76af0 x28: ffff0000f69b8028 x27: ffff0000d4bfe198
-x26: 1ffff0001434ed70 x25: dfff800000000000 x24: 0000000000000001
-x23: ffff8000a1a76c00 x22: dfff800000000000 x21: 0000000000000000
-x20: ffff0000ecf80000 x19: 000000000000000e x18: 00000000ffffffff
-x17: ffff80008280dad8 x16: ffff80008052b264 x15: 0000000000000001
-x14: 1fffe00018c07b0b x13: 0000000000000000 x12: 0000000000000000
-x11: 1ffff0001434ed95 x10: 0000000000ff0100 x9 : 0000000000000000
-x8 : ffff0000c8658000 x7 : 2020202020202020 x6 : 696d206874697720
-x5 : ffff0000c603d85d x4 : ffff0000c603d85b x3 : 0000000000000002
-x2 : ffff8000a1a76b84 x1 : 0000000000000000 x0 : 0000000000000000
-Call trace:
- bch2_recovery_pass_want_ratelimit+0x1c0/0x270 fs/bcachefs/recovery_passes.c:174 (P)
- recovery_pass_needs_set+0xa0/0x468 fs/bcachefs/recovery_passes.c:302
- bch2_run_explicit_recovery_pass+0x4c/0xec fs/bcachefs/recovery_passes.c:416
- bch2_check_bucket_backpointer_mismatch+0x34c/0x3a0 fs/bcachefs/backpointers.c:1220
- __bch2_move_data_phys+0x684/0x144c fs/bcachefs/move.c:1011
- bch2_evacuate_bucket+0x220/0x34c fs/bcachefs/move.c:1082
- bch2_copygc+0x2d80/0x3570 fs/bcachefs/movinggc.c:234
- bch2_copygc_thread+0x898/0xd8c fs/bcachefs/movinggc.c:409
- kthread+0x5fc/0x75c kernel/kthread.c:463
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:844
-irq event stamp: 236
-hardirqs last  enabled at (235): [<ffff800080c664d0>] kasan_quarantine_put+0x1a0/0x1c8 mm/kasan/quarantine.c:234
-hardirqs last disabled at (236): [<ffff80008b05ee64>] el1_brk64+0x20/0x54 arch/arm64/kernel/entry-common.c:434
-softirqs last  enabled at (0): [<ffff8000803ba294>] copy_process+0x1134/0x31ec kernel/fork.c:2119
-softirqs last disabled at (0): [<0000000000000000>] 0x0
----[ end trace 0000000000000000 ]---
-bc
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+[1/3] mm/filemap: Add NUMA mempolicy support to filemap_alloc_folio()
+      https://github.com/kvm-x86/linux/commit/7f3779a3ac3e
+[2/3] mm/filemap: Extend __filemap_get_folio() to support NUMA memory policies
+      https://github.com/kvm-x86/linux/commit/16a542e22339
+[3/3] mm/mempolicy: Export memory policy symbols
+      https://github.com/kvm-x86/linux/commit/f634f10809ec
