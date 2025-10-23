@@ -1,134 +1,76 @@
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE0384A06
-	for <linux-bcachefs@vger.kernel.org>; Mon, 20 Oct 2025 15:52:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3492C267B9B
+	for <linux-bcachefs@vger.kernel.org>; Thu, 23 Oct 2025 07:46:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760975529; cv=none; b=hH00BY1SCP25ST7IF+W/B08jOkdNpsHOVF/9B3FcIttQEQAVEIvVYld8ob/NkO4jJqqtoohZfdTQg1xZXQVvDU4mcuJjjzzHOFc65IDGAUsHf4BdI9R/LUb8hsZWnlia1VGXSi6iO7dUC9cXXvW0cIVx2xCWj1hYilMLlvbks/c=
+	t=1761205568; cv=none; b=ZG5Ls+dbt1y57mAW4PR8SPwU0Cl2tU2ejffBP07+CWly4ZftWNzHrRBl78iFhFxr0GXWaqIznCxKPgz/JC6PkN8HW5Zg+KK6+sJ61GMKHAx6/hOJ3+kZvKJJTqIJY5JPVa6mPt0htUCbIn/3+F8AfYaCnUwP5blkQmcjx0+6jiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760975529; c=relaxed/simple;
-	bh=nh7KmG91llH0eTJy2kGD6whEVv3qZowTvAaONNXWCzA=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=f96SDguEDMqPo7QnbGR0F7duqB8llOUUCHBJ3jzGkznadz2NBDJ6Pe/PLWex+JoN61jXcfnYmp5x35LVgAWlz48X49EwC87PT+3jTbqK1cFtt20lklFEMEImpcx5mN8O8N4ePBdA5WygX2ehOYybQ3WZXqeM6DTrJZf2kQuu5Sg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VGgHkTUd; arc=none smtp.client-ip=209.85.216.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VGgHkTUd"
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-32ec69d22b2so4155194a91.1
-        for <linux-bcachefs@vger.kernel.org>; Mon, 20 Oct 2025 08:52:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1760975527; x=1761580327; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YUxEjev6w4f1umuBxGfAcuaZR32QUUEbuSMBs3oceNE=;
-        b=VGgHkTUdhZTj02Irb7NYvhGZfItj+GtjPAlSpLrvrHnKkNp5OVt+BQ95EwoJZAfzHk
-         WB2D1/bKrttYimuybRv/06WxtsUw7I1J7SDDK+LDf8ME+notiictwNYi9EyFUk+M/cM9
-         KJ1LyTj3K5idElljaGq7GKrWUjQuiZVjTb6Yn/P7w94Vsqxct7svktYODSJSAkbau8I9
-         JuFHMUbNnOtBoyf+jtuDTo5/N7x3xD3znQUow0tEs+HY79iFFlj4Z8KdZIY2qL4EcrPE
-         SltyuRfv/PylxxFOT8lNfNnBT0GwzfTV0ll1VsMV4tZ69ZoEDZizWL9obNkRzJjRXpqw
-         2/0Q==
+	s=arc-20240116; t=1761205568; c=relaxed/simple;
+	bh=mVYOyb4mY/R3I0qazG+bSTyVgEhsMGMLoq+Ene2X1fY=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=Drd0Zq0Fp5htvgGB883ZjaLR2VOz0FksQ2ti5WFTeVtSajrNZqjRtu9zuxyYINkwCtPrxtnJLUXCvvbXUJle8rHX9B5uHzXB4Zocs7UqPG0LnTI6uyVy79fLUDUznjlL4aR6ZCx1wMEXPpaFf70ihreVsacFfjimKefaQlFa7tk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-430d7ace0ddso6261565ab.3
+        for <linux-bcachefs@vger.kernel.org>; Thu, 23 Oct 2025 00:46:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760975527; x=1761580327;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YUxEjev6w4f1umuBxGfAcuaZR32QUUEbuSMBs3oceNE=;
-        b=et6VFrTIrxKIBm6m054lgNMvRg0JxepEcFOatIokZwlTytCOMizG/LYP/SYqvQSTg9
-         HT8NOnqSBfJ/JtpsGMdpUB/glRGwro8x4fOl0Q4EqVMl0Lg1lyP2ZXXCKU6Hl9ne46DA
-         F+24wVwWsKPv25d3iq/YKq33UuFvOHZL6yL6OF6cOO5LPAEzF6rss5Xw2PKNHC2vQ1n2
-         1W0A0lfTdSapjIsCzSI5XlPuVhEjS3Qao1sAzPCgb0wMPZocQDGH6TJdGfjAn5akDusm
-         n78shEnpA5B1SmI+mL+70JQ757YSa6ss8aAQvg7bK19elRoVkuKXsvEnarhSZ34eW5IT
-         YN6g==
-X-Forwarded-Encrypted: i=1; AJvYcCUJElbXF4g6RQhUyO102J7/UQoZYDdms+VodAc7uyODxGHdsbQjeOzLZzRz10m9cYB3ZMDviPmxRcJL2zZDjA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YybUnFYLz3u2kBYM9Kf+Moof7vzVNKs2vJ2989e7aT7nueX5grP
-	AQsGYX2k5hXj/O4JcW1vYyKcLxLvKHvMcYEzOEBj1rf1oKphtKN6fDJuhpoZk4OKWXFxG1M8hXX
-	1umM0+g==
-X-Google-Smtp-Source: AGHT+IHcZobfkAMYLqgP+952/xufHk4lZqraqyIEs0BsZFGgLzowAsqRVArAQbVQNZgQWXn7bmNPNT9qaaI=
-X-Received: from pjbds19.prod.google.com ([2002:a17:90b:8d3:b0:33b:51fe:1a84])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:4d85:b0:330:4a1d:223c
- with SMTP id 98e67ed59e1d1-33bcf87f421mr15625676a91.15.1760975526813; Mon, 20
- Oct 2025 08:52:06 -0700 (PDT)
-Date: Mon, 20 Oct 2025 08:52:05 -0700
-In-Reply-To: <176055105546.1527431.3611256810380818215.b4-ty@google.com>
+        d=1e100.net; s=20230601; t=1761205564; x=1761810364;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vmip/qhiz3V5Zxb68MSXXPM2oLCrw5vCeq6I1ybLO98=;
+        b=MFRmZI1pioVQz7feN/HK2UX5ZatvIMAbavUoyDThWkxHoT4c+gU65vsQdnlcL/aFUm
+         4+sbiSBhcxCm+L+d4PZdsZEYB/fd4Rqgxmq0ZBb266frr6CNiUAZg/yQg6mQBCQ4ea+B
+         yI4+IzJqc5VeBBiFW1nnDLQp5Q7s+ulcwVyHO0uAb8DfWLUz++tGxyk1+pR84Bxf4Q4U
+         +i6fz5ldVcUpxsMjvCtMXDYooIMm7HoWSR0dG0p76+kaKcUfXe2s19nLjimiu5mMQcbH
+         PkuAaZZMVdNmm7O2j2m5I2VskLaDOfTU6TLpEXZMm0m30NmU9Bk49KDOmTlWUH5Uv0In
+         C0xA==
+X-Forwarded-Encrypted: i=1; AJvYcCVOL1Ovww38+co4YpKH9DOSVlyUwDRj5F5+wRPbz/fi2y21JmZMMmgeV1Zp3FGNkLyaTRxVxmsEQbabh68IdA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyybBfOI9MoORS3Q+Dchr2MTNF3nV4MIcM2hRtJfizsnbosBveP
+	tQpmOE5dVoDDB1NgrxHxzTdfkfubBaNI6czBHwxL8dOr1Rq498CZ906fIsn7BWYe4f2oXbSSAV2
+	xgGmHLafAnBo5fu7XASEwPey92PvzLB/5UP3J9ngTVvhMf4QHgGP5Oqsfd3I=
+X-Google-Smtp-Source: AGHT+IGFSi+RsBvebwACUQDHXq40Hp+o//RQg9v658Uxu7DuNy5dS+FeudBx/77QPaZQM9AVHoaI07JH+8LL1nutmY8FokAdfSsM
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250827175247.83322-2-shivankg@amd.com> <176055105546.1527431.3611256810380818215.b4-ty@google.com>
-Message-ID: <aPZapWWFGyqjA2e3@google.com>
-Subject: Re: [PATCH kvm-next V11 0/7] Add NUMA mempolicy support for KVM guest-memfd
-From: Sean Christopherson <seanjc@google.com>
-To: willy@infradead.org, akpm@linux-foundation.org, david@redhat.com, 
-	pbonzini@redhat.com, shuah@kernel.org, vbabka@suse.cz, 
-	Shivank Garg <shivankg@amd.com>
-Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, dsterba@suse.com, 
-	xiang@kernel.org, chao@kernel.org, jaegeuk@kernel.org, clm@fb.com, 
-	josef@toxicpanda.com, kent.overstreet@linux.dev, zbestahu@gmail.com, 
-	jefflexu@linux.alibaba.com, dhavale@google.com, lihongbo22@huawei.com, 
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, rppt@kernel.org, 
-	surenb@google.com, mhocko@suse.com, ziy@nvidia.com, matthew.brost@intel.com, 
-	joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com, 
-	gourry@gourry.net, ying.huang@linux.alibaba.com, apopple@nvidia.com, 
-	tabba@google.com, ackerleytng@google.com, paul@paul-moore.com, 
-	jmorris@namei.org, serge@hallyn.com, pvorel@suse.cz, bfoster@redhat.com, 
-	vannapurve@google.com, chao.gao@intel.com, bharata@amd.com, nikunj@amd.com, 
-	michael.day@amd.com, shdhiman@amd.com, yan.y.zhao@intel.com, 
-	Neeraj.Upadhyay@amd.com, thomas.lendacky@amd.com, michael.roth@amd.com, 
-	aik@amd.com, kalyazin@amazon.com, peterx@redhat.com, jack@suse.cz, 
-	hch@infradead.org, cgzones@googlemail.com, ira.weiny@intel.com, 
-	rientjes@google.com, roypat@amazon.co.uk, chao.p.peng@intel.com, 
-	amit@infradead.org, ddutile@redhat.com, dan.j.williams@intel.com, 
-	ashish.kalra@amd.com, gshan@redhat.com, jgowans@amazon.com, 
-	pankaj.gupta@amd.com, papaluri@amd.com, yuzhao@google.com, 
-	suzuki.poulose@arm.com, quic_eberman@quicinc.com, 
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-coco@lists.linux.dev, Jason Gunthorpe <jgg@ziepe.ca>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:3:b0:431:d093:758d with SMTP id
+ e9e14a558f8ab-431d0937867mr104690445ab.22.1761205564359; Thu, 23 Oct 2025
+ 00:46:04 -0700 (PDT)
+Date: Thu, 23 Oct 2025 00:46:04 -0700
+In-Reply-To: <6744873b.050a0220.1286eb.0000.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68f9dd3c.a70a0220.3bf6c6.0034.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] KASAN: global-out-of-bounds Read in rcu_pending_exit
+From: syzbot <syzbot+e733ab672a1b6724c27f@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Oct 15, 2025, Sean Christopherson wrote:
-> On Wed, 27 Aug 2025 17:52:41 +0000, Shivank Garg wrote:
-> > This series introduces NUMA-aware memory placement support for KVM guests
-> > with guest_memfd memory backends. It builds upon Fuad Tabba's work (V17)
-> > that enabled host-mapping for guest_memfd memory [1] and can be applied
-> > directly applied on KVM tree [2] (branch kvm-next, base commit: a6ad5413,
-> > Merge branch 'guest-memfd-mmap' into HEAD)
-> > 
-> > == Background ==
-> > KVM's guest-memfd memory backend currently lacks support for NUMA policy
-> > enforcement, causing guest memory allocations to be distributed across host
-> > nodes  according to kernel's default behavior, irrespective of any policy
-> > specified by the VMM. This limitation arises because conventional userspace
-> > NUMA control mechanisms like mbind(2) don't work since the memory isn't
-> > directly mapped to userspace when allocations occur.
-> > Fuad's work [1] provides the necessary mmap capability, and this series
-> > leverages it to enable mbind(2).
-> > 
-> > [...]
-> 
-> Applied the non-KVM change to kvm-x86 gmem.  We're still tweaking and iterating
-> on the KVM changes, but I fully expect them to land in 6.19.
-> 
-> Holler if you object to taking these through the kvm tree.
-> 
-> [1/7] mm/filemap: Add NUMA mempolicy support to filemap_alloc_folio()
->       https://github.com/kvm-x86/linux/commit/601aa29f762f
-> [2/7] mm/filemap: Extend __filemap_get_folio() to support NUMA memory policies
->       https://github.com/kvm-x86/linux/commit/2bb25703e5bd
-> [3/7] mm/mempolicy: Export memory policy symbols
->       https://github.com/kvm-x86/linux/commit/e1b4cf7d6be3
+syzbot suspects this issue was fixed by commit:
 
-FYI, I rebased these onto 6.18-rc2 to avoid a silly merge.  New hashes:
+commit f2c61db29f277b9c80de92102fc532cc247495cd
+Author: Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon Sep 29 20:43:52 2025 +0000
 
-[1/3] mm/filemap: Add NUMA mempolicy support to filemap_alloc_folio()
-      https://github.com/kvm-x86/linux/commit/7f3779a3ac3e
-[2/3] mm/filemap: Extend __filemap_get_folio() to support NUMA memory policies
-      https://github.com/kvm-x86/linux/commit/16a542e22339
-[3/3] mm/mempolicy: Export memory policy symbols
-      https://github.com/kvm-x86/linux/commit/f634f10809ec
+    Remove bcachefs core code
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15440258580000
+start commit:   87a132e73910 Merge tag 'mm-hotfixes-stable-2025-02-19-17-4..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b7bde34acd8f53b1
+dashboard link: https://syzkaller.appspot.com/bug?extid=e733ab672a1b6724c27f
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16d8aba4580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11e1dae4580000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: Remove bcachefs core code
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
