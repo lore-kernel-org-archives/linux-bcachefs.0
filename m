@@ -1,77 +1,97 @@
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F251E34CDD
-	for <linux-bcachefs@vger.kernel.org>; Mon, 27 Oct 2025 12:20:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B1AA23BD1A
+	for <linux-bcachefs@vger.kernel.org>; Mon, 27 Oct 2025 12:50:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761567604; cv=none; b=mqjCmpezRjwlpa5MXX5LvKL0G2ihJ31CrUuhGevVMqZD0JjaYxlD+x0kOtM0mRpmE5nEdzyTIvR1wFIlVexeGGUQaIV0nv7bUgFCRrGnt1B9TSaX/Fxh4raIx95ihCLsa2rr0mQNEaZ0KTPOCZ+nuu58U0jPc+gIYClw91GsHdo=
+	t=1761569426; cv=none; b=anNBXznu/dlH4VDW5QKw1ZWbrX9EQO55k5iE+8zohUIUFUqmmtfMJDwR/oK2qsHvV6t413qg74pWi5e3K++M2YV6gY/6NoPK7VUmgqfEziRdPE8F1b5YMmMH2YONHBco3PCV/wb/cZaq2i7FbrinJjRJUB4nsJLgGDLn63LK2k8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761567604; c=relaxed/simple;
-	bh=+v7ks9/eTNNhXqjj83VGdNIZhAXyFvyg3wHQrgrPCtQ=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Rt1ymEjMzbePsvsBgMTYLdLW68r+b931xQu3OpCq42ROGfYdHA6FyEO0Wme957f3wuqp+3vz2wOjze3fDRu1Nz32A9EHr8hCkbYgCadjW9MlDZW16ps0TI7nnNfAN3AygFB8qM6kdzNArc2EXHK4hEkl6jHHS94lkcmm3sKluzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+	s=arc-20240116; t=1761569426; c=relaxed/simple;
+	bh=/6jms8hP/eQHjTorIaMNk14twucXBZ/VsMxazDiXRoE=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=u5cdFO39K3wDH8iaZ1RsThvY7jHL34keqQUXEGLl9dSDM+CJCSrG0dN6EM1G9fX4mJGnM0sPHlhuty0LJOBqHNKbwrvi73SjfdYULKxpc9dy6R0pQzJVKY2df3vDouvir07aeTDmBBMm4dIO6fRDS5tfI2+eAralLg7Y10VFa7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-430c477fe44so52311405ab.1
-        for <linux-bcachefs@vger.kernel.org>; Mon, 27 Oct 2025 05:20:02 -0700 (PDT)
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-93e7f4f7bb1so387603539f.3
+        for <linux-bcachefs@vger.kernel.org>; Mon, 27 Oct 2025 05:50:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761567602; x=1762172402;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qkdLZi4ZV+215bJaTi/JeEB1alaBWY0kyjpkyUYTr3k=;
-        b=fEdwvjq2/0HpIIdHevK9UR3S3jJ+nRLG7HdFKR0SE8Y2cwwJTuIGEOSCk2fJunPSC6
-         T5aFrfOgFqpXHs+n1vlSyUqvx5igPrU0rPr5fXW345ClM6ieD/EMecQfR+SxeZ6PIJu7
-         IyezOIR1uo5UQJvubl9EZ/6vX7XkGw1gsYGYPsRMbr0pVqDlVLYRS6dKAxSsiRZi2+qV
-         YeyXuiN0rC6Ycj9o/fLTt0QJpn3YPl0cKx9qEte1qX5aXI2PFiKcPYXkHDmx4+WOxwzG
-         rdKIZ7gPGBZPeCOPvxfE2nBMOs4oGCuPhJeMX5A29cmIZK59RGMavBShzUCSS9tVT6v2
-         szTg==
-X-Forwarded-Encrypted: i=1; AJvYcCV8PoR9St/WwJBUpWr4F+nqnp/Ptm3BcsgGdAjTaAri7evG3JzR5wBRKvW7+ycTviRN6m61+z5ixUyzYyPGXg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyJJNyuxkF+0MhmWtejMcMtHHCE7ujp2v+O1cIy29Lhnnsjda+A
-	g0kZfr70KG49aAeTo9sHczx9hvbiKpXFpvBqQt/0WX499ydbyXDn23Ga47dro9jbO3LfzxeX2A1
-	u1KzyMqgEbFJqj2K+vI1KMhu2bLGNyZp4XPv4lRVhDQ6gxiJ4P7IbE+dw0Ic=
-X-Google-Smtp-Source: AGHT+IHfAtKzApOq/yF+X5k8SHk/HjFQMhS741f1oSYAqo7YLgpQGhwkBXZCLE4F7N/1tfWLOg4KPNfxoTqWPW6jXC0CoLi13FsC
+        d=1e100.net; s=20230601; t=1761569424; x=1762174224;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bFhJ1WPgQ0gOO3MDukEG+hFs09fqZnICt7HaXQmaIDg=;
+        b=vIQvbbtDKANqXX8riKlGHRFSXPG9CrCey1V1xEkHRDlR6SW6EmuO2bqFyHGp3xWlaX
+         WRgtC1aEz5/IxJnBwl7ul6oStC7svrqY/Pk/xt3nA6z04zel25l6eBmvjXFUhUHOLTek
+         xtDvctZxHhgqglBeb72gFkSVuGVxGLfinbDUOVfJdBigcakXecQf6b70i57znWNO+N2L
+         gkUs1aO6lT7Kata2PcLFrIgxgkg4K0z4bzkXAAE9QjxlUWyGs3KS/ZLc9la6TDArKKQN
+         SQhq35zOXgFJQ3PdYitX46TjVfL+z4ioBA8vNEvP1I7EUzRrc0ygxetIN4YDYV744apK
+         zNfg==
+X-Forwarded-Encrypted: i=1; AJvYcCUnC26rRsxfV+g85g+ZtIEFlHIhmYxFnDo41UKiUb33lkL7gKqArs8TZe1Nzrfv5fn3m9zdwtbmBO1boVnYVQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw78Lk//heM5pkYdz94x8tGXNFITOURxvK7bZfxbfvYnnOND+DJ
+	N7xxLh1QYc9MSQcYZ3exZJcbZcDNvdjZndmvTx/+aoyfwhR721kIgtqoZ0nY1ZfV+2kYfENBhPv
+	r+Kq1jKYwzP4UCHaY5eiMwp/a56UfcfUg+QHp+Sb2rDntVcPE/fnPk0SF7gQ=
+X-Google-Smtp-Source: AGHT+IHnuRLzQQP7XFAZVPiFkDTMpA7JrF5PPKLtr1Wl9AfmaJ5TAh3aGshzbCOjbG368UdHhty7D28QdPo9Y7Nb2DMVaqXjzzBV
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3c04:b0:430:b27a:7702 with SMTP id
- e9e14a558f8ab-430c5204155mr511415395ab.3.1761567602122; Mon, 27 Oct 2025
- 05:20:02 -0700 (PDT)
-Date: Mon, 27 Oct 2025 05:20:02 -0700
-In-Reply-To: <68bacb00.050a0220.192772.018c.GAE@google.com>
+X-Received: by 2002:a92:cda3:0:b0:430:b4ca:2696 with SMTP id
+ e9e14a558f8ab-430c514e290mr535726415ab.0.1761569424127; Mon, 27 Oct 2025
+ 05:50:24 -0700 (PDT)
+Date: Mon, 27 Oct 2025 05:50:24 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68ff6372.050a0220.3344a1.038f.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] KASAN: use-after-free Read in bch2_prt_printf
-From: syzbot <syzbot+7f176adb30b21606c5fc@syzkaller.appspotmail.com>
-To: david.hunter.linux@gmail.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, 
-	linux-kernel-mentees@lists.linuxfoundation.org, linux-kernel@vger.kernel.org, 
-	nirbhay.lkd@gmail.com, skhan@linuxfoundation.org, 
-	syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org
+Message-ID: <68ff6a90.050a0220.3344a1.0391.GAE@google.com>
+Subject: [syzbot] Monthly bcachefs report (Oct 2025)
+From: syzbot <syzbot+list04627eb870b6c8bfc804@syzkaller.appspotmail.com>
+To: kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-syzbot suspects this issue was fixed by commit:
+Hello bcachefs maintainers/developers,
 
-commit f2c61db29f277b9c80de92102fc532cc247495cd
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon Sep 29 20:43:52 2025 +0000
+This is a 31-day syzbot report for the bcachefs subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/bcachefs
 
-    Remove bcachefs core code
+During the period, 4 new issues were detected and 1 were fixed.
+In total, 53 issues are still open and 225 have already been fixed.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1190ef34580000
-start commit:   d69eb204c255 Merge tag 'net-6.17-rc5' of git://git.kernel...
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bd9738e00c1bbfb4
-dashboard link: https://syzkaller.appspot.com/bug?extid=7f176adb30b21606c5fc
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17f99312580000
+Some of the still happening issues:
 
-If the result looks correct, please mark the issue as fixed by replying with:
+Ref  Crashes Repro Title
+<1>  4145    Yes   WARNING in bch2_trans_srcu_unlock
+                   https://syzkaller.appspot.com/bug?extid=1e515cab343dbe5aa38a
+<2>  806     Yes   kernel BUG in bch2_quota_check_limit
+                   https://syzkaller.appspot.com/bug?extid=8364d1e040a88ed5657d
+<3>  771     Yes   INFO: task hung in btree_write_buffer_flush_seq
+                   https://syzkaller.appspot.com/bug?extid=cf3d1015b55ff73dcdc8
+<4>  519     Yes   WARNING in bch2_trans_put
+                   https://syzkaller.appspot.com/bug?extid=291aef749c5cbb9ca2fd
+<5>  332     Yes   kernel BUG in __bch2_trans_commit (3)
+                   https://syzkaller.appspot.com/bug?extid=b6ef9edaba01d5b4e43f
+<6>  304     Yes   WARNING in bch2_alloc_sectors_start_trans
+                   https://syzkaller.appspot.com/bug?extid=23573dac1278bb26916d
+<7>  40      Yes   INFO: task hung in bch2_run_recovery_passes
+                   https://syzkaller.appspot.com/bug?extid=c2294ae43bae606e3c7d
+<8>  7       Yes   WARNING in bch2_recovery_pass_want_ratelimit
+                   https://syzkaller.appspot.com/bug?extid=3bf8b0169d7fcc0ebcd5
+<9>  7       Yes   kernel BUG in __bch2_trans_get
+                   https://syzkaller.appspot.com/bug?extid=3a42e4989f9047772c6d
+<10> 7       Yes   kernel BUG in bch2_trans_update_by_path (2)
+                   https://syzkaller.appspot.com/bug?extid=e7b9dfa79acffd3aabdd
 
-#syz fix: Remove bcachefs core code
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
