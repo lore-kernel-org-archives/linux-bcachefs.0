@@ -1,67 +1,67 @@
-Received: from mail-yx1-f44.google.com (mail-yx1-f44.google.com [74.125.224.44])
+Received: from mail-yx1-f54.google.com (mail-yx1-f54.google.com [74.125.224.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D02BE23B609
-	for <linux-bcachefs@vger.kernel.org>; Thu, 20 Nov 2025 01:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9B9A1DFE12
+	for <linux-bcachefs@vger.kernel.org>; Thu, 20 Nov 2025 01:14:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763601027; cv=none; b=keArKajV3IMjlg/RF0PI4KRnUDUEdgPJrsGQbeZamKEBQjTsl0PjOQdblrRyjhUghXdedTh/iLkyGCHtJtVwqzdVRGqoYwMrozDlxHkJ6ARdOpi8wXr3rdCOUafOp3RCDVEUnbnDhDSXSVoxkngMQELvu2dTrq7LFBIeW7bsviY=
+	t=1763601248; cv=none; b=DEqT8BngnhYPEDN8hfHn3Pnh+Q6gVvwLXsG9kOT+r3cvhAD2Wu8JxTVDXreq9987EU4yHhUbPiAPdp0igK0hp+ljghCIHp8di8R9oSOVF4J7q8tO0Ji8lgKNZgl1bXhkmrk3UNuyOccTIQyNw+rkTKUGcllpyD+4xiuKMI91ug8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763601027; c=relaxed/simple;
-	bh=AagjkzoAXk8/NgFgBGBdDQ6FH6q/TjeFv07vIObom44=;
+	s=arc-20240116; t=1763601248; c=relaxed/simple;
+	bh=R2oeUj+XCK/qDmDhvTPx7y9pMMLoh9e2ens1YM4Oi0c=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NX5msUL90q2DTxiJEWZK2tgn+MPJXWGKB+tKLXGG2uLxkCFjlidaoOSQ89GJOi+CzXUXporDuEfP812aSB2X/XS/ymce8eRb86lSWdagCjThF9IHtChPSkwpiZw1sQ6FBRfm2PUcZh9wwzMt/YUkmb3R2pRIA84034PvmsR3fss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZyKfH2IW; arc=none smtp.client-ip=74.125.224.44
+	 In-Reply-To:Content-Type; b=QbqpDzTbwQ9EnUPdUka+ZwYkwbcN3ievdP0hHOPY8FsU0eWWIs194DMG3SZWLGrg7NZh8Iq/TDCaUy0Nk6aLm6zDPypKU8tKixwUEAZTmwm2LVLdBdCdGTW8eDdQq/2cYKrCddV1aNpk6u4WHwW68CeZh44NX89XJWGr2y+rkbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TogimRC7; arc=none smtp.client-ip=74.125.224.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZyKfH2IW"
-Received: by mail-yx1-f44.google.com with SMTP id 956f58d0204a3-640d4f2f13dso305387d50.1
-        for <linux-bcachefs@vger.kernel.org>; Wed, 19 Nov 2025 17:10:25 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TogimRC7"
+Received: by mail-yx1-f54.google.com with SMTP id 956f58d0204a3-63e393c4a8aso237380d50.2
+        for <linux-bcachefs@vger.kernel.org>; Wed, 19 Nov 2025 17:14:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763601025; x=1764205825; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1763601244; x=1764206044; darn=vger.kernel.org;
         h=in-reply-to:autocrypt:from:content-language:references:cc:to
          :subject:user-agent:mime-version:date:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=4TN9WlxM7bEYhdovOZdXK5qjiJkEcDO7wUY7EQtQg7s=;
-        b=ZyKfH2IWYoGtZ6E0/iCtKW+BgsZhjAeTqQ6Pf1df4Jl87zcA0YVI4RuPH59nqgngub
-         XwaGqeJ9btfkSCbHvcXUiHVYogXmaG15Gp9fRJfwY4SrRO23eBrZjoFkDvRDrBKxacPa
-         EkYqluiqBw01P31Mh82OPhf3VywsZy9x+FC5yaZsGynk2/A1BsawIpg9n0m0feNrDGx7
-         oWPrrD508p+OGWbtaEQ0eouLu49c68iZQHWKgdqkr4z3nbGt38j8yR8atZWsUWImiiuH
-         0aTIwfiErofhgTgMKD9vo/V0Qg1HtEMkWRXEhEquNENIyoG8mXT8HNTRFZIXA5Lj260z
-         w13w==
+        bh=Ro2AwnsY3kiJtRK951GxMdh5YAEEI9kh2YXs/PHq0is=;
+        b=TogimRC7pU5917VNG66b750xuuT/19GmOz8TZuTSj5xgy7WnCclNscTKFjXA+WARNT
+         WtAWsgCbWTwMW3oMPc/3GZxRtEf8qkl/2NLe00MUv9bcpassvlwSJg6dFWpidbyiaxDL
+         vCvpu8Pqgj3ajahjwRNEg970jIcEiNePyPNtiOIGDQku72c8SOvooqCLaR4L75hhb4Ax
+         hO/YlYcw+dKEeZLv0cQRlwk/eympZZR+MOSM6WEc1/3UBZxWeOlWpCmLc5vHpHFV9AjC
+         JRYEyPvt0eHBesplPU3q1Jno98AuGMaylJgBOPUukoQSnJx7DVI8YvcrAAOnI21isxAG
+         6eKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763601025; x=1764205825;
+        d=1e100.net; s=20230601; t=1763601244; x=1764206044;
         h=in-reply-to:autocrypt:from:content-language:references:cc:to
          :subject:user-agent:mime-version:date:message-id:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4TN9WlxM7bEYhdovOZdXK5qjiJkEcDO7wUY7EQtQg7s=;
-        b=HRgxBzJFKJbqf7tmTS6ZKfuyGpYLtUzonzTe7Fr1xrEb72VKXqVe4jrE2V6/KY3OGE
-         cK7yItL+Kyi1pEAuunzD3VK6d1r+U/usd4lm3UvHGsDi44ZMaMJTffmmkFnHTWrRnB5G
-         EskQP0GyoE3SzFtRmaT/ejg2asZUTAEyGOIZ2tGCij4rDefNydGDviZqN6M9+BjzyHwa
-         dd5L6DWFnky7d4BwJInWaKL0ADVrLdCnW6J2cN0rfNpyKGWDAuBg8vVDEqTNaIVGwygG
-         yl1FfaOKifvQ8eJiGOCuaFPSNM4Y3mbCI6BlH9DTXu3CvNas3IrZ5lj/9kbNKAOaeZJ5
-         TAFw==
-X-Forwarded-Encrypted: i=1; AJvYcCVoHmjHAwCdw/aJX8tOjwqMnlCOmdIAMGgzA9Mn1TBAg+S1yLpZ/sTL7AN/wNfmx+7PWpRkaEboNaLbvvQlxA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxOlogmWjVn/0SdwUNiCFevC3YmZufjRro9neBhgwNGEyToImAo
-	S1wH+NyVPD326Amggl2D+Mj0CCLkQVig+abIdt+VOPj8dEfRkv/34nr6
-X-Gm-Gg: ASbGncuemif+XQY6bKgaOUDlLjVZi12x2rLNcwyFQnNIC05FTXcQRl3WDyikw6fNOi8
-	jRzud372e+AeF6qxkuWRQAyQXKZVpgnH69LQ/mct4eGy1ZZiHVPX2K80jSdb1m/yxYbgaLVIso7
-	3GoWFEYFrA+0rwmEbjI0OEGkUYCQZaOk78CZ2yLCqQ1pQM4RpM1aFXLC0D7FZ/DmE/VcffhUbCW
-	wfnLx3WdqTHNzbLxsmERR/qaAI30WTYDMu3zTT6DGVNJTjFsFyyzQ5NXnESoo0LJ3VT8aB18bE0
-	dGTeNRWmu515axvnRs9w+M5bOqvcIBrwL8bqGrz/S/4UrAxR7uAYb2YHt5E86v0myMOGu6nQExY
-	Is89wRmqMQmBl0xCqHVoZ1ZWJMCjcW/jyXBz8wyI+i6knhcsVcJXj3L3AxQGHdYcW27jqk5RCqk
-	wH/DMgndw8PQy0kbfKGPZme8TVljkks8xwFPWzfRmukRO8fVOj6DHXycpKa7WAOg8hFgTh4DrWk
-	ajmCQqraGjmTIp1xmScgfHAe5/S7hFrDzqLWg==
-X-Google-Smtp-Source: AGHT+IGQ8ljlFgaIQ8fqCKhYqANuvQVeoGitfzglNxi5dCSgv+OYhOYNNFR1D71mL+SWjWaT3VejIQ==
-X-Received: by 2002:a05:690e:16a1:b0:63f:ad90:ad45 with SMTP id 956f58d0204a3-642f778d6femr1012066d50.1.1763601024388;
-        Wed, 19 Nov 2025 17:10:24 -0800 (PST)
+        bh=Ro2AwnsY3kiJtRK951GxMdh5YAEEI9kh2YXs/PHq0is=;
+        b=lpnD9b5wNo+q0PqEyYfjFALw3+z74adBD5QQ2MFlKUPwsX8Ulrlc/MFUjnSBnaBVKj
+         swkqR454mOymmytwSkGVYihoUJjHOjJZRK5Grwmb04p57WwXVbEQnKMCae6BRNfmvbvU
+         eS5NWstlwGvv5rFK3EDQV6d5nc/pj198y7/PuWXT/z6oufV6K2TpbnxuD/00nLpUq+aW
+         kp87bIFuHQForbepcF6Us6OcZc6TfY3Uq1bybcydHxNPzNnmzbjTCV230jotWdX1UyQk
+         O8WgFuzXlCgQybgrbl36/FBU0hQmhRH6oEJGhoa9nPS79PqjILY9xRofLclQEUWk8kbZ
+         iA0w==
+X-Forwarded-Encrypted: i=1; AJvYcCX2XyMq/N+4IOEXjf8HsZ1tNf4Kke6VKTqRR2PvC+KNhJQZ4XCT+9Ze57qEnzE96rsZ/+sNi//4cnPj/WRoIQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzlR+PyNAWBnlSP+Q64MeL6o2c6kFEvmWqGR1oOn2xUaO4C1svA
+	wpCH5tAgxw+UreJDjfTVu8MLiIfpeIsQ9XQ5u2ZRf252zjguN7TA6uSc
+X-Gm-Gg: ASbGncsPhhGRbYUy2drl+DbBYHvlijbAN3iwNNLBQOg0Ijs9LV6mAseuYKa35Xjag82
+	XpZKjtyb/o/TcEY6OCPyo7+a21SU3Zo4ngq3HfWcp24LXXkFdjAzGc7UmAU4ynSf1dNaVHgxxtD
+	OFCuAM9WLIn9jiv16IZ36AcdNJhUIQJGNsgaMIkfyDYfsZFfumbIhVwJNqGg9CTwdBcIWhUb+pB
+	53z9bgQYFFCP1hM12tH55rtMXT+qsdhFGk8UUJ9V3TlVlNFFkvOfNX0r4oX/OmNmd9JT1Tvdq+X
+	Om/QnE8Fy33ZqB034qLkUW5MGLOK+ZULU+amNEJSdRGQVAUyBqBiwdjC/9XwqL84GXyUFu66LiA
+	KkNuTPNieYgTmkrTvAVZQztgVoet/EsToIWcU7BfGRNgeGnTUmUoiKQXQqBvwuIkNJFgvLhmmU7
+	6rhmpOolFoo8fiTOoo//U8NL9zdo10avSfIZc4u9GhVEVu512xSviKCMOxGO3oksDUjw9crwdx1
+	uugvUBNBstdVxW+r+UKTUqgOJDTWdAK6QFKPw==
+X-Google-Smtp-Source: AGHT+IFBkTSnOMY1aUwHrDu91DTar4Wa0pNYHHLOZSESqxNDY82w7k7J4UK+N6tO4y4UVOE3OUwocw==
+X-Received: by 2002:a05:690e:130e:b0:63f:b4ee:792c with SMTP id 956f58d0204a3-642f77f8b4bmr1029755d50.19.1763601243575;
+        Wed, 19 Nov 2025 17:14:03 -0800 (PST)
 Received: from [10.138.34.110] (h96-60-249-169.cncrtn.broadband.dynamic.tds.net. [96.60.249.169])
-        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-642f7048d7esm375063d50.4.2025.11.19.17.10.23
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-78a799405f8sm3321927b3.42.2025.11.19.17.14.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Nov 2025 17:10:23 -0800 (PST)
-Message-ID: <aaf98238-e8f6-472d-bfb9-7f8ddbab8e02@gmail.com>
-Date: Wed, 19 Nov 2025 20:10:19 -0500
+        Wed, 19 Nov 2025 17:14:02 -0800 (PST)
+Message-ID: <39d281ba-1ee4-49ae-9aae-e2bd65342e3f@gmail.com>
+Date: Wed, 19 Nov 2025 20:13:58 -0500
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -81,6 +81,7 @@ References: <176169810144.1424854.11439355400009006946.stgit@frogsfrogsfrogs>
  <d0a122b8-3b25-44e6-8c60-538c81b35228@gmail.com>
  <20251119180449.GS196358@frogsfrogsfrogs>
  <af9a8030-cd19-457c-8c15-cb63e8140dfc@linux.alibaba.com>
+ <1be4cb25-50e2-46fa-ba86-d6342e997e63@linux.alibaba.com>
 Content-Language: en-US
 From: Demi Marie Obenour <demiobenour@gmail.com>
 Autocrypt: addr=demiobenour@gmail.com; keydata=
@@ -126,14 +127,14 @@ Autocrypt: addr=demiobenour@gmail.com; keydata=
  vUSQHSrmfOzX3cV4yfmjM5lewgSstoxGyTx2M8enslgdXhPthZlDnTnOT+C+OTsh8+m5tos8
  HQjaPM01MKBiAqdPgksm1wu2DrrwUi6ChRVTUBcj6+/9IJ81H2P2gJk3Ls3AVIxIffLoY34E
  +MYSfkEjBz0E8CLOcAw7JIwAaeBT
-In-Reply-To: <af9a8030-cd19-457c-8c15-cb63e8140dfc@linux.alibaba.com>
+In-Reply-To: <1be4cb25-50e2-46fa-ba86-d6342e997e63@linux.alibaba.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="------------u4y7Z4Hxdq0nvazIG660CKHU"
+ boundary="------------Sm2qTEvY1lYhiLWXqYKC12fe"
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------u4y7Z4Hxdq0nvazIG660CKHU
-Content-Type: multipart/mixed; boundary="------------4bo0nskHQ08B9HKd7s0YguKR";
+--------------Sm2qTEvY1lYhiLWXqYKC12fe
+Content-Type: multipart/mixed; boundary="------------YD9g1t557jS98JGC63a0p9N2";
  protected-headers="v1"
 From: Demi Marie Obenour <demiobenour@gmail.com>
 To: Gao Xiang <hsiangkao@linux.alibaba.com>,
@@ -142,91 +143,102 @@ Cc: bernd@bsbernd.com, joannelkoong@gmail.com, linux-ext4@vger.kernel.org,
  linux-fsdevel@vger.kernel.org, miklos@szeredi.hu, neal@gompa.dev,
  linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
  zfs-devel@list.zfsonlinux.org
-Message-ID: <aaf98238-e8f6-472d-bfb9-7f8ddbab8e02@gmail.com>
+Message-ID: <39d281ba-1ee4-49ae-9aae-e2bd65342e3f@gmail.com>
 Subject: Re: [PATCHSET v6 4/8] fuse: allow servers to use iomap for better
  file IO performance
 References: <176169810144.1424854.11439355400009006946.stgit@frogsfrogsfrogs>
  <d0a122b8-3b25-44e6-8c60-538c81b35228@gmail.com>
  <20251119180449.GS196358@frogsfrogsfrogs>
  <af9a8030-cd19-457c-8c15-cb63e8140dfc@linux.alibaba.com>
-In-Reply-To: <af9a8030-cd19-457c-8c15-cb63e8140dfc@linux.alibaba.com>
+ <1be4cb25-50e2-46fa-ba86-d6342e997e63@linux.alibaba.com>
+In-Reply-To: <1be4cb25-50e2-46fa-ba86-d6342e997e63@linux.alibaba.com>
 
---------------4bo0nskHQ08B9HKd7s0YguKR
-Content-Type: multipart/mixed; boundary="------------ryUl7YI5BrtmXg85hUqSfXT0"
+--------------YD9g1t557jS98JGC63a0p9N2
+Content-Type: multipart/mixed; boundary="------------hjHbB7qRf0ZdQUsi6lUyJaFo"
 
---------------ryUl7YI5BrtmXg85hUqSfXT0
+--------------hjHbB7qRf0ZdQUsi6lUyJaFo
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 11/19/25 16:00, Gao Xiang wrote:
->=20
->=20
-> On 2025/11/20 02:04, Darrick J. Wong wrote:
->> On Wed, Nov 19, 2025 at 04:19:36AM -0500, Demi Marie Obenour wrote:
->>>> By keeping the I/O path mostly within the kernel, we can dramaticall=
-y
->>>> increase the speed of disk-based filesystems.
+On 11/19/25 16:51, Gao Xiang wrote:
+> On 2025/11/20 05:00, Gao Xiang wrote:
+>> On 2025/11/20 02:04, Darrick J. Wong wrote:
+>>> On Wed, Nov 19, 2025 at 04:19:36AM -0500, Demi Marie Obenour wrote:
+>>>>> By keeping the I/O path mostly within the kernel, we can dramatical=
+ly
+>>>>> increase the speed of disk-based filesystems.
+>>>>
+>>>> ZFS, BTRFS, and bcachefs all support compression, checksumming,
+>>>> and RAID.=C2=A0 ZFS and bcachefs also support encryption, and f2fs a=
+nd
+>>>> ext4 support fscrypt.
+>>>>
+>>>> Will this patchset be able to improve FUSE implementations of these
+>>>> filesystems?=C2=A0 I'd rather not be in the situation where one can =
+have
+>>>> a FUSE filesystem that is fast, but only if it doesn't support moder=
+n
+>>>> data integrity or security features.
 >>>
->>> ZFS, BTRFS, and bcachefs all support compression, checksumming,
->>> and RAID.  ZFS and bcachefs also support encryption, and f2fs and
->>> ext4 support fscrypt.
+>>> Not on its own, no.
 >>>
->>> Will this patchset be able to improve FUSE implementations of these
->>> filesystems?  I'd rather not be in the situation where one can have
->>> a FUSE filesystem that is fast, but only if it doesn't support modern=
-
->>> data integrity or security features.
->>
->> Not on its own, no.
->>
->>> I'm not a filesystem developer, but here are some ideas (that you
->>> can take or leave):
+>>>> I'm not a filesystem developer, but here are some ideas (that you
+>>>> can take or leave):
+>>>>
+>>>> 1. Keep the compression, checksumming, and/or encryption in-kernel,
+>>>> =C2=A0=C2=A0=C2=A0 and have userspace tell the kernel what algorithm=
+ and/or encryption
+>>>> =C2=A0=C2=A0=C2=A0 key to use.=C2=A0 These algorithms are generally =
+well-known and secure
+>>>> =C2=A0=C2=A0=C2=A0 against malicious input.=C2=A0 It might be necess=
+ary to make an extra
+>>>> =C2=A0=C2=A0=C2=A0 data copy, but ideally that copy could just stay =
+within the
+>>>> =C2=A0=C2=A0=C2=A0 CPU caches.
 >>>
->>> 1. Keep the compression, checksumming, and/or encryption in-kernel,
->>>     and have userspace tell the kernel what algorithm and/or encrypti=
-on
->>>     key to use.  These algorithms are generally well-known and secure=
-
->>>     against malicious input.  It might be necessary to make an extra
->>>     data copy, but ideally that copy could just stay within the
->>>     CPU caches.
+>>> I think this is easily doable for fscrypt and compression since (IIRC=
+)
+>>> the kernel filesystems already know how to transform data for I/O, an=
+d
+>>> nowadays iomap allows hooking of bios before submission and/or after
+>>> endio.=C2=A0 Obviously you'd have to store encryption keys in the ker=
+nel
+>>> somewhere.
 >>
->> I think this is easily doable for fscrypt and compression since (IIRC)=
-
->> the kernel filesystems already know how to transform data for I/O, and=
-
->> nowadays iomap allows hooking of bios before submission and/or after
->> endio.  Obviously you'd have to store encryption keys in the kernel
->> somewhere.
+>> I think it depends, since (this way) it tries to reuse some of the
+>> existing kernel filesystem implementations (and assuming the code is
+>> safe), so at least it still needs to load a dedicated kernel module
+>> for such usage at least.
+>>
+>> I think it's not an issue for userspace ext4 of course (because ext4
+>> and fscrypt is almost builtin for all kernels), but for out-of-tree
+>> fses even pure userspace fses, I'm not sure it's doable to load the
+>> module in a container context.
 >=20
-> I think it depends, since (this way) it tries to reuse some of the
-> existing kernel filesystem implementations (and assuming the code is
-> safe), so at least it still needs to load a dedicated kernel module
-> for such usage at least.
-
-My hope is that these modules could be generic library code.
-Compression, checksumming, and encryption algorithms aren't specific
-to any particular filesystem, and the kernel might well be using them
-already for other purposes.
-
-Of course, it's still the host admin's job to make sure the relevant
-modules are loaded, unless they are autoloaded.
-
-> I think it's not an issue for userspace ext4 of course (because ext4
-> and fscrypt is almost builtin for all kernels), but for out-of-tree
-> fses even pure userspace fses, I'm not sure it's doable to load the
-> module in a container context.
+> Two examples for reference:
 >=20
-> Maybe eBPF is useful for this area, but it's still not quite
-> flexible compared to native kernel filesystems.
+>   - For compression, in-tree f2fs already has a compression header
+>     in data of each compressed extent:
+>     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/=
+tree/fs/f2fs/f2fs.h?h=3Dv6.17#n1497
 >=20
-> Thanks,
-> Gao Xiang
-Thank you for the feedback!
+>     while other fs may store additional metadata in extent metadata
+>     or other place.
+
+Extent metadata shouldn't be a problem, as that is already available
+during reads and written asynchronously for writes.  The headers are
+awkward, though, and might need some special-casing.
+>   - gocryptfs (a pure userspace FUSE fs) uses a different format
+>     from fscrypt (encrypted data seems even unaligned on disk):
+>     https://github.com/rfjakob/gocryptfs/blob/master/Documentation/file=
+-format.md
+
+This is probably an anti-pattern in general, as I expect it precludes
+the use of inline encryption hardware via blk-crypto.
 --=20
 Sincerely,
 Demi Marie Obenour (she/her/hers)
---------------ryUl7YI5BrtmXg85hUqSfXT0
+--------------hjHbB7qRf0ZdQUsi6lUyJaFo
 Content-Type: application/pgp-keys; name="OpenPGP_0xB288B55FFF9C22C1.asc"
 Content-Disposition: attachment; filename="OpenPGP_0xB288B55FFF9C22C1.asc"
 Content-Description: OpenPGP public key
@@ -346,30 +358,30 @@ EtJuZYM5blWncBOJCoWMnBEcTEo/viU3GgcVRw=3D=3D
 =3Dx94R
 -----END PGP PUBLIC KEY BLOCK-----
 
---------------ryUl7YI5BrtmXg85hUqSfXT0--
+--------------hjHbB7qRf0ZdQUsi6lUyJaFo--
 
---------------4bo0nskHQ08B9HKd7s0YguKR--
+--------------YD9g1t557jS98JGC63a0p9N2--
 
---------------u4y7Z4Hxdq0nvazIG660CKHU
+--------------Sm2qTEvY1lYhiLWXqYKC12fe
 Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCgAdFiEEopQtqVJW1aeuo9/sszaHOrMp8lMFAmkeanwACgkQszaHOrMp
-8lPrOQ/+P9fdog3wM9BEc4VYbEhDjEmiXEN034RUt2jTN5HPfqISR2/hgIgppcb2
-dYcKjcB1Wp0vqPYouLMrt0J5f6XCJ8PkcLLwsr7sQ9gwJKZyr4r+yPmEnHZnQpB+
-9sgH5Q/SDPkUxTpaeYi8aBwDn6mgc6GDg3/8XqOz24He6sFaGXd0mUHrg+zXhVbh
-H8YFTCrBWNTFt1uXaQWJkhZ8mISV6jZkbwAIjVz29mhZlnKtHJuT7Lc5k0t1XG8P
-WXvQl1xds58l2MjunuGCbTPtBRDJOilXEqVj1ZshtscT3+jTjWTj5UzOLsdofl7q
-RNgCIZkSVsXIFSqeMVriC3hl47z9+DpdJglgTEJrLNo8whqPq0l4IsnzhHSAD01m
-gx8vk3ZCNnAHVnM9VsPzFtGvwNdBj9l1BfF1HrQI3ZvTdHHu4ABEdO1jDeQ6xJN7
-Y67BQXYVbkL4KPRthJssygIjBpgJ8Fytfa1uos+Q7gXsul4eMOrVqBxG392xZ4TB
-aYEtqwzTQ2V6ZowQyMMXxX6eLxs1ENopTNEHS0dkdyeQF8iV5V1e5L92x+DDZU7D
-C1VI/amVcoGS3L5Zr3pR/Uz9Jsm9BncAU6T1vRH2LC6ft04wnsgQTYySFFQkX2fk
-qqhUlTPBGTK8UJB3m9i05DJhUAph+tbbESuQVSMZYXZc5O5KAEE=
-=iARO
+iQIzBAEBCgAdFiEEopQtqVJW1aeuo9/sszaHOrMp8lMFAmkea1cACgkQszaHOrMp
+8lMI/BAAknBtqQyrMPuYMJpOR2euIUjnWRHMefwU60jYX7UOpQWCox4EIezlLds7
+nqRoSwcoEu0gFbz1DK0aeP0dAwRhLIjL0BLlXVNVPJR3odmxBPJaYuXLeX//GZUa
+8OswK53j2dsqZSJpcLPf/rdFlmdnXUMIUXbVTNiFdgh51fx44ih0B7c2oS841QUn
+uq9f6/Y6jVI2wH92jV2M8VeiohYxuJj5Giyo1vQeYfYekm6QrxqMz2xCvgjK64Wq
+kLnkThL3sv841hCAn5nvA5hg1WmKhmfO5FJ7dsUEjgzLOBvObTwu9Qrt5YiULqcA
+DjD3GrpwkSDHvPnLgSxXvd8EK0FuDiYT/179lvzjD/hIkYkCcWxaoD4aeMQSlqBG
+g3S9RonDx2oScoQxP9Xdxk4HqdylPSxvISrzmOBhjqoVjXSuzrcyGMW0B/uvbFFD
+k/CWZb596r6JX8PAMzWmBh4ZVhmPRsJEY+NeM+7Qm1BWXtuF3sFR7PUXkXJ9zJQJ
+RO3kupHKNH4VWQQ8PPLMePuMD0fVtDx0Rdw3KzVvGis/4mpFk5M35+zncZcSRlFB
+7iGitzqQjka93DU6vR+p31tSw0wtBYyoqDQOf/mimkjS01kJZD9/9vy0YydFqbXR
+UsYMFjGbapd2e/Utkc8bzaj4CcU3kutuHSCeb0cYx9H7WzO8t1w=
+=w/Mu
 -----END PGP SIGNATURE-----
 
---------------u4y7Z4Hxdq0nvazIG660CKHU--
+--------------Sm2qTEvY1lYhiLWXqYKC12fe--
