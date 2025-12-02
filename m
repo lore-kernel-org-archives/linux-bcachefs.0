@@ -1,59 +1,108 @@
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+Received: from mail-gw02.astralinux.ru (mail-gw02.astralinux.ru [93.188.205.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8775A2DE70A
-	for <linux-bcachefs@vger.kernel.org>; Tue,  2 Dec 2025 04:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EE61220687;
+	Tue,  2 Dec 2025 17:22:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.188.205.243
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764650778; cv=none; b=h1oHWb9BvSRMaPYUkQLex/h4ftKqpBtfFeWiGLj2p67tvX5B/CF5CwUGVJ++8QRHBsC0rlGiqsFkF5pxShD2cxM3kO4JkDuGvZcSzDgXSTOITtvrvpvGT0P4X+ML+9YoSSH+8CY+WdAbNTGeff0ZhTTNQ5eX+slJWtVPr2pxM14=
+	t=1764696167; cv=none; b=Zadppy6SkTKZNWdIzFFCqYfrwW9n1vmdyUYVWv8SBTgfohzbPXLPBVeZSCG746+WsrHTpr8HgqQXehZ6xVj5mBuyDe5yU31rRMcE5l2qd2JXE2CwMySe5oQaGM90wER8LquHah893Hi/rkU7HNgp/chY+x2MGDsiTS4yerGoWBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764650778; c=relaxed/simple;
-	bh=pv6LaRX/gmZASViBKz94tjmLz3059eVLkV2ZCkjPa4Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SDpW23b3YynoVycnB37jLvAPH40MwSOaKLFaZ1PJ5Qv/q+2X8zzr/7VEwRw6pGOJXkZoihHqEVoDx/CTFLXbpVhw+zZAKgeMXUMRJKTx0qqvoYG7CDHmH7PxmXmwrgAgNNATrlb4EgnvBgT2N9NLnZz6CQtplfhBHUeAD2PNXjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gPXhUImD; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1764696167; c=relaxed/simple;
+	bh=6G3uTpe15tnlTeX3Zb/S8zizniWEGxPgtUpSj/WJ/Ak=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gfVQzzUtqHxm1yEj/BFSKjccA7GZwhqPxmqyaXpJOrbzVmAlk0t6/FRJMDFzwQR7/E1AI3QYOZRGeGsWs2AWTwc1kY2ymJFVA9SmejE3/DGtAHZJiw2jFrPBPvN6Iu0HOxot1+BrDrgNMjPWVePI/sjuJDOTs3Ph5prwNlLM8UQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=astralinux.ru; spf=pass smtp.mailfrom=astralinux.ru; dkim=pass (2048-bit key) header.d=astralinux.ru header.i=@astralinux.ru header.b=Xj0jqGIr; arc=none smtp.client-ip=93.188.205.243
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=astralinux.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=astralinux.ru
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gPXhUImD"
-Date: Mon, 1 Dec 2025 23:46:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1764650771;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ONW/NwaNNCEiMMZ6iprwdAqi0j/Q5sPSCrKNFq+9NlQ=;
-	b=gPXhUImDpvJSTzBi6irbJx9wE682rI9kvUoI4gGfwudr1nuvi75h+JkX+kSFK+mZqdV34A
-	HksgqcV0k3p2KuchUTE9RCmOhE+XcDCdFc+rF1QZdok+wV6PeAQsCdZ+nx9i2MBossI5lg
-	4dJWG59GAt7PiTOnIryUw1b0mSZZQ3E=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: stijn@linux-ipv6.be
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: fix version_upgrade hint
-Message-ID: <ogcyg6gnwpwd6bafvrxmy3oxjxskocc7rl4fox3q3rkoyhxlh5@yppnnkg33cfq>
-References: <20251202040730.1478285-1-stijn@linux-ipv6.be>
+	dkim=pass (2048-bit key) header.d=astralinux.ru header.i=@astralinux.ru header.b="Xj0jqGIr"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=astralinux.ru;
+	s=mail; t=1764696148;
+	bh=6G3uTpe15tnlTeX3Zb/S8zizniWEGxPgtUpSj/WJ/Ak=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Xj0jqGIrVvr8Vu0/XLXZKazD3Oks4NQmax/QmImGcU+8JIeHMOaig14mo/VhMnSrU
+	 6uOIiW3i5DIxDa2gWan6TGRq039rQh8LgtOe4iDKBk2/71fO6yYdm104xsd6TKdCrV
+	 8Py6ay95LqYZbm05NbSgcXJwpapeO7wqkmpQN7bDFMDkpR9EBiWaiMe4o1/DuhDx8y
+	 YgDG12JBVJngC1wiYu+Ux63GyjpcWAqQzj4L/aG5UOSVoL8QGEVa4iBEb+yM/HcbFj
+	 N3IyM60Y9PaIaMBxF/ErcgExlHjDSSA+puE5iz5zRwYY5zVVeydE+q+uY/dwEto6/a
+	 i3U8Jmy7i+pEg==
+Received: from gca-msk-a-srv-ksmg01 (localhost [127.0.0.1])
+	by mail-gw02.astralinux.ru (Postfix) with ESMTP id 2B8C81FA4A;
+	Tue,  2 Dec 2025 20:22:28 +0300 (MSK)
+Received: from new-mail.astralinux.ru (unknown [10.205.207.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail-gw02.astralinux.ru (Postfix) with ESMTPS;
+	Tue,  2 Dec 2025 20:22:27 +0300 (MSK)
+Received: from rbta-msk-lt-169874.astralinux.ru.astracloud.ru (unknown [10.198.22.94])
+	by new-mail.astralinux.ru (Postfix) with ESMTPA id 4dLSHm71yYzSgqf;
+	Tue,  2 Dec 2025 20:21:56 +0300 (MSK)
+From: Mikhail Dmitrichenko <mdmitrichenko@astralinux.ru>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Mikhail Dmitrichenko <mdmitrichenko@astralinux.ru>,
+	linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org
+Subject: [PATCH] bcachefs: fix potential NULL deref in bch2_sb_members_v2_init
+Date: Tue,  2 Dec 2025 20:20:46 +0300
+Message-Id: <20251202172047.216045-1-mdmitrichenko@astralinux.ru>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251202040730.1478285-1-stijn@linux-ipv6.be>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-KSMG-AntiPhishing: NotDetected
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Envelope-From: mdmitrichenko@astralinux.ru
+X-KSMG-AntiSpam-Info: LuaCore: 81 0.3.81 2adfceff315e7344370a427642ad41a4cfd99e1f, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, new-mail.astralinux.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;astralinux.ru:7.1.1, FromAlignment: s
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiSpam-Lua-Profiles: 198629 [Dec 02 2025]
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Version: 6.1.1.20
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.1.0.7854, bases: 2025/12/02 10:29:00 #28001833
+X-KSMG-AntiVirus-Status: NotDetected, skipped
+X-KSMG-LinksScanning: NotDetected
+X-KSMG-Message-Action: skipped
+X-KSMG-Rule-ID: 1
 
-On Tue, Dec 02, 2025 at 06:07:30AM +0200, stijn@linux-ipv6.be wrote:
-> When an incompatible version upgrade is requested, dmesg suggest
-> version_upgrade=incompat. Using this mount option throws the following
-> error:
-> 
-> bch2_parse_mount_opts() Error parsing option version_upgrade: option_value
-> 
-> The correct value is incompatible; correct the hint to reflect this.
-> 
-> Fixes: c3b02e6d67ac ("bcachefs: Log message when incompat version requested but not enabled")
-> Signed-off-by: Stijn Tintel <stijn@linux-ipv6.be>
+bch2_sb_members_v2_init calls bch2_sb_field_resize to allocate the
+members_v2 superblock field, but does not check the returned pointer
+before dereferencing it. bch2_sb_field_resize may return NULL if
+superblock reallocation fails. In this case dereferencing mi2=NULL
+will cause crash during superblock upgrade from members_v1 to members_v2.
 
-Thanks! Applied
+Add check for bch2_sb_field_resize call result for NULL.
+sb_members_v2_resize_entries function already has such check and returns
+error in this case. Make bch2_sb_members_v2_init() consistent and return
+the same error.
+
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
+
+Fixes: 3f7b9713dae0 ("bcachefs: New superblock section members_v2")
+Signed-off-by: Mikhail Dmitrichenko <mdmitrichenko@astralinux.ru>
+---
+ fs/bcachefs/sb/members.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/fs/bcachefs/sb/members.c b/fs/bcachefs/sb/members.c
+index 8bf8f5ca3470..a610426b6013 100644
+--- a/fs/bcachefs/sb/members.c
++++ b/fs/bcachefs/sb/members.c
+@@ -116,6 +116,9 @@ int bch2_sb_members_v2_init(struct bch_fs *c)
+ 				DIV_ROUND_UP(sizeof(*mi2) +
+ 					     sizeof(struct bch_member) * c->sb.nr_devices,
+ 					     sizeof(u64)));
++		if (!mi2)
++			return bch_err_throw(c, ENOSPC_sb_members_v2);
++
+ 		mi1 = bch2_sb_field_get(c->disk_sb.sb, members_v1);
+ 		memcpy(&mi2->_members[0], &mi1->_members[0],
+ 		       BCH_MEMBER_V1_BYTES * c->sb.nr_devices);
+-- 
+2.39.2
+
