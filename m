@@ -1,88 +1,124 @@
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6817E2EFDA6
-	for <linux-bcachefs@vger.kernel.org>; Thu,  4 Dec 2025 19:03:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E395032ABC3;
+	Tue,  9 Dec 2025 17:21:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764875007; cv=none; b=RrbUUhnpuDhubkm3z1d5HrTDeDHQg9TF5MEXzXOjpOAbrTdYFKk7C5aad7MlSZOrcwesOUGbJE/acAoraCew25gBDFzrnSrKYEd6O2nGP0cjVFpZGqT84DTph35PYrVqPsslEtXCcHKxO4Wqqku+etO8MH8+CeAFQ+4OUjOak+s=
+	t=1765300912; cv=none; b=eVrYze2QhhtAHKpC6wYBP2QKwLLw2/PaiSmlfWg1UoF1QPNXFo3bxFiu8ZEejGHsVOfDAXEz954AOXqXccgs8XK+K4wXOSjjp24PpW5l6GMgOWqtyLPANMXjJz/T9hi47o3/UX5VeO83vcj5sSNGobJetZdqEWNmf1Z8Ti3C630=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764875007; c=relaxed/simple;
-	bh=Zt1VjS4/NFWZ0IDdwoLB+za+1Q21Wb6wfHd0YzZokTM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VfHsNoadD8CgIwQo/PRPyrXpY0UVMjcUyHSREi8BU9DOAW870gSk9n1wNNJL5qFl5VgeS7TN/Z0CIBAQoNIPOLLxR4te2MKNYcnwmpPBkUiPtQP2JcLl30ce6F1PvAz+4pInM2Yoxxq01aGTbJ/eoqgZEPyulHyWxvaNOioiHYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Hh18ka5X; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1765300912; c=relaxed/simple;
+	bh=6JzHwVMsw3oVBaLB929QEwdcMxFilfqVMX3zcgp6eKA=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=F98BbZstw/BUnQwJ2Q7C9Yh/xOrXxfgvLXTT1PRS8oOSrvNXgWbruTf74F7F51R6UgaI49dJ0k9c2lVi8g9+wJx5BtJs1BNqO2m8d01t+BOGr3GK1ghAKER1w7++DlPStu++Ac9lV/0RGM5fatvcTisKk9RFhne4aPPsbya21CA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Psg4CKLA; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Hh18ka5X"
-Date: Thu, 4 Dec 2025 14:03:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1764875001;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sQsED77vrnGba+s0q4MTPPWn4fnnyrdY3LNjg8qShgM=;
-	b=Hh18ka5XMFSM3SWD91g96Fmq0P6ocpRP720QGxV/8bqIO/EDFcpTdUH0RKOoF+9T5ZXtML
-	ejoUUU3Y8i5zSdd7O4shO0/CgzvMdKvUuUBKRTKEALOBVfsHN1+bQ37cQsj6kSOWC5dbET
-	YhTMMdj/S8ZZczfQbq5Ke3Ea1kxQ5CQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Mikhail Dmitrichenko <mdmitrichenko@astralinux.ru>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	lvc-project@linuxtesting.org
-Subject: Re: [PATCH] bcachefs: fix potential NULL deref in
- bch2_sb_members_v2_init
-Message-ID: <epfc24ypenk5tnps6o53sjchdgup7ix4hg5aosege6orodavab@4diqwzz6v7wm>
-References: <20251202172047.216045-1-mdmitrichenko@astralinux.ru>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Psg4CKLA"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73601C4CEFB;
+	Tue,  9 Dec 2025 17:21:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765300911;
+	bh=6JzHwVMsw3oVBaLB929QEwdcMxFilfqVMX3zcgp6eKA=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Psg4CKLAi9h/A9vrvljHnRqp9p5yz8B5YCapKgSBCEr6kmloaOVwmNaYxp96nI0Jm
+	 E1pbyJ1ln1w7L+cwykG7ZYqv4qRzAcWJFrrDoVllnAKtP9kV9HNNc0yvVFDPPFwIkZ
+	 zlIrgsKzfz9N31t7zC7ENkzXvNMPaNLtaoUlwGSCq0lbSmlyoP3LMxcO1rKyc+86dE
+	 NNhWUd3A/NHLJln9jL7sW0vI/gKw88UtIG56vYvOYlGCOJt2PmPeBPQ+WVB8pAbtZB
+	 YUlzouJwNa/r7jfn9C9CtIGicL5PvCAPTPMpQEpILvgU65s/m796Uhb97EubDbNHcQ
+	 BLbAhrtl11WCQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id B591F3808200;
+	Tue,  9 Dec 2025 17:18:47 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251202172047.216045-1-mdmitrichenko@astralinux.ru>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+Subject: Re: [f2fs-dev] [PATCH kvm-next V11 0/7] Add NUMA mempolicy support
+ for
+ KVM guest-memfd
+From: patchwork-bot+f2fs@kernel.org
+Message-Id: 
+ <176530072652.4018985.15391772848132749035.git-patchwork-notify@kernel.org>
+Date: Tue, 09 Dec 2025 17:18:46 +0000
+References: <20250827175247.83322-2-shivankg@amd.com>
+In-Reply-To: <20250827175247.83322-2-shivankg@amd.com>
+To: Garg@aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org,
+	Shivank <shivankg@amd.com>
+Cc: willy@infradead.org, akpm@linux-foundation.org, david@redhat.com,
+ pbonzini@redhat.com, shuah@kernel.org, seanjc@google.com, vbabka@suse.cz,
+ jgowans@amazon.com, mhocko@suse.com, jack@suse.cz, kvm@vger.kernel.org,
+ dhavale@google.com, linux-btrfs@vger.kernel.org, aik@amd.com,
+ papaluri@amd.com, kalyazin@amazon.com, peterx@redhat.com, linux-mm@kvack.org,
+ clm@fb.com, ddutile@redhat.com, linux-kselftest@vger.kernel.org,
+ shdhiman@amd.com, gshan@redhat.com, ying.huang@linux.alibaba.com,
+ ira.weiny@intel.com, roypat@amazon.co.uk, matthew.brost@intel.com,
+ linux-coco@lists.linux.dev, zbestahu@gmail.com, lorenzo.stoakes@oracle.com,
+ linux-bcachefs@vger.kernel.org, apopple@nvidia.com, jmorris@namei.org,
+ hch@infradead.org, chao.gao@intel.com, cgzones@googlemail.com,
+ ziy@nvidia.com, rientjes@google.com, yuzhao@google.com, xiang@kernel.org,
+ nikunj@amd.com, gourry@gourry.net, serge@hallyn.com, thomas.lendacky@amd.com,
+ ashish.kalra@amd.com, chao.p.peng@intel.com, yan.y.zhao@intel.com,
+ byungchul@sk.com, michael.day@amd.com, Neeraj.Upadhyay@amd.com,
+ michael.roth@amd.com, bfoster@redhat.com, bharata@amd.com,
+ josef@toxicpanda.com, Liam.Howlett@oracle.com, ackerleytng@google.com,
+ dsterba@suse.com, viro@zeniv.linux.org.uk, jefflexu@linux.alibaba.com,
+ jaegeuk@kernel.org, dan.j.williams@intel.com, surenb@google.com,
+ tabba@google.com, paul@paul-moore.com, joshua.hahnjy@gmail.com,
+ brauner@kernel.org, quic_eberman@quicinc.com, rakie.kim@sk.com,
+ pvorel@suse.cz, linux-erofs@lists.ozlabs.org, kent.overstreet@linux.dev,
+ linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ pankaj.gupta@amd.com, linux-security-module@vger.kernel.org,
+ lihongbo22@huawei.com, amit@infradead.org, linux-fsdevel@vger.kernel.org,
+ vannapurve@google.com, suzuki.poulose@arm.com, rppt@kernel.org,
+ jgg@nvidia.com
 
-On Tue, Dec 02, 2025 at 08:20:46PM +0300, Mikhail Dmitrichenko wrote:
-> bch2_sb_members_v2_init calls bch2_sb_field_resize to allocate the
-> members_v2 superblock field, but does not check the returned pointer
-> before dereferencing it. bch2_sb_field_resize may return NULL if
-> superblock reallocation fails. In this case dereferencing mi2=NULL
-> will cause crash during superblock upgrade from members_v1 to members_v2.
-> 
-> Add check for bch2_sb_field_resize call result for NULL.
-> sb_members_v2_resize_entries function already has such check and returns
-> error in this case. Make bch2_sb_members_v2_init() consistent and return
-> the same error.
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Fixes: 3f7b9713dae0 ("bcachefs: New superblock section members_v2")
-> Signed-off-by: Mikhail Dmitrichenko <mdmitrichenko@astralinux.ru>
+Hello:
 
-Thanks! Applied.
+This series was applied to jaegeuk/f2fs.git (dev)
+by Sean Christopherson <seanjc@google.com>:
 
-> ---
->  fs/bcachefs/sb/members.c | 3 +++
->  1 file changed, 3 insertions(+)
+On Wed, 27 Aug 2025 17:52:41 +0000 you wrote:
+> This series introduces NUMA-aware memory placement support for KVM guests
+> with guest_memfd memory backends. It builds upon Fuad Tabba's work (V17)
+> that enabled host-mapping for guest_memfd memory [1] and can be applied
+> directly applied on KVM tree [2] (branch kvm-next, base commit: a6ad5413,
+> Merge branch 'guest-memfd-mmap' into HEAD)
 > 
-> diff --git a/fs/bcachefs/sb/members.c b/fs/bcachefs/sb/members.c
-> index 8bf8f5ca3470..a610426b6013 100644
-> --- a/fs/bcachefs/sb/members.c
-> +++ b/fs/bcachefs/sb/members.c
-> @@ -116,6 +116,9 @@ int bch2_sb_members_v2_init(struct bch_fs *c)
->  				DIV_ROUND_UP(sizeof(*mi2) +
->  					     sizeof(struct bch_member) * c->sb.nr_devices,
->  					     sizeof(u64)));
-> +		if (!mi2)
-> +			return bch_err_throw(c, ENOSPC_sb_members_v2);
-> +
->  		mi1 = bch2_sb_field_get(c->disk_sb.sb, members_v1);
->  		memcpy(&mi2->_members[0], &mi1->_members[0],
->  		       BCH_MEMBER_V1_BYTES * c->sb.nr_devices);
-> -- 
-> 2.39.2
+> == Background ==
+> KVM's guest-memfd memory backend currently lacks support for NUMA policy
+> enforcement, causing guest memory allocations to be distributed across host
+> nodes  according to kernel's default behavior, irrespective of any policy
+> specified by the VMM. This limitation arises because conventional userspace
+> NUMA control mechanisms like mbind(2) don't work since the memory isn't
+> directly mapped to userspace when allocations occur.
+> Fuad's work [1] provides the necessary mmap capability, and this series
+> leverages it to enable mbind(2).
 > 
+> [...]
+
+Here is the summary with links:
+  - [f2fs-dev,kvm-next,V11,1/7] mm/filemap: Add NUMA mempolicy support to filemap_alloc_folio()
+    (no matching commit)
+  - [f2fs-dev,kvm-next,V11,2/7] mm/filemap: Extend __filemap_get_folio() to support NUMA memory policies
+    https://git.kernel.org/jaegeuk/f2fs/c/16a542e22339
+  - [f2fs-dev,kvm-next,V11,3/7] mm/mempolicy: Export memory policy symbols
+    https://git.kernel.org/jaegeuk/f2fs/c/f634f10809ec
+  - [f2fs-dev,kvm-next,V11,4/7] KVM: guest_memfd: Use guest mem inodes instead of anonymous inodes
+    (no matching commit)
+  - [f2fs-dev,kvm-next,V11,5/7] KVM: guest_memfd: Add slab-allocated inode cache
+    (no matching commit)
+  - [f2fs-dev,kvm-next,V11,6/7] KVM: guest_memfd: Enforce NUMA mempolicy using shared policy
+    (no matching commit)
+  - [f2fs-dev,kvm-next,V11,7/7] KVM: guest_memfd: selftests: Add tests for mmap and NUMA policy support
+    (no matching commit)
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
