@@ -1,124 +1,78 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E395032ABC3;
-	Tue,  9 Dec 2025 17:21:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC1991373
+	for <linux-bcachefs@vger.kernel.org>; Wed, 24 Dec 2025 16:02:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765300912; cv=none; b=eVrYze2QhhtAHKpC6wYBP2QKwLLw2/PaiSmlfWg1UoF1QPNXFo3bxFiu8ZEejGHsVOfDAXEz954AOXqXccgs8XK+K4wXOSjjp24PpW5l6GMgOWqtyLPANMXjJz/T9hi47o3/UX5VeO83vcj5sSNGobJetZdqEWNmf1Z8Ti3C630=
+	t=1766592127; cv=none; b=j4MAICiModR/WuK/ZEsvsRsbO3O32RDEJjmDK0sDh/gGvl04cRBK5uE0Aq/Dnb5tHZVvYXizndjHc+GFjrDPZOeSuEKMadyz8ytSdlePBg0dz3t0+5jA9SD3XnuFPWeTK/75iJyXIi1P0wASN/sXdgUpJ0/zm9K2Y65JZ075aww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765300912; c=relaxed/simple;
-	bh=6JzHwVMsw3oVBaLB929QEwdcMxFilfqVMX3zcgp6eKA=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=F98BbZstw/BUnQwJ2Q7C9Yh/xOrXxfgvLXTT1PRS8oOSrvNXgWbruTf74F7F51R6UgaI49dJ0k9c2lVi8g9+wJx5BtJs1BNqO2m8d01t+BOGr3GK1ghAKER1w7++DlPStu++Ac9lV/0RGM5fatvcTisKk9RFhne4aPPsbya21CA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Psg4CKLA; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1766592127; c=relaxed/simple;
+	bh=KDXUwmwUQ2cIPP/tvNRsPQKw2vXAf9QyBVG6mkGPdYw=;
+	h=MIME-Version:Date:From:To:Subject:Message-ID:Content-Type; b=SDADgn410VVG8bKZSJvh7T3ononLSWmfYMyrb3xvQyL9oOGFkv+aiJFqCreX61D6FzbEoxyDxSxzkdT7bObXinNH1uhMSYK5YZbPcgqJXw7YecuCgeMlov/VSqQpSUPoeorbPelSJQTHNzkR5BT850ZB0azAXhwwMDNZMZQPOys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=EiHtkqxd; arc=none smtp.client-ip=185.67.36.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Psg4CKLA"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73601C4CEFB;
-	Tue,  9 Dec 2025 17:21:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765300911;
-	bh=6JzHwVMsw3oVBaLB929QEwdcMxFilfqVMX3zcgp6eKA=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Psg4CKLAi9h/A9vrvljHnRqp9p5yz8B5YCapKgSBCEr6kmloaOVwmNaYxp96nI0Jm
-	 E1pbyJ1ln1w7L+cwykG7ZYqv4qRzAcWJFrrDoVllnAKtP9kV9HNNc0yvVFDPPFwIkZ
-	 zlIrgsKzfz9N31t7zC7ENkzXvNMPaNLtaoUlwGSCq0lbSmlyoP3LMxcO1rKyc+86dE
-	 NNhWUd3A/NHLJln9jL7sW0vI/gKw88UtIG56vYvOYlGCOJt2PmPeBPQ+WVB8pAbtZB
-	 YUlzouJwNa/r7jfn9C9CtIGicL5PvCAPTPMpQEpILvgU65s/m796Uhb97EubDbNHcQ
-	 BLbAhrtl11WCQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id B591F3808200;
-	Tue,  9 Dec 2025 17:18:47 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="EiHtkqxd"
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout01.posteo.de (Postfix) with ESMTPS id 23BD0240027
+	for <linux-bcachefs@vger.kernel.org>; Wed, 24 Dec 2025 17:02:02 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=posteo.net; s=2017;
+	t=1766592122; bh=LeSr4NcIAK/E4YEumSjCn+7wy1NNdiuHUpscGAxT6I8=;
+	h=MIME-Version:Date:From:To:Subject:Message-ID:Content-Type:
+	 Content-Transfer-Encoding:From;
+	b=EiHtkqxdepIDb86ZG+W3sVoyX8/7qcNIFKnpXueY14GXnVon2MAzRtjPrP3bq8N4U
+	 xM2esn2wwmlJwNwNOV4IjbMs6W7vzKesKA17Szj9uIhARoYfF13pao4kkKP++aOpdp
+	 W2fEyNYtk46CvIh97efbhUVFc6mYbO/Pka/2+ljStn1+cKC+738LRE0m3HRWg0cqj6
+	 HVVNYiYtBVU36YwbKuXhB+DGyO+3uejMYFDa9cfIPHS1s4Zt1YeDwWmjv4jZtlfFly
+	 iR2pKmN3FLw7pltx8kQPVbdrXr2K3C4QmZOkCpYxVF9n5CR9eAqZ54nGUFCv49cncB
+	 HTrfkfRpDPYuw==
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4dbxTP69XQz6tvZ
+	for <linux-bcachefs@vger.kernel.org>; Wed, 24 Dec 2025 17:02:01 +0100 (CET)
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [f2fs-dev] [PATCH kvm-next V11 0/7] Add NUMA mempolicy support
- for
- KVM guest-memfd
-From: patchwork-bot+f2fs@kernel.org
-Message-Id: 
- <176530072652.4018985.15391772848132749035.git-patchwork-notify@kernel.org>
-Date: Tue, 09 Dec 2025 17:18:46 +0000
-References: <20250827175247.83322-2-shivankg@amd.com>
-In-Reply-To: <20250827175247.83322-2-shivankg@amd.com>
-To: Garg@aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org,
-	Shivank <shivankg@amd.com>
-Cc: willy@infradead.org, akpm@linux-foundation.org, david@redhat.com,
- pbonzini@redhat.com, shuah@kernel.org, seanjc@google.com, vbabka@suse.cz,
- jgowans@amazon.com, mhocko@suse.com, jack@suse.cz, kvm@vger.kernel.org,
- dhavale@google.com, linux-btrfs@vger.kernel.org, aik@amd.com,
- papaluri@amd.com, kalyazin@amazon.com, peterx@redhat.com, linux-mm@kvack.org,
- clm@fb.com, ddutile@redhat.com, linux-kselftest@vger.kernel.org,
- shdhiman@amd.com, gshan@redhat.com, ying.huang@linux.alibaba.com,
- ira.weiny@intel.com, roypat@amazon.co.uk, matthew.brost@intel.com,
- linux-coco@lists.linux.dev, zbestahu@gmail.com, lorenzo.stoakes@oracle.com,
- linux-bcachefs@vger.kernel.org, apopple@nvidia.com, jmorris@namei.org,
- hch@infradead.org, chao.gao@intel.com, cgzones@googlemail.com,
- ziy@nvidia.com, rientjes@google.com, yuzhao@google.com, xiang@kernel.org,
- nikunj@amd.com, gourry@gourry.net, serge@hallyn.com, thomas.lendacky@amd.com,
- ashish.kalra@amd.com, chao.p.peng@intel.com, yan.y.zhao@intel.com,
- byungchul@sk.com, michael.day@amd.com, Neeraj.Upadhyay@amd.com,
- michael.roth@amd.com, bfoster@redhat.com, bharata@amd.com,
- josef@toxicpanda.com, Liam.Howlett@oracle.com, ackerleytng@google.com,
- dsterba@suse.com, viro@zeniv.linux.org.uk, jefflexu@linux.alibaba.com,
- jaegeuk@kernel.org, dan.j.williams@intel.com, surenb@google.com,
- tabba@google.com, paul@paul-moore.com, joshua.hahnjy@gmail.com,
- brauner@kernel.org, quic_eberman@quicinc.com, rakie.kim@sk.com,
- pvorel@suse.cz, linux-erofs@lists.ozlabs.org, kent.overstreet@linux.dev,
- linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- pankaj.gupta@amd.com, linux-security-module@vger.kernel.org,
- lihongbo22@huawei.com, amit@infradead.org, linux-fsdevel@vger.kernel.org,
- vannapurve@google.com, suzuki.poulose@arm.com, rppt@kernel.org,
- jgg@nvidia.com
+Date: Wed, 24 Dec 2025 16:02:01 +0000
+From: BP25 <bp25@posteo.net>
+To: linux-bcachefs@vger.kernel.org
+Subject: Version Control capabilities plus two small unrelated questions
+Message-ID: <f284018630d0a24414d38028cd397345@posteo.net>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello:
+Hello, would someone kindly advise whether bcachefs supports file 
+versioning, somewhat in the spirit of Stallman (lecture at KTH Sweden in 
+1986) where files are individually versioned (as opposed as taking 
+snapshots of entire volumes) but the versions are not just ordinary 
+distinct files, they are hidden files connected with each other.
 
-This series was applied to jaegeuk/f2fs.git (dev)
-by Sean Christopherson <seanjc@google.com>:
+In particular is there a standard way to 'follow' the same file along 
+its snapshotted versions? Say, ask bcachefs to return the list of 
+snapshotted versions by giving input this or that file in the current 
+version of the filesystem? Note that if such file was deleted and 
+another with the same name created I don't want that new file also to 
+show up. And related question, is there any command that would list the 
+snapshotted files which have no corresponding in the current version of 
+the file system (for example because I deleted such file after having 
+snapshotted it)?
 
-On Wed, 27 Aug 2025 17:52:41 +0000 you wrote:
-> This series introduces NUMA-aware memory placement support for KVM guests
-> with guest_memfd memory backends. It builds upon Fuad Tabba's work (V17)
-> that enabled host-mapping for guest_memfd memory [1] and can be applied
-> directly applied on KVM tree [2] (branch kvm-next, base commit: a6ad5413,
-> Merge branch 'guest-memfd-mmap' into HEAD)
-> 
-> == Background ==
-> KVM's guest-memfd memory backend currently lacks support for NUMA policy
-> enforcement, causing guest memory allocations to be distributed across host
-> nodes  according to kernel's default behavior, irrespective of any policy
-> specified by the VMM. This limitation arises because conventional userspace
-> NUMA control mechanisms like mbind(2) don't work since the memory isn't
-> directly mapped to userspace when allocations occur.
-> Fuad's work [1] provides the necessary mmap capability, and this series
-> leverages it to enable mbind(2).
-> 
-> [...]
+First small unrelated question: do you confirm that standard Guix is 
+currently incompatible with bcachefs as root filesystem and is there any 
+plan to patch Guix so that it's possible (with standard Guix 
+installation)? Note: "Currently Guix System only supports ext4, btrfs, 
+JFS, F2FS, and XFS file systems. In particular, code that reads file 
+system UUIDs and labels only works for these file system types."
 
-Here is the summary with links:
-  - [f2fs-dev,kvm-next,V11,1/7] mm/filemap: Add NUMA mempolicy support to filemap_alloc_folio()
-    (no matching commit)
-  - [f2fs-dev,kvm-next,V11,2/7] mm/filemap: Extend __filemap_get_folio() to support NUMA memory policies
-    https://git.kernel.org/jaegeuk/f2fs/c/16a542e22339
-  - [f2fs-dev,kvm-next,V11,3/7] mm/mempolicy: Export memory policy symbols
-    https://git.kernel.org/jaegeuk/f2fs/c/f634f10809ec
-  - [f2fs-dev,kvm-next,V11,4/7] KVM: guest_memfd: Use guest mem inodes instead of anonymous inodes
-    (no matching commit)
-  - [f2fs-dev,kvm-next,V11,5/7] KVM: guest_memfd: Add slab-allocated inode cache
-    (no matching commit)
-  - [f2fs-dev,kvm-next,V11,6/7] KVM: guest_memfd: Enforce NUMA mempolicy using shared policy
-    (no matching commit)
-  - [f2fs-dev,kvm-next,V11,7/7] KVM: guest_memfd: selftests: Add tests for mmap and NUMA policy support
-    (no matching commit)
+Why does the generation number in bcachefs snapshots starts from U32max 
+and goes down, instead of the naive start from 0 and goes up? There must 
+be some strong conceptual reason for doing the first because I see 
+already a few small conceptual reasons to do the second.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+  Please CC or BCC me because I'm not subscribed ro the mailing list.
 
