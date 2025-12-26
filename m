@@ -1,58 +1,97 @@
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E1C4800
-	for <linux-bcachefs@vger.kernel.org>; Wed, 24 Dec 2025 16:11:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60C8E2DE6E3
+	for <linux-bcachefs@vger.kernel.org>; Fri, 26 Dec 2025 17:10:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766592684; cv=none; b=Lm9UGPhxdGHxevLnwsgBfUFHDZIjFrXVCjiCdycjZ6xaDSHwkUf03jFLIHi+jE1aLqiXBsA93kbKG07WbY/LghCuO8NRTY9HPIQFGCoj2cra+LRPIEg0xa2W4feSlUntsLdQhpXgXU4pJeq56ibdMIyFtJenNZx0a4/EKLUl3cI=
+	t=1766769008; cv=none; b=dbQrZpjxzghwxfV7kJeFgTn5uHKqGAoAK7O9SljOxnfeQo5o+Wj4rNKRlxwP8f8EChDE/7F4tEHCnGffHFtSkY4xt8JJe94mjFyLRQ7iHGj8GNrXb0Dr63hgTfwoRdlWvu9/YfyP/v3Wgs1zTgZOkcBMtpK6ZDK8Hj19AEPn6X8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766592684; c=relaxed/simple;
-	bh=yOQIVkFT+LuMcpaGrlN55edyn22cjwM/FXq4cCTbBeE=;
-	h=MIME-Version:Date:From:To:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=lGJRgTjhi5s86E0Ap2UAGssqHbboOF+kWcu9QSx3ZlKxwVSEpJENjPvVkmRCQ7t9mwd0Hn5RUALTOevTe4i9ARN9ZAl7chKHMSu/0OLF2c/5zRMe1Hw4xmzTEqyvW8wH1T270WnCBscOJ33eUOkXX0WyY9GM86EzSrjZf+HuoaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=KqSO5tta; arc=none smtp.client-ip=185.67.36.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
+	s=arc-20240116; t=1766769008; c=relaxed/simple;
+	bh=9SFsznR0+NPGDnXeoeabnAZTkfZ2ucMwQmHSPfNREus=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fyzrpUIsvJ4UmV1hx69F8P5iC+gOKlxQchIO6635dgSvHAWCmRDtRl8S5j4Z+UShVqDQ3SpeEltypiymauxggl1dvbTUfj4SBALLTYDvyQXqtLnpCi73sNvZdIu/tSM0Eloy/R9/rn8+NYo0sRnOHamCfgoPkx953R4mj3hHU00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ESgnAbEe; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="KqSO5tta"
-Received: from submission (posteo.de [185.67.36.169]) 
-	by mout01.posteo.de (Postfix) with ESMTPS id A290B240027
-	for <linux-bcachefs@vger.kernel.org>; Wed, 24 Dec 2025 17:11:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=posteo.net; s=2017;
-	t=1766592680; bh=wK+ZV9aiiOJVATh4aSZXX7E7hSR70g95jO73umAF6UU=;
-	h=MIME-Version:Date:From:To:Subject:Message-ID:Content-Type:
-	 Content-Transfer-Encoding:From;
-	b=KqSO5ttak98UDm6ylHVMEtcvz3pXrGkLrBX1VozimuS7YE6ci22hfWnrCCntfc/6C
-	 yb4jJajQm1jFTY5wK8G1OWkupU/ksMgF/F+yAbZeZXJVMM8c9hCRe36th+teNM/R3g
-	 ouUNRRqMC/41/2J6Pm08Y/mWfZwBOy0Sd733/ZfxsqDbBPemH1M9zfjJ5HO8DmX+/5
-	 SAU+Gq7OczvrMzZSol1Cjxx/l+So1wkimf20gdUHDgpt6p7nEQJcw7ldrEhcvOLHXf
-	 iGL5hQ4IOq6GP3Q685ObWaWSz0xKIDciJBa3E0WjK8HhvfEysCGwZQaYOrlwhsWnhn
-	 TOIr6/QKRsmew==
-Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4dbxh82bSvz6tvZ
-	for <linux-bcachefs@vger.kernel.org>; Wed, 24 Dec 2025 17:11:20 +0100 (CET)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ESgnAbEe"
+Date: Fri, 26 Dec 2025 12:09:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1766769000;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9SFsznR0+NPGDnXeoeabnAZTkfZ2ucMwQmHSPfNREus=;
+	b=ESgnAbEe1sL2cZCUrAPXhUaBuJtx7qslEzwhFTdDcN5bExhuWEVIRc1l2oqydNXEdNqR77
+	o9ZZF4uarBIEHLD743XLYxXlLANNCJmxvUlLV7u7N/iV4rWx6aYul9CsqzgAXXIir8iRTc
+	psLvvY+RhN8AlvQFecJO1/B1ySsiptI=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: BP25 <bp25@posteo.net>
+Cc: linux-bcachefs@vger.kernel.org
+Subject: Re: Version Control capabilities plus two small unrelated questions
+Message-ID: <7dgvgc3usnl4nbpivj3wuemprknevx5tudji4ldzqkq7ngvfva@sbdg5tfhjnll>
+References: <f284018630d0a24414d38028cd397345@posteo.net>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Wed, 24 Dec 2025 16:11:20 +0000
-From: BP25 <bp25@posteo.net>
-To: linux-bcachefs@vger.kernel.org
-Subject: Re: Version Control capabilities plus two small unrelated questions
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <f284018630d0a24414d38028cd397345@posteo.net>
-References: <f284018630d0a24414d38028cd397345@posteo.net>
-Message-ID: <57dfdd78aed6d071d4b978b233680a0e@posteo.net>
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Note that when I use the word "snapshotted" by saying snapshotted file 
-or snapshotted version of a file, I mean both "A: file that is included 
-in the snapshot of a certain volume", and "B: file that was individually 
-snapshotted to save a version of it". In fact I think that, if 
-individual-file versioning is indeed possible as the first part of my 
-question asks, then taking meaning A: or taking meaning B: is irrelevant 
-because the code would be essentially the same.
+On Wed, Dec 24, 2025 at 04:02:01PM +0000, BP25 wrote:
+> Hello, would someone kindly advise whether bcachefs supports file
+> versioning, somewhat in the spirit of Stallman (lecture at KTH Sweden in
+> 1986) where files are individually versioned (as opposed as taking snapshots
+> of entire volumes) but the versions are not just ordinary distinct files,
+> they are hidden files connected with each other.
+
+Got a link to the lecture?
+
+> In particular is there a standard way to 'follow' the same file along its
+> snapshotted versions? Say, ask bcachefs to return the list of snapshotted
+> versions by giving input this or that file in the current version of the
+> filesystem? Note that if such file was deleted and another with the same
+> name created I don't want that new file also to show up. And related
+> question, is there any command that would list the snapshotted files which
+> have no corresponding in the current version of the file system (for example
+> because I deleted such file after having snapshotted it)?
+
+Snapshotting is only at subvolume granularity, and right now there's no
+way to create a subvolume that points to a single file. There's no
+reason that couldn't be added, but if you do that you'll probably still
+want to be able to follow history at the outer subvolume level; we don't
+have proper support for recursive subvolumes.
+
+History between different subvolumes is completely distinct; I could see
+us wanting to support some sort of concept of "nested histories", but
+that'd be a project for down the road.
+
+> First small unrelated question: do you confirm that standard Guix is
+> currently incompatible with bcachefs as root filesystem and is there any
+> plan to patch Guix so that it's possible (with standard Guix installation)?
+> Note: "Currently Guix System only supports ext4, btrfs, JFS, F2FS, and XFS
+> file systems. In particular, code that reads file system UUIDs and labels
+> only works for these file system types."
+
+I haven't seen any incompatibilities reported. Util-linux supports
+bcachefs and has for ages, so I'm not sure what that would be.
+
+> Why does the generation number in bcachefs snapshots starts from U32max and
+> goes down, instead of the naive start from 0 and goes up? There must be some
+> strong conceptual reason for doing the first because I see already a few
+> small conceptual reasons to do the second.
+
+It's because of the way snapshot lookups work. When we do a lookup
+within a subvolume, we first get the subvolume's current snapshot ID,
+and then we do a lookup for SPOS(inode, offset, snapshot).
+
+We want either the key for snapshot, or the closest descendent;
+allocating snapshot IDs in reverse order means that ancestors come after
+our search key, not before, and this is important because iterating
+forwards is much cheaper than iterating backwards.
