@@ -1,155 +1,80 @@
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com [209.85.161.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACDCDC2EA
-	for <linux-bcachefs@vger.kernel.org>; Sat, 27 Dec 2025 00:08:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88227258EC1
+	for <linux-bcachefs@vger.kernel.org>; Sun, 28 Dec 2025 06:29:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766794093; cv=none; b=QBPGl2D72zLCH8/I/SaHWRHtL6zOmqcpqMtJYChNlgkrtEld1xjjFirePsXuZCjLXAeljmdubbTcgdPKiUyimV8cx10m1lCypfoIZMe2qAHvFgTMVsUkxw1qcKLeMVjTuRosIb8mqVSW+mrqqUP8mfYGliCp6YPE8eDWcVQX6LI=
+	t=1766903344; cv=none; b=OGyk8HsHqGfY9vWcGr9K3IShjsP1kndhT5MGJ+TuXYQy8sHm9OemF104ZzTGyeBlTn+iH6vErBo6Zgn/gOW41//DKG+O2/KrvT8blhJJDI8fKzfdMW1Qgjd5/4n1lUqOu77eLLYow91HGK+A90Sm5yope5AdU8th/oqk78VinKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766794093; c=relaxed/simple;
-	bh=zvCs66as6LFhYflo3HpF49jyr79qQI/i3hQLRsyLtbU=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=IjJGyLIKDBV3R9fKFHlm87G9HuJX+RdUs2BEPWWBysy3rT1Na1hHfDaWHdOLr7yD9vu8ctjFMva/tOOGwpoCLlB7aiePDOfEuj+ro7wHbfIf4EfWLHHWGr88l5+kJKxFnfaRDqFQaN+QAJLYRuW+Bl38FQO2U88gw6jpAO1rqmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=WkwOp+EA; arc=none smtp.client-ip=185.67.36.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="WkwOp+EA"
-Received: from submission (posteo.de [185.67.36.169]) 
-	by mout01.posteo.de (Postfix) with ESMTPS id 3EAE5240027
-	for <linux-bcachefs@vger.kernel.org>; Sat, 27 Dec 2025 01:08:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=posteo.net; s=2017;
-	t=1766794083; bh=8Xtss41OmosZ4qLIqEJiJxnomcUAFYSY0wOvBlRnyQo=;
-	h=MIME-Version:Date:From:To:Cc:Subject:Message-ID:Content-Type:
-	 Content-Transfer-Encoding:From;
-	b=WkwOp+EAzFotuGdSfjFcviyt5x2hvljD30GSl6iNCVslP+RV/1Jlrogmi7jR49BHh
-	 sdrTJUQePaw6QpbGiZyJX+QKLwVyoz4DNscdh5ozLM+IJxR4vnNXJwoWJVoWTxRfwr
-	 NP+Azp3luZBTRqwaVDvDoWWgpUJB3wYoUnlmYap1gGUXSfQK9FC+ic8vbem1pLNz3h
-	 kFa4PwTWI8D+IDBIZZBCUCP6uoBYPZDQJEJWu6EKPXFUnz/Hm9AvsWm3vH54Z3hFjQ
-	 XdY0PQtpEg4poTng51J1LBis30+I08Z+MQJ+nDKx+qbyb2HzJetIX9rDz48TjoD5Ba
-	 S2HIko3mrUJsA==
-Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4ddN9G6rHCz9rxF;
-	Sat, 27 Dec 2025 01:08:02 +0100 (CET)
+	s=arc-20240116; t=1766903344; c=relaxed/simple;
+	bh=Inljx6UOoK9th0Yw9ul8xLEL3W4o8tpjYeNnAkDOmxk=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=NwKCelxWTa5eEkzBsT1cZifEZDt4Akogwvd4DwX522imLZ3vhSJeLqbP3Xw0BupQsKV2OWbtM7oSWta7sl8wbk+QE7kHGUzZAwNCTkAGfdeof5GRr66l2KrT11lv9Zgl/yUyqfu/LLBvY1lX1+rQvEZMGxHhlmGSKAHKDYTNImk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-65eb49dd974so8631959eaf.1
+        for <linux-bcachefs@vger.kernel.org>; Sat, 27 Dec 2025 22:29:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766903341; x=1767508141;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WqWaYjXGpL0SCXHVfAwZczGoXfLd9iZju3rBMa/XlsI=;
+        b=PNJ6+mp8ZvDo3bsqGm+fjlz8UqMlqnBdJDkrq8NvwJoFWQfIQ2AnylAzno8mh9UoKP
+         UMP6oE066iQCMw8mdLihrrqY0xLzCtxG5XEAE/tpC/55shsFqkB4f3rUR3CzhEpWFif7
+         V4Vsvo3PrVn3PotUSCC9KVrDVaoB+GdoSWkVVTRVM2IqY9jZ88XZHK0A9czrvMdLfwpk
+         R3TF5w1HBAlhLN/gfviU7StY2D+uLfB3YDzAFFOwv229fW830e87g5KveL0fImVgAflE
+         TmJt0k98u2wlKwWow4OefPzq4M7QUbz/uX1FJIsQL5Ifhy/MvwneVvmiR3Fj1SKv4S2i
+         4bQg==
+X-Forwarded-Encrypted: i=1; AJvYcCUtZSJsrN0gph4kVOm5V/p9aKPPb67ubSC0OHmAy0Ty/UIWLCy2Dw0g54d3DPwkkHc25EPQ0s/aZs7Gmk2r9w==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyBO6785rTTGonYHBdnJ5hTnt9xMUJ8vn+P/NZfegoh8hms9/Mb
+	mWDQGbf0k9PCGDfPLRAjhaATOzCIl77UX+2xVeDh2mHckWlvhhjjblLhuW2CYimdgwzCLX9pz4Z
+	rl/R2AP5rgrfM+9KPNaxmOESEXQSoCpI9RkeSXzRfGO0jymFDbbfsm8Cn2Xk=
+X-Google-Smtp-Source: AGHT+IEoS0rAjcG/+fGcGmjafzr1ie5EibCfjAHuWQ1bamSqVqpqVq5pUPYA4JV9/ivc0D0yU9QEcaQ+4125sqT5bkop/MWm91yt
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Sat, 27 Dec 2025 00:08:03 +0000
-From: BP25 <bp25@posteo.net>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: Version Control capabilities plus two small unrelated questions
-In-Reply-To: <7dgvgc3usnl4nbpivj3wuemprknevx5tudji4ldzqkq7ngvfva@sbdg5tfhjnll>
-References: <f284018630d0a24414d38028cd397345@posteo.net>
- <7dgvgc3usnl4nbpivj3wuemprknevx5tudji4ldzqkq7ngvfva@sbdg5tfhjnll>
-Message-ID: <e5a602de45722f9f8fe85f24b93e8d21@posteo.net>
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a4a:d744:0:b0:65c:f062:bdde with SMTP id
+ 006d021491bc7-65cfe799322mr10615394eaf.36.1766903341612; Sat, 27 Dec 2025
+ 22:29:01 -0800 (PST)
+Date: Sat, 27 Dec 2025 22:29:01 -0800
+In-Reply-To: <682e11b1.050a0220.ade60.09e5.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6950ce2d.a70a0220.c527.0006.GAE@google.com>
+Subject: Re: [syzbot] [lsm?] [integrity?] INFO: task hung in
+ process_measurement (3)
+From: syzbot <syzbot+cb9e66807bcb882cd0c5@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, 
+	jmorris@namei.org, kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, paul@paul-moore.com, 
+	roberto.sassu@huawei.com, serge@hallyn.com, syzkaller-bugs@googlegroups.com, 
+	torvalds@linux-foundation.org, zohar@linux.ibm.com
+Content-Type: text/plain; charset="UTF-8"
 
-Dear Kent,
-Such an honour to receive your reply! For the sake of simplicity assume 
-that I'm just interested in snapshotting individual files. Usecase: 
-because I add the snapshot command as hook before saving any file I 
-edit. This assumption excludes any discussion about recursive snapshots.
+syzbot suspects this issue was fixed by commit:
 
-On 26.12.2025 18:09, Kent Overstreet wrote:
-> On Wed, Dec 24, 2025 at 04:02:01PM +0000, BP25 wrote:
->> Hello, would someone kindly advise whether bcachefs supports file
->> versioning, somewhat in the spirit of Stallman (lecture at KTH Sweden 
->> in
->> 1986) where files are individually versioned (as opposed as taking 
->> snapshots
->> of entire volumes) but the versions are not just ordinary distinct 
->> files,
->> they are hidden files connected with each other.
-> 
-> Got a link to the lecture?
+commit f2c61db29f277b9c80de92102fc532cc247495cd
+Author: Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon Sep 29 20:43:52 2025 +0000
 
-https://www.gnu.org/philosophy/stallman-kth.en.html starting from 
-"Features that I believe must be added include: Version numbers" until 
-"Another thing, that isn't a user visible feature and is certainly 
-compatible to put in, is failsafeness in the file system."
+    Remove bcachefs core code
 
->> In particular is there a standard way to 'follow' the same file along 
->> its
->> snapshotted versions? Say, ask bcachefs to return the list of 
->> snapshotted
->> versions by giving input this or that file in the current version of 
->> the
->> filesystem? Note that if such file was deleted and another with the 
->> same
->> name created I don't want that new file also to show up. And related
->> question, is there any command that would list the snapshotted files 
->> which
->> have no corresponding in the current version of the file system (for 
->> example
->> because I deleted such file after having snapshotted it)?
-> 
-> Snapshotting is only at subvolume granularity, and right now there's no
-> way to create a subvolume that points to a single file. There's no
-> reason that couldn't be added, but if you do that you'll probably still
-> want to be able to follow history at the outer subvolume level; we 
-> don't
-> have proper support for recursive subvolumes.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10499e2a580000
+start commit:   172a9d94339c Merge tag '6.15-rc6-smb3-client-fixes' of git..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ea35e429f965296e
+dashboard link: https://syzkaller.appspot.com/bug?extid=cb9e66807bcb882cd0c5
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16836e70580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1617a2d4580000
 
-Rather than having to promote files to subvolumes and then snapshotting 
-them, I'd rather allow making snapshots any individual file directly. 
-Just because any file should be ready by default to be versioned. 
-Sometimes I do wanna follow history at the outer subvolume level; but 
-most times I wanna focus on the timeline of this specific file and even 
-if snapshotting the outer volume achieves this in practical terms, 
-conceptually I would say the two procedures serve distinct purposes.
+If the result looks correct, please mark the issue as fixed by replying with:
 
-> History between different subvolumes is completely distinct; I could 
-> see
-> us wanting to support some sort of concept of "nested histories", but
-> that'd be a project for down the road.
+#syz fix: Remove bcachefs core code
 
-I think that in view of the assumption at the beginning of this email, 
-we can disregard for the moment any notion of nestedness and of shared 
-histories.
-> 
->> First small unrelated question: do you confirm that standard Guix is
->> currently incompatible with bcachefs as root filesystem and is there 
->> any
->> plan to patch Guix so that it's possible (with standard Guix 
->> installation)?
->> Note: "Currently Guix System only supports ext4, btrfs, JFS, F2FS, and 
->> XFS
->> file systems. In particular, code that reads file system UUIDs and 
->> labels
->> only works for these file system types."
-> 
-> I haven't seen any incompatibilities reported. Util-linux supports
-> bcachefs and has for ages, so I'm not sure what that would be.
-
-I asked this on the Guix mailing list. My understanding of your sentence 
-is that you're not aware of any difficult obstruction to make it work.
-
-> 
->> Why does the generation number in bcachefs snapshots starts from 
->> U32max and
->> goes down, instead of the naive start from 0 and goes up? There must 
->> be some
->> strong conceptual reason for doing the first because I see already a 
->> few
->> small conceptual reasons to do the second.
-> 
-> It's because of the way snapshot lookups work. When we do a lookup
-> within a subvolume, we first get the subvolume's current snapshot ID,
-> and then we do a lookup for SPOS(inode, offset, snapshot).
-> 
-> We want either the key for snapshot, or the closest descendent;
-> allocating snapshot IDs in reverse order means that ancestors come 
-> after
-> our search key, not before, and this is important because iterating
-> forwards is much cheaper than iterating backwards.
-
-Thanks for explaining this.
-
-I appreciate you reading my messages Kent.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
