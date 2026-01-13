@@ -1,63 +1,58 @@
 Received: from a3.inai.de (a3.inai.de [144.76.212.145])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3CE135E556
-	for <linux-bcachefs@vger.kernel.org>; Fri,  9 Jan 2026 15:18:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C40A2222C4
+	for <linux-bcachefs@vger.kernel.org>; Tue, 13 Jan 2026 19:56:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.212.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767971926; cv=none; b=m5MzwiyKBHg3Yxq0eo59teBErz5er3lTf7v0KOyouU1K55tHhxnRTTIkt/eVIAB3fm7/AQDEoqjtkchmPocsqj1FSC//66tvGzZZHtuYYkXlkBDyTzECcbl60jj32SdOYXiYaGMHpJXCdRgfM7Z/zumHAY87GS9+tHCOUZpgFD4=
+	t=1768334196; cv=none; b=TOCEj3zy++FH2juC7PC2HfjyaRMQU+tEvwuMBEf2B4F73BOYfJ6F/4hJfYbDcfkshV8n4DqtVJIR75tsX7wE1r6+1nEoE1gvv50DO+agTV0uUfQ2Y+RG3r8oQ91fCTVQ3G106lmlhvo/p3lyAMTHyXcBuA/eC2s1OqE75dKapRw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767971926; c=relaxed/simple;
-	bh=p738zlUiP8gQXhOeh60EYYG9PIwZEAK4hGMEro8yAqY=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=Ke3qR0wzxNDRVzXakItA/sQpGyTSIVoYcDMIUeXpJkYSdHTVsWT/i0PA70dgjatnaLiVVskcjxT+AONwy0ByLJIeOjcfsapVGRY+bJyshoG2QWdJ2QJv0qSFM4f5Ye1/aIXAO4WYHU1/zwzCcNg3DQr4AiYu4xTObEHaKYSLP3E=
+	s=arc-20240116; t=1768334196; c=relaxed/simple;
+	bh=p8L9Ys+La7M536PdDDXjwas5ucwyNTgpgHHvjwPVNQo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PzXMpCWuD5Kzi1rVVzIupfwspB2MlbVHyu5+/WdO6jP2m6eR9Wp3rSR0k8r9SgGgxB/cbqH/TDZwTsgp2CEpzcvL0h0ZhlHuQNmZ29suLtXxxh4YD5gM6G7RE3efMysjadSOCEYd+E87ODO/Jb5X1T2ElRZJ0683E2jcYp9Lu8M=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inai.de; spf=pass smtp.mailfrom=inai.de; arc=none smtp.client-ip=144.76.212.145
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inai.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inai.de
-Received: by a3.inai.de (Postfix, from userid 25121)
-	id 1AE781003E11EA; Fri,  9 Jan 2026 16:10:22 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by a3.inai.de (Postfix) with ESMTP id 18EE011009D12A
-	for <linux-bcachefs@vger.kernel.org>; Fri,  9 Jan 2026 16:10:22 +0100 (CET)
-Date: Fri, 9 Jan 2026 16:10:22 +0100 (CET)
-From: Jan Engelhardt <ej@inai.de>
+Received: by a3.inai.de (Postfix, from userid 65534)
+	id C8C4E1004F473B; Tue, 13 Jan 2026 20:56:26 +0100 (CET)
+X-Spam-Level: 
+Received: from a4.inai.de (a4.inai.de [IPv6:2a01:4f8:202:600a::a4])
+	by a3.inai.de (Postfix) with ESMTP id ABF561003E66D7;
+	Tue, 13 Jan 2026 20:56:26 +0100 (CET)
+From: Jan Engelhardt <jengelh@inai.de>
 To: linux-bcachefs@vger.kernel.org
-Subject: `bcachefs fs usage` is missing some spaces
-Message-ID: <8sq99o96-0755-r095-o410-o6n1o4oq228s@vanv.qr>
-User-Agent: Alpine 2.26 (LSU 649 2022-06-02)
+Cc: kent.overstreet@linux.dev
+Subject: [PATCH] doc: fix spello in cmd_device.c
+Date: Tue, 13 Jan 2026 20:56:25 +0100
+Message-ID: <20260113195625.73764-1-jengelh@inai.de>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 
+Partial revert of cd214bdc877674a8dcb21dca88851d586ffc2a3a which
+hypercorrected a percevied spello.
 
-Kernel component: 1.33.4
-Userspace component: 1.34.0 (also with 1.33.4)
+Signed-off-by: Jan Engelhardt <jengelh@inai.de>
+---
+ c_src/cmd_device.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-```
-# bcachefs fs usage /var/lib/lancache
-Filesystem: c5ac2bf7-79a9-484d-8886-5188cb3168e7
-Size:                  5549130619392
-Used:                  2488634602496
-Online reserved:           114860032
+diff --git a/c_src/cmd_device.c b/c_src/cmd_device.c
+index ceafa98a..646950c1 100644
+--- a/c_src/cmd_device.c
++++ b/c_src/cmd_device.c
+@@ -205,7 +205,7 @@ static int cmd_device_remove(int argc, char *argv[])
+ 
+ static void device_online_usage(void)
+ {
+-	puts("bcachefs device online - read a device to a running filesystem\n"
++	puts("bcachefs device online - re-add a device to a running filesystem\n"
+ 	     "Usage: bcachefs device online [OPTION]... <device>\n"
+ 	     "\n"
+ 	     "Options:\n"
+-- 
+2.52.0
 
-Data by durability desired and amount degraded:
-          undegraded
-1x:    2467920244736
-2x:      20597702656
-
-Device label                   Device      State          Size      Used  Use%
-hdd.hdd0 (device 2):           sde         rw      10002030919687816089600 00%
-hdd.hdd1 (device 3):           sdf         rw      10002030919687816089600 00%
-ssd.ssd0 (device 0):           sdd         rw      96019572326463255844454465%
-ssd.ssd1 (device 1):           sda         rw      96019572326463252830208065%
-ssd.ssd2 (device 4):           sdh         rw      96019572326463251319603265%
-ssd.ssd3 (device 6):           sdb         rw      96019677184062093350912064%
-```
-
-There are some spaces missing in the output. It is not readable this way.
-
-# blockdev --getsize64 /dev/sde: 1000204886016
-# blockdev --getsize64 /dev/sdb: 960197124096
-
-So that's what the number should be close to.
