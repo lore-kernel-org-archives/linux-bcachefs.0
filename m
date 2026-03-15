@@ -1,70 +1,68 @@
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08C8F36F42A
-	for <linux-bcachefs@vger.kernel.org>; Sun, 15 Mar 2026 15:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2AEE372EE9
+	for <linux-bcachefs@vger.kernel.org>; Sun, 15 Mar 2026 17:06:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773589582; cv=none; b=Zzp1n1IXsEiwH93mneDeNb9ntngoXc4Gja1xiDwhkA0PgZloVzl23H/21W1o61zJ2DEGXzocWbt7kJgERNZEJQxrsX1DHu13KOrlJbaVlbpkEtbC7qNAY6++dQNzlSNqPrzM2VGHm9rL6jZseLgxdfVW7srLrNVG5EHvzdGTk7c=
+	t=1773594408; cv=none; b=SzEpdXSAdt/Yk1vhAfLcJsyCBRrTmjpwYPsyWcD/LcFz+3DnKldsga5jIVHrud5MYb6/Og3Wsgg3YEtW8Z8bfW/GOeVvNf41uhZGo1Q+XNsKMjLBI8orgYsnulNC3E9Ac6XpecyCApyi6IFnkAJSovn5BlhFHsCbSOxFujXNfsk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773589582; c=relaxed/simple;
-	bh=/4TxCRmAFVjj0HQMyo988GTmjzUI/GgwkZk6foJDDP8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nuFR/1juqjEi52Di0t5xvvUThRaDN1oDE0dYQs9tzeY+MFAyLAZf03q5eLSWQmSSjZ0t+Nx1vov+XcT51eld0VvI1yx/pPlAn7UP8ljTt9J7p7IZWEqIyJjphsT6iKC7YjcoyMa8PXpGaRGp2+AGQBe787WEYyKDT8t4fynjb/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B0N8G9GV; arc=none smtp.client-ip=209.85.221.41
+	s=arc-20240116; t=1773594408; c=relaxed/simple;
+	bh=HWa/1Nd3KstykfM1F0qL/ax2EKg59QUTP2h4BKzh1sI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=An+ITH/Rw0V0e7oy+5mO5BWncTV3IuVbMnPJrTWpk57ORC98SC4zPCUYSoMnuG9o4I1Il4fTtitCuflbiDECh0LGCOG1aaN9iMMwjAJ/KD3yMCbK8FE/kuA602zTw454d7O31V+ppq4uukj2kkaNhd5Hep0wxghuvIBWT5aml/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JKzuVlhP; arc=none smtp.client-ip=209.85.128.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B0N8G9GV"
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-439b790af67so3588073f8f.0
-        for <linux-bcachefs@vger.kernel.org>; Sun, 15 Mar 2026 08:46:20 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JKzuVlhP"
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4852e9ca034so34321895e9.2
+        for <linux-bcachefs@vger.kernel.org>; Sun, 15 Mar 2026 10:06:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1773589579; x=1774194379; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1773594404; x=1774199204; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=GHiZfFMU5597hEQav2iGD+pMwvYCiesjxK+AXpnt3o8=;
-        b=B0N8G9GVIyxjAWhkxFvsfDaZ3T2MXZSLC/pK2nVFXavFbK5D7C5o946JVDKfkAtNAs
-         p/FDZocIaUvB7lTWxLOkvrWygDBvFEsyIPOHeDC+ra0ElbcQDizKVEeVJUqLdx0hMdbW
-         8XkgpXVGmraOyrDIDLrA3DKuXihlFq/NncguRQpIqae1fYm/XTMTQ3NzuZpCUlPlT1oL
-         kDAokObqB/LspjUkaY97ku2Q2zrs7rQQ7gC+VXFO4zHl5L2Q7GWpYa1xmLPEOcQSIfs+
-         JtOQkh+tTAkUMY6YBAOBmHR1hTgWrOfm0dohaQt1bRp3qfj3WG4DFzJ8CFd41NcAOq5b
-         qTYQ==
+        bh=70K/jXTqjKva1WrU3OIkwUbaoc+5tgMJDmiLGmjO9TY=;
+        b=JKzuVlhPSJPDXUEvnxDlRoykcMTrl98YXI2W1UJc8w4RnklcCS8wRcxQ011BdxiqPS
+         OBAkTAEczW4NkbodQXfU2tVQmW0yo3W3wraMk3VIeyHQm2pjfUo+HnSYWGr3G2OunDnZ
+         Panp5vbCC6YdWlyP9Ua2RE1ZNZgtdc1N6HvJFLPisx902dVWPux/HJCd4un97e0HUrkU
+         8fFRlFpteXAsqjelMVvoYLTlFBEICMbV321p+uugCie3ooJsJorK2hpPr7JUaa8bombR
+         EfyFOW01v9aPvNHp1pNL95v6hgn0SS/bPlqNMt7RILtNbPAAUPzCoZaSswgP5cqAe3jU
+         04jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1773589579; x=1774194379;
+        d=1e100.net; s=20251104; t=1773594404; x=1774199204;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GHiZfFMU5597hEQav2iGD+pMwvYCiesjxK+AXpnt3o8=;
-        b=fDeiKrWFUuHO3jsMAyR5qOtP220ArW4onKoKdqRKkptFY8SDcj6Ux2Pc0esgUtrLn4
-         7SKCmgHeZaxa/7iFS1v5gnqIvYZ4H951BL7RFLFvc9yL7QEWyarorD3vaDMKZU4Eymdw
-         Uomjp26k4+ISbVeply0OsdGXcxSIIlvPyEZksescx7mTI2LclMq5gcWksKKITZAFcetF
-         LL915mXdXNFULhyFU9K4xmNgCK+rn9BgReT4CfB5I/QzCalpX1/WR9GFQyBJBVokPog/
-         613W8wMfYrxm6Ug5A8vSd63ESfGzAY16zDQNiDI3j6LE0CFb9TI43O19UqA3RAONw3xC
-         MsyA==
-X-Gm-Message-State: AOJu0YxMy3T/qVf1sfUg3AYOt0c2AOR8a/the3aXH/P5gNwrX9/mMh65
-	q/It4Xf7KkR6JAH2+nZ3YAov3fBlVaHH4nvLo2DpZtTR8y+Zk9V+bO8i
-X-Gm-Gg: ATEYQzzFx702B0CCqhRZSLGv/BrpvywPPaPdXkuX6YtvL0fO/Sos3Re9evbXJZLNKvs
-	7kRehsSubEcnHpArsTM3ZsSjDtTsmRoUp3Ma/YZ8NHz5Jqd63JLy1LzWyyrk4Kq04bk2LHMhrBf
-	O9M6jEgUJukiHO+MZs7nCEJkMucfnFuxjoC2Fu9EOsb9M811ZW2cTsKwDVqQhD0uHW/80uTJmm4
-	IBuyICeq7e5WZSHfiq5AkVGUTPUGADOYWVITUMaDv+MczMhuFw0d96rIFOviL8LsweGuSu4GgeI
-	XRSKjA4PAvwZGht94xxe2hmSBFun9qhA1m/rG4P7OR/OlM6GHse2ZIG5kypJRMsxlvkRBWOeAus
-	5m22iWYdN0QxgvkCxLCRc07c2aaxWsFOFgRN6nGn7jbO2UGtU9NFxLk56OfpcFx4TbUc7KIY06C
-	d4qjVlja8A71UhXcf/cUp0bPapZ/De2xTtZYcGZsA9D+g5sh59NdXeL3ZqEdMgyV5HEh/oJVNlL
-	Xkhqccifggkc9H0aFsBxXb+9Mi1Yw==
-X-Received: by 2002:a05:6000:2309:b0:43b:4166:b855 with SMTP id ffacd0b85a97d-43b4166ba79mr2927251f8f.14.1773589579328;
-        Sun, 15 Mar 2026 08:46:19 -0700 (PDT)
+        bh=70K/jXTqjKva1WrU3OIkwUbaoc+5tgMJDmiLGmjO9TY=;
+        b=CdD6y+5vWxCixXnARSXWLZ9Kbk0/WUqLW1djBoOBKWX4qSgcK10nexqjNczFJHQos7
+         XnZIs0yCj67xrP4rUg2vqt0U5AhDT5D7gmPzk1M3nM6rlTc8ifE0PKlqT9Xd13vQe/Zq
+         8hed1Zu77gvS36iiVdJX5yafKfKMh4Rau5sG+/AlEjtKh27gSVvrFrFnh1BGiEeJcJ6/
+         G41S2OZ6NEZjoR0T7jiFOh8oE3dNpFRuw2r0T2KfZP/qBtSRVKLzD9NtOJ3/uvsdRpvQ
+         t7mVu8OsZqJNIn/xyUfO4dpBvDRgc7KEHV9Er1WsXaqovLbLBF0owXwIYH1zKkCzz0qN
+         AEBQ==
+X-Gm-Message-State: AOJu0Yz9A+sE1u7OfxGxMouiLaMnVdkJYL/wDEUljLcZxOAMJd3jLomu
+	VsELm8NCnxAKoPVEtN8DCBY+Y1aOWx2q3d/I/2EQbR2UB89EWMM+50luvc0oorDVhng=
+X-Gm-Gg: ATEYQzyfOOOODvxm7h0EClql3y4NGqqt4BhVKT3K8fR7MD3iT0/jCIgEQDUYBfu/01f
+	Q0HU3tDxVYJB2n0MC2SRDKgtjlvax7OjMCiqIn/+oRF4vI0EO+qKNiVz54d6E64qmFG/zlPPRFV
+	ffcvSrZJTLlHakUKr0Bu3lisN/tLMPV90PKxIV0F9BWjKQ7RpSfa69QZqG6KkWZBXXfXkbX6Ipk
+	JoPV86gk9Aa9HHtzvmJBFWHOLO7N+R3rI+ncqnMSjVsLlz8RYVzueeRGxmQmrQNKMLGICK9yRes
+	1A5Z4ZC0bm9BH8JL0/Pe2qK8wonBaJBF5l3KAM16t98sxEmJ5I9DXm9ZKZ3pK8pBbbJ/hYN1YA0
+	LWsvIo5sl33hs03Gly3G47K5cmd6R/dyl2NAJMV7zE/fjk/GycA3qTRhlNfw8Gskb8YOQz8juWT
+	tcbwghRh0P80/fCpuqImTQprFuF3+l2ufcR99NC3Orp16TLn34RqtHROYUSVcjhVNuihc3Jxwfv
+	GUC6A+ux7YxaIpowRwFxUwuEm15+A==
+X-Received: by 2002:a05:600c:4689:b0:477:9b35:3e49 with SMTP id 5b1f17b1804b1-485566cf80dmr167876495e9.3.1773594404020;
+        Sun, 15 Mar 2026 10:06:44 -0700 (PDT)
 Received: from DESKTOP-TILNSD1.localdomain ([139.47.104.103])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43b43761bddsm2357954f8f.38.2026.03.15.08.46.18
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48557777105sm119905905e9.4.2026.03.15.10.06.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Mar 2026 08:46:18 -0700 (PDT)
+        Sun, 15 Mar 2026 10:06:43 -0700 (PDT)
 From: Kit Dallege <xaum.io@gmail.com>
 To: Kent Overstreet <kent.overstreet@linux.dev>
 Cc: linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kit Dallege <xaum.io@gmail.com>,
-	Claude <noreply@anthropic.com>
-Subject: [PATCH 1/3] closures: add missing kernel-doc for closure API functions
-Date: Sun, 15 Mar 2026 16:46:09 +0100
-Message-ID: <20260315154609.50917-1-xaum.io@gmail.com>
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] closures: add missing kernel-doc for closure API functions
+Date: Sun, 15 Mar 2026 18:06:34 +0100
+Message-ID: <20260315170634.64804-1-xaum.io@gmail.com>
 X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
@@ -82,7 +80,7 @@ closure_call().
 
 Also fix a duplicated word in the closure_sync() description.
 
-Assisted-by: Claude <noreply@anthropic.com>
+Assisted-by: Claude:claude-opus-4-6
 Signed-off-by: Kit Dallege <xaum.io@gmail.com>
 ---
  include/linux/closure.h | 29 +++++++++++++++++++++++------
