@@ -1,95 +1,126 @@
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-gw01.astralinux.ru (mail-gw01.astralinux.ru [37.230.196.243])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7032929B799
-	for <linux-bcachefs@vger.kernel.org>; Wed,  8 Apr 2026 14:25:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.167.172
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775658308; cv=pass; b=ZCHq+tHllEHV1aAXW5sQOXGvMjhOBT7DJIzrXgA5YXTPsT5Dh/+vpgALuwiVIBRDcYY52Jzn2jSxqqr7cxdvEm2AfRA27waXIEe21DLynoHGsex0ON12QyWUWXBJI5O0tUPuOff89xqafxe9v6tGyNBKiOMF9BfG4oAh3BNt60c=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775658308; c=relaxed/simple;
-	bh=dLzy9ti4M3e5NUPv+BlhsOKia31b4pk6vxyOuwZGjDA=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=OTgTY1HaqGaSvk1Qd5fJT2c60jciT053uUVSvU/BRnXgf1fgftQXHWPqJffDwTPbDf26BynTHSO0m9aeSgNFDm4ruQlxxWNYOOW60v7mfZYTQR7En9Q/NNXUx85qFbZhEdUnDUlqh3jZAKKnWRayS3W7sbZJgPrAkh9IPDUImMs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nVXmB3/w; arc=pass smtp.client-ip=209.85.167.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E7CA3E866B;
+	Wed, 10 Jun 2026 10:57:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.230.196.243
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781089039; cv=none; b=cuoiIRI0gkBDaF3zTY/bYCUVZM8cLMzFL14cBvlyCMTftgyDyVFTz5iGRi6iJjd6++tOrhCIixNH3DeRAMYFhwdPNpYr97EoJ93/IFaSoAesB3hC2Pg/C/pyOxuNvajsDM2294PZdfodIF0GntWVAkXvdcdEF9peQ7zlpH86/Oo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781089039; c=relaxed/simple;
+	bh=GNdX8HFLFqeXXilN+lbubxclr9EThJIaNFCvQB7lVOE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oznf8bsY13R42qTMnZxlV2IkkbSh66GXCjwoq3u9YWXW73AKUClNhWTgWbHgvtZEHiis+p5wqGgmOREv3N5BnL3UoDoiB1amqllk1eDKtR599W6R19Y0PUg9M9ursWOW9O9WSZcIUTM51qIpX55p4uA2erYtIQSkp20O237WzTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=astralinux.ru; spf=pass smtp.mailfrom=astralinux.ru; dkim=pass (2048-bit key) header.d=astralinux.ru header.i=@astralinux.ru header.b=EtY+lM2T; arc=none smtp.client-ip=37.230.196.243
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=astralinux.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=astralinux.ru
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nVXmB3/w"
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-46fb6d65c28so1679950b6e.0
-        for <linux-bcachefs@vger.kernel.org>; Wed, 08 Apr 2026 07:25:07 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1775658306; cv=none;
-        d=google.com; s=arc-20240605;
-        b=EM0YSTLgzpOLFUGuQWfnBnuk5nYTTkNoQ/94FzlmVXXi/wx7XM+gpILluTNJd2bZab
-         h/g18MUZp0PAjOt8kQehcQAI3QOV+pCFsjnb6dlc1CVzB5MkKpIgleBTH6xPH+G1feRD
-         Y6ovm82lGW30+Nt2S+75mOrEy19MT89a7mV3M/oo5NvTd3pGMvbZpY98UyD7mXCID0kZ
-         2ED0T1bGiLh5CLtMcAQL2nFUcC2r/YE3GHVw9KPdLwC64Zk5YWBecj/t2yrJXsmWCtem
-         lCu7mRTBThLYczumxWr8fonI5xIbZeFLj9kGoeEeS6ik3j9uqQ9NPxX4YyoZXUlHix0Z
-         Yi1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=to:subject:message-id:date:from:mime-version:dkim-signature;
-        bh=dLzy9ti4M3e5NUPv+BlhsOKia31b4pk6vxyOuwZGjDA=;
-        fh=dVjhzuDTRrW+ZFMuuUq9DPxg77MTYd2iAXb5U85kmgI=;
-        b=XBhKVOWOozidRzxlJD5ylVBbLq7bqBI6+/mm01VV5bOsVND7ajybITHWRB6OBesoMq
-         m2QPHQFfULl4cLd+G02xYEsqg80wBmI9zZUPa1Qy2wArjRnHLKYRDCxmS5QED0cUs5N1
-         PPE4a7XnWzVm7qi6z5/xm3jt90CwVoVgJtXG9aCtbc1wGmp4YkvcMjVMixHi34XOZZ1+
-         HfqVYfg1xIUhBM66flUtjLIEEg6Nww3evQq3/mGiX4MoEb9TIYXWK9qrroC04+6hpe1X
-         kO4yuID/Gi4u2/ZF2+BguAbva3jL8dnANocI0BtYvNBcQrRfieDcAIcF0IXG9gOBOcMX
-         o00A==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1775658306; x=1776263106; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=dLzy9ti4M3e5NUPv+BlhsOKia31b4pk6vxyOuwZGjDA=;
-        b=nVXmB3/w3SaLileNmtKHNsqg6Z6MhIKrY8b/3NjP9bt/LejmnXN3ni9aObJwbRPFzW
-         UXOG6+hJeSfdQCnAZxANZWp/gEaAXWkN1daxLzxBdL2RwqDdeRw/1Z/LpSsCMX5TwK+B
-         0L0rC9tlni5ObuX2jFTJepRIQazTvZZtbC6AJc6o/7FsUcIRGUV9afpmp1KmMIaMmLaK
-         YTk4iRrc6rbcnGMGcO6CVG7FlLUDzYNG0UtPUwTdPra/2INCtdGhkksEI0Pys+utO5OX
-         w1tNDCgM5GxfeqfhqBvQ4XjmTZ/Hq+oDz2N+tx8yEylD+WGruqBBnR62Y3llu7bofreZ
-         j55g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775658306; x=1776263106;
-        h=to:subject:message-id:date:from:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dLzy9ti4M3e5NUPv+BlhsOKia31b4pk6vxyOuwZGjDA=;
-        b=i5pSCUzLsvtOhHoLNZidkHpwBHiIDk6+sVw5Nke8NIUpTVhS53kSXPsNuPS14KA34O
-         OieaiEb6MCSf5vXIBBagQknbn806ioo2Fqe1bimfcj5E0041zMCDDHPLBv9gUqqQ5Ac6
-         GIqk6WB4qFcHizfXgmN9WybHW9YRJH6+wMg60dVcT7h0ig7uw6rGy7lutFYFcVO0lvin
-         A5AzFruUzXCTofVo9YGecCxGX3Qi1gRlTTxiNWXdkrYNON2wW/9L8r0oiJexhVHSLu1p
-         qj4beAnaFe5GyaT+ItRqI7EdUsyqnTB4qiwRB33voJB93kg6P0nIR3nsfiZJFePnD78Z
-         r9gg==
-X-Gm-Message-State: AOJu0Ywd4cl4BOBIWHmX+bSRpO2WVALqpFAUnV7x+iGtXbwIod1EEDam
-	r/sMB+U30HKCuHvOB99GfUOSKKFWwswWY/4GEZg2kNWKllwBMN3+wS/dgDXX7JQEed6nPXBni93
-	XZw+CRxsJQSlwwTdwFZEtCI9AgEXswLTWR0qkVIE=
-X-Gm-Gg: AeBDiesBb87i0kTs+1bGur6LF68x6RTiDPbczavNw+UwJnYRoKAqz6Rg2uXwYZJ0mIv
-	NKCkvWTJ+QAi5jCeprzw10EqYxphRP85J1XPP9YTXIkG0EWn7gXRd7boevO72dshsK/St8Ym/ZQ
-	XVkWtgsvAOjOJFcP4PU9ovSgHCFTZgRpR+SrK3VPgrjLhMTt9IigB7Wf5uOy3Vnz7HdnozQUssT
-	waXLPRdjLFMtPdoqYqH1aaPQRjmicM+kMEfkb1FKLvyjdSctU38AZ42j6GEE+QuF+PjkfooMaUo
-	hkg912zLQAawNOdE+g==
-X-Received: by 2002:a05:6820:198c:b0:67d:f55b:a992 with SMTP id
- 006d021491bc7-6822152ac2emr11676815eaf.46.1775658306152; Wed, 08 Apr 2026
- 07:25:06 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=astralinux.ru header.i=@astralinux.ru header.b="EtY+lM2T"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=astralinux.ru;
+	s=mail; t=1781089028;
+	bh=GNdX8HFLFqeXXilN+lbubxclr9EThJIaNFCvQB7lVOE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=EtY+lM2TtR1QSRqtXVMznVkXdm79k28J0oF/oya3wh/kWrtEGRFswYDQoPkKCcgj7
+	 SSNHzu/ut21kgGX7ryTLDbtfRHLTO6gH1UnPiP5R3ScqLHTzKzqQkmBPSHlHow9z5o
+	 Cx6j6K/VdKBBnQmB82mn7kRcsNu/qa4LrSjw0223n4sZfXACy1o8a8wotO/5sK1HVW
+	 RjbOIosG5ZTN8i9KhSR4PSW5hc6ORyEIT9ZREjUa8kSRNTJVLNSNO7I8EQo62Ukl4c
+	 N/tVVSqdUswLO6/LydNCWsUVXEIOScJK4QoQApmdPxG+iSbory29HU1dhlfY2HtFKt
+	 B88NRRnGsTgGA==
+Received: from gca-sc-a-srv-ksmg01.astralinux.ru (localhost [127.0.0.1])
+	by mail-gw01.astralinux.ru (Postfix) with ESMTP id 31E8F2508A;
+	Wed, 10 Jun 2026 13:57:08 +0300 (MSK)
+Received: from new-mail.astralinux.ru (unknown [10.205.207.13])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail-gw01.astralinux.ru (Postfix) with ESMTPS;
+	Wed, 10 Jun 2026 13:57:07 +0300 (MSK)
+Received: from rbta-msk-lt-169874.astralinux.ru (unknown [10.198.16.108])
+	by new-mail.astralinux.ru (Postfix) with ESMTPA id 4gb2m25rL7zJnx6;
+	Wed, 10 Jun 2026 13:57:06 +0300 (MSK)
+From: Mikhail Dmitrichenko <mdmitrichenko@astralinux.ru>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Mikhail Dmitrichenko <mdmitrichenko@astralinux.ru>,
+	linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org
+Subject: [PATCH] bcachefs: avoid truncating fiemap extent length
+Date: Wed, 10 Jun 2026 13:55:47 +0300
+Message-Id: <20260610105547.129545-1-mdmitrichenko@astralinux.ru>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Guerric Le Bihan <guerriclb@gmail.com>
-Date: Wed, 8 Apr 2026 16:24:54 +0200
-X-Gm-Features: AQROBzClQYX_4qCG2gdrjPPzOfSpYL5xlvTkoheLynwHe50y2fbk5HmregtwCIU
-Message-ID: <CABuuC5=9vWDFQRwXFXfmcUh+CUYhN=g5j6XVuMPqjPhQXFBO=Q@mail.gmail.com>
-Subject: Disapearance of .asc and readme files in apt.bcachefs.org
-To: linux-bcachefs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-KSMG-AntiPhishing: NotDetected
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Envelope-From: mdmitrichenko@astralinux.ru
+X-KSMG-AntiSpam-Info: LuaCore: 107 0.3.107 575e75fe8e3b9d45c142d144823c5de38605099e, {Tracking_internal2}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;astralinux.ru:7.1.1;new-mail.astralinux.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiSpam-Lua-Profiles: 203779 [Jun 10 2026]
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Version: 6.1.1.22
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.1.0.7854, bases: 2026/06/10 09:23:00 #28226538
+X-KSMG-AntiVirus-Status: NotDetected, skipped
+X-KSMG-LinksScanning: NotDetected
+X-KSMG-Message-Action: skipped
+X-KSMG-Rule-ID: 1
 
-Hello,
+bkey sizes are stored in sectors as u32, while fiemap reports byte
+lengths as u64. Shifting k.k->size before widening performs the
+conversion in 32 bits, so an extent of 4 GiB or larger can wrap before
+it is passed to fiemap_fill_next_extent().
 
-For information, it seems that the apt signing key is not in the apt
-domain apt.bcachefs.org anymore, and so is the README that gave
-information on how to dl bcachefs this way
-I don't know if it was an error or if it was moved, if it's the later
-I didn't find the new location
+Compute the byte length after casting the sector count to u64 and reuse
+it for all bch2_fill_extent() cases.
 
-Thank you
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
+
+Signed-off-by: Mikhail Dmitrichenko <mdmitrichenko@astralinux.ru>
+---
+ fs/bcachefs/vfs/fiemap.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/fs/bcachefs/vfs/fiemap.c b/fs/bcachefs/vfs/fiemap.c
+index 067e191cf8d0..18a44622a7b0 100644
+--- a/fs/bcachefs/vfs/fiemap.c
++++ b/fs/bcachefs/vfs/fiemap.c
+@@ -23,6 +23,7 @@ static int bch2_fill_extent(struct bch_fs *c,
+ 			    struct bch_fiemap_extent *fe)
+ {
+ 	struct bkey_s_c k = bkey_i_to_s_c(fe->kbuf.k);
++	u64 len = (u64) k.k->size << 9;
+ 	unsigned flags = fe->flags;
+ 
+ 	BUG_ON(!k.k->size);
+@@ -54,20 +55,20 @@ static int bch2_fill_extent(struct bch_fs *c,
+ 			try(fiemap_fill_next_extent(info,
+ 						bkey_start_offset(k.k) << 9,
+ 						offset << 9,
+-						k.k->size << 9, flags|flags2));
++						len, flags|flags2));
+ 		}
+ 
+ 		return 0;
+ 	} else if (bkey_extent_is_inline_data(k.k)) {
+ 		return fiemap_fill_next_extent(info,
+ 					       bkey_start_offset(k.k) << 9,
+-					       0, k.k->size << 9,
++					       0, len,
+ 					       flags|
+ 					       FIEMAP_EXTENT_DATA_INLINE);
+ 	} else if (k.k->type == KEY_TYPE_reservation) {
+ 		return fiemap_fill_next_extent(info,
+ 					       bkey_start_offset(k.k) << 9,
+-					       0, k.k->size << 9,
++					       0, len,
+ 					       flags|
+ 					       FIEMAP_EXTENT_DELALLOC|
+ 					       FIEMAP_EXTENT_UNWRITTEN);
+-- 
+2.54.0.windows.1
+
