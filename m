@@ -1,88 +1,44 @@
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from forward101a.mail.yandex.net (forward101a.mail.yandex.net [178.154.239.84])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B85A62F5A0E
-	for <linux-bcachefs@vger.kernel.org>; Thu, 13 Aug 2026 04:11:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 623E0456E02;
+	Tue, 18 Aug 2026 12:04:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786594316; cv=none; b=F9wACeQ1Qjl7/8AdiJy3Ron8wi8OLz2zB5gBuPCpUmj+jgqoYIndbaKZk7ZFamMgJbZ59NSXCEFgOaC+oqJwTQrAldkg9ExtEL6RgZTqALPf05b+//q3K6wnwDUu5AlpaCGRWvUQHXst3JeIxqlizAHkKzIWtqR9RjwzPdJhYW0=
+	t=1787054670; cv=none; b=eBc7MEMBPxIvCWAZ/U1vE9atlgSTnmgMiZriazbPZTPNtyaRqePo8G/Fuh05FCctVC3Fp+l8eYtPewD8HWANQG3NLtVEMuqp2hFRh6Q+WmxxgL8uHMSiPAHSwd5MTpVAuFpt5/wdy37fivM8EXAlwnvYnVkTGzDu95z2NNy/fEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786594316; c=relaxed/simple;
-	bh=Gnzg7LxLmW/AaeD3Pv1ryB6Tex49wbpWBcRevOIJ/7s=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=S8sSDrmqDXkJBG7IRG1d5pS+nC+/kUhg8NvJgdFKuzMYtmwrpwiExQ+LlviPZuLNvNbPuzNQLR6Ype6KCZpt3BPvMLrOzGQL3dRc/u/WsvlUz8m+G39CI2qPShLbj5JCd8oSvv9CinDvmUKAfNZbCoyBbllsdDxjOB1KprZPDx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=sVMbCfDl; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1787054670; c=relaxed/simple;
+	bh=8izKcFM39WUbB1GC4eIz+aEgNUrW7s6A+t7KhR0f2qA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qiGYhkESYwVVAWoSf59RznSqgkNxU96dT/hz2PFVMPzXKK8fDbuYqQUoSRH7HxNot82eTT3V/7YZFzTvQ6rHTg2mec1QALiC4zqpa5A6SCqqb6QMH67h2HJEQbKqk31hPCuBxBIfP9bkaXuuQoYdRuuIKtNJbl13ij+i8cpaDmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=LsJQU/m3; arc=none smtp.client-ip=178.154.239.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sVMbCfDl"
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-3900e39d935so368321a91.0
-        for <linux-bcachefs@vger.kernel.org>; Wed, 12 Aug 2026 21:11:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1786594314; x=1787199114; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=Gnzg7LxLmW/AaeD3Pv1ryB6Tex49wbpWBcRevOIJ/7s=;
-        b=sVMbCfDlTfIv4/xVpIItYsFiNHw9hjA8pH5oWjb2SVG7QOhoY//S7FxxUdNlsngf7h
-         rB/7Voc650rDZACEqxOozA+FecWj63KbnyIcxgFqYsWICZlpAVDfq5sQdsBpuBrhQb2S
-         4pXvE47jxM+z/hnBhkw37LpTFNEdiydf8D8ud07xzbBL34AEkvJ7i3VTgWUulws9gvwy
-         lRkmfWfo2gZefxcDRoL6yR76/pVjgmTjPw4/3LC/tSPtf3YMTDnZP/wihMDtsrYL9tSc
-         8Lje0WR8kXCSeZjk/+YK9r9Iv+ENPWKz7SKiJ/w2nK8nB//Q1fjvM5JemGrysvF9gsAB
-         4Mvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786594314; x=1787199114;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=Gnzg7LxLmW/AaeD3Pv1ryB6Tex49wbpWBcRevOIJ/7s=;
-        b=cS6Pkqd/YlncF+OVkCJQeGqPIBthP+3WB3iTixbg9TVBZ0VAfhLPSqEU1vt41vLsS2
-         L7Lf/V0A1GxXOZPpuW1pZqJ0bdxhduoitv7qx5tAK7QighdfBS9NsOod0DDUnsqPIXT3
-         P8m+Xr/KtYoq2y/2+9PaH3zUvTqyArZ+Nb42maNLtg6Ecp40GsUj/vcFYRyFCcAuC5NS
-         tO4rElVNqsExmfwOxKpIuNRxuVGrlxeK/GalwkRt8JVYX6bkYrLNYFCAioq74apXbQjG
-         eY4RGS0Jo5mvOhDz9lEyiUsC4uG2RtmbtHiR5PsV42ng61VtnvQovuI8fK+x5I6iQc19
-         xoeQ==
-X-Forwarded-Encrypted: i=1; AHgh+RoFlSmn5KsbsFbnQhsPqm9ZhEr3JiCAq5hWXxe9w/wECqDf+EgcR7QtLVvxa6Lz7p9LJr0vuDS22sV+WjfMgg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxYggEagL2Ernh8Wq7dMkriM0As35hkipAuMRtk7lAaRgY0/zw9
-	8blKFn0QrBJ4vVy2GZdNHIu8NZxvd6jSygqbEHd2u6UNMBHSqJZGNJMm
-X-Gm-Gg: AR+sD10P0kWGxblyIsrNJeqC25UA2zrRlOkRuH2uwaut8Dm2BvXFhDm9+82JHHap1AS
-	Ptc/k/YQSNg33X2S4l8vXTBL7FUy0KLFDkyZ1t15HdpUNKYcgAtzXD02N34pFkWa1On1nWTSqzY
-	qCcq1pQqUxai7z3PAFY0uIfjitmI7haCxmesV+wIZj1H9HuaUd+GAGE2K0LC8HRDbFfih7hxuCc
-	7lUXBS2rLF4robo7WkVeg/qoVrx+7r27g31SwngZFbEsF/XxnFNZZaZ8Tbj/G80VWg/YBSy5j0S
-	6GPLQlgHGv6oQW8talV06rMzwm/eJl+uWuC2LoAEBb9qsV3q/SSwZcxubZZ+7pVD7R+OeX/mYNf
-	NsBh3a9Zulg2kP2FyOH6Md6dhf5flSbO83JJVG8Wrvn2noDEbYI7r6/zSfmnHYOMonFW5UMByH9
-	XjvKUXwUIlZowy9qFSqlZF6nZWpYSU6tq+3icGSJrQ+HEfPRF/Pafqv1BBXjuC1jLdsf+3FvIcy
-	5n5XnSCbhU15f+HUf0oupVG0xcBJeJvmKcSVXxiK7e+Dnaf/KwHv1tRbFDYz+JgsibO+hVrZRHj
-	BcvgD3KSd33yId1Vg+8eJzqqRNyPQ+TM+G7+HzI9KKCKrog11TS9
-X-Received: by 2002:a17:90b:3846:b0:38f:5801:dc0e with SMTP id 98e67ed59e1d1-3931e2a32bbmr3024404a91.15.1786594313939;
-        Wed, 12 Aug 2026 21:11:53 -0700 (PDT)
-Received: from spider.bream-herring.ts.net ([103.252.203.158])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3931f478658sm1127538a91.17.2026.08.12.21.11.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Aug 2026 21:11:53 -0700 (PDT)
-From: Matthias Goergens <matthias.goergens@gmail.com>
-To: syzbot+b3fba2e269970207b61d@syzkaller.appspotmail.com
-Cc: brauner@kernel.org,
-	cem@kernel.org,
-	gregkh@linuxfoundation.org,
-	jack@suse.cz,
-	jfs-discussion@lists.sourceforge.net,
-	kent.overstreet@linux.dev,
+	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="LsJQU/m3"
+Received: from mail-nwsmtp-smtp-production-main-81.vla.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-81.vla.yp-c.yandex.net [IPv6:2a02:6b8:c15:3388:0:640:154:0])
+	by forward101a.mail.yandex.net (postfix) with ESMTPS id 9CE9580691;
+	Tue, 18 Aug 2026 15:04:17 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-81.vla.yp-c.yandex.net (smtp) with ESMTPSA id F4U21qOfxW20-fcuZGg6L;
+	Tue, 18 Aug 2026 15:04:17 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1787054657; bh=8YqVf+6mnkApTNGiALyL1qs3No+/mJZ19C4EbCiGLQU=;
+	h=Message-ID:Date:Cc:Subject:To:From;
+	b=LsJQU/m3wiSdwFoYL9pM6TMPRLtjCcsRigURX9q8GaTlhVRzMosquPJ3vDeOKmohF
+	 9p4rceLzQ+jqCeueRapiSce6Wmwq5R1HmMmL75cCxYhRjJTcvLltj3oz7ueDd7PXEZ
+	 UQt5d1FDepu+LSnFWrhVNDeAyq0fl/q6l1hSduGA=
+Authentication-Results: mail-nwsmtp-smtp-production-main-81.vla.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
+From: Dmitry Antipov <dmantipov@yandex.ru>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org,
+	Kent Overstreet <kent.overstreet@linux.dev>,
 	linux-bcachefs@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	shaggy@kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	tj@kernel.org,
-	viro@zeniv.linux.org.uk
-Subject: Re: [syzbot] [kernfs?] [ext4?] INFO: task hung in sb_start_write (2)
-Date: Thu, 13 Aug 2026 12:11:48 +0800
-Message-ID: <20260813041148.2302176-1-matthias.goergens@gmail.com>
+	lvc-project@linuxtesting.org,
+	Dmitry Antipov <dmantipov@yandex.ru>
+Subject: [PATCH 6.12] bcachefs: fix memory leak in journal_entry_clock_validate()
+Date: Tue, 18 Aug 2026 15:02:52 +0300
+Message-ID: <20260818120253.2627516-1-dmantipov@yandex.ru>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <6a75a39e.01d0871a.3a0d52.0042.GAE@google.com>
-References: <6a75a39e.01d0871a.3a0d52.0042.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
@@ -91,50 +47,94 @@ List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The C reproducer neither demonstrates a kernel bug nor matches the
-crashes already collected in this bucket:
-https://syzkaller.appspot.com/bug?extid=b3fba2e269970207b61d
+Local fuzzing of 6.12.103 has found the following memory leak:
 
-It lowers hung_task_timeout_secs to 15, issues ioctl(FIFREEZE) on the
-root filesystem, then forks a child that opens an O_TMPFILE there.
-The child blocks in sb_start_write, as any write must while the
-filesystem is frozen. The reproducer sleeps for 60 seconds before
-thawing, so the hung-task report fires only because it shortened the
-timeout below its own sleep. The default 120s timeout would not
-trigger. Any CAP_SYS_ADMIN process can produce this report on any
-kernel: this is fsfreeze working as designed. Whether a task waiting
-for thaw should be exempt from hung-task reporting is a separate,
-older question.
+unreferenced object 0xffff88810c016a00 (size 128):
+  comm "syz.0.17", pid 10418, jiffies 4294953713
+  hex dump (first 32 bytes):
+    69 6e 76 61 6c 69 64 20 6a 6f 75 72 6e 61 6c 20  invalid journal
+    65 6e 74 72 79 2c 20 76 65 72 73 69 6f 6e 3d 31  entry, version=1
+  backtrace (crc af3a070b):
+    kmemleak_alloc_recursive include/linux/kmemleak.h:43 [inline]
+    slab_post_alloc_hook mm/slub.c:4166 [inline]
+    slab_alloc_node mm/slub.c:4211 [inline]
+    __do_kmalloc_node mm/slub.c:4345 [inline]
+    __kmalloc_node_track_caller_noprof+0x1ee/0x3d0 mm/slub.c:4365
+    __do_krealloc mm/slab_common.c:1242 [inline]
+    krealloc_noprof+0x76/0x110 mm/slab_common.c:1291
+    bch2_printbuf_make_room+0x1c9/0x330 fs/bcachefs/printbuf.c:59
+    prt_bytes fs/bcachefs/printbuf.h:218 [inline]
+    prt_str+0x3d/0x740 fs/bcachefs/printbuf.h:230
+    journal_entry_err_msg+0x55/0x1a0 fs/bcachefs/journal_io.c:276
+    journal_entry_clock_validate+0x161/0x430 fs/bcachefs/journal_io.c:642
+    bch2_sb_clean_validate_late fs/bcachefs/sb-clean.c:40 [inline]
+    bch2_read_superblock_clean+0x1c3/0x4d0 fs/bcachefs/sb-clean.c:168
+    bch2_fs_recovery+0x6e/0x2bf0 fs/bcachefs/recovery.c:637
+    bch2_fs_start+0x34f/0x5a0 fs/bcachefs/super.c:1037
+    bch2_fs_get_tree+0x8c1/0xff0 fs/bcachefs/fs.c:2172
+    vfs_get_tree+0x8c/0x2a0 fs/super.c:1814
+    do_new_mount+0x23c/0xa20 fs/namespace.c:3564
+    do_mount fs/namespace.c:3904 [inline]
+    __do_sys_mount fs/namespace.c:4114 [inline]
+    __se_sys_mount+0x250/0x300 fs/namespace.c:4091
+    do_syscall_x64 arch/x86/entry/common.c:47 [inline]
+    do_syscall_64+0xbe/0x1a0 arch/x86/entry/common.c:78
+    entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-The pre-existing crashes differ. In the 2025-08-01, 2025-08-23 and
-2026-08-02 instances, the blocked task waits on the sb_writers of a
-filesystem the fuzzer mounted from an image: lockdep classes
-sb_writers#31, sb_writers#13 and sb_writers#20 respectively. In the
-same reports, the root filesystem's writers class appears separately
-with a low number (sb_writers#5 held by udevd and others). The
-reproducer instead reports sb_writers#4, the root filesystem that it
-froze itself.
+As of 6.12, there are a few weird macros like 'journal_entry_err()'
+and 'mustfix_fsck_err()' which issues 'goto' out of the macro body.
+This makes explicit cleanups (including calls to 'printbuf_exit()'
+for 'struct printbuf' objects) somewhat tricky. Never-released
+patches intended for 6.17 have tried to solve this problem by using
+'__attribute__((cleanup))', but it's hardly possible (and reasonable)
+to backport all (or even some) of them to 6.12. As for the particular
+memory leak described above, the simplest possible workaround is to
+switch to 'struct printbuf' object with stack-allocated data buffer.
+In my tests, this buffer never actually grows beyond 128 bytes, and
+in the worst-case scenario we just end being warned with unexpectedly
+long error message not emitted.
 
-The captured console logs for the three organic crashes contain no
-FIFREEZE call. One contains a single stray FITHAW, so a freeze before
-the captured log window cannot be excluded, but that must be
-established before treating this reproducer as the explanation. If a
-fuzzer-issued FIFREEZE on a mounted image caused the hangs, the fix
-is for syzkaller to sanitise FIFREEZE, and the bug is still not in the
-kernel. Otherwise, something wedged those superblocks' writer gates
-with no fsfreeze in sight, which is a real bug that closing this
-report on the strength of the reproducer would bury. The mix of image
-filesystems mounted by those runs also explains why the subsystem
-guesses span kernfs, ext4, jfs, xfs and bcachefs.
+Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
+---
+ fs/bcachefs/journal_io.c | 4 ++--
+ fs/bcachefs/printbuf.c   | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-I therefore suggest treating this reproducer as matching the
-signature, not the cause. A previous generic-signature hung-task
-bucket, "task hung in do_rmdir"
-(https://syzkaller.appspot.com/bug?extid=e68dbebd9617a9250e8d),
-contained a real ext4 livelock. It was fixed by commit 54b6bd40898d
-("ext4: stop retrying saturated xattr cache entries") in the ext4
-tree:
-https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/commit/?id=54b6bd40898d
+diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
+index fb35dd336331..c900b09d7599 100644
+--- a/fs/bcachefs/journal_io.c
++++ b/fs/bcachefs/journal_io.c
+@@ -294,7 +294,8 @@ static void journal_entry_err_msg(struct printbuf *out,
+ 
+ #define journal_entry_err(c, version, jset, entry, _err, msg, ...)	\
+ ({									\
+-	struct printbuf _buf = PRINTBUF;				\
++	char _data[256];						\
++	struct printbuf _buf = { .buf = _data, .size = sizeof(_data) };	\
+ 									\
+ 	journal_entry_err_msg(&_buf, version, jset, entry);		\
+ 	prt_printf(&_buf, msg, ##__VA_ARGS__);				\
+@@ -313,7 +314,6 @@ static void journal_entry_err_msg(struct printbuf *out,
+ 		break;							\
+ 	}								\
+ 									\
+-	printbuf_exit(&_buf);						\
+ 	true;								\
+ })
+ 
+diff --git a/fs/bcachefs/printbuf.c b/fs/bcachefs/printbuf.c
+index 4cf5a2af1e6f..560318766f23 100644
+--- a/fs/bcachefs/printbuf.c
++++ b/fs/bcachefs/printbuf.c
+@@ -38,7 +38,7 @@ int bch2_printbuf_make_room(struct printbuf *out, unsigned extra)
+ 	if (out->pos + extra <= out->size)
+ 		return 0;
+ 
+-	if (!out->heap_allocated) {
++	if (WARN_ON(!out->heap_allocated)) {
+ 		out->overflow = true;
+ 		return 0;
+ 	}
+-- 
+2.55.0
 
-Such buckets can hide real bugs behind an uninformative victim stack;
-the per-instance reports contain the distinguishing evidence.
