@@ -1,86 +1,178 @@
-Received: from mail-pz2-f36.google.com (mail-pz2-f36.google.com [74.125.228.36])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from e234-6.smtp-out.ap-northeast-1.amazonses.com (e234-6.smtp-out.ap-northeast-1.amazonses.com [23.251.234.6])
+	(using TLSv1.2 with cipher AES128-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A887C23EA8B
-	for <linux-bcachefs@vger.kernel.org>; Sun,  4 Oct 2026 08:47:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3567713957E
+	for <linux-bcachefs@vger.kernel.org>; Sun,  4 Oct 2026 15:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=23.251.234.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791103679; cv=none; b=koFYtNmeC0QXiD1SgSaricc689SgMb91rLzV3piJw4m4/DILBN0h5KJWLWz6eQH2mOZMNz7TMJIxA3fv6qoMF8tghWl285UfC7VKvnItDqdi6kiM2OwiNBmcPzftRUr/W+qQr7VjqlTHAlox+Z3zStFJJzdfYHmijV3Bgq5Be+Y=
+	t=1791126377; cv=none; b=JlbDuf6zz+WYizF1fen0/RsiKgZQzMOdGqOnWuzhwE8xL4v4JhqsuDlxvGJPCGTwQMuzC2Tsrdn+eGvxyCVJAXpB+ZqElCl6xc3sQRyVZtmNO9N30FjkCqya8OF1YGgnzZ/H5wReHlDoq0wBJtPCjmX7EeS1xEAdQcG+4vWg5zM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791103679; c=relaxed/simple;
-	bh=yGtHweDtXARW9ZBhSGOmesmT2UIldU/E8mS9qx7kG3s=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=N2MfgNb4iv3u4YX9m0yzcdbTdHHB0+VQ+dwBs5tjuYZ6Sb57KYpeDLjklPazw09uEHuKygRcrrP+Z0LA//m66gLJdRWM0DYPcWuG5PWrLOzVRlgHfY6sD2gY7aMBY+l7+sKnjzix6S63Q4P0tXTqpV8jCBw1WZPQNUfkbC1jy9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ORJlMoJk; arc=none smtp.client-ip=74.125.228.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1791126377; c=relaxed/simple;
+	bh=1DvRqm/tHCgxaG2hzP2z/BvIlQvC2QE/Q4YuvrErVCE=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=SrVmV/VeE5KFbvwmhuO8NKUjKGzaSxPDigDZbm5mkJFV052/zTsKeXJXyJ7oxkIoR4Ic7T2hOYcYo0zEgEmT5BmMqsP/kOz7OHtrqDr9LYwdWFDU1YhqjfWECU+SxfhhV+dwTQowLqphExhNBUqluz+jrGw1Ia3L+OGMi+D2acs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=xx-co.com; spf=pass smtp.mailfrom=ap-northeast-1.amazonses.com; dkim=pass (1024-bit key) header.d=amazonses.com header.i=@amazonses.com header.b=rhhPFqNj; arc=none smtp.client-ip=23.251.234.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=xx-co.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ap-northeast-1.amazonses.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ORJlMoJk"
-Received: by mail-pz2-f36.google.com with SMTP id d2e1a72fcca58-88a0f29ce98so280016b3a.3
-        for <linux-bcachefs@vger.kernel.org>; Sun, 04 Oct 2026 01:47:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1791103678; x=1791708478; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=gHcli4wZjkXbSdyMRve/F6lBR5WyoYsRUZns8w19MiU=;
-        b=ORJlMoJk1HFM/nEdAvZ8LHPlE/9ZgEEnz72VrEYT9lOZC8++RGBH/W9SC/dnp35SI/
-         2J4iZ+21Q0LA+YTiXH1uK762rnyz5OEeZnJoqoWhAIJ57KYkRBMCmh1zmbKKl9/BHOaP
-         Y4swiXIYVULy//z+0QppS59mXlsWgwFgW3VlgQbiaVmqkYgot8hvnXdpF7ZPxYdH+Z/L
-         LNevaSJvOsDfkFUYJBu2yR56u5v7GIRw98TxGmfB/2Wk+6uSZ2Iq2gsuBE96wIAm3xUw
-         yzyWAQeBevBMsmnotit0I0pekcF6PYgoGVMHuDlq6tJkYbEVbrhOHw31stBoO+4c/TAf
-         K7CA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791103678; x=1791708478;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=gHcli4wZjkXbSdyMRve/F6lBR5WyoYsRUZns8w19MiU=;
-        b=KtdoDZ3rIkeYMTy/gv/z+ScFRBg9i4bT+ClriWCWCY7eO7lGsPp9co3BroxX0cEd36
-         W1UfSbTLpyxd65Al46L6CzcNqm3UJpEqZ+3FErmMHxM0oz/6E0MuK3k+/9O755BCwoCf
-         UyAYa6TQMcU7o1IpDjQgKNeOx6ysvksZqCPGnDeirTuGv/c1ecIRMVItiDdiVU4r962c
-         K5DVTpBVb0SdFGNfoiTW/x/8JHbuMTI4kfobFx7dLsvwjpuOz1f7uEXRg/5R9y+HmUeZ
-         ketzk0YaZJIfzOGqotqKyDJGLg93jtwcU6P4HDYZ8AcYj11VxTpM0OAD6lmNcwP60zD4
-         apag==
-X-Gm-Message-State: AFuF++m4w3TPbtridYFzUktKeY4igf8CbvSUILEorrzO3+lxJc+8obhe
-	LIpHzNNcO0YOwJj0RjA1oM1QqWbhQNZuaKz+roca0oiEzIOfMvrK4OvOQ7HB+qluzLI=
-X-Gm-Gg: AYBFou2SWazWoNFaXCMTSYkBCdaRULRLW85hoK6ZcdPWQyxBAqRLJtPD+SReaqQRFNM
-	4VodWMASyxofohCIhThw1gEB3sMnd99peeLURFxvPfp6hh8VQLFqK5XyIOM8Fr4cSVE9iJPhj72
-	f36b13vHnCqB2hoDS/BtnNe6Yz9GIfHlCz4oCA/19b9gPwDNytDk58Zvq1/8bJ8x4re7ExrYzvT
-	65QaR1UEf6bmcEGNsQGcYqmoHa094c8P9jf0qdWgrTcBu9i+F5Um67RvHrZAl0tAXDEqSpBj+KH
-	IJgyvjRZcF/7lJz2FN7JThkxw3vMen0uoWajTl74aDizFk+W58jv+5JYiFVfz0tDgERC9PWZQhP
-	nVqUQyEjAWH5QyNRucwUXgw22daEWxk4txX32OZUC9rZ86d1LdogUi30amVc/AjGdi39w7jHU6q
-	XAT9Z/iHL3puJv8h8nV04kZe35AJIr+SFgipUN53Y7HIwvDgl4rO2CfPGsybiwq6HWa1m8PARoM
-	fw5wAt6JV9bqNgRnh0870J5R3dYqR63v3QEiV/Kvw+Ks/CvwdoAX6n26CY3mXbHk6BJoK9/a1zC
-	35/dtKGyg6kpLkaEgIE/ZmfUpoowmDNMlDlhM/K/Ld8UAZhmZvIK7ks6l5yR
-X-Received: by 2002:a05:6a00:451b:b0:881:e737:8213 with SMTP id d2e1a72fcca58-88af2494d70mr7238754b3a.7.1791103677809;
-        Sun, 04 Oct 2026 01:47:57 -0700 (PDT)
-Received: from spider.bream-herring.ts.net ([103.6.151.236])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-88b069b47b1sm2402950b3a.0.2026.10.04.01.47.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Oct 2026 01:47:56 -0700 (PDT)
-From: Matthias Goergens <matthias.goergens@gmail.com>
-To: J B <jb.1234abcd@gmail.com>
-Cc: linux-bcachefs@vger.kernel.org
-Subject: Re: dkms-bcachefs-build rust error on ArchLinux
-Date: Sun,  4 Oct 2026 16:47:54 +0800
-Message-ID: <20261004084754.39043-1-matthias.goergens@gmail.com>
-X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261001154719.427562-1-matthias.goergens@gmail.com>
-References: <CAJXMFhEt=9hGnYaFHDSPLZYk3BWRudxW0M=XTpiFuoH7vaz0-g@mail.gmail.com> <20261001154719.427562-1-matthias.goergens@gmail.com>
+	dkim=pass (1024-bit key) header.d=amazonses.com header.i=@amazonses.com header.b="rhhPFqNj"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=zh4gjftm6etwoq6afzugpky45synznly; d=amazonses.com; t=1791126374;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Feedback-ID;
+	bh=1DvRqm/tHCgxaG2hzP2z/BvIlQvC2QE/Q4YuvrErVCE=;
+	b=rhhPFqNjLuKoV1XfGo2OjkfNHv8vWEwyxildoEdRhxs9hNSGriiPoLB3RPaRHf9M
+	lRErHCStfblzkB2D6n340GSyU1LcB5VofCso98BA5ceCENS8VU4JzVYOO5P9lNyN703
+	LO3BxDFGhQ98sOHk++43ezD3sQB8e5T/X3nGa87o=
+Authentication-Results: auth=pass smtp.mailfrom=daniel@xx-co.com; 
+From: Daniel Suek <daniel@xx-co.com>
+To: linux-bcachefs@vger.kernel.org
+Subject: [RFC] bcachefs: page-level processing layer to eliminate sub-extent read amplification
+Date: Sun, 4 Oct 2026 15:06:13 +0000
+Message-ID: <010601a10773864f-29ea0d0b-b2d6-421f-9849-65c55da3c277-000000@ap-northeast-1.amazonses.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Feedback-ID: ::1.ap-northeast-1.cYIZLOjIwdEH/pNWTsToOXtmOZyQLzRgwCOPQvNJAds=:AmazonSES
+X-SES-Outgoing: 2026.10.04-23.251.234.6
 
-Hi,
+Random 4KB reads on checksummed extents bounce the full 256KiB
+extent — 64x device I/O amplification (bcachefs-tools#980).
+This affects database, VM, and metadata-heavy workloads on NVMe.
+Sequential reads are unaffected; readahead masks the cost.
 
-Arch has now rebuilt linux (7.2.8.arch1-2) and linux-lts (6.18.54-2)
-with rust 1:1.99.0-1, which is also in [extra], so after a full
-pacman -Syu the DKMS build should go through.  Please say if it still
-fails.
+The root cause is that the extent is the atomic unit for both
+data processing and I/O, with no layer boundary between them.
+A sub-extent read must bounce the whole extent, verify, then
+copy out one page and discard the rest.
 
-Matthias
+This coupling originates from HDD seek amortization — once the
+head has seeked, processing a full extent costs little more
+than one page. On NVMe, 4KB is the native read unit and that
+rationale no longer applies. Extents still serve metadata
+compaction (one btree key per extent) and write amplification
+reduction, so this proposal keeps extents for allocation.
+
+None of the main processing consumers — checksum, encryption,
+compression — structurally requires extent-level batching.
+Each decomposes to page granularity:
+
+CRC32c is composable over GF(2). Per-page CRCs compose to the
+whole-extent CRC exactly; bch2_checksum_merge() already exists.
+
+ChaCha20 is counter-mode. A per-page nonce is derivable from
+the extent nonce + page offset; nonce_add() already exists.
+
+Poly1305 authentication is the harder piece — the current MAC
+covers the full extent. Per-page authentication requires
+per-page MAC tags, a format change deferred to a later step.
+The first implementation (CRC32c only) sidesteps this.
+
+Other checksum types: CRC64 is also GF(2)-composable and
+follows the same approach. Non-composable types (xxhash) fall
+back to the current extent-level path.
+
+Compression has a data dependency between pages — the sliding
+window references preceding decompressed output. This is not a
+batching requirement but a dictionary requirement. Solutions
+exist (trained per-inode dictionaries, page-cache-as-dictionary)
+but the design choice is deferred; compressed extents stay on
+the current bounce path.
+
+Erasure coding operates cross-device, independent of
+within-device page size. No change needed.
+
+The proposal is to separate two concerns that the extent
+currently combines:
+
+A processing layer, where checksum, encryption, and eventually
+compression operate at page granularity. Each page is
+independently verifiable and decryptable. This is the layer
+that eliminates read amplification — a sub-extent read
+processes only the requested page.
+
+An amortization layer, where I/O is batched to match device
+characteristics. This layer is device-aware and
+processing-independent: it decides how much to read from disk,
+not how to verify or decrypt what was read.
+
+On NVMe, 4KB random reads are native. The block layer's bio
+merging already handles sequential batching. No additional
+filesystem-level amortization is needed.
+
+On HDD, seek cost still dominates and batched I/O remains
+essential. The block layer provides readahead and bio merging,
+but whether that is sufficient or the filesystem needs its own
+device-aware batching is an open question (see below).
+
+Extents remain as allocation metadata — contiguous block
+run-length encoding. They continue to serve metadata compaction
+and write amplification reduction. What changes is that
+processing no longer requires reading at extent granularity.
+
+InnoDB has had per-page checksum/encrypt/compress for decades,
+with extents as allocation-only units and a buffer pool as its
+amortization layer. An architectural precedent, though not a
+direct analogy: InnoDB embeds checksums in page headers (zero
+indirection); this proposal uses an external btree.
+
+btrfs CSUM_TREE decouples checksums from extents but not
+encryption or compression. No production POSIX filesystem has
+per-page checksum and encryption decoupled from extent
+boundaries.
+
+As a first step, I propose per-page CRC32c in a new
+BTREE_ID_checksums btree, keyed by (inode, page_offset)
+(logical position; reflink interaction is an open question).
+
+Per-page CRCs coexist with whole-extent CRCs during migration.
+bch2_checksum_merge() cross-verifies the two — the composition
+is mathematically exact. Post-migration, the whole-extent CRC
+becomes redundant and can be dropped.
+
+CRC32c computation cost is unchanged — O(n) regardless of page
+vs extent granularity. Per-page btree lookups for checksum keys
+add overhead that depends on cache residency; with the checksum
+btree warm, sequential throughput should be unaffected.
+
+The metadata cost is ~6-8 GiB/TiB including btree key overhead
+(~24-32 bytes per key for 256M keys/TiB). This is 64x larger
+than the backpointers btree (~4M keys/TiB).
+
+Write-path journal entries are amortized by coalescing. Btree
+compaction overhead scales with key count — 64x more keys than
+backpointers means proportionally more leaf nodes and
+compaction work.
+
+The tradeoff is more btree metadata and per-page insertions on
+writes, in exchange for eliminating 64x read amplification on
+random reads.
+
+Open questions — feedback welcome on any of these:
+
+1. Metadata overhead: is ~6-8 GiB/TiB of checksum btree
+   acceptable? What per-read lookup cost and compaction
+   pressure on write-heavy workloads?
+
+2. Amortization on HDD: is the block layer's readahead and
+   bio merging sufficient, or does bcachefs need its own
+   device-aware batched I/O submission for rotational media?
+
+3. Migration: opt-in or automatic on format upgrade?
+   Rate limiting and pause/resume for background checksum
+   generation, especially on HDD arrays?
+
+4. Does per-page checksumming reduce or eliminate the need
+   for the encoded_extent_max tuning knob?
+
+5. Reflinks: should per-page checksums be keyed by logical
+   position (inode, offset) or physical position (device,
+   physical_offset)?
+
+6. Per-page compression: which design — dictionary
+   separation, trained per-inode dictionaries,
+   page-cache-as-dictionary — best fits bcachefs?
