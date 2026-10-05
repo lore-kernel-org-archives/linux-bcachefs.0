@@ -1,90 +1,127 @@
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from sunucu.ihale.com.tr (unknown [95.173.178.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6DE53921F6
-	for <linux-bcachefs@vger.kernel.org>; Sun,  4 Oct 2026 20:41:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.177
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791146491; cv=pass; b=IRH9/dtFyk+RBfmyS2fIDcrVULmAgOTmf7+P9jHqc+dyDg2PJ79P+T/diIYfmXjoUBmAhjfkR+zh9frXG/ukkjhwOLB+sAloR0BojXfEayZvHD5dFivZttycWxE09lSMgnDmFpsh/NREZDIBX+DR7x2ZeWjNWr5kYU5hFbgLRBM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791146491; c=relaxed/simple;
-	bh=DYgIValD9Alvft/I/FaVqr0WQC1Z3cMyBOukBzEpDIo=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=VAdssclqLjI0CgvAHrcTrA+VTB4/fS7Q9jgPsE79/kapLl3TvllbbEBz/BiyoSj0uQ6wk3xLx86me18cWpzkAq9+W45O6BwfBRUVAdjLZbXcRKFOPCJWD2EQCsICVqbYGV6eqH2I38ispCqmyNwTLyJrWnGMVKKeTkXCT75xpl4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mkdGfB0Q; arc=pass smtp.client-ip=209.85.160.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 490D235F5E1
+	for <linux-bcachefs@vger.kernel.org>; Mon,  5 Oct 2026 06:38:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.173.178.186
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1791182285; cv=none; b=IPRL7imrW9YHZmRmktgXUphV3kl2STwlf1ScJOjzmNl8xfhSCWIgBebeiubbFnrtdDJ3HNUiCj3t52Q0uSrkVWO4EW6eX8F7FZM25dLedhy+YCVo0RrAAgA4pe2sFAw0GV89+rCvqdjMDe9ZsaXfO1UoTrDTcqBPxoaR4slqqhc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1791182285; c=relaxed/simple;
+	bh=GCuqivoAUOuohjs7VuXXiIbk8atlNTAptE1Sgr60/eU=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TJyoVyl3Yqf43hx44TMKsBYNupEDGYmDcVNItAN5nQH2P6kQubsvR3y9QO/bm3XlPg4/F3EA76UeK39nsA66j376ZYWnkL96TDOLE8WBl/GE14OhC7D3zZN/EqQtAaAuyh0EATOorYr5IGwOSFoUGegAWizZNXzWhCBpARmTYm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=legendhomework.com; spf=pass smtp.mailfrom=legendhomework.com; dkim=pass (2048-bit key) header.d=legendhomework.com header.i=@legendhomework.com header.b=CL7CwMTm; arc=none smtp.client-ip=95.173.178.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=legendhomework.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=legendhomework.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mkdGfB0Q"
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-534e6545939so8615121cf.3
-        for <linux-bcachefs@vger.kernel.org>; Sun, 04 Oct 2026 13:41:30 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1791146489; cv=none;
-        d=google.com; s=arc-20260327;
-        b=FyxsTkWMV5tUcqXss2ys7tKtDArUpUWY97x5alIjvAYoq2xdm1L2R3YOZ8tQgx+ydB
-         8Q0jAD9X7We8ohKMfmMOyrMQHSl7wWL5c+9TALSsP/LQSKAMM+n0ttCP7x0/5SGuP4Po
-         WEsughCfYxGZzMKCTp1QqMr2xPAh1CKDuiaVmDAvDV/WnqBKZsOHlqpl1KjtnY0NHJyk
-         W6vnm2D3WvBofib2vzmV1JYB5wuyktfKTRqXGHtiJvvfChqJvAQcurqIxUZf3Li5GXMT
-         HpB8RYMpud3taELF2rPVcIjPUjPERLMV9xLuJZlhN4kP4Aflg3dkB1J1cir+EfyGlSk/
-         fwpg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=to:subject:message-id:date:from:mime-version:dkim-signature;
-        bh=DYgIValD9Alvft/I/FaVqr0WQC1Z3cMyBOukBzEpDIo=;
-        fh=dVjhzuDTRrW+ZFMuuUq9DPxg77MTYd2iAXb5U85kmgI=;
-        b=f4tkb34mxDfCxxrWadyamquLUsvd8n2F/v4aOR7S3vLwQAmqYzf17++r75+M3H/lRG
-         qnQzx68HbsGkF5MfYHNTC9dEe3KCaZhdua4ovU7m4Xt6LA7VBzMmaniBMRaibsdbGrFA
-         GP8C/9JO9h6kcQDSNH2GB98V9/rplfsLkn0RNQNF9MfRfCcvNyx+xiTJRxPqQIKpTcfa
-         VtoShDuerrJe/CMd8AZOI9oW21LSSvpJuxKlm6Ciz9yr02tzDWVr7bZmgDghB+WkzL3v
-         TqdYFYH1H3tZx+cDcjqSylqH4h+C5tZUkbNc0hXH4ekfPkKduMzSxBWisFur9KPtZsxl
-         TOHw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1791146489; x=1791751289; darn=vger.kernel.org;
-        h=content-type:to:subject:message-id:date:from:mime-version:from:to
-         :cc:subject:date:message-id:reply-to:content-type;
-        bh=DYgIValD9Alvft/I/FaVqr0WQC1Z3cMyBOukBzEpDIo=;
-        b=mkdGfB0QOQr645SQZeEbPd1Rx26EVirlMe2ai4gHHVcE7FieICtSovYrUn6IRxvDA8
-         La8O7ehCWqhuW2N9oMbUOxxYiVbF4NRT6lCW1AzRumuQnNU84hQgMjpygPrxLgqmQGwW
-         HjuRucWDIl72ElZYcVGfCmXW3/uJxfFll7oLirjG/zJR4aDvVV2984kl+NqnNDWkrg07
-         dwjgR90/fDf7Yyx2nT1E4sxmBQrVN4KgVshQwz/9P1IKRAK84WR2f8BzYeY33OjGBMpA
-         6s7eMDSsff9IyyJJr6Lmwfd5NSt6uC1VzwHWj6mL/X0O6fJGmmngpcMt41jk6n+JcHqH
-         UBeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791146489; x=1791751289;
-        h=content-type:to:subject:message-id:date:from:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=DYgIValD9Alvft/I/FaVqr0WQC1Z3cMyBOukBzEpDIo=;
-        b=17TslJ2+ZxWx6Dol+CI9hnwjAOG4tYG46gua6GcNB968TdZuXcOrOfgvDd+AZSHxoW
-         3DxCLh0A4o2ionnfOgsL6Dt9XRihgViyFQPfexhYvDKjf/mfgB/4+srP0PchNr2AqalM
-         TjS0qcmXkLzMsksB835EILWYqP0BxA5MHmM32tRIgKkoT2GYoUw24ly1wvvbB6/L+FwQ
-         Pfm1pnV4jXtZ+uRcInj1SrIaGMQmaGsvwgNSVvFG+mVTQbCbLcXYwH9d0k97Fcf8ysdF
-         QkMThFz8hfJ1gGbZN1wnyM1/BK0fQdh0RoCVOpvdqc4rIJoL6+NDf5HjNLvWYhbDcKmC
-         qfoA==
-X-Gm-Message-State: AFuF++m7860V/2JuDGmfnOiIMrtnKYR+tZQCuOlsV7tTC6yW+9JUh0wo
-	G73vkl7qkPUF700AUlMy3AKQHnHwDsP3D8shBffbcHdiz5nvDCgJunW1e8gaOIk6rUUV/8JeB+d
-	lXn7nv2E07hfoVT9nJGpoUyhHfbUi9mqulL+R
-X-Gm-Gg: AYBFou1DhsmoPlFkzhuRzFnGPkRcAkZvZ0C4IRz5oQpbygj3vySxtnRm4vORKiUBNSs
-	CzFdP08jAPo2MYKUR44gA+8FWCDy0PYQH37teBihQQ6hP5oCsQLT/Xwexy0EclBmMCEyqW3IVsT
-	i/e46QDVgbA4WjxGQmflMX53NvL0CBBCGWN3Trcjt3v24ydmVOPzNIaM+h4v1OWGJt2B87XDUhV
-	d007GqDGtjgINZJhu2iXEGvun5eVqUYFk6xohsD3jzu74SMTAwULqGLAfdQzFEDlLZTv2kV+oKG
-	4WM55A8V0wzP+7fvX0IJ7A+8c1M7dw/I4mTzqoLiRePZm4XkAGUx
-X-Received: by 2002:ac8:6909:0:b0:532:acb9:595d with SMTP id
- d75a77b69052e-53511b8e611mr99690401cf.8.1791146489593; Sun, 04 Oct 2026
- 13:41:29 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=legendhomework.com header.i=@legendhomework.com header.b="CL7CwMTm"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=legendhomework.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Message-ID:Date:Subject:To:From:Reply-To:Sender:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Unsubscribe-Post:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=5lmJJ0mEKCC15dQaupFmVY6/ZNMzkad8UFLiXk6+8uk=; b=CL7CwMTmxFNkBTLlqpdhrieuw5
+	jwo719mGfO+vCjrqzHr2kMDCO8UW/l7tET0H3Ebkp0FZl7z63wxSTbRlRpgywu7E0t4t6MUZiNCxv
+	cK9dR72G+Xr9i71vkXX1DBQXAoxsULcVkd4lK8NSBPM8U1l16M8SNsZCuXlonmQpHr8MAD/19uXy5
+	Dtsix1/5SIN2Kf9+w/EMT+4x0zoB5kSeDSR6wyZr++9QVF3Tj0CWncFff3+dc39wT6SPBoloZhvO7
+	Aof48MEbF4q2GcSv6bz3Ws/CUsZeUf58HkDcxUHcKhe3SBsnSnlXbxavmdEcjmrxsrhhZRcCzw3ky
+	wxMo0whA==;
+Received: from [154.120.97.226] (port=65237 helo=legendhomework.com)
+	by 95-173-178-186.cprapid.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.100.1)
+	(envelope-from <info-llhm@legendhomework.com>)
+	id 1xDcKd-0000000CPnR-3LEW
+	for linux-bcachefs@vger.kernel.org;
+	Mon, 05 Oct 2026 09:37:54 +0300
+Reply-To: perrymail@tutamail.com
+From: info-llhm@legendhomework.com
+To: linux-bcachefs@vger.kernel.org
+Subject: Your Consent
+Date: 04 Oct 2026 23:37:54 -0700
+Message-ID: <20261004233754.6F6FCF41C1552252@legendhomework.com>
 Precedence: bulk
 X-Mailing-List: linux-bcachefs@vger.kernel.org
 List-Id: <linux-bcachefs.vger.kernel.org>
 List-Subscribe: <mailto:linux-bcachefs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-bcachefs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: J B <jb.1234abcd@gmail.com>
-Date: Sun, 4 Oct 2026 22:41:17 +0200
-X-Gm-Features: AclHuK9F8Sx4mUf92yCXJgnNnb1mi5_s3JQkrMfSFFL3tZKrmAkrUXNJSYpAhiQ
-Message-ID: <CAJXMFhEP3hBF=V8N+t6NLTY+WqCFDk1PHDMqR60Q-Jhy8hh+yQ@mail.gmail.com>
-Subject: dkms-bcachefs-build rust error on ArchLinux
-To: linux-bcachefs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - 95-173-178-186.cprapid.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - legendhomework.com
+X-Get-Message-Sender-Via: 95-173-178-186.cprapid.com: authenticated_id: info-llhm@legendhomework.com
+X-Authenticated-Sender: 95-173-178-186.cprapid.com: info-llhm@legendhomework.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 
-Hi,
-now it is OK. Thanks.
-jb
+Greetings,
+
+My name is Dr. Innocent Bariate Barikor, Director-General of the=20
+National Environmental Standards and Regulations Enforcement=20
+Agency Nigeria - (NESREA).
+
+As part of my official responsibilities, I monitor environmental=20
+compliance and pollution associated with oil and gas exploration,=20
+drilling, and production activities in the Niger Delta and=20
+submits relevant findings to the Presidency.
+
+In the course of carrying out these responsibilities, my=20
+investigations identified significant environmental compliance=20
+concerns involving four major oil-producing companies:
+
+1.      Shell Petroleum Development Company Limited
+
+2.      Mobil Producing Nigeria Unlimited / Esso Exploration &=20
+Production Nigeria Limited
+
+3.      Chevron Nigeria Limited / Texaco Overseas
+
+4.      Elf Petroleum Limited / Total Exploration Limited.
+
+The four companies were subsequently assessed penalties of=20
+US$1.2Billion, with the applicable sanctions providing for the=20
+potential revocation of their operating licenses in the event of=20
+non-compliance. Given the importance of their operating licenses=20
+to their continued activities in Nigeria, the four companies=20
+appealed for a reduction or waiver of the assessed penalties.=20
+Their requests were subsequently considered by the Federal=20
+Government, and the applicable fines were reduced to US$800=20
+Million.
+
+The companies have since settled the revised penalties with the=20
+Ministry of Environment. They have also indicated their intention=20
+to provide a US$50,000,000.00 payment in recognition of my role=20
+in the process. However, as a senior public official, I am=20
+subject to the applicable Code of Conduct and therefore cannot=20
+maintain or operate a foreign bank account for the receipt of=20
+such funds. Consequently, I am unable to provide a foreign=20
+account for this purpose. In view of the foregoing, I am unable=20
+to personally receive or facilitate the transfer of any such=20
+payment because of the restrictions applicable to my position as=20
+a public official.
+
+I therefore seek your assistance in identifying a resourceful and=20
+transparent mechanism through which the matter in relation to the=20
+gratification can be addressed without any traces to me=20
+considering the fact that I am still in active service. Any=20
+proposed arrangement should be properly documented and, where=20
+required, discussed with a financial facilitator locally without=20
+mentioning names; so that all parties are adequately protected=20
+and the transaction is handled through the proper channels.
+
+I would appreciate your guidance and cooperation in resolving=20
+this matter in a manner that is fully compliant with existing=20
+financial regulations.
+
+Best regards,
+
+Dr. Innocent Bariate Barikor
+Director General
+NESREA.
+Direct Phone/Whatsapp: +2349019779152
